@@ -37,6 +37,33 @@ public class Controller {
         loginForm.show();  // mostra la finestra JavaFX
     }
 
+    public void registerNewStudent() {
+        RegisterForm regForm = new RegisterForm(this); // 'this' è il controller
+        regForm.setTitle("Register");
+        regForm.setWidth(500);
+        regForm.setHeight(500);
+        regForm.show();  // mostra la finestra JavaFX
+    }
+
+    public boolean addNewStudent(String matricola, String name, String surname, String email, String password) {
+        String sql = "INSERT INTO Studente (matricola, nome_stud, cognome, email, passw) VALUES (?, ?, ?, ?, MD5(?));";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, matricola);
+            pstmt.setString(2, name);
+            pstmt.setString(3, surname);
+            pstmt.setString(4, email);
+            pstmt.setString(5, password);
+
+            int rowsInserted = pstmt.executeUpdate();
+            return rowsInserted > 0; // true se almeno una riga è stata inserita
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public boolean validateLoginStudente(String email, String psw) throws Exception{
 

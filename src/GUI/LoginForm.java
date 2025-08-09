@@ -27,6 +27,7 @@ public class LoginForm extends Stage {
 
         // Bottone di login
         Button doneButton = new Button("Login");
+        Button registerButton = new Button("Register");
 
         doneButton.setOnAction(e -> {
             try {
@@ -47,7 +48,11 @@ public class LoginForm extends Stage {
             }
         });
 
-        root.getChildren().addAll(txtField, pswField, doneButton);
+        registerButton.setOnAction(e -> {
+            controller.registerNewStudent();
+        });
+
+        root.getChildren().addAll(txtField, pswField, doneButton, registerButton);
 
         Scene scene = new Scene(root, 300, 150);
         this.setScene(scene);

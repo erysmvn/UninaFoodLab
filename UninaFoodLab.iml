@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="pgJDBC 42.7.7" level="project" />
+    <orderEntry type="library" name="javafx-sdk-24.0" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

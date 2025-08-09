@@ -2,27 +2,30 @@ package GUI;
 
 import Controller.Controller;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
-public class HomePage extends JFrame {
-    private JButton loginButton;
-    private JPanel panel1;
-
+public class HomePage extends VBox {
     private Controller controller;
+
+    private Button loginButton;
 
     public HomePage(Controller controller) {
         this.controller = controller;
-        loginButton.addActionListener(new ActionListener() {
+
+        loginButton = new Button("Login");
+
+        loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void handle(ActionEvent event) {
                 controller.loginStudenteClicked();
+                System.out.println("Login Button pressed");
             }
         });
-    }
 
-    public JPanel getPanel() {
-        return panel1;
+        this.getChildren().add(loginButton);
+        // Puoi aggiungere altri componenti qui nel VBox
     }
 }

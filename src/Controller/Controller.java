@@ -5,6 +5,9 @@ import java.sql.*;
 import DB.DBConnection;
 
 import javax.swing.*;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class Controller {
     DBConnection db;
@@ -15,23 +18,25 @@ public class Controller {
         db = new DBConnection();
         db.DBConnect();
         con = db.getConnection();
+    }
 
+    public void showHomePage(javafx.stage.Stage primaryStage) {
         HomePage homePage = new HomePage(this);
-        homePage.setContentPane(homePage.getPanel());
-        homePage.setTitle("HomePage");
-        homePage.setSize(500, 500);
-        homePage.setVisible(true);
-        homePage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        javafx.scene.Scene scene = new javafx.scene.Scene(homePage, 500, 500);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("HomePage");
+        primaryStage.show();
     }
 
     public void loginStudenteClicked() {
-        LoginForm loginForm = new LoginForm(this);
-        loginForm.setContentPane(loginForm.getPanel());
+        LoginForm loginForm = new LoginForm(this); // 'this' è il controller
         loginForm.setTitle("Login");
-        loginForm.setSize(500, 500);
-        loginForm.setVisible(true);
-        loginForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginForm.setWidth(500);
+        loginForm.setHeight(500);
+        loginForm.show();  // mostra la finestra JavaFX
     }
+
 
     public boolean validateLoginStudente(String email, String psw) throws Exception{
 

@@ -23,7 +23,7 @@ public class StudenteDAO implements StudenteDAOInterface {
         this.controller = controller;
     }
 
-    public Studente tryLogin(String sql)throws SQLException {
+    public Studente tryLogin(String sql) throws SQLException {
         Studente studente = null;
 
         rs = stmt.executeQuery(sql);
@@ -39,6 +39,32 @@ public class StudenteDAO implements StudenteDAOInterface {
         }else{
             SQLException sqlException = new SQLException();
             throw sqlException;
+        }
+
+        return studente;
+    }
+
+    public Studente tryRegister(Studente studente) throws SQLException {
+        String sql = "INSERT INTO studente (matricola, nome_stud, cognome, email, passw) VALUES (?, ?, ?, ?, md5(?))";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, studente.getMatricola());
+            pstmt.setString(2, studente.getNome());
+            pstmt.setString(3, studente.getCognome());
+            pstmt.setString(4, studente.getEmail());
+            pstmt.setString(5, studente.getPassw());
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                Exception exc  = new Exception("No row inserted");
+                throw exc;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
         }
 
         return studente;

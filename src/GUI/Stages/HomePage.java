@@ -23,6 +23,17 @@ public class HomePage extends Stage {
     private Scene scene;
     private HBox loginButtons;
 
+    private Boolean isLoggedIn = false;
+    private Boolean isChef = false;
+
+    public void setLoggedIn() {
+        isLoggedIn = true;
+    }
+
+    public void setChef() {
+        isChef = true;
+    }
+
     public HomePage(Controller controller) {
         this.controller = controller;
 
@@ -287,16 +298,24 @@ public class HomePage extends Stage {
         //TODO
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(createAccountButton(chef));
-
+        setLoggedIn();
+        setChef();
     }
+
     public void becomeHomePageStudente(Studente studente){
         //TODO
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(createAccountButton(studente));
-
+        setLoggedIn();
     }
 
+    public Boolean isLoggedIn(){
+        return isLoggedIn;
+    }
 
+    public Boolean isChef(){
+        return isChef;
+    }
 }
 
 

@@ -16,6 +16,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.sql.SQLException;
+
 public class RegisterPage extends Stage {
 
     private Controller controller;
@@ -106,7 +108,7 @@ public class RegisterPage extends Stage {
         lblEmailError.setTextFill(Color.RED);
 
         txtEmail.textProperty().addListener((obs, oldValue, newValue) -> {
-            boolean isStudente = newValue.contains("@studenti");
+            boolean isStudente = newValue.contains("@studenti.unina.it");
             lblMatricola.setVisible(isStudente);
             txtMatricola.setVisible(isStudente);
             lblMatricola.setManaged(isStudente);
@@ -220,7 +222,24 @@ public class RegisterPage extends Stage {
 
         confermaButton.setOnAction(e -> {{
             if(validConferma()){
-                //todo insert nel database
+                String nome = txtNome.getText();
+                String cognome = txtCognome.getText();
+                String email = txtEmail.getText();
+                String matricola = txtMatricola.getText();
+                String password = txtPassword.getText();
+
+                try {
+                    if (matricola == null || matricola.trim().isEmpty()) {
+                        Chef newChef = new Chef(nome, cognome, email, password);
+                        controller.tryRegisterChef(newChef);
+                    } else {
+                        Studente newStudente = new Studente(matricola, nome, cognome, email, password);
+                        controller.tryRegisterStudente(newStudente);
+                    }
+                this.close();
+                } catch (SQLException exc) {
+                    exc.printStackTrace();
+                }
             }
         }
         });

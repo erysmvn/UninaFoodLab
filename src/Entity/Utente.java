@@ -9,6 +9,12 @@ public class Utente {
     String passw;
     private ArrayList<Corso> corsi;
 
+    public Utente(String nome, String cognome, String email, String passw) {}
+
+    public Utente() {
+        ArrayList<Corso> corsi = new ArrayList<>();
+    }
+
     public String getNome() {
         return nome;
     }

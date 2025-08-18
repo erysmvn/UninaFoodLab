@@ -6,9 +6,12 @@ import Entity.Chef;
 import Entity.Corso;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.util.ArrayList;
 
@@ -28,15 +31,26 @@ public class AccountCorsiPanel extends BorderPane {
         ArrayList<Corso> corsiUtente = utente.getCorsi();
         int col = 0;
         int row = 0;
-        for (Corso corso : corsiUtente) {
-            CorsoPanel tempCorsoPanel = new CorsoPanel(corso.getImagePath(), corso.getNome());
-            corsiGrid.add(tempCorsoPanel, col, row);
-            col++;
-            if (col >= 2) {
-                col = 0;
-                row++;
+        if (corsiUtente.size() > 0) {
+            for (Corso corso : corsiUtente) {
+                CorsoPanel tempCorsoPanel = new CorsoPanel(corso.getImagePath(), corso.getNome());
+                corsiGrid.add(tempCorsoPanel, col, row);
+                col++;
+                if (col >= 2) {
+                    col = 0;
+                    row++;
+                }
             }
+        } else {
+            Label noCorsiLabel = new Label();
+            noCorsiLabel.setText("Non sei iscritto a nessun corso");
+            noCorsiLabel.setStyle("-fx-text-fill: red;");
+            noCorsiLabel.setPadding(new Insets(10, 10, 10, 10));
+            noCorsiLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+
+            corsiGrid.add(noCorsiLabel, 0, 0);
         }
+
         scrollPane = new ScrollPane(corsiGrid);
         scrollPane.setPadding(new Insets(10));
         scrollPane.setBackground(null);
@@ -84,6 +98,10 @@ public class AccountCorsiPanel extends BorderPane {
         iscrivitiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
         this.setFocusPropreties(iscrivitiButton);
         this.setOnMouseTraverse(iscrivitiButton);
+        iscrivitiButton.setOnAction(e -> {
+
+        });
+
         return iscrivitiButton;
     }
 

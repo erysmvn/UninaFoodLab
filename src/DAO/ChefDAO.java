@@ -1,8 +1,9 @@
 package DAO;
 
-import Entity.*;
 import Controller.Controller;
 import DB.DBConnection;
+import Entity.Chef;
+import Entity.Corso;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -69,8 +70,9 @@ public class ChefDAO {
     }
 
     public Chef tryLogin(String sql) throws SQLException{
-        rs = stmt.executeQuery(sql);
         Chef chef = null;
+
+        rs = stmt.executeQuery(sql);
         if(rs.next()){
             chef = new Chef(
                     rs.getString("nome_chef"),
@@ -87,29 +89,54 @@ public class ChefDAO {
         return chef;
     }
 
-    public ArrayList<Corso> getCorsiFromChef(Chef chef){
+    public Chef tryRegister(Chef chef) throws SQLException{
+        String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
 
-        ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(dbc,controller);
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-        String sql = "SELECT DISTINCT c.nome_corso " +
-                "FROM corso c NATURAL JOIN chef ch NATURAL JOIN tiene " +
-                "WHERE ch.email = '" + chef.getEmail() + "'";
+            pstmt.setString(1, chef.getNome());
+            pstmt.setString(2, chef.getCognome());
+            pstmt.setString(3, chef.getEmail());
+            pstmt.setString(4, chef.getPassw());
 
-        try {
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(sql);
-
-            while (rs2.next()) {
-                Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
-                corsi.add(corso);
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                Exception exc  = new Exception("No row inserted");
+                throw exc;
             }
 
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
         }
 
-        return corsi;
+        return chef;
+}
+
+public ArrayList<Corso> getCorsiFromChef(Chef chef){
+
+    ArrayList<Corso> corsi = new ArrayList<>();
+    CorsoDAO corsoDao = new CorsoDAO(dbc,controller);
+
+    String sql = "SELECT DISTINCT c.nome_corso " +
+            "FROM corso c NATURAL JOIN chef ch NATURAL JOIN tiene " +
+            "WHERE ch.email = '" + chef.getEmail() + "'";
+
+    try {
+        Statement stmt2 = con.createStatement();
+        ResultSet rs2 = stmt2.executeQuery(sql);
+
+        while (rs2.next()) {
+            Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
+            corsi.add(corso);
+        }
+
+    } catch (SQLException sqle) {
+        sqle.printStackTrace();
     }
+
+    return corsi;
+}
 
 }

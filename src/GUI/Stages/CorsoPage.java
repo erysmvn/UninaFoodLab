@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
@@ -23,8 +24,11 @@ import javafx.stage.StageStyle;
 public class CorsoPage extends Stage {
 
     private VBox vbox;
+    private boolean showIscriviti = true;
 
     public CorsoPage(Corso corso, Chef chef) {
+
+        DecimalFormat df = new DecimalFormat("#.##"); // removes ".0"
 
         this.initStyle(StageStyle.TRANSPARENT);
         vbox = new VBox();
@@ -70,10 +74,10 @@ public class CorsoPage extends Stage {
         Label date = new Label("Periodo: " + sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine()));
         vbox.getChildren().add(date);
 
-        Label ore = new Label("Ore totali: " + corso.getOreTotali() + ", Frequenza settimanale: " + corso.getFrequenzaSettimanale());
+        Label ore = new Label("Ore totali: " + df.format(corso.getOreTotali()) + ", Frequenza settimanale: " + corso.getFrequenzaSettimanale());
         vbox.getChildren().add(ore);
 
-        Label costo = new Label("Costo: €" + corso.getCosto());
+        Label costo = new Label("Costo: " + df.format(corso.getCosto()) + " €");
         vbox.getChildren().add(costo);
         Text descrizione = new Text(corso.getDesc_corso());
         descrizione.setWrappingWidth(400);
@@ -95,9 +99,15 @@ public class CorsoPage extends Stage {
 
         vbox.getChildren().add(scrollPane);
 
+        if (showIscriviti) {
+            Button subcribeButton = createSubscribeButton();
+            vbox.getChildren().add(subcribeButton);
+            VBox.setMargin(subcribeButton, new Insets(30, 0, 0, 0));
+        }
+
         Button closeButtone = createCloseButton();
         vbox.getChildren().add(closeButtone);
-        VBox.setMargin(closeButtone, new Insets(30, 0, 0, 0));
+        VBox.setMargin(closeButtone, new Insets(0, 0, 0, 0));
 
         vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
             clip.setWidth(newBounds.getWidth());
@@ -126,6 +136,21 @@ public class CorsoPage extends Stage {
     }
 
 
+    private Button createSubscribeButton() {
+        Button subscribeButton = new Button();
+        subscribeButton.setPrefWidth(100);
+        subscribeButton.setPrefHeight(30);
+        subscribeButton.setText("Iscriviti");
+
+        subscribeButton.setStyle("-fx-background-color: \"#3a6698\"; -fx-text-fill: white;");
+        subscribeButton.setOnAction(event -> {
+
+            //TODO if login true add corso else go login
+
+        });
+        return subscribeButton;
+    }
+
     private Button createCloseButton() {
         Button closeButton = new Button();
         closeButton.setPrefWidth(100);
@@ -135,6 +160,10 @@ public class CorsoPage extends Stage {
         closeButton.setStyle("-fx-background-color: \"#da3d26\"; -fx-text-fill: white;");
         closeButton.setOnAction(e -> this.close());
         return closeButton;
+    }
+
+    public void hideIscriviti() {
+        showIscriviti = false;
     }
 
 

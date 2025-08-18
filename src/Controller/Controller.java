@@ -30,10 +30,39 @@ public class Controller {
         return homePage;
     }
 
+
+    public void tryLoginChef(String sql) throws SQLException{
+        ChefDAO chefDao = new ChefDAO(dbc,this);
+        Chef chef = chefDao.tryLogin(sql);
+        if(chef != null)
+            homePage.becomeHomePageChef(chef);
+
+    }
+
+    public void tryRegisterChef(Chef chef) throws SQLException{
+        ChefDAO chefDao = new ChefDAO(dbc,this);
+        Chef ch = chefDao.tryRegister(chef);
+        if(ch != null)
+            homePage.becomeHomePageChef(ch);
+    }
+
+    public void tryLoginStudente(String sql) throws SQLException{
+        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        Studente studente = studenteDao.tryLogin(sql);
+        if(studente != null)
+            homePage.becomeHomePageStudente(studente);
+    }
+
+    public void tryRegisterStudente(Studente studente) throws SQLException{
+        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        Studente stud = studenteDao.tryRegister(studente);
+        if(stud != null)
+            homePage.becomeHomePageStudente(stud);
+    }
+
+
     public void openLoginPage(){
-
         if (loginPage == null || !loginPage.isShowing()){
-
             if( registerPage != null ){
                 registerPage.close();
             }
@@ -43,7 +72,6 @@ public class Controller {
             loginPage.toFront();
         }
     }
-
 
     public void openCorsoPage(String Title, String imagePath){
 
@@ -58,20 +86,6 @@ public class Controller {
         corsoPage.show();
     }
 
-    public void tryLoginChef(String sql)throws SQLException{
-
-        ChefDAO chefDao = new ChefDAO(dbc,this);
-        Chef chef = chefDao.tryLogin(sql);
-
-        if(chef != null)
-            homePage.becomeHomePageChef(chef);
-
-    }
-
-    public void endAll(){
-        Platform.exit();
-    }
-
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
             accountPage = new AccountPage(utente,this);
@@ -80,13 +94,6 @@ public class Controller {
             accountPage.toFront();
         }
     }
-    public void tryLoginStudente(String sql)throws  SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
-        Studente studente = studenteDao.tryLogin(sql);
-        if(studente!=null)
-            homePage.becomeHomePageStudente(studente);
-    }
-
 
     public void openRegisterPage() {
         if(registerPage == null || !registerPage.isShowing()) {
@@ -97,4 +104,8 @@ public class Controller {
         }
     }
 
+
+    public void endAll(){
+        Platform.exit();
+    }
 }

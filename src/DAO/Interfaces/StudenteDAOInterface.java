@@ -5,5 +5,6 @@ import Entity.Studente;
 import java.sql.SQLException;
 
 public interface StudenteDAOInterface {
-    Studente tryLogin(String sql) throws SQLException;
+    public Studente tryLogin(String sql) throws SQLException;
+    public Studente tryRegister(Studente studente) throws SQLException;
 }

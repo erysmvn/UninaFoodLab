@@ -1,79 +1,100 @@
 package Controller;
 
-import GUI.*;
-import java.sql.*;
+import Entity.*;
 import DB.DBConnection;
+import GUI.Stages.*;
+import GUI.Pane.*;
+import DAO.*;
 
-import javax.swing.*;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.application.*;
+
+import java.sql.SQLException;
 
 public class Controller {
-    DBConnection db;
-    Connection con;
-    Statement stmt;
+    private HomePage homePage;
+    private LoginPage loginPage;
+    private AccountPage accountPage;
+    private RegisterPage registerPage;
+    private DBConnection dbc;
 
-    public Controller() {
-        db = new DBConnection();
-        db.DBConnect();
-        con = db.getConnection();
+    public Controller(){
+        dbc = new DBConnection();
+        dbc.DBConnect();
     }
 
-    public void showHomePage(javafx.stage.Stage primaryStage) {
-        HomePage homePage = new HomePage(this);
-
-        javafx.scene.Scene scene = new javafx.scene.Scene(homePage, 500, 500);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("HomePage");
-        primaryStage.show();
+    public void setHomePage(HomePage homePage) {
+        this.homePage = homePage;
     }
 
-    public void loginStudenteClicked() {
-        LoginForm loginForm = new LoginForm(this); // 'this' è il controller
-        loginForm.setTitle("Login");
-        loginForm.setWidth(500);
-        loginForm.setHeight(500);
-        loginForm.show();  // mostra la finestra JavaFX
+    public HomePage getHomePage() {
+        return homePage;
     }
 
-    public void registerNewStudent() {
-        RegisterForm regForm = new RegisterForm(this); // 'this' è il controller
-        regForm.setTitle("Register");
-        regForm.setWidth(500);
-        regForm.setHeight(500);
-        regForm.show();  // mostra la finestra JavaFX
-    }
+    public void openLoginPage(){
 
-    public boolean addNewStudent(String matricola, String name, String surname, String email, String password) {
-        String sql = "INSERT INTO Studente (matricola, nome_stud, cognome, email, passw) VALUES (?, ?, ?, ?, MD5(?));";
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        if (loginPage == null || !loginPage.isShowing()){
 
-            pstmt.setString(1, matricola);
-            pstmt.setString(2, name);
-            pstmt.setString(3, surname);
-            pstmt.setString(4, email);
-            pstmt.setString(5, password);
-
-            int rowsInserted = pstmt.executeUpdate();
-            return rowsInserted > 0; // true se almeno una riga è stata inserita
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            if( registerPage != null ){
+                registerPage.close();
+            }
+            loginPage = new LoginPage(this);
+            loginPage.show();
+        } else {
+            loginPage.toFront();
         }
     }
 
 
-    public boolean validateLoginStudente(String email, String psw) throws Exception{
+    public void openCorsoPage(String Title, String imagePath){
 
-        String sql = "select COUNT(*) from studente where email = '" + email + "' and passw = md5('" + psw + "');";
+        CorsoDAO corsoDao = new CorsoDAO(dbc,this);
+        Corso corso = corsoDao.getCorsoByTitle(Title);
+        corso.setImagePath(imagePath);
 
-        stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        ChefDAO chefDao = new ChefDAO(dbc, this);
+        Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
+        CorsoPage corsoPage = new CorsoPage(corso, chef);
 
-        rs.next();
-        int count = rs.getInt(1);
-        return count == 1;
+        corsoPage.show();
     }
+
+    public void tryLoginChef(String sql)throws SQLException{
+
+        ChefDAO chefDao = new ChefDAO(dbc,this);
+        Chef chef = chefDao.tryLogin(sql);
+
+        if(chef != null)
+            homePage.becomeHomePageChef(chef);
+
+    }
+
+    public void endAll(){
+        Platform.exit();
+    }
+
+    public void openAccountPage(Utente utente) {
+        if(accountPage == null || !accountPage.isShowing()) {
+            accountPage = new AccountPage(utente,this);
+            accountPage.show();
+        }else{
+            accountPage.toFront();
+        }
+    }
+    public void tryLoginStudente(String sql)throws  SQLException{
+        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        Studente studente = studenteDao.tryLogin(sql);
+        if(studente!=null)
+            homePage.becomeHomePageStudente(studente);
+    }
+
+
+    public void openRegisterPage() {
+        if(registerPage == null || !registerPage.isShowing()) {
+            registerPage = new RegisterPage(this);
+            registerPage.show();
+        }else{
+            registerPage.toFront();
+        }
+    }
+
 }

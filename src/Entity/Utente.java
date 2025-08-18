@@ -1,7 +1,30 @@
 package Entity;
 
-public abstract class Utente {
+import java.util.ArrayList;
+
+public class Utente {
     String nome;
     String cognome;
     String email;
+    String passw;
+    private ArrayList<Corso> corsi;
+
+    public String getNome() {
+        return nome;
+    }
+    public String getCognome() {
+        return cognome;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public String getPassw() {
+        return passw;
+    }
+    public ArrayList<Corso> getCorsi() {
+        return corsi;
+    }
+    public void setCorsi(ArrayList<Corso> corsi) {
+        this.corsi = corsi;
+    }
 }

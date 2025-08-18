@@ -1,4 +1,4 @@
-package Entity;
+package Entity.Enum;
 
 public enum UnitaIngrediente {
     Grammi("gr"),

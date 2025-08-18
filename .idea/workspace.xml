@@ -6,12 +6,55 @@
   <component name="ChangeListManager">
     <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/RegisterForm.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/Interfaces/ChefDAOInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/Interfaces/CorsoDAOInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/Interfaces/StudenteDAOInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Enum/ModalitaCorso.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Studente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Buttons/CircleButton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/AltaCucinaGourmet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/CucinaAsiaticaFusion.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/CucinaItalianaTradizionale.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/CucinaMolecolare.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/CucinaVegetarianaCreativa.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/DecorazioneeCakeDesign.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/LoginImage.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/LogoUni.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/PanificazioneArtigianale.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/PasticceriadiBase.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/Primidimare.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/Primipiattithailandesi.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/TecnichediCotturaProfessionali.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/sfondoUninaFoodLab.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/times.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/uninaLogoAccountPage.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/LoginForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/LoginForm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Chef.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Chef.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Corso.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Corso.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Difficolta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Enum/Difficolta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Frequentante.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Frequentante.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/ModalitaSessione.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Enum/ModalitaSessione.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Quantita.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Quantita.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/UnitaIngrediente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Enum/UnitaIngrediente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Utente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Utente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/HomePage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/LoginForm.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/RegisterForm.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,8 +64,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="package-info" />
+        <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -52,7 +96,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "Francesco",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab",
+    "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,6 +109,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Images" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -94,7 +143,8 @@
       <workItem from="1754658359830" duration="13000" />
       <workItem from="1754670453497" duration="4716000" />
       <workItem from="1754728369784" duration="5944000" />
-      <workItem from="1754736428843" duration="5079000" />
+      <workItem from="1754736428843" duration="7525000" />
+      <workItem from="1755504642274" duration="5935000" />
     </task>
     <servers />
   </component>

@@ -26,13 +26,6 @@ public class HomePage extends Stage {
     private Boolean isLoggedIn = false;
     private Boolean isChef = false;
 
-    public void setLoggedIn() {
-        isLoggedIn = true;
-    }
-
-    public void setChef() {
-        isChef = true;
-    }
 
     public HomePage(Controller controller) {
         this.controller = controller;
@@ -114,10 +107,10 @@ public class HomePage extends Stage {
 
 
     private ImageView createLogoView() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/LogoUni.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/UninaFoodLabLogo.png")));
         ImageView logoView = new ImageView(logoImage);
-        logoView.setFitWidth(350);
-        logoView.setFitHeight(350);
+        logoView.setFitWidth(250);
+        logoView.setFitHeight(250);
         logoView.setPreserveRatio(true);
         return logoView;
     }
@@ -202,22 +195,22 @@ public class HomePage extends Stage {
         corsiBox.setAlignment(Pos.TOP_CENTER);
         corsiBox.setPadding(new Insets(20));
 
-        CorsoPanel corsoPanel1 = new CorsoPanel("/Images/CucinaMolecolare.png", "Cucina Molecolare");
-        CorsoPanel corsoPanel2 = new CorsoPanel("/Images/CucinaAsiaticaFusion.png", "Cucina Asiatica Fusion");
-        CorsoPanel corsoPanel3 = new CorsoPanel("/Images/Primidimare.png", "Primi di mare");
-        CorsoPanel corsoPanel4 = new CorsoPanel("/Images/PasticceriadiBase.png", "Pasticceria di Base");
+        CorsoPanel corsoPanel1 = new CorsoPanel("/Images/CucinaMolecolare.png", "Cucina Molecolare", controller);
+        CorsoPanel corsoPanel2 = new CorsoPanel("/Images/CucinaAsiaticaFusion.png", "Cucina Asiatica Fusion", controller);
+        CorsoPanel corsoPanel3 = new CorsoPanel("/Images/Primidimare.png", "Primi di mare", controller);
+        CorsoPanel corsoPanel4 = new CorsoPanel("/Images/PasticceriadiBase.png", "Pasticceria di Base", controller);
 
         corsoPanel1.setOnMouseClicked(e->{
-            controller.openCorsoPage("Cucina Molecolare", "/Images/CucinaMolecolare.png");
+            controller.openCorsoPage("Cucina Molecolare", "/Images/CucinaMolecolare.png", controller);
         });
         corsoPanel2.setOnMouseClicked(e->{
-            controller.openCorsoPage("Cucina Asiatica Fusion", "/Images/CucinaAsiaticaFusion.png");
+            controller.openCorsoPage("Cucina Asiatica Fusion", "/Images/CucinaAsiaticaFusion.png", controller);
         });
         corsoPanel3.setOnMouseClicked(e->{
-            controller.openCorsoPage("Primi di mare", "/Images/Primidimare.png");
+            controller.openCorsoPage("Primi di mare", "/Images/Primidimare.png", controller);
         });
         corsoPanel4.setOnMouseClicked(e->{
-            controller.openCorsoPage("Pasticceria di Base", "/Images/PasticceriadiBase.png");
+            controller.openCorsoPage("Pasticceria di Base", "/Images/PasticceriadiBase.png", controller);
         });
 
         corsiBox.getChildren().addAll(corsoPanel1, corsoPanel2, corsoPanel3, corsoPanel4);
@@ -315,6 +308,14 @@ public class HomePage extends Stage {
 
     public Boolean isChef(){
         return isChef;
+    }
+
+    public void setLoggedIn() {
+        isLoggedIn = true;
+    }
+
+    public void setChef() {
+        isChef = true;
     }
 }
 

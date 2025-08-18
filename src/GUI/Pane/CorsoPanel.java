@@ -1,26 +1,26 @@
 package GUI.Pane;
 
 import Controller.Controller;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import java.util.Objects;
 import javafx.scene.effect.DropShadow;
+
+import java.util.Objects;
+
 public class CorsoPanel extends Pane {
 
-    Controller controller = new Controller();
+    Controller controller;
     String titolo;
     String imagePath;
 
-    public CorsoPanel(String imagePath, String titolo) {
+    public CorsoPanel(String imagePath, String titolo, Controller controller) {
         this.imagePath = imagePath;
         this.titolo = titolo;
-
+        this.controller = controller;
 
         VBox content = new VBox(10);
         content.setAlignment(Pos.TOP_CENTER);
@@ -34,8 +34,7 @@ public class CorsoPanel extends Pane {
         content.getChildren().addAll(imageView, titoloLabel);
 
         this.getChildren().addAll(content);
-
-        this.setOnMouseClicked(e -> controller.openCorsoPage(titolo, imagePath));
+        this.setOnMouseClicked(e -> controller.openCorsoPage(titolo, imagePath, controller));
     }
 
     private ImageView createImage(String imagePath){

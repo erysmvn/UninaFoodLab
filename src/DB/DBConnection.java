@@ -5,9 +5,9 @@ import java.sql.*;
 public class DBConnection {
     private Connection con = null;
     private Statement stmt = null;
-    private String url = "...";
-    private String user = "...";
-    private String password = "...";
+    private String url = "jdbc:postgresql://aws-0-eu-west-2.pooler.supabase.com:5432/postgres?user=francesco.rcuvzqxbvjqdlpmuovmj&password=admin";
+    private String user = "francesco";
+    private String password = "admin";
 
     public void DBConnect() {
         try {

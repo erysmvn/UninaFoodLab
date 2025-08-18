@@ -1,17 +1,13 @@
 package GUI.Pane;
 
-import Entity.Utente;
-import Entity.Studente;
-import Entity.Chef;
-import Entity.Corso;
+import Entity.*;
+import Controller.Controller;
+
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.text.*;
 
 import java.util.ArrayList;
 
@@ -21,7 +17,7 @@ public class AccountCorsiPanel extends BorderPane {
     private GridPane corsiGrid;
     private HBox bottomBar;
 
-    public AccountCorsiPanel(Utente utente) {
+    public AccountCorsiPanel(Utente utente, Controller controller) {
 
         corsiGrid = new GridPane();
         corsiGrid.setPadding(new Insets(10, 60, 10, 60));
@@ -33,7 +29,7 @@ public class AccountCorsiPanel extends BorderPane {
         int row = 0;
         if (corsiUtente.size() > 0) {
             for (Corso corso : corsiUtente) {
-                CorsoPanel tempCorsoPanel = new CorsoPanel(corso.getImagePath(), corso.getNome());
+                CorsoPanel tempCorsoPanel = new CorsoPanel(corso.getImagePath(), corso.getNome(), controller);
                 corsiGrid.add(tempCorsoPanel, col, row);
                 col++;
                 if (col >= 2) {

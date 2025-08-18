@@ -8,17 +8,15 @@
       <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/Interfaces/ChefDAOInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/Interfaces/ChefDAOInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/Interfaces/StudenteDAOInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/Interfaces/StudenteDAOInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Utente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Utente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DB/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DB/DBConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +57,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Francesco",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Images",
     "node.js.detected.package.eslint": "true",

@@ -32,7 +32,7 @@ public class AccountPage extends Stage {
         content = new StackPane();
         content.setStyle("-fx-background-color: WHITE;");
         accountPanel = createAccountPanel(utente);
-        accountCorsiPanel = createAccountCorsiPanel(utente);
+        accountCorsiPanel = createAccountCorsiPanel(utente, controller);
         content.getChildren().addAll(accountPanel,accountCorsiPanel);
 
         HBox topBar = createTopBar();
@@ -80,8 +80,8 @@ public class AccountPage extends Stage {
         return accountPanel;
     }
 
-    private AccountCorsiPanel createAccountCorsiPanel(Utente utente){
-        AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(utente);
+    private AccountCorsiPanel createAccountCorsiPanel(Utente utente, Controller controller){
+        AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(utente, this.controller);
         return accountCorsiPanel;
     }
 

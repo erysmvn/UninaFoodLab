@@ -30,6 +30,13 @@ public class Controller {
         return homePage;
     }
 
+    public boolean isHomePageChef() {
+        return homePage.isChef();
+    }
+
+    public boolean isAlreadyLoggedIn() {
+        return homePage.isLoggedIn();
+    }
 
     public void tryLoginChef(String sql) throws SQLException{
         ChefDAO chefDao = new ChefDAO(dbc,this);
@@ -73,7 +80,7 @@ public class Controller {
         }
     }
 
-    public void openCorsoPage(String Title, String imagePath){
+    public void openCorsoPage(String Title, String imagePath, Controller controller){
 
         CorsoDAO corsoDao = new CorsoDAO(dbc,this);
         Corso corso = corsoDao.getCorsoByTitle(Title);
@@ -81,7 +88,7 @@ public class Controller {
 
         ChefDAO chefDao = new ChefDAO(dbc, this);
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
-        CorsoPage corsoPage = new CorsoPage(corso, chef);
+        CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 
         corsoPage.show();
     }

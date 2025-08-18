@@ -1,5 +1,6 @@
 package GUI.Stages;
 
+import Controller.Controller;
 import Entity.*;
 
 import javafx.geometry.Insets;
@@ -24,9 +25,10 @@ import javafx.stage.StageStyle;
 public class CorsoPage extends Stage {
 
     private VBox vbox;
-    private boolean showIscriviti = true;
+    Controller controller;
 
-    public CorsoPage(Corso corso, Chef chef) {
+    public CorsoPage(Corso corso, Chef chef, Controller controller) {
+        this.controller = controller;
 
         DecimalFormat df = new DecimalFormat("#.##"); // removes ".0"
 
@@ -99,8 +101,8 @@ public class CorsoPage extends Stage {
 
         vbox.getChildren().add(scrollPane);
 
-        if (showIscriviti) {
-            Button subcribeButton = createSubscribeButton();
+        if (!controller.isHomePageChef()) {
+            Button subcribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
             vbox.getChildren().add(subcribeButton);
             VBox.setMargin(subcribeButton, new Insets(30, 0, 0, 0));
         }
@@ -136,7 +138,7 @@ public class CorsoPage extends Stage {
     }
 
 
-    private Button createSubscribeButton() {
+    private Button createSubscribeButton(boolean isLoggedIn) {
         Button subscribeButton = new Button();
         subscribeButton.setPrefWidth(100);
         subscribeButton.setPrefHeight(30);
@@ -146,6 +148,10 @@ public class CorsoPage extends Stage {
         subscribeButton.setOnAction(event -> {
 
             //TODO if login true add corso else go login
+            if (!isLoggedIn) {
+                controller.openLoginPage();
+                this.close();
+            }
 
         });
         return subscribeButton;
@@ -161,10 +167,4 @@ public class CorsoPage extends Stage {
         closeButton.setOnAction(e -> this.close());
         return closeButton;
     }
-
-    public void hideIscriviti() {
-        showIscriviti = false;
-    }
-
-
 }

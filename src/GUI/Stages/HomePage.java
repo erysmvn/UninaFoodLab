@@ -19,6 +19,8 @@ import javafx.scene.text.Font;
 import javafx.stage.*;
 
 import javafx.util.Duration;
+import jdk.jshell.ImportSnippet;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -249,13 +251,20 @@ public class HomePage extends Stage {
         center.setAlignment(Pos.TOP_CENTER);
 
         // --- Sfondo del center ---
-        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoMenoMenoOpaco.png")).toExternalForm());
+        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoUninaFood.png")).toExternalForm());
+
+        BackgroundSize backgroundSize = new BackgroundSize(
+                1750, 680,   // larghezza e altezza in pixel
+                false, false, // non come percentuale
+                false, false  // contain e cover disattivati
+        );
+
         BackgroundImage backgroundImage = new BackgroundImage(
                 sfondo,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
-                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+                backgroundSize
         );
         center.setBackground(new Background(backgroundImage));
 

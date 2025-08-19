@@ -74,7 +74,7 @@ public class Corso {
         return desc_corso;
     }
 
-    public int getIdcorso() {
+    public int getIdCorso() {
         return idcorso;
     }
 }

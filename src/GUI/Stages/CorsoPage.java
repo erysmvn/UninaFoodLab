@@ -40,8 +40,6 @@ public class CorsoPage extends Stage {
                 Insets.EMPTY
         )));
 
-
-
         vbox.setBorder(new Border(new BorderStroke(
                 Color.valueOf("#3A6698"),
                 BorderStrokeStyle.SOLID,

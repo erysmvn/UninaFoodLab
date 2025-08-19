@@ -20,9 +20,11 @@ public class AccountPage extends Stage {
     Button impostazioniButton;
     Button accountButton;
     Button corsiButton;
+    VBox impostazioniPanel;
     VBox accountPanel;
     StackPane content;
     BorderPane accountCorsiPanel;
+
 
     public AccountPage(Utente utente, Controller controller) {
         this.controller = controller;
@@ -33,7 +35,8 @@ public class AccountPage extends Stage {
         content.setStyle("-fx-background-color: WHITE;");
         accountPanel = createAccountPanel(utente);
         accountCorsiPanel = createAccountCorsiPanel(utente, controller);
-        content.getChildren().addAll(accountPanel,accountCorsiPanel);
+        impostazioniPanel = new ImpostazioniPanel(controller);
+        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel);
 
         HBox topBar = createTopBar();
         root.setTop(topBar);
@@ -135,12 +138,14 @@ public class AccountPage extends Stage {
             impostazioniButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
             accountPanel.setVisible(true);
             accountPanel.setManaged(true);
+            impostazioniPanel.setVisible(false);
+            impostazioniPanel.setManaged(false);
             accountCorsiPanel.setVisible(false);
             accountCorsiPanel.setManaged(false);
         });
 
         this.setFocusPropreties(accountButton);
-        this.setOnMouseTraverse(accountButton);
+        this.setOnMouseTraverse(accountButton,accountPanel);
 
         return accountButton;
     }
@@ -159,12 +164,14 @@ public class AccountPage extends Stage {
             impostazioniButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
             accountPanel.setVisible(false);
             accountPanel.setManaged(false);
+            impostazioniPanel.setVisible(false);
+            impostazioniPanel.setManaged(false);
             accountCorsiPanel.setVisible(true);
             accountCorsiPanel.setManaged(true);
         });
 
         this.setFocusPropreties(corsiButton);
-        this.setOnMouseTraverse(corsiButton);
+        this.setOnMouseTraverse(corsiButton, accountCorsiPanel);
         return corsiButton;
     }
     private Button createImpostazioniButton(){
@@ -180,6 +187,8 @@ public class AccountPage extends Stage {
             )));
             corsiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
             accountButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
+            impostazioniPanel.setVisible(true);
+            impostazioniPanel.setManaged(true);
             accountPanel.setVisible(false);
             accountPanel.setManaged(false);
             accountCorsiPanel.setVisible(false);
@@ -187,12 +196,12 @@ public class AccountPage extends Stage {
         });
 
         this.setFocusPropreties(impostazioniButton);
-        this.setOnMouseTraverse(impostazioniButton);
+        this.setOnMouseTraverse(impostazioniButton, impostazioniPanel);
         return impostazioniButton;
     }
 
 
-    private void setOnMouseTraverse(Button button) {
+    private void setOnMouseTraverse(Button button, Pane panel) {
         button.setOnMouseEntered(e -> {
                     button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
                     button.setBorder(new Border(new BorderStroke(
@@ -204,7 +213,9 @@ public class AccountPage extends Stage {
                 }
         );
         button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                    if(!panel.isVisible()){
+                        button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                    }
                 }
         );
     }

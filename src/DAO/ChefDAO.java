@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class ChefDAO {
     DBConnection dbc;
     Statement stmt;
-    ResultSet rs;
     Connection con;
     Controller controller;
 
@@ -26,7 +25,7 @@ public class ChefDAO {
         Chef chef = null;
         String sql = "select * from chef where email = " +  "'" + email + "'";
         try{
-            rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 chef = new Chef(
                         rs.getString("nome_chef"),
@@ -45,11 +44,21 @@ public class ChefDAO {
         return chef;
     }
 
-    public Chef getChefByNomeCorso(String nomeCorso){
-        String sql = "select * from chef natural join corso c natural join tiene where c.nome_corso = " +  "'" + nomeCorso + "' LIMIT 1";
-        try{
-            rs = stmt.executeQuery(sql);
-            if(rs.next()){
+    public Chef getChefByNomeCorso(String nomeCorso) {
+        String sql = "SELECT chef.* " +
+                "FROM chef " +
+                "JOIN tiene ON chef.idchef = tiene.idchef " +
+                "JOIN corso ON corso.idcorso = tiene.idcorso " +
+                "WHERE corso.nome_corso = ? " +
+                "LIMIT 1";
+
+        try  {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, nomeCorso);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
                 Chef chef = new Chef(
                         rs.getString("nome_chef"),
                         rs.getString("cognome"),
@@ -59,9 +68,7 @@ public class ChefDAO {
                 chef.setCorsi(getCorsiFromChef(chef));
                 return chef;
             }
-        }catch(SQLException sqle){
-            System.out.println("Errore nel cercare lo chef dall'email");
-        }catch(Exception e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -70,7 +77,7 @@ public class ChefDAO {
     public Chef tryLogin(String sql) throws SQLException{
         Chef chef = null;
 
-        rs = stmt.executeQuery(sql);
+        ResultSet rs = stmt.executeQuery(sql);
         if(rs.next()){
             chef = new Chef(
                     rs.getString("nome_chef"),
@@ -90,7 +97,8 @@ public class ChefDAO {
     public Chef tryRegister(Chef chef) throws SQLException{
         String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
 
             pstmt.setString(1, chef.getNome());
             pstmt.setString(2, chef.getCognome());

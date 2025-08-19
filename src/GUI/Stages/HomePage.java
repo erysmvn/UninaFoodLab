@@ -219,7 +219,6 @@ public class HomePage extends Stage {
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             String sql = "SELECT * FROM corso WHERE nome_corso LIKE '%" + newValue + "%'";
-            System.out.println(sql);
         });
 
         searchBar.getChildren().addAll(searchField,searchButton);
@@ -249,14 +248,25 @@ public class HomePage extends Stage {
         center.setAlignment(Pos.TOP_CENTER);
 
         // --- Sfondo del center ---
-        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoMenoMenoOpaco.png")).toExternalForm());
+        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoBianco.png")).toExternalForm());
+
+        BackgroundSize backgroundSize = new BackgroundSize(
+                BackgroundSize.AUTO, // larghezza originale
+                BackgroundSize.AUTO, // altezza originale
+                false, // width proporzionale? no
+                false, // height proporzionale? no
+                true,  // mantieni proporzioni
+                false  // non ingrandire oltre la dimensione originale
+        );
+
         BackgroundImage backgroundImage = new BackgroundImage(
                 sfondo,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER,
-                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+                backgroundSize
         );
+
         center.setBackground(new Background(backgroundImage));
 
         // --- Ombra e profondità del center ---

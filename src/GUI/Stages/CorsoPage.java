@@ -161,13 +161,16 @@ public class CorsoPage extends Stage {
             } else {
                 // TODO change iscriviti to iscritto, rendi non cliccabile e non traversable, aggiungi al db
                 controller.subscribeToCourse(corso);
-
-                subscribeButton.setText("Iscritto");
-                subscribeButton.setDisable(true);
-                subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
             }
 
         });
+
+        if (controller.alreadySubscribed(corso)) {
+            subscribeButton.setText("Iscritto");
+            subscribeButton.setDisable(true);
+            subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+        }
+
         this.setFocusPropreties(subscribeButton,Color.valueOf("#3a6698"));
         this.setOnMouseTraverse(subscribeButton,Color.valueOf("#3a6698"));
 

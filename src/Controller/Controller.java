@@ -16,8 +16,6 @@ public class Controller {
     private RegisterPage registerPage;
 
     private DBConnection dbc;
-    private Utente utente = null;
-
     private Utente utente;
 
     public Controller(){
@@ -107,7 +105,9 @@ public class Controller {
     public void openCorsoPage(Corso corso, Controller controller){
         ChefDAO chefDao = new ChefDAO(this);
 
+        System.out.println(corso.getNome());
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
+        System.out.println(chef.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 
         corsoPage.show();
@@ -138,6 +138,15 @@ public class Controller {
             studente.addCorso(corso);
         } else {
             return;
+        }
+    }
+
+    public Boolean alreadySubscribed(Corso corso){
+        if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = new StudenteDAO(this);
+            return studenteDao.checkIfSubscribed(studente, corso);
+        } else {
+            return false;
         }
     }
 

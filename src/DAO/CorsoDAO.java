@@ -76,7 +76,6 @@ public class CorsoDAO implements CorsoDAOInterface {
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                System.out.println(rs.getString("nome_corso"));
                 corso = new Corso(
                         rs.getInt("idcorso"),
                         rs.getString("nome_corso"),

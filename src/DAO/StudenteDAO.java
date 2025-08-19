@@ -105,4 +105,25 @@ public class StudenteDAO implements StudenteDAOInterface {
         }
     }
 
+    public Boolean checkIfSubscribed(Studente studente, Corso corso) {
+        try {
+            String sql = "SELECT COUNT(*) FROM segue WHERE matricola = ? AND idcorso = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setString(1, studente.getMatricola());
+            stmt.setInt(2, corso.getIdcorso());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'iscrizione al corso", e);
+        }
+        return false;
+    }
+
 }

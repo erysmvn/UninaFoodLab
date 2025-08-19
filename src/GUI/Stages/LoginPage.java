@@ -1,12 +1,9 @@
 package GUI.Stages;
 
 import Controller.Controller;
-import Entity.*;
-import GUI.Pane.*;
 import GUI.Buttons.*;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -14,11 +11,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
+
 import java.sql.SQLException;
 import java.util.Objects;
-
 
 public class LoginPage extends Stage {
 
@@ -287,9 +283,7 @@ public class LoginPage extends Stage {
             } else {
                 button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
             }
-
         });
-
     }
 
 }

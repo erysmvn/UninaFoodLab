@@ -6,28 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ee9a5186-866b-4c52-9da1-8593b667aaab" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Corso.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Corso.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Utente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Utente.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +39,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Francesco",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab",
     "node.js.detected.package.eslint": "true",
@@ -135,7 +115,7 @@
       <updated>1755600076335</updated>
       <workItem from="1755600077424" duration="37000" />
       <workItem from="1755600120944" duration="287000" />
-      <workItem from="1755600420345" duration="5087000" />
+      <workItem from="1755600420345" duration="5658000" />
     </task>
     <servers />
   </component>

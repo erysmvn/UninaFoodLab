@@ -10,14 +10,15 @@ import javafx.animation.PauseTransition;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.effect.*;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
-import javafx.util.Duration;
 
+import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -114,8 +115,8 @@ public class HomePage extends Stage {
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/UninaFoodLabLogo.png")));
         ImageView logoView = new ImageView(logoImage);
-        logoView.setFitWidth(250);
-        logoView.setFitHeight(250);
+        logoView.setFitWidth(200);
+        logoView.setFitHeight(200);
         logoView.setPreserveRatio(true);
         return logoView;
     }
@@ -207,7 +208,7 @@ public class HomePage extends Stage {
                     corsiBox.getChildren().clear();
                     corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
                     for(Corso corso : corsi){
-                        corsiBox.getChildren().add(new CorsoPanel(corso.getImagePath(), corso.getNome(),controller ) );
+                        corsiBox.getChildren().add(new CorsoPanel(corso,controller ) );
                     }
                 }
             });
@@ -236,30 +237,53 @@ public class HomePage extends Stage {
         ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
         CorsoPanel tempCorsoPanel;
         for(Corso c: corsi){
-            tempCorsoPanel = new CorsoPanel(c.getImagePath(), c.getNome(),controller);
+            tempCorsoPanel = new CorsoPanel(c, controller);
             corsiBox.getChildren().add(tempCorsoPanel);
         }
         return corsiBox;
     }
 
-    private VBox createCenterContent(){
+    private VBox createCenterContent() {
         VBox center = new VBox(20);
         center.setPadding(new Insets(20));
         center.setAlignment(Pos.TOP_CENTER);
 
+        // --- Sfondo del center ---
+        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoMenoMenoOpaco.png")).toExternalForm());
+        BackgroundImage backgroundImage = new BackgroundImage(
+                sfondo,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+        center.setBackground(new Background(backgroundImage));
+
+        // --- Ombra e profondità del center ---
+        DropShadow dropShadowCenter = new DropShadow(20, Color.rgb(0, 0, 0, 0.3));
+        InnerShadow innerShadowCenter = new InnerShadow(10, Color.rgb(0, 0, 0, 0.2));
+
+
+        // --- Barra di ricerca ---
         HBox searchBar = createSearchBar();
 
+        // --- Contenitore corsi ---
         HBox corsoRow = new HBox(20);
         corsoRow.setAlignment(Pos.CENTER);
 
-        corsoRow.getChildren().addAll(
-                createCorsiContainer()
-        );
+        HBox corsiBox = createCorsiContainer();
 
-        center.getChildren().addAll(
-                searchBar,
-                corsoRow
-        );
+        // Ombra esterna dei pannelli interni
+        for (Node node : corsiBox.getChildren()) {
+            if (node instanceof Region) {
+                DropShadow dropShadowPanel = new DropShadow(10, Color.rgb(0, 0, 0, 0.3));
+                node.setEffect(dropShadowPanel);
+            }
+        }
+
+        corsoRow.getChildren().add(corsiBox);
+
+        center.getChildren().addAll(searchBar, corsoRow);
 
         return center;
     }

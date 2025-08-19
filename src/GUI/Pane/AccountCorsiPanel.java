@@ -29,7 +29,7 @@ public class AccountCorsiPanel extends BorderPane {
         int row = 0;
         if (corsiUtente.size() > 0) {
             for (Corso corso : corsiUtente) {
-                CorsoPanel tempCorsoPanel = new CorsoPanel(corso.getImagePath(), corso.getNome(), controller);
+                CorsoPanel tempCorsoPanel = new CorsoPanel(corso, controller);
                 corsiGrid.add(tempCorsoPanel, col, row);
                 col++;
                 if (col >= 2) {

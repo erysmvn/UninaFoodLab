@@ -46,27 +46,25 @@ public class ChefDAO {
     }
 
     public Chef getChefByNomeCorso(String nomeCorso){
-        Chef chef = null;
         String sql = "select * from chef natural join corso c natural join tiene where c.nome_corso = " +  "'" + nomeCorso + "' LIMIT 1";
         try{
             rs = stmt.executeQuery(sql);
             if(rs.next()){
-                chef = new Chef(
+                Chef chef = new Chef(
                         rs.getString("nome_chef"),
                         rs.getString("cognome"),
                         rs.getString("email"),
                         rs.getString("passw")
                 );
                 chef.setCorsi(getCorsiFromChef(chef));
+                return chef;
             }
         }catch(SQLException sqle){
             System.out.println("Errore nel cercare lo chef dall'email");
         }catch(Exception e){
             e.printStackTrace();
         }
-
-
-        return chef;
+        return null;
     }
 
     public Chef tryLogin(String sql) throws SQLException{

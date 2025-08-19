@@ -16,7 +16,9 @@ public class CorsoDAO implements CorsoDAOInterface {
     Connection con;
     Controller controller;
 
-    public CorsoDAO( Controller controller) {
+
+
+    public CorsoDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
         stmt = dbc.getStatement();

@@ -33,4 +33,7 @@ public class Utente {
     public void setCorsi(ArrayList<Corso> corsi) {
         this.corsi = corsi;
     }
+    public void addCorso(Corso corso) {
+        corsi.add(corso);
+    }
 }

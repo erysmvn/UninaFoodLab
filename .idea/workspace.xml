@@ -4,124 +4,81 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
+    <list default="true" id="ee9a5186-866b-4c52-9da1-8593b667aaab" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Images/sfondoDarken.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Images/sfondoMenoMenoOpaco.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Images/sfondoMenoOpaco.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Buttons/CircleButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Buttons/CircleButton.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Corso.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Corso.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Utente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Utente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Images/CucinaMolecolare.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="package-info" />
-        <option value="Interface" />
-        <option value="Enum" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 6
 }</component>
-  <component name="ProjectId" id="30MwQSyAlEljUZnAtzCWPClh7fg" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="31VCuc2ycJWK8mWGev8t8Rk1UlA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Francesco&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Images&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Application.Main.executor": "Run",
+    "Application.SecMon.executor": "Run",
     "Application.Unnamed.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Application.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Carmine",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/cc/Scrivania/Scaricati/javafx-sdk-24.0.2/lib",
+    "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Main.java",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Images" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Images" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Application.Main">
-    <configuration name="Main" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/Scrivania/Scaricati/jdk-24.0.2" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+}]]></component>
+  <component name="RunManager" selected="Application.SecMon">
+    <configuration name="SecMon" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="UninaFoodLab" />
-      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/Scrivania/Scaricati/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
+      <option name="PROGRAM_PARAMETERS" value="--monitor=2" />
+      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml --module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -129,58 +86,60 @@
     <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="UninaFoodLab" />
-      <option name="PROGRAM_PARAMETERS" value="--module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml --module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="main" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="24" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="UninaFoodLab" />
+      <option name="PROGRAM_PARAMETERS" value="--module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml --module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
+      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml --module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="UninaFoodLab" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="UninaFoodLab" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.main" />
+      <item itemvalue="Application.SecMon" />
       <item itemvalue="Application.Unnamed" />
     </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="" />
-      <created>1753450735702</created>
+      <changelist id="ee9a5186-866b-4c52-9da1-8593b667aaab" name="Changes" comment="" />
+      <created>1755600076335</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1753450735702</updated>
-      <workItem from="1753450736789" duration="1906000" />
-      <workItem from="1754658359830" duration="13000" />
-      <workItem from="1754670453497" duration="4716000" />
-      <workItem from="1754728369784" duration="5944000" />
-      <workItem from="1754736428843" duration="7525000" />
-      <workItem from="1755504642274" duration="11904000" />
-      <workItem from="1755517090594" duration="3733000" />
-      <workItem from="1755593251319" duration="3420000" />
-      <workItem from="1755536565566" duration="8029000" />
+      <updated>1755600076335</updated>
+      <workItem from="1755600077424" duration="37000" />
+      <workItem from="1755600120944" duration="287000" />
+      <workItem from="1755600420345" duration="5087000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/UninaFoodLab$Main.ic" NAME="Main Coverage Results" MODIFIED="1755517158311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>

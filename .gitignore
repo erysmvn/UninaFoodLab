@@ -28,7 +28,24 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Build Tools ###
+target/
+build/
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+### Logs ###
+*.log
+
+### Personal/Local overrides ###
+*.swp
+*.swo
+
 ### Personale ###
 ./src/DB/DBConnection.java
 ./UninaFoodLab/UninaFoodLab.iml
 ./.idea
+*.iml

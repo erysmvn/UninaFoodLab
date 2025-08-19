@@ -1,6 +1,7 @@
 package GUI.Pane;
 
 import Controller.Controller;
+import Entity.Corso;
 
 import javafx.geometry.*;
 import javafx.scene.control.Label;
@@ -15,13 +16,11 @@ import java.util.Objects;
 public class CorsoPanel extends Pane {
 
     Controller controller;
-    String titolo;
-    String imagePath;
+    Corso corso;
 
-    public CorsoPanel(String imagePath, String titolo, Controller controller) {
-        this.imagePath = imagePath;
-        this.titolo = titolo;
+    public CorsoPanel(Corso corso, Controller controller) {
         this.controller = controller;
+        this.corso = corso;
 
         VBox content = new VBox(10);
         content.setAlignment(Pos.TOP_CENTER);
@@ -30,12 +29,12 @@ public class CorsoPanel extends Pane {
         content.setBorder(new Border(new BorderStroke(Color.valueOf("#FFFFFF"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         content.setEffect(new DropShadow(10, Color.GRAY));
 
-        ImageView imageView = createImage(imagePath);
-        Label titoloLabel = createTitolo(titolo);
+        ImageView imageView = createImage(corso.getImagePath());
+        Label titoloLabel = createTitolo(corso.getNome());
         content.getChildren().addAll(imageView, titoloLabel);
 
         this.getChildren().addAll(content);
-        this.setOnMouseClicked(e -> controller.openCorsoPage(titolo, imagePath, controller));
+        this.setOnMouseClicked(e -> controller.openCorsoPage(corso, controller));
     }
 
     private ImageView createImage(String imagePath){

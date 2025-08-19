@@ -207,7 +207,7 @@ public class HomePage extends Stage {
                     corsiBox.getChildren().clear();
                     corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
                     for(Corso corso : corsi){
-                        corsiBox.getChildren().add(new CorsoPanel(corso.getImagePath(), corso.getNome(),controller ) );
+                        corsiBox.getChildren().add(new CorsoPanel(corso,controller ) );
                     }
                 }
             });
@@ -236,7 +236,7 @@ public class HomePage extends Stage {
         ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
         CorsoPanel tempCorsoPanel;
         for(Corso c: corsi){
-            tempCorsoPanel = new CorsoPanel(c.getImagePath(), c.getNome(),controller);
+            tempCorsoPanel = new CorsoPanel(c, controller);
             corsiBox.getChildren().add(tempCorsoPanel);
         }
         return corsiBox;

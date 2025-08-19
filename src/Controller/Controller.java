@@ -16,7 +16,10 @@ public class Controller {
     private LoginPage loginPage;
     private AccountPage accountPage;
     private RegisterPage registerPage;
+
     private DBConnection dbc;
+
+    private Utente utente;
 
     public Controller(){
         dbc = new DBConnection();
@@ -25,6 +28,10 @@ public class Controller {
 
     public DBConnection getDBConnection(){
         return dbc;
+    }
+
+    public Utente getUtente(){
+        return utente;
     }
 
     public void setHomePage(HomePage homePage) {
@@ -46,30 +53,37 @@ public class Controller {
     public void tryLoginChef(String sql) throws SQLException{
         ChefDAO chefDao = new ChefDAO(this);
         Chef chef = chefDao.tryLogin(sql);
-        if(chef != null)
+        if(chef != null){
             homePage.becomeHomePageChef(chef);
-
+            this.utente = chef;
+        }
     }
 
     public void tryRegisterChef(Chef chef) throws SQLException{
         ChefDAO chefDao = new ChefDAO(this);
         Chef ch = chefDao.tryRegister(chef);
-        if(ch != null)
+        if(ch != null) {
             homePage.becomeHomePageChef(ch);
+            this.utente = ch;
+        }
     }
 
     public void tryLoginStudente(String sql) throws SQLException{
         StudenteDAO studenteDao = new StudenteDAO(this);
         Studente studente = studenteDao.tryLogin(sql);
-        if(studente != null)
+        if(studente != null) {
             homePage.becomeHomePageStudente(studente);
+            this.utente = studente;
+        }
     }
 
     public void tryRegisterStudente(Studente studente) throws SQLException{
         StudenteDAO studenteDao = new StudenteDAO(this);
         Studente stud = studenteDao.tryRegister(studente);
-        if(stud != null)
+        if(stud != null){
             homePage.becomeHomePageStudente(stud);
+            this.utente = stud;
+        }
     }
 
 
@@ -85,13 +99,9 @@ public class Controller {
         }
     }
 
-    public void openCorsoPage(String Title, String imagePath, Controller controller){
+    public void openCorsoPage(Corso corso, Controller controller){
+        ChefDAO chefDao = new ChefDAO(this);
 
-        CorsoDAO corsoDao = new CorsoDAO(this);
-        Corso corso = corsoDao.getCorsoByTitle(Title);
-        corso.setImagePath(imagePath);
-        ChefDAO chefDao = new ChefDAO( this);
-      
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 
@@ -102,7 +112,7 @@ public class Controller {
         if(accountPage == null || !accountPage.isShowing()) {
             accountPage = new AccountPage(utente,this);
             accountPage.show();
-        }else{
+        } else {
             accountPage.toFront();
         }
     }
@@ -111,8 +121,18 @@ public class Controller {
         if(registerPage == null || !registerPage.isShowing()) {
             registerPage = new RegisterPage(this);
             registerPage.show();
-        }else{
+        } else {
             registerPage.toFront();
+        }
+    }
+
+    public void subscribeToCourse(Corso corso){
+        if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = new StudenteDAO(this);
+            studenteDao.subscribeToCourse(studente, corso);
+            studente.addCorso(corso);
+        } else {
+            return;
         }
     }
 

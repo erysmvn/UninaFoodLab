@@ -5,18 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DB/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DB/DBConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountCorsiPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +44,9 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="30MwQSyAlEljUZnAtzCWPClh7fg" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -55,18 +58,19 @@
     "Application.Unnamed.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Carmine",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Images",
+    "last_opened_file_path": "/home/cc/Scrivania/Scaricati/javafx-sdk-24.0.2/lib",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "onboarding.tips.debug.path": "/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Main.java",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
@@ -79,11 +83,11 @@
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="23" />
+      <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/Scrivania/Scaricati/jdk-24.0.2" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="UninaFoodLab" />
-      <option name="VM_PARAMETERS" value=" --module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml&#10;--module-path $USER_HOME$/Downloads/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
+      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/Scrivania/Scaricati/javafx-sdk-24.0.2/lib --add-modules javafx.controls,javafx.fxml" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -104,8 +108,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
       </set>
     </attachedChunks>
   </component>
@@ -123,6 +127,7 @@
       <workItem from="1754736428843" duration="7525000" />
       <workItem from="1755504642274" duration="11904000" />
       <workItem from="1755517090594" duration="3733000" />
+      <workItem from="1755536565566" duration="6824000" />
     </task>
     <servers />
   </component>

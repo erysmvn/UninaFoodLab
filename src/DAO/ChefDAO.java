@@ -15,8 +15,8 @@ public class ChefDAO {
     Connection con;
     Controller controller;
 
-    public ChefDAO(DBConnection dbConnection, Controller controller) {
-        this.dbc = dbConnection;
+    public ChefDAO(Controller controller) {
+        this.dbc = controller.getDBConnection();
         this.con = dbc.getConnection();
         this.stmt = dbc.getStatement();
         this.controller = controller;
@@ -117,7 +117,7 @@ public class ChefDAO {
 public ArrayList<Corso> getCorsiFromChef(Chef chef){
 
     ArrayList<Corso> corsi = new ArrayList<>();
-    CorsoDAO corsoDao = new CorsoDAO(dbc,controller);
+    CorsoDAO corsoDao = new CorsoDAO(controller);
 
     String sql = "SELECT DISTINCT c.nome_corso " +
             "FROM corso c NATURAL JOIN chef ch NATURAL JOIN tiene " +

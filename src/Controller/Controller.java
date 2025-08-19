@@ -8,6 +8,7 @@ import DAO.*;
 
 import javafx.application.*;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Controller {
@@ -20,6 +21,10 @@ public class Controller {
     public Controller(){
         dbc = new DBConnection();
         dbc.DBConnect();
+    }
+
+    public DBConnection getDBConnection(){
+        return dbc;
     }
 
     public void setHomePage(HomePage homePage) {
@@ -39,7 +44,7 @@ public class Controller {
     }
 
     public void tryLoginChef(String sql) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(dbc,this);
+        ChefDAO chefDao = new ChefDAO(this);
         Chef chef = chefDao.tryLogin(sql);
         if(chef != null)
             homePage.becomeHomePageChef(chef);
@@ -47,7 +52,7 @@ public class Controller {
     }
 
     public void tryRegisterChef(Chef chef) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(dbc,this);
+        ChefDAO chefDao = new ChefDAO(this);
         Chef ch = chefDao.tryRegister(chef);
         if(ch != null)
             homePage.becomeHomePageChef(ch);
@@ -82,11 +87,11 @@ public class Controller {
 
     public void openCorsoPage(String Title, String imagePath, Controller controller){
 
-        CorsoDAO corsoDao = new CorsoDAO(dbc,this);
+        CorsoDAO corsoDao = new CorsoDAO(this);
         Corso corso = corsoDao.getCorsoByTitle(Title);
         corso.setImagePath(imagePath);
 
-        ChefDAO chefDao = new ChefDAO(dbc, this);
+        ChefDAO chefDao = new ChefDAO( this);
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 

@@ -40,6 +40,8 @@ public class CorsoPage extends Stage {
                 Insets.EMPTY
         )));
 
+
+
         vbox.setBorder(new Border(new BorderStroke(
                 Color.valueOf("#3A6698"),
                 BorderStrokeStyle.SOLID,
@@ -104,12 +106,12 @@ public class CorsoPage extends Stage {
         if (!controller.isHomePageChef()) {
             Button subcribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
             vbox.getChildren().add(subcribeButton);
-            VBox.setMargin(subcribeButton, new Insets(30, 0, 0, 0));
+            VBox.setMargin(subcribeButton, new Insets(20, 0, 0, 0));
         }
 
         Button closeButtone = createCloseButton();
         vbox.getChildren().add(closeButtone);
-        VBox.setMargin(closeButtone, new Insets(0, 0, 0, 0));
+        VBox.setMargin(closeButtone, new Insets(0, 0, 10, 0));
 
         vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
             clip.setWidth(newBounds.getWidth());
@@ -118,9 +120,9 @@ public class CorsoPage extends Stage {
 
         vbox.setClip(clip);
 
-        Scene scene = new Scene(vbox, 450, 600);
+        Scene scene = new Scene(vbox, 850, 650);
         scene.setFill(Color.TRANSPARENT);
-
+        clip.requestFocus();
         this.setScene(scene);
 
     }
@@ -154,6 +156,9 @@ public class CorsoPage extends Stage {
             }
 
         });
+        this.setFocusPropreties(subscribeButton,Color.valueOf("#3a6698"));
+        this.setOnMouseTraverse(subscribeButton,Color.valueOf("#3a6698"));
+
         return subscribeButton;
     }
 
@@ -162,9 +167,45 @@ public class CorsoPage extends Stage {
         closeButton.setPrefWidth(100);
         closeButton.setPrefHeight(30);
         closeButton.setText("Chiudi");
-
+        this.setFocusPropreties(closeButton,Color.valueOf("#da3d26"));
+        this.setOnMouseTraverse(closeButton,Color.valueOf("#da3d26"));
         closeButton.setStyle("-fx-background-color: \"#da3d26\"; -fx-text-fill: white;");
         closeButton.setOnAction(e -> this.close());
         return closeButton;
     }
+
+    private void setOnMouseTraverse(Button button, Color color) {
+        button.setOnMouseEntered(e -> {
+                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\";");
+                    button.setBorder(new Border(new BorderStroke(
+                            color,
+                            BorderStrokeStyle.SOLID,
+                            CornerRadii.EMPTY,
+                            new BorderWidths(0, 0, 1, 0)
+                    )));
+                }
+        );
+        button.setOnMouseExited(e -> {
+                    button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
+                }
+        );
+    }
+
+    private void setFocusPropreties(Button button, Color color) {
+        button.setFocusTraversable(true);
+        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue) {
+                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\";");
+                button.setBorder(new Border(new BorderStroke(
+                        color,
+                        BorderStrokeStyle.SOLID,
+                        CornerRadii.EMPTY,
+                        new BorderWidths(0, 0, 1, 0)
+                )));
+            } else {
+                button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
+            }
+        });
+    }
+
 }

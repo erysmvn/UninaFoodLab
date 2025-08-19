@@ -25,7 +25,6 @@ public class StudenteDAO implements StudenteDAOInterface {
 
     public Studente tryLogin(String sql) throws SQLException {
         Studente studente = null;
-
         rs = stmt.executeQuery(sql);
         if(rs.next()){
             studente = new Studente(
@@ -47,8 +46,8 @@ public class StudenteDAO implements StudenteDAOInterface {
     public Studente tryRegister(Studente studente) throws SQLException {
         String sql = "INSERT INTO studente (matricola, nome_stud, cognome, email, passw) VALUES (?, ?, ?, ?, md5(?))";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-
+        try  {
+            PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, studente.getMatricola());
             pstmt.setString(2, studente.getNome());
             pstmt.setString(3, studente.getCognome());
@@ -93,11 +92,11 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     public void subscribeToCourse(Studente studente, Corso corso) {
-        try (Connection conn = dbc.getConnection()) {
+        try {
             String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, studente.getMatricola());
-            stmt.setInt(2, corso.getIdcorso());
+            stmt.setInt(2, corso.getIdCorso());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

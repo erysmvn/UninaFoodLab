@@ -142,6 +142,10 @@ public class CorsoPage extends Stage {
     }
 
 
+    public Corso getCorso() {
+        return corso;
+    }
+
     private Button createSubscribeButton(boolean isLoggedIn) {
         Button subscribeButton = new Button();
         subscribeButton.setPrefWidth(100);

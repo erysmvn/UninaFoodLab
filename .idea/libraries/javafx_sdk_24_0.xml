@@ -3,18 +3,8 @@
     <CLASSES />
     <JAVADOC />
     <SOURCES>
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.base" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.controls" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.fxml" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.graphics" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.media" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.swing" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/javafx.web" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/jdk.jsobject" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/jfx.incubator.input" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2/src/jfx.incubator.richtext" />
-      <root url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2" />
+      <root url="file://$USER_HOME$/Scrivania/Scaricati/javafx-sdk-24.0.2" />
     </SOURCES>
-    <jarDirectory url="file://$USER_HOME$/Downloads/javafx-sdk-24.0.2" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://$USER_HOME$/Scrivania/Scaricati/javafx-sdk-24.0.2" recursive="false" type="SOURCES" />
   </library>
 </component>

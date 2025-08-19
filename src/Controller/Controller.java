@@ -8,6 +8,7 @@ import DAO.*;
 
 import javafx.application.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Controller {
     private HomePage homePage;
@@ -16,7 +17,10 @@ public class Controller {
     private RegisterPage registerPage;
 
     private DBConnection dbc;
+
     private Utente utente;
+
+    private ArrayList<CorsoPage> corsoPages = new ArrayList<>();
 
     public Controller(){
         dbc = new DBConnection();
@@ -102,7 +106,7 @@ public class Controller {
         }
     }
 
-    public void openCorsoPage(Corso corso, Controller controller){
+    public void openCorsoPage(Corso corso, Controller controller) {
         ChefDAO chefDao = new ChefDAO(this);
 
         System.out.println(corso.getNome());
@@ -113,6 +117,29 @@ public class Controller {
         corsoPage.show();
     }
 
+    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
+        for(CorsoPage cp : corsoPages){
+            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
+                return cp;
+            }
+        }
+        return null;
+
+    }
+
+    public void openCorsoPage(Corso corso){
+        CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
+
+        if(existingPage != null && existingPage.isShowing()){
+            existingPage.toFront();
+        } else {
+            ChefDAO chefDao = new ChefDAO(this);
+            Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
+            CorsoPage corsoPage = new CorsoPage(corso, chef, this);
+            corsoPages.add(corsoPage);
+            corsoPage.show();
+        }
+    }
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
             accountPage = new AccountPage(utente,this);

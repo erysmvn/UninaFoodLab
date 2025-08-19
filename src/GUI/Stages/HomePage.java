@@ -19,6 +19,8 @@ import javafx.scene.text.Font;
 import javafx.stage.*;
 
 import javafx.util.Duration;
+import jdk.jshell.ImportSnippet;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -248,6 +250,7 @@ public class HomePage extends Stage {
         center.setAlignment(Pos.TOP_CENTER);
 
         // --- Sfondo del center ---
+
         Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoBianco.png")).toExternalForm());
 
         BackgroundSize backgroundSize = new BackgroundSize(
@@ -257,6 +260,7 @@ public class HomePage extends Stage {
                 false, // height proporzionale? no
                 true,  // mantieni proporzioni
                 false  // non ingrandire oltre la dimensione originale
+
         );
 
         BackgroundImage backgroundImage = new BackgroundImage(

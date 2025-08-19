@@ -16,8 +16,8 @@ public class StudenteDAO implements StudenteDAOInterface {
     Connection con;
     Controller controller;
 
-    public StudenteDAO(DBConnection dbConnection, Controller controller) {
-        this.dbc = dbConnection;
+    public StudenteDAO(Controller controller) {
+        this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
         stmt = dbc.getStatement();
         this.controller = controller;
@@ -72,7 +72,7 @@ public class StudenteDAO implements StudenteDAOInterface {
 
     public ArrayList<Corso> getCorsiFromStudente(Studente studente) {
         ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(dbc,controller);
+        CorsoDAO corsoDao = new CorsoDAO(controller);
 
         String sql = "SELECT DISTINCT c.nome_corso " +
                 "FROM corso c NATURAL JOIN studente s NATURAL JOIN segue " +

@@ -76,7 +76,7 @@ public class CorsoPage extends Stage {
         Label date = new Label("Periodo: " + sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine()));
         vbox.getChildren().add(date);
 
-        Label ore = new Label("Ore totali: " + df.format(corso.getOreTotali()) + ", Frequenza settimanale: " + corso.getFrequenzaSettimanale());
+        Label ore = new Label("Ore totali: " + df.format(corso.getOreTotali()) + ", Frequenza: " + corso.getFrequenzaSettimanale() + " lezione a settimana");
         vbox.getChildren().add(ore);
 
         Label costo = new Label("Costo: " + df.format(corso.getCosto()) + " €");
@@ -123,6 +123,8 @@ public class CorsoPage extends Stage {
 
         this.setScene(scene);
 
+        clip.requestFocus();
+
     }
 
     public void addImageCorso(String imagePath) {
@@ -143,6 +145,9 @@ public class CorsoPage extends Stage {
         subscribeButton.setPrefWidth(100);
         subscribeButton.setPrefHeight(30);
         subscribeButton.setText("Iscriviti");
+        Color color = Color.valueOf("#3a6698");
+        this.setFocusPropreties(subscribeButton, color);
+        this.setOnMouseTraverse(subscribeButton, color);
 
         subscribeButton.setStyle("-fx-background-color: \"#3a6698\"; -fx-text-fill: white;");
         subscribeButton.setOnAction(event -> {
@@ -151,6 +156,8 @@ public class CorsoPage extends Stage {
             if (!isLoggedIn) {
                 controller.openLoginPage();
                 this.close();
+            } else {
+                // TODO change iscriviti to iscritto, rendi non cliccabile e non traversable, aggiungi al db
             }
 
         });
@@ -162,9 +169,47 @@ public class CorsoPage extends Stage {
         closeButton.setPrefWidth(100);
         closeButton.setPrefHeight(30);
         closeButton.setText("Chiudi");
+        Color color = Color.valueOf("#da3d26");
+        this.setFocusPropreties(closeButton, color);
+        this.setOnMouseTraverse(closeButton, color);
 
         closeButton.setStyle("-fx-background-color: \"#da3d26\"; -fx-text-fill: white;");
         closeButton.setOnAction(e -> this.close());
         return closeButton;
+    }
+
+
+    private void setOnMouseTraverse(Button button, Color color) {
+        button.setOnMouseEntered(e -> {
+                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\";");
+                    button.setBorder(new Border(new BorderStroke(
+                            color,
+                            BorderStrokeStyle.SOLID,
+                            CornerRadii.EMPTY,
+                            new BorderWidths(0, 0, 1, 0)
+                    )));
+                }
+        );
+        button.setOnMouseExited(e -> {
+                    button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
+                }
+        );
+    }
+
+    private void setFocusPropreties(Button button, Color color) {
+        button.setFocusTraversable(true);
+        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue) {
+                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\";");
+                button.setBorder(new Border(new BorderStroke(
+                        color,
+                        BorderStrokeStyle.SOLID,
+                        CornerRadii.EMPTY,
+                        new BorderWidths(0, 0, 1, 0)
+                )));
+            } else {
+                button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
+            }
+        });
     }
 }

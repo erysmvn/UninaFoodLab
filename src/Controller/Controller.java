@@ -22,6 +22,10 @@ public class Controller {
         dbc.DBConnect();
     }
 
+    public DBConnection getDBConnection(){
+        return dbc;
+    }
+
     public void setHomePage(HomePage homePage) {
         this.homePage = homePage;
     }
@@ -39,7 +43,7 @@ public class Controller {
     }
 
     public void tryLoginChef(String sql) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(dbc,this);
+        ChefDAO chefDao = new ChefDAO(this);
         Chef chef = chefDao.tryLogin(sql);
         if(chef != null)
             homePage.becomeHomePageChef(chef);
@@ -47,21 +51,21 @@ public class Controller {
     }
 
     public void tryRegisterChef(Chef chef) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(dbc,this);
+        ChefDAO chefDao = new ChefDAO(this);
         Chef ch = chefDao.tryRegister(chef);
         if(ch != null)
             homePage.becomeHomePageChef(ch);
     }
 
     public void tryLoginStudente(String sql) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        StudenteDAO studenteDao = new StudenteDAO(this);
         Studente studente = studenteDao.tryLogin(sql);
         if(studente != null)
             homePage.becomeHomePageStudente(studente);
     }
 
     public void tryRegisterStudente(Studente studente) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        StudenteDAO studenteDao = new StudenteDAO(this);
         Studente stud = studenteDao.tryRegister(studente);
         if(stud != null)
             homePage.becomeHomePageStudente(stud);
@@ -82,11 +86,11 @@ public class Controller {
 
     public void openCorsoPage(String Title, String imagePath, Controller controller){
 
-        CorsoDAO corsoDao = new CorsoDAO(dbc,this);
+        CorsoDAO corsoDao = new CorsoDAO(this);
         Corso corso = corsoDao.getCorsoByTitle(Title);
         corso.setImagePath(imagePath);
 
-        ChefDAO chefDao = new ChefDAO(dbc, this);
+        ChefDAO chefDao = new ChefDAO(this);
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 

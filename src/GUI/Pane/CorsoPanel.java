@@ -1,6 +1,7 @@
 package GUI.Pane;
 
 import Controller.Controller;
+
 import javafx.geometry.*;
 import javafx.scene.control.Label;
 import javafx.scene.image.*;
@@ -26,7 +27,7 @@ public class CorsoPanel extends Pane {
         content.setAlignment(Pos.TOP_CENTER);
         content.setPrefSize(330, 355);
         content.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        content.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
+        content.setBorder(new Border(new BorderStroke(Color.valueOf("#FFFFFF"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         content.setEffect(new DropShadow(10, Color.GRAY));
 
         ImageView imageView = createImage(imagePath);

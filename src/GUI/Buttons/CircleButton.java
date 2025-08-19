@@ -1,17 +1,12 @@
 package GUI.Buttons;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
+import javafx.event.*;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.nio.ByteOrder;
-import java.util.EventListener;
 
 public class CircleButton  extends Button {
 
@@ -66,5 +61,4 @@ public class CircleButton  extends Button {
         this.setOnAction(action);
         return this;
     }
-
 }

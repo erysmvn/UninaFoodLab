@@ -158,7 +158,7 @@ public class LoginPage extends Stage {
     }
 
     private ImageView createLogo() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/LogoUni.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/UninaFoodLabLogo.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(220);
         logoView.setPreserveRatio(true);

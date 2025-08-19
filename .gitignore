@@ -30,4 +30,5 @@ bin/
 
 ### Personale ###
 ./src/DB/DBConnection.java
-.idea/
+./UninaFoodLab/UninaFoodLab.iml
+./.idea

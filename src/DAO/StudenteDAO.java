@@ -72,7 +72,7 @@ public class StudenteDAO implements StudenteDAOInterface {
 
     public ArrayList<Corso> getCorsiFromStudente(Studente studente) {
         ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(dbc,controller);
+        CorsoDAO corsoDao = new CorsoDAO(controller);
 
         String sql = "SELECT DISTINCT c.nome_corso " +
                 "FROM corso c NATURAL JOIN studente s NATURAL JOIN segue " +

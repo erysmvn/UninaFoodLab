@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/GUI/Pane/ImpostazioniPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/AccountPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,8 +57,9 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Carmine",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/cc/Scrivania/Scaricati/javafx-sdk-24.0.2/lib",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -117,7 +124,9 @@
       <workItem from="1754736428843" duration="7525000" />
       <workItem from="1755504642274" duration="11904000" />
       <workItem from="1755517090594" duration="3733000" />
-      <workItem from="1755536565566" duration="8029000" />
+      <workItem from="1755536565566" duration="9909000" />
+      <workItem from="1755600357384" duration="151000" />
+      <workItem from="1755600526569" duration="6064000" />
     </task>
     <servers />
   </component>

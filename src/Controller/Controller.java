@@ -7,8 +7,6 @@ import GUI.Pane.*;
 import DAO.*;
 
 import javafx.application.*;
-
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Controller {
@@ -17,6 +15,7 @@ public class Controller {
     private AccountPage accountPage;
     private RegisterPage registerPage;
     private DBConnection dbc;
+    private Utente utente = null;
 
     public Controller(){
         dbc = new DBConnection();
@@ -70,6 +69,12 @@ public class Controller {
         Studente stud = studenteDao.tryRegister(studente);
         if(stud != null)
             homePage.becomeHomePageStudente(stud);
+    }
+
+    public void logOut(){
+        this.utente = null;
+        homePage.setLogOut();
+        accountPage.close();
     }
 
 

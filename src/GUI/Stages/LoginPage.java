@@ -56,7 +56,8 @@ public class LoginPage extends Stage {
     }
 
 
-    private VBox createCenterContent() {
+    private VBox createCenterContent(){
+
         VBox centerBox = new VBox(20);
         centerBox.setAlignment(Pos.CENTER);
 
@@ -202,7 +203,6 @@ public class LoginPage extends Stage {
             String email = emailField.getText();
             String password = passwordField.getText();
             tryLogin(email, password);
-
         });
         this.setOnMouseTraverse(loginButton);
         this.setFocusPropreties(loginButton);

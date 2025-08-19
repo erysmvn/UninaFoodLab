@@ -5,18 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/javafx_sdk_24_0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/pgJDBC_42_7_7.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +117,7 @@
       <workItem from="1754736428843" duration="7525000" />
       <workItem from="1755504642274" duration="11904000" />
       <workItem from="1755517090594" duration="3733000" />
-      <workItem from="1755536565566" duration="6824000" />
+      <workItem from="1755536565566" duration="8029000" />
     </task>
     <servers />
   </component>

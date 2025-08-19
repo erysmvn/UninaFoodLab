@@ -92,4 +92,17 @@ public class StudenteDAO implements StudenteDAOInterface {
         return corsi;
     }
 
+    public void subscribeToCourse(Studente studente, Corso corso) {
+        try (Connection conn = dbc.getConnection()) {
+            String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, studente.getMatricola());
+            stmt.setInt(2, corso.getIdcorso());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'iscrizione al corso", e);
+        }
+    }
+
 }

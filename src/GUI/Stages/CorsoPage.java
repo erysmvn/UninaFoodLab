@@ -26,9 +26,11 @@ public class CorsoPage extends Stage {
 
     private VBox vbox;
     Controller controller;
+    Corso corso;
 
     public CorsoPage(Corso corso, Chef chef, Controller controller) {
         this.controller = controller;
+        this.corso = corso;
 
         DecimalFormat df = new DecimalFormat("#.##"); // removes ".0"
 
@@ -158,6 +160,11 @@ public class CorsoPage extends Stage {
                 this.close();
             } else {
                 // TODO change iscriviti to iscritto, rendi non cliccabile e non traversable, aggiungi al db
+                controller.subscribeToCourse(corso);
+
+                subscribeButton.setText("Iscritto");
+                subscribeButton.setDisable(true);
+                subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
             }
 
         });

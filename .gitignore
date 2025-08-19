@@ -34,6 +34,10 @@ build/
 ### Mac OS ###
 .DS_Store
 
+### Build Tools ###
+target/
+build/
+
 ### Windows ###
 Thumbs.db
 ehthumbs.db
@@ -46,5 +50,8 @@ Desktop.ini
 *.swp
 *.swo
 
-### DB connection ###
+### Personale ###
 ./src/DB/DBConnection.java
+./UninaFoodLab/UninaFoodLab.iml
+./.idea
+*.iml

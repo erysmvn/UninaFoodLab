@@ -73,4 +73,8 @@ public class Corso {
     public String getDesc_corso() {
         return desc_corso;
     }
+
+    public int getIdcorso() {
+        return idcorso;
+    }
 }

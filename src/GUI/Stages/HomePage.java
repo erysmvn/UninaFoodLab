@@ -39,6 +39,7 @@ public class HomePage extends Stage {
         setAestheticsHomePage();
     }
 
+
     private void setFunctionalitiesHomePage(){
         root = new BorderPane();
         root.setTop(createTopBar());
@@ -360,6 +361,11 @@ public class HomePage extends Stage {
 
     public void setLoggedIn() {
         isLoggedIn = true;
+    }
+    public void setLogOut() {
+        this.isLoggedIn = false;
+        loginButtons.getChildren().clear();
+        loginButtons.getChildren().addAll(createLoginButtonWithImage(),createLoginButton());
     }
 
     public void setChef() {

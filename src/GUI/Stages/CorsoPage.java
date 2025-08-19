@@ -40,6 +40,8 @@ public class CorsoPage extends Stage {
                 Insets.EMPTY
         )));
 
+
+
         vbox.setBorder(new Border(new BorderStroke(
                 Color.valueOf("#3A6698"),
                 BorderStrokeStyle.SOLID,
@@ -104,12 +106,12 @@ public class CorsoPage extends Stage {
         if (!controller.isHomePageChef()) {
             Button subcribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
             vbox.getChildren().add(subcribeButton);
-            VBox.setMargin(subcribeButton, new Insets(30, 0, 0, 0));
+            VBox.setMargin(subcribeButton, new Insets(20, 0, 0, 0));
         }
 
         Button closeButtone = createCloseButton();
         vbox.getChildren().add(closeButtone);
-        VBox.setMargin(closeButtone, new Insets(0, 0, 0, 0));
+        VBox.setMargin(closeButtone, new Insets(0, 0, 10, 0));
 
         vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
             clip.setWidth(newBounds.getWidth());
@@ -118,9 +120,9 @@ public class CorsoPage extends Stage {
 
         vbox.setClip(clip);
 
-        Scene scene = new Scene(vbox, 450, 600);
+        Scene scene = new Scene(vbox, 850, 650);
         scene.setFill(Color.TRANSPARENT);
-
+        clip.requestFocus();
         this.setScene(scene);
 
         clip.requestFocus();
@@ -161,6 +163,9 @@ public class CorsoPage extends Stage {
             }
 
         });
+        this.setFocusPropreties(subscribeButton,Color.valueOf("#3a6698"));
+        this.setOnMouseTraverse(subscribeButton,Color.valueOf("#3a6698"));
+
         return subscribeButton;
     }
 
@@ -169,6 +174,7 @@ public class CorsoPage extends Stage {
         closeButton.setPrefWidth(100);
         closeButton.setPrefHeight(30);
         closeButton.setText("Chiudi");
+
         Color color = Color.valueOf("#da3d26");
         this.setFocusPropreties(closeButton, color);
         this.setOnMouseTraverse(closeButton, color);
@@ -179,6 +185,7 @@ public class CorsoPage extends Stage {
     }
 
 
+  
     private void setOnMouseTraverse(Button button, Color color) {
         button.setOnMouseEntered(e -> {
                     button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\";");

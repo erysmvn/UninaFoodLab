@@ -1,10 +1,12 @@
 package GUI.Stages;
 
 import Controller.*;
+import DAO.CorsoDAO;
 import Entity.*;
 import GUI.Pane.*;
 import GUI.Buttons.*;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -16,6 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 
+import javafx.util.Duration;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class HomePage extends Stage {
@@ -24,14 +28,13 @@ public class HomePage extends Stage {
     private BorderPane root;
     private Scene scene;
     private HBox loginButtons;
-
     private Boolean isLoggedIn = false;
     private Boolean isChef = false;
-
+    private HBox corsiBox;
+    private ArrayList<Corso> corsi;
 
     public HomePage(Controller controller) {
         this.controller = controller;
-
         setFunctionalitiesHomePage();
         setAestheticsHomePage();
     }
@@ -160,6 +163,16 @@ public class HomePage extends Stage {
         return  loginButton;
     }
 
+    private Button createSearchButton(){
+        Button searchButton = new Button("🔍");
+        searchButton.setStyle("-fx-font-size: 30px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: TRANSPARENT;");
+        searchButton.setFocusTraversable(true);
+        searchButton.setMaxHeight(30);
+        searchButton.setPrefHeight(30);
+
+        return  searchButton;
+    }
+
     private HBox createSearchBar() {
 
         HBox searchBar = new HBox(10);
@@ -181,41 +194,51 @@ public class HomePage extends Stage {
         )));
 
         searchField.setFocusTraversable(true);
+        Button searchButton = createSearchButton();
+
+        CorsoDAO corsoDAO = new CorsoDAO(controller);
+        PauseTransition pause = new PauseTransition(Duration.seconds(10));
+
+
+        searchButton.setOnMouseClicked(e -> {
+            pause.setOnFinished(event->{
+                String nomeCorso = searchField.getText().toUpperCase();
+                if(!nomeCorso.isEmpty()){
+                    corsiBox.getChildren().clear();
+                    corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
+                    for(Corso corso : corsi){
+                        corsiBox.getChildren().add(new CorsoPanel(corso.getImagePath(), corso.getNome(),controller ) );
+                    }
+                }
+            });
+
+            pause.play();
+
+        });
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             String sql = "SELECT * FROM corso WHERE nome_corso LIKE '%" + newValue + "%'";
             System.out.println(sql);
         });
 
-        searchBar.getChildren().add(searchField);
+        searchBar.getChildren().addAll(searchField,searchButton);
 
         return searchBar;
     }
 
+
     private HBox createCorsiContainer() {
-        HBox corsiBox = new HBox(20);
+        corsiBox = new HBox(20);
         corsiBox.setAlignment(Pos.TOP_CENTER);
         corsiBox.setPadding(new Insets(20));
 
-        CorsoPanel corsoPanel1 = new CorsoPanel("/Images/CucinaMolecolare.png", "Cucina Molecolare", controller);
-        CorsoPanel corsoPanel2 = new CorsoPanel("/Images/CucinaAsiaticaFusion.png", "Cucina Asiatica Fusion", controller);
-        CorsoPanel corsoPanel3 = new CorsoPanel("/Images/Primidimare.png", "Primi di mare", controller);
-        CorsoPanel corsoPanel4 = new CorsoPanel("/Images/PasticceriadiBase.png", "Pasticceria di Base", controller);
-
-        corsoPanel1.setOnMouseClicked(e->{
-            controller.openCorsoPage("Cucina Molecolare", "/Images/CucinaMolecolare.png", controller);
-        });
-        corsoPanel2.setOnMouseClicked(e->{
-            controller.openCorsoPage("Cucina Asiatica Fusion", "/Images/CucinaAsiaticaFusion.png", controller);
-        });
-        corsoPanel3.setOnMouseClicked(e->{
-            controller.openCorsoPage("Primi di mare", "/Images/Primidimare.png", controller);
-        });
-        corsoPanel4.setOnMouseClicked(e->{
-            controller.openCorsoPage("Pasticceria di Base", "/Images/PasticceriadiBase.png", controller);
-        });
-
-        corsiBox.getChildren().addAll(corsoPanel1, corsoPanel2, corsoPanel3, corsoPanel4);
+        CorsoDAO corsoDAO = new CorsoDAO(controller);
+        ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
+        CorsoPanel tempCorsoPanel;
+        for(Corso c: corsi){
+            tempCorsoPanel = new CorsoPanel(c.getImagePath(), c.getNome(),controller);
+            corsiBox.getChildren().add(tempCorsoPanel);
+        }
         return corsiBox;
     }
 

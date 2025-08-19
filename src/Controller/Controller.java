@@ -8,6 +8,7 @@ import DAO.*;
 
 import javafx.application.*;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Controller {
@@ -89,8 +90,8 @@ public class Controller {
         CorsoDAO corsoDao = new CorsoDAO(this);
         Corso corso = corsoDao.getCorsoByTitle(Title);
         corso.setImagePath(imagePath);
-
-        ChefDAO chefDao = new ChefDAO(this);
+        ChefDAO chefDao = new ChefDAO( this);
+      
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 

@@ -2,11 +2,9 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
-import GUI.Pane.*;
 import GUI.Buttons.*;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -40,7 +38,7 @@ public class RegisterPage extends Stage {
 
         this.controller = controller;
         this.setRoot();
-        this.setRootAestetics();
+        this.setRootAesthetics();
 
         Scene scene = new Scene(root, 850, 650);
         scene.setFill(Color.TRANSPARENT);
@@ -71,7 +69,7 @@ public class RegisterPage extends Stage {
         root = new VBox(15, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
     }
 
-    private void setRootAestetics(){
+    private void setRootAesthetics(){
         root.setPadding(new Insets(15));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
@@ -244,7 +242,7 @@ public class RegisterPage extends Stage {
         }
         });
         this.setOnMouseTraverse(confermaButton);
-        this.setFocusPropreties(confermaButton);
+        this.setFocusProperties(confermaButton);
 
         return confermaButton;
     }
@@ -323,7 +321,7 @@ public class RegisterPage extends Stage {
             this.close();
         });
 
-        this.setFocusPropreties(indietroButton);
+        this.setFocusProperties(indietroButton);
         this.setOnMouseTraverse(indietroButton);
 
         return indietroButton;
@@ -358,7 +356,7 @@ public class RegisterPage extends Stage {
         );
     }
 
-    private void setFocusPropreties(Button button) {
+    private void setFocusProperties(Button button) {
         button.setFocusTraversable(true);
         button.focusedProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {

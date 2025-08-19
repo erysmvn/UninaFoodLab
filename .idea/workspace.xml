@@ -5,6 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5348edac-713a-42ef-aa91-040b7ef740d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../JDBCtest/JDBCtest.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/sfondoDarken.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/sfondoMenoMenoOpaco.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Images/sfondoMenoOpaco.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../DA CONSEGNARE/Documentazione_UninaFoodLab.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentazione UninaFoodLab.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/ChefDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/ChefDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/CorsoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAO/StudenteDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Buttons/CircleButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Buttons/CircleButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/AccountPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/AccountPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Pane/CorsoPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/CorsoPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Stages/RegisterPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Images/CucinaMolecolare.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -41,6 +60,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Francesco&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/erysvmn/Desktop/UninaFoodLab/UninaFoodLab/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
@@ -65,9 +106,12 @@
     "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Images" />
     </key>
   </component>
@@ -117,6 +161,7 @@
       <workItem from="1754736428843" duration="7525000" />
       <workItem from="1755504642274" duration="11904000" />
       <workItem from="1755517090594" duration="3733000" />
+      <workItem from="1755593251319" duration="3420000" />
       <workItem from="1755536565566" duration="8029000" />
     </task>
     <servers />

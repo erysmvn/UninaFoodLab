@@ -59,14 +59,14 @@ public class Controller {
     }
 
     public void tryLoginStudente(String sql) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        StudenteDAO studenteDao = new StudenteDAO(this);
         Studente studente = studenteDao.tryLogin(sql);
         if(studente != null)
             homePage.becomeHomePageStudente(studente);
     }
 
     public void tryRegisterStudente(Studente studente) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(dbc,this);
+        StudenteDAO studenteDao = new StudenteDAO(this);
         Studente stud = studenteDao.tryRegister(studente);
         if(stud != null)
             homePage.becomeHomePageStudente(stud);
@@ -90,8 +90,8 @@ public class Controller {
         CorsoDAO corsoDao = new CorsoDAO(this);
         Corso corso = corsoDao.getCorsoByTitle(Title);
         corso.setImagePath(imagePath);
-
         ChefDAO chefDao = new ChefDAO( this);
+      
         Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
         CorsoPage corsoPage = new CorsoPage(corso, chef, this);
 

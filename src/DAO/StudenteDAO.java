@@ -16,8 +16,8 @@ public class StudenteDAO implements StudenteDAOInterface {
     Connection con;
     Controller controller;
 
-    public StudenteDAO(DBConnection dbConnection, Controller controller) {
-        this.dbc = dbConnection;
+    public StudenteDAO(Controller controller) {
+        this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
         stmt = dbc.getStatement();
         this.controller = controller;

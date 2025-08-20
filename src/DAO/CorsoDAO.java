@@ -5,6 +5,7 @@ import DAO.Interfaces.CorsoDAOInterface;
 import Entity.Corso;
 import DB.DBConnection;
 import Entity.Enum.*;
+import Entity.Ricetta;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -124,6 +125,33 @@ public class CorsoDAO implements CorsoDAOInterface {
             e.printStackTrace();
         }
         return corso;
+    }
+
+    public void getRicetteTrattate(Corso corso){
+        corso.allocaArrayRicette();
+        Ricetta ricetta = null;
+        System.out.println("sto aggiungendo");
+        String sql = "SELECT DISTINCT nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
+                "FROM corso NATURAL JOIN sessione NATURAL JOIN tratta NATURAL JOIN ricetta " +
+                "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
+
+        try  {
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    ricetta = new Ricetta(
+                            rs.getString("nome_ricetta"),
+                    rs.getString("descrizione_ricetta"),
+                    rs.getInt("tempo_Di_Preparazione"),
+                    rs.getString("autore")
+                    );
+                    corso.addRicetta(ricetta);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
     }
 
 }

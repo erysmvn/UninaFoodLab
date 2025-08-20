@@ -2,6 +2,7 @@ package Entity;
 
 import Entity.Enum.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Corso {
@@ -17,6 +18,7 @@ public class Corso {
     private String desc_corso;
     private Difficolta difficolta;
     private String imagePath;
+    ArrayList<Ricetta> ricetteTrattate = null;
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,
                  int frequenzaSettimanale, Date dataInizio, Date dataFine, float costo,
@@ -32,8 +34,8 @@ public class Corso {
         this.modalitaCorso = modalitaCorso;
         this.difficolta = difficolta;
         this.desc_corso = desc_corso;
-
     }
+
     public String getNome(){
         return nome;
     }
@@ -76,5 +78,23 @@ public class Corso {
 
     public int getIdCorso() {
         return idcorso;
+    }
+
+    public void addRicetta(Ricetta ricetta) {
+        ricetteTrattate.add(ricetta);
+    }
+
+    public void stampaRicette() {
+        for (Ricetta ricetta: ricetteTrattate) {
+            System.out.println(ricetta.getNome());
+        }
+    }
+
+    public ArrayList<Ricetta> getRicetteTrattate() {
+        return ricetteTrattate;
+    }
+
+    public void allocaArrayRicette() {
+        this.ricetteTrattate = new ArrayList<Ricetta>();
     }
 }

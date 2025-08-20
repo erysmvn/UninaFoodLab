@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
@@ -108,6 +109,8 @@ public class HomePage extends Stage {
     private Label createUninaFoodLabel(){
         Label uninaFoodLabel = new Label(" UNINA FOOD LAB");
         uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
+        uninaFoodLabel.setStyle("-fx-font-weight: bold;");
+        uninaFoodLabel.setEffect(new Reflection());
         Font timesNewRoman = Font.loadFont(
                 getClass().getResourceAsStream("/Images/times.ttf"),
                 50
@@ -163,7 +166,7 @@ public class HomePage extends Stage {
 
         Button loginButton = new Button();
         loginButton.setGraphic(loginView);
-        loginButton.setStyle("-fx-background-color: TRANSPARENT;");
+        loginButton.setStyle("-fx-background-color: TRANSPARENT; -fx-cursor: hand;");
         loginButton.setOnMouseClicked(e -> {
                     controller.openLoginPage();
                 }
@@ -175,7 +178,7 @@ public class HomePage extends Stage {
     private Button createLoginButton() {
         Button loginButton = new Button("Login");
         loginButton.setFont(Font.font("Arial", 20));
-        loginButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE;");
+        loginButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
         loginButton.setFocusTraversable(false);
         loginButton.setOnAction(e ->{
             controller.openLoginPage();
@@ -187,7 +190,7 @@ public class HomePage extends Stage {
 
     private Button createSearchButton(){
         searchButton = new Button("🔍");
-        searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE;");
+        searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE; -fx-cursor: hand;");
         searchButton.setBorder(new Border(new BorderStroke(
                 Color.valueOf("#3A6698"),
                 BorderStrokeStyle.SOLID,
@@ -422,7 +425,7 @@ public class HomePage extends Stage {
     private Button createAccountButton(Utente utente) {
         Button accountButton = new Button("Account");
         accountButton.setFont(Font.font("Arial", 20));
-        accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE;");
+        accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
         accountButton.setFocusTraversable(false);
         accountButton.setOnAction(e -> {
             controller.openAccountPage(utente);
@@ -434,7 +437,7 @@ public class HomePage extends Stage {
 
     private void setOnMouseTraverse(Button button){
         button.setOnMouseEntered(e->{
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
+                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
                     button.setBorder(new Border(new BorderStroke(
                             Color.valueOf("#3A6698"),
                             BorderStrokeStyle.SOLID,
@@ -444,7 +447,7 @@ public class HomePage extends Stage {
                 }
         );
         button.setOnMouseExited(e->{
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
                 }
         );
     }
@@ -452,7 +455,7 @@ public class HomePage extends Stage {
         button.setFocusTraversable(true);
         button.focusedProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
+                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
                 button.setBorder(new Border(new BorderStroke(
                         Color.valueOf("#3A6698"),
                         BorderStrokeStyle.SOLID,
@@ -460,7 +463,7 @@ public class HomePage extends Stage {
                         new BorderWidths(0,0,1, 0)
                 )));
             }else{
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
             }
 
         });

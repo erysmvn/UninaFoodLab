@@ -30,6 +30,7 @@ public class CorsoPanel extends Pane {
         content.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         content.setBorder(new Border(new BorderStroke(Color.valueOf("#FFFFFF"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         content.setEffect(new DropShadow(10, Color.GRAY));
+        content.setStyle("-fx-cursor: hand;");
 
         this.getChildren().addAll(content);
         this.setOnMouseClicked(e -> controller.openCorsoPage(corso));

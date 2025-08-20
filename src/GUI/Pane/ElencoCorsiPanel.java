@@ -2,41 +2,39 @@ package GUI.Pane;
 
 import Controller.Controller;
 import Entity.Corso;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.effect.DropShadow;
 
 import java.util.Objects;
 
-public class CorsoPanel extends Pane {
+public class ElencoCorsiPanel extends Pane {
 
-    Controller controller;
-    Corso corso;
-    VBox content;
+        Controller controller;
+        Corso corso;
+        HBox content;
 
-    public CorsoPanel(Controller controller) {
-        this.controller = controller;
+        public ElencoCorsiPanel(Controller controller) {
+            this.controller = controller;
 
-        content = new VBox(10);
-        content.setAlignment(Pos.TOP_CENTER);
-        content.setPrefSize(330, 355);
+            content = new HBox(10);
+            content.setAlignment(Pos.TOP_CENTER);
+            content.setPrefSize(900, 150);
 
-        content.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        content.setBorder(new Border(new BorderStroke(Color.valueOf("#FFFFFF"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
-        content.setEffect(new DropShadow(10, Color.GRAY));
-        content.setStyle("-fx-cursor: hand;");
+            content.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+            content.setBorder(new Border(new BorderStroke(Color.valueOf("#FFFFFF"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
+            content.setStyle("-fx-cursor: hand;");
 
-        this.getChildren().addAll(content);
-        this.setOnMouseClicked(e -> controller.openCorsoPage(corso));
+            this.getChildren().addAll(content);
+            this.setOnMouseClicked(e -> controller.openCorsoPage(corso));
 
-    }
+        }
 
     private ImageView createImage(String imagePath) {
         Image image;
@@ -50,8 +48,8 @@ public class CorsoPanel extends Pane {
         ImageView imageView = new ImageView(image);
 
         // Dimensioni target = quelle del pannello
-        double targetWidth = 330;
-        double targetHeight = 260;
+        double targetWidth = 150;
+        double targetHeight = 150;
 
         // Dimensioni originali immagine
         double imgWidth = image.getWidth();
@@ -77,6 +75,8 @@ public class CorsoPanel extends Pane {
 
         // Clip con bordi arrotondati
         Rectangle clip = new Rectangle(targetWidth, targetHeight);
+        clip.setArcHeight(20);
+        clip.setArcWidth(20);
         imageView.setClip(clip);
 
         return imageView;
@@ -84,17 +84,40 @@ public class CorsoPanel extends Pane {
 
     public void setCorso(Corso corso){
         this.corso = corso;
+
         ImageView imageView = createImage(corso.getImagePath());
         Label titoloLabel = createTitolo(corso.getNome());
-        content.getChildren().addAll(imageView, titoloLabel);
+        controller.getChefs(corso);
+        Label chefsLabel = creaChefs(corso.getStringOfChefs());
+
+        // VBox immagine
+        VBox immagineBox  = new VBox(imageView);
+        immagineBox.setAlignment(Pos.CENTER);
+        immagineBox.setPrefWidth(160); // larghezza fissa per tutte le immagini
+
+        // VBox info corso
+        VBox infoBox = new VBox(10, titoloLabel, chefsLabel);
+        infoBox.setAlignment(Pos.CENTER_LEFT);
+        infoBox.setPrefWidth(700); // larghezza fissa o flessibile
+        infoBox.setMaxWidth(Double.MAX_VALUE);
+
+        // Imposto HBox principale
+        content.getChildren().clear();
+        content.getChildren().addAll(immagineBox, infoBox);
+        content.setAlignment(Pos.CENTER_LEFT);
     }
 
     private Label createTitolo(String titolo){
         Label titoloLabel = new Label(titolo);
-        titoloLabel.setFont(Font.font("Nimbus Roman", 25));
+        titoloLabel.setFont(Font.font("Nimbus Roman", 20));
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
         return titoloLabel;
     }
+
+    private Label creaChefs(String chefs){
+        Label chefsLabel = new Label(chefs);
+        chefsLabel.setFont(Font.font("Nimbus Roman", 12));
+        chefsLabel.setTextFill(Color.valueOf("#000000"));
+        return chefsLabel;
+    }
 }
-
-

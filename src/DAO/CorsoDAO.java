@@ -2,6 +2,7 @@ package DAO;
 
 import Controller.Controller;
 import DAO.Interfaces.CorsoDAOInterface;
+import Entity.Chef;
 import Entity.Corso;
 import DB.DBConnection;
 import Entity.Enum.*;
@@ -145,6 +146,33 @@ public class CorsoDAO implements CorsoDAOInterface {
                     rs.getString("autore")
                     );
                     corso.addRicetta(ricetta);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    public void getChefs(Corso corso){
+        corso.allocaArrayChefs();
+        Chef chef = null;
+        System.out.println("sto aggiungendo");
+        String sql = "SELECT DISTINCT nome_chef, cognome, email, passw " +
+                "FROM chef NATURAL JOIN tiene NATURAL JOIN corso " +
+                "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
+
+        try  {
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    chef = new Chef(
+                            rs.getString("nome_chef"),
+                            rs.getString("cognome"),
+                            rs.getString("email"),
+                            rs.getString("passw")
+                    );
+                    corso.addChef(chef);
                 }
             }
         } catch (SQLException e) {

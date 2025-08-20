@@ -18,6 +18,7 @@ public class Corso {
     private String desc_corso;
     private Difficolta difficolta;
     private String imagePath;
+    ArrayList<Chef> chefs = null;
     ArrayList<Ricetta> ricetteTrattate = null;
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,
@@ -96,5 +97,32 @@ public class Corso {
 
     public void allocaArrayRicette() {
         this.ricetteTrattate = new ArrayList<Ricetta>();
+    }
+
+
+    public void stampaChefs() {
+        for (Chef chef: chefs) {
+            System.out.println(chef.getNome() + "" + chef.getCognome());
+        }
+    }
+
+    public String getStringOfChefs() {
+        String toReturn = "";
+        for (Chef chef: chefs) {
+            toReturn += chef.getNome() + " " + chef.getCognome() + ", ";
+        }
+        return toReturn.substring(0, toReturn.length() - 2);
+    }
+
+    public ArrayList<Chef> getChefs() {
+        return chefs;
+    }
+
+    public void addChef(Chef chef) {
+        chefs.add(chef);
+    }
+
+    public void allocaArrayChefs() {
+        this.chefs = new ArrayList<Chef>();
     }
 }

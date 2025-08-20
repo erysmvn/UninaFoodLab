@@ -34,5 +34,7 @@
     <orderEntry type="library" name="ikonli-core-12.2.0" level="project" />
     <orderEntry type="library" name="ikonli-fontawesome-pack-12.2.0" level="project" />
     <orderEntry type="library" name="ikonli-javafx-12.2.0" level="project" />
+    <orderEntry type="library" name="controlsfx-11.2.2" level="project" />
+    <orderEntry type="library" name="pgJDBC 42.7.8" level="project" />
   </component>
 </module>

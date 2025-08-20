@@ -22,6 +22,7 @@ import javafx.stage.StageStyle;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class CorsoPage extends Stage {
 
@@ -32,7 +33,6 @@ public class CorsoPage extends Stage {
 
     private Controller controller;
     private Corso corso;
-    private Chef chef;
 
     public CorsoPage(Controller controller){
         this.controller = controller;
@@ -83,10 +83,8 @@ public class CorsoPage extends Stage {
         this.setScene(scene);
     }
 
-    public void initPage(Corso corso, Chef chef){
+    public void initPage(Corso corso){
         this.corso = corso;
-        this.chef = chef;
-
 
         // VBox per le info del corso
         VBox infoBox = new VBox(10); // spacing tra le righe
@@ -101,10 +99,14 @@ public class CorsoPage extends Stage {
         nomeCorso.setStyle("-fx-font-weight: bold;");
         infoBox.getChildren().add(nomeCorso);
 
+
         // Chef
+        controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso
+        corso.stampaChefs();
+
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");
-        Text chefValue = new Text(chef.getNome() + " " + chef.getCognome());
+        Text chefValue = new Text(corso.getStringOfChefs());
         chefLabel.setFont(Font.font(20));
         chefValue.setFont(Font.font(20));
         TextFlow nomeChef = new TextFlow(chefLabel, chefValue);

@@ -14,19 +14,19 @@ import java.util.ArrayList;
 public class AccountCorsiPanel extends BorderPane {
 
     private ScrollPane scrollPane;
-    private GridPane corsiGrid;
+    private VBox corsiBox;
     private HBox bottomBar;
     private Utente utente;
     private Controller controller;
 
     public AccountCorsiPanel(Controller controller) {
         this.controller = controller;
-        corsiGrid = new GridPane();
-        corsiGrid.setPadding(new Insets(10, 60, 10, 60));
-        corsiGrid.setHgap(120);
-        corsiGrid.setVgap(20);
 
-        scrollPane = new ScrollPane(corsiGrid);
+        corsiBox = new VBox(10);
+        corsiBox.setPadding(new Insets(10, 60, 10, 60));
+        corsiBox.setSpacing(20); // simile a Vgap
+
+        ScrollPane scrollPane = new ScrollPane(corsiBox);
         scrollPane.setPadding(new Insets(10));
         scrollPane.setBackground(null);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
@@ -43,18 +43,11 @@ public class AccountCorsiPanel extends BorderPane {
     public void initPanel(Utente utente){
         this.utente = utente;
         ArrayList<Corso> corsiUtente = utente.getCorsi();
-        int col = 0;
-        int row = 0;
         if (!corsiUtente.isEmpty()) {
             for (Corso corso : corsiUtente) {
-                CorsoPanel tempCorsoPanel = new CorsoPanel(controller);
-                tempCorsoPanel.setCorso(corso);
-                corsiGrid.add(tempCorsoPanel, col, row);
-                col++;
-                if (col >= 2) {
-                    col = 0;
-                    row++;
-                }
+                ElencoCorsiPanel corsoPan = new ElencoCorsiPanel(controller);
+                corsoPan.setCorso(corso);
+                corsiBox.getChildren().add(corsoPan);
             }
         } else {
             Label noCorsiLabel = new Label();
@@ -63,7 +56,7 @@ public class AccountCorsiPanel extends BorderPane {
             noCorsiLabel.setPadding(new Insets(10, 10, 10, 10));
             noCorsiLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 
-            corsiGrid.add(noCorsiLabel, 0, 0);
+            corsiBox.getChildren().add(noCorsiLabel);
         }
 
         bottomBar = createBottomBar(utente);

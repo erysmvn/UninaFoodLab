@@ -87,10 +87,8 @@ public class Controller {
                 existingPage.show();
             }
         } else {
-            ChefDAO chefDao = new ChefDAO(this);
-            Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
             CorsoPage corsoPage = new CorsoPage( this);
-            corsoPage.initPage(corso,chef);
+            corsoPage.initPage(corso);
             corsoPages.add(corsoPage);
 
             corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
@@ -197,6 +195,11 @@ public class Controller {
     public void getRicetteTrattate(Corso corso) {
         CorsoDAO corsoDao = new CorsoDAO(this);
         corsoDao.getRicetteTrattate(corso);
+    }
+
+    public void getChefs(Corso corso) {
+        CorsoDAO corsoDao = new CorsoDAO(this);
+        corsoDao.getChefs(corso);
     }
 
 

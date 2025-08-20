@@ -4,6 +4,7 @@ import Entity.*;
 import Controller.Controller;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -75,23 +76,25 @@ public class AccountCorsiPanel extends BorderPane {
                 CornerRadii.EMPTY,
                 new BorderWidths(1, 0, 0, 0)
         )));
+        bottomBar.setAlignment(Pos.CENTER);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         if (utente instanceof Studente) {
             Button iscrivitiButton = createIscrivitiButton();
-            Button disiscrivitiButton = createDisiscrivitiButton();
-            bottomBar.getChildren().addAll(iscrivitiButton,spacer, disiscrivitiButton);
+            iscrivitiButton.setOnAction(e -> {
+                this.setVisible(false); // come chiudo la finestra qui??????
+                this.setManaged(false);
+            });
+            bottomBar.getChildren().add(iscrivitiButton);
         } else if (utente instanceof Chef) {
             Button aggiungiButton = createAggiungiButton();
-            Button eliminaButton = createEliminaButton();
-            bottomBar.getChildren().addAll(aggiungiButton,spacer, eliminaButton);
+            bottomBar.getChildren().add(aggiungiButton);
         }
-
         return bottomBar;
     }
 
     private Button createIscrivitiButton() {
-        Button iscrivitiButton = new Button("Iscriviti");
+        Button iscrivitiButton = new Button("Iscriviti ad un corso");
         iscrivitiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
         this.setFocusPropreties(iscrivitiButton);
         this.setOnMouseTraverse(iscrivitiButton);
@@ -102,14 +105,6 @@ public class AccountCorsiPanel extends BorderPane {
         return iscrivitiButton;
     }
 
-    private Button createDisiscrivitiButton() {
-        Button disiscrivitiButton = new Button("Disiscriviti");
-        disiscrivitiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        this.setFocusPropreties(disiscrivitiButton);
-        this.setOnMouseTraverse(disiscrivitiButton);
-        return disiscrivitiButton;
-    }
-
     private Button createAggiungiButton() {
         Button aggiungiButton = new Button("Aggiungi");
         aggiungiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
@@ -117,15 +112,6 @@ public class AccountCorsiPanel extends BorderPane {
         this.setFocusPropreties(aggiungiButton);
         return aggiungiButton;
     }
-
-    private Button createEliminaButton() {
-        Button eliminaButton = new Button("Elimina");
-        eliminaButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        this.setFocusPropreties(eliminaButton);
-        this.setOnMouseTraverse(eliminaButton);
-        return eliminaButton;
-    }
-
 
     private void setOnMouseTraverse(Button button) {
         button.setOnMouseEntered(e -> {

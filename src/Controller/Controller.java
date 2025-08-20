@@ -182,6 +182,14 @@ public class Controller {
         }
     }
 
+    public void unsubscribeToCourse(Corso corso){
+        if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = new StudenteDAO(this);
+            studenteDao.unsubscribeToCourse(studente, corso);
+            studente.removeCorso(corso);
+        }
+    }
+
     public Boolean alreadySubscribed(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
@@ -190,6 +198,7 @@ public class Controller {
             return false;
         }
     }
+
 
     // Corso
     public void getRicetteTrattate(Corso corso) {

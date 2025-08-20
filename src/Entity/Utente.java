@@ -37,4 +37,7 @@ public class Utente {
     public void addCorso(Corso corso) {
         corsi.add(corso);
     }
+    public void removeCorso(Corso corso) {
+        corsi.remove(corso);
+    }
 }

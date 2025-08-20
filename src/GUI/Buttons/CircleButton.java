@@ -56,6 +56,7 @@ public class CircleButton  extends Button {
         this.setOnAction(e -> stage.close());
         return this;
     }
+
     public CircleButton setToCloseButtonWithAction(EventHandler<ActionEvent> action) {
         this.setToCloseButton();
         this.setOnAction(action);

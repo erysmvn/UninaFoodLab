@@ -105,6 +105,19 @@ public class StudenteDAO implements StudenteDAOInterface {
         }
     }
 
+    public void unsubscribeToCourse(Studente studente, Corso corso){
+        try {
+            String sql = "DELETE FROM segue WHERE matricola = ? AND idcorso = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, studente.getMatricola());
+            stmt.setInt(2, corso.getIdCorso());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'eliminazione dell'iscrizione al corso", e);
+        }
+    }
+
     public Boolean checkIfSubscribed(Studente studente, Corso corso) {
         try {
             String sql = "SELECT COUNT(*) FROM segue WHERE matricola = ? AND idcorso = ?";
@@ -121,7 +134,7 @@ public class StudenteDAO implements StudenteDAOInterface {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Errore durante l'iscrizione al corso", e);
+            throw new RuntimeException("Errore durante la verifica di iscrizione al corso", e);
         }
         return false;
     }

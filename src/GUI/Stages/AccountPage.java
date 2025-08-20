@@ -234,7 +234,7 @@ public class AccountPage extends Stage {
         button.setFocusTraversable(true);
         button.focusedProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
+                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
                 button.setBorder(new Border(new BorderStroke(
                         Color.valueOf("#3A6698"),
                         BorderStrokeStyle.SOLID,

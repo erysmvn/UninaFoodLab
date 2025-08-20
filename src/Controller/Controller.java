@@ -5,7 +5,6 @@ import DB.DBConnection;
 import GUI.Stages.*;
 import GUI.Pane.*;
 import DAO.*;
-
 import javafx.application.*;
 import java.sql.SQLException;
 import java.util.ArrayList;

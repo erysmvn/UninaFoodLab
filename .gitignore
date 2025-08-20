@@ -34,10 +34,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Build Tools ###
-target/
-build/
-
 ### Windows ###
 Thumbs.db
 ehthumbs.db
@@ -55,4 +51,4 @@ Desktop.ini
 ./UninaFoodLab/UninaFoodLab.iml
 ./.idea
 .idea/workspace.xml
-*.iml
+

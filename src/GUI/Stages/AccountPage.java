@@ -4,7 +4,6 @@ import Controller.Controller;
 import Entity.*;
 import GUI.Pane.*;
 import GUI.Buttons.*;
-
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;
@@ -17,31 +16,38 @@ public class AccountPage extends Stage {
     Controller controller;
     Scene scene;
     BorderPane root;
+    StackPane content;
+
     Button impostazioniButton;
     Button accountButton;
     Button corsiButton;
+    Button calendarButton;
+    Button clickedButton;
+
+    
     VBox impostazioniPanel;
     VBox accountPanel;
-    StackPane content;
     BorderPane accountCorsiPanel;
+    CalendarioPanel calendarioPanel;
+
     Utente utente;
+
 
 
     public
 
-    AccountPage(Controller controller) {
+    AccountPage(Controller controller){
+
         this.controller = controller;
         this.initStyle(StageStyle.TRANSPARENT);
+
         root = createRoot();
         content = new StackPane();
         content.setStyle("-fx-background-color: WHITE;");
 
-        HBox topBar = createTopBar();
-        root.setTop(topBar);
-        root.setCenter(content);
-
         scene = new Scene(root, 1050,750);
         scene.setFill(Color.TRANSPARENT);
+
         scene.setOnKeyPressed(event -> {
             if(event.isControlDown() && event.getCode() == KeyCode.W){
                 this.close();
@@ -49,17 +55,77 @@ public class AccountPage extends Stage {
         });
 
         this.setScene(scene);
-
     }
 
     public void initPage(Utente utente){
         this.utente = utente;
+
         accountPanel = createAccountPanel(utente);
         accountCorsiPanel = createAccountCorsiPanel(controller);
         impostazioniPanel = new ImpostazioniPanel(controller);
-        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel);
+        calendarioPanel = new CalendarioPanel();
+        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel,calendarioPanel);
+
+        HBox topBar = createTopBar();
+        root.setTop(topBar);
+        root.setCenter(content);
 
     }
+
+
+    private Button createCalendarButton(){
+
+        Button calendarButton = new Button("Calendario");
+        setFocusPropreties(calendarButton);
+        setOnMouseTraverse(calendarButton, calendarioPanel);
+
+        initButton(calendarButton,calendarioPanel);
+
+        return calendarButton;
+    }
+
+
+    private void initButton(Button button, Pane panel) {
+        setFocusPropreties(button);
+        setOnMouseTraverse(button,panel);
+        button.setOnAction(e -> {
+            setButtonAsActive(button);
+            hideOthersPanel(panel);
+        });
+    }
+
+    private void setButtonAsActive(Button button) {
+        clickedButton = button;
+
+        if(clickedButton != accountButton) setNotCLickedAesthetics(accountButton);
+        else setClickedAesthetics(accountButton);
+
+        if(clickedButton != corsiButton) setNotCLickedAesthetics(corsiButton);
+        else setClickedAesthetics(corsiButton);
+
+        if(clickedButton != impostazioniButton) setNotCLickedAesthetics(impostazioniButton);
+        else setClickedAesthetics(impostazioniButton);
+
+        if(clickedButton != calendarButton) setNotCLickedAesthetics(calendarButton);
+        else setClickedAesthetics(calendarButton);
+
+    }
+
+    private void setNotCLickedAesthetics(Button button) {
+        button.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
+        button.setBorder(Border.EMPTY);
+    }
+
+    private void setClickedAesthetics(Button button) {
+        button.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698;");
+        button.setBorder(new Border(new BorderStroke(
+                Color.valueOf("#3A6698"),
+                BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY,
+                new BorderWidths(0, 0, 1, 0)
+        )));
+    }
+
 
 
 
@@ -114,6 +180,7 @@ public class AccountPage extends Stage {
         accountButton = createAccountButton();
         corsiButton = createCorsiButton();
         impostazioniButton = createImpostazioniButton();
+        calendarButton = createCalendarButton();
 
         CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
         CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -121,133 +188,93 @@ public class AccountPage extends Stage {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBar.getChildren().addAll(accountButton, corsiButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
+        topBar.getChildren().addAll(accountButton, corsiButton, impostazioniButton,calendarButton, spacer, minimizeBtn, closeBtn);
 
         return  topBar;
     }
 
     private Button createAccountButton(){
         Button accountButton = new Button("Account");
-        accountButton.setTextFill(Color.valueOf("#3A6698"));
-        accountButton.setStyle("-fx-background-color:WHITE;");
-        accountButton.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(0,0,1, 0)
-        )));
-        accountButton.setOnAction(e -> {
-            accountButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698;");
-            accountButton.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    new BorderWidths(0,0,1, 0)
-            )));
-            corsiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            impostazioniButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            accountPanel.setVisible(true);
-            accountPanel.setManaged(true);
-            impostazioniPanel.setVisible(false);
-            impostazioniPanel.setManaged(false);
-            accountCorsiPanel.setVisible(false);
-            accountCorsiPanel.setManaged(false);
-        });
-
-        this.setFocusPropreties(accountButton);
-        this.setOnMouseTraverse(accountButton,accountPanel);
-
+        setClickedAesthetics(accountButton);
+        initButton(accountButton,accountPanel);
+        clickedButton = accountButton;
         return accountButton;
     }
     private Button createCorsiButton(){
         Button corsiButton = new Button("Corsi");
-        corsiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        corsiButton.setOnAction(e -> {
-            corsiButton.setStyle("-fx-background-color: WHITE; -fx-text-fill:#3A6698;");
-            corsiButton.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    new BorderWidths(0,0,1, 0)
-            )));
-            accountButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            impostazioniButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            accountPanel.setVisible(false);
-            accountPanel.setManaged(false);
-            impostazioniPanel.setVisible(false);
-            impostazioniPanel.setManaged(false);
-            accountCorsiPanel.setVisible(true);
-            accountCorsiPanel.setManaged(true);
-        });
-
-        this.setFocusPropreties(corsiButton);
-        this.setOnMouseTraverse(corsiButton, accountCorsiPanel);
+        setNotCLickedAesthetics(corsiButton);
+        initButton(corsiButton,accountCorsiPanel);
         return corsiButton;
     }
     private Button createImpostazioniButton(){
         Button impostazioniButton = new Button("Impostazioni");
-        impostazioniButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        impostazioniButton.setOnAction(e -> {
-            impostazioniButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698;");
-            impostazioniButton.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    new BorderWidths(0,0,1, 0)
-            )));
-            corsiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            accountButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            impostazioniPanel.setVisible(true);
-            impostazioniPanel.setManaged(true);
-            accountPanel.setVisible(false);
-            accountPanel.setManaged(false);
-            accountCorsiPanel.setVisible(false);
-            accountCorsiPanel.setManaged(false);
-        });
-
-        this.setFocusPropreties(impostazioniButton);
-        this.setOnMouseTraverse(impostazioniButton, impostazioniPanel);
+        setNotCLickedAesthetics(impostazioniButton);
+        initButton(impostazioniButton,accountPanel);
         return impostazioniButton;
     }
 
-
     private void setOnMouseTraverse(Button button, Pane panel) {
         button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0, 0, 1, 0)
-                    )));
+                    setClickedAesthetics(button);
                 }
         );
+
         button.setOnMouseExited(e -> {
-                    if(!panel.isVisible()){
-                        button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                    }
-                }
-        );
+                if(clickedButton != button)
+                    setNotCLickedAesthetics(button);
+        });
     }
 
     private void setFocusPropreties(Button button) {
         button.setFocusTraversable(true);
         button.focusedProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                button.setBorder(new Border(new BorderStroke(
-                        Color.valueOf("#3A6698"),
-                        BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY,
-                        new BorderWidths(0, 0, 1, 0)
-                )));
+                setNotCLickedAesthetics(button);
                 button.fire();
             } else {
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                setNotCLickedAesthetics(button);
             }
 
         });
 
     }
+    
+    private void hideOthersPanel(Pane panel){
+
+        if(panel instanceof AccountPanel) {
+            calendarioPanel.setVisible(false);
+            calendarioPanel.setManaged(false);
+            impostazioniPanel.setVisible(false);
+            impostazioniPanel.setManaged(false);
+            accountCorsiPanel.setVisible(false);
+            accountCorsiPanel.setManaged(false);
+        }else if (panel instanceof CalendarioPanel){
+            impostazioniPanel.setVisible(false);
+            impostazioniPanel.setManaged(false);
+            accountCorsiPanel.setVisible(false);
+            accountCorsiPanel.setManaged(false);
+            accountPanel.setVisible(false);
+            accountPanel.setManaged(false);
+        }else if( panel instanceof ImpostazioniPanel){
+            accountCorsiPanel.setVisible(false);
+            accountCorsiPanel.setManaged(false);
+            accountPanel.setVisible(false);
+            accountPanel.setManaged(false);
+            calendarioPanel.setVisible(false);
+            calendarioPanel.setManaged(false);
+        }else if (panel instanceof AccountCorsiPanel) {
+            impostazioniPanel.setVisible(false);
+            impostazioniPanel.setManaged(false);
+            calendarioPanel.setVisible(false);
+            calendarioPanel.setManaged(false);
+            accountPanel.setVisible(false);
+            accountPanel.setManaged(false);
+        }
+
+        panel.setVisible(true);
+        panel.setManaged(true);
+
+    }
+
 
 }

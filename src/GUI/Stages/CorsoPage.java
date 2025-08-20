@@ -133,16 +133,21 @@ public class CorsoPage extends Stage {
                 this.close();
             } else {
                 controller.subscribeToCourse(corso);
+                setIscrittoCorso(subscribeButton);
             }
         });
 
         if (controller.alreadySubscribed(corso)) {
-            subscribeButton.setText("Iscritto");
-            subscribeButton.setDisable(true);
-            subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+            setIscrittoCorso(subscribeButton);
         }
 
         return subscribeButton;
+    }
+
+    private void setIscrittoCorso(Button subscribeButton) {
+        subscribeButton.setText("Iscritto");
+        subscribeButton.setDisable(true);
+        subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
     }
 
     private Button createCloseButton() {

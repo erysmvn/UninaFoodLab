@@ -16,20 +16,39 @@ public class AccountCorsiPanel extends BorderPane {
     private ScrollPane scrollPane;
     private GridPane corsiGrid;
     private HBox bottomBar;
+    private Utente utente;
+    private Controller controller;
 
-    public AccountCorsiPanel(Utente utente, Controller controller) {
-
+    public AccountCorsiPanel(Controller controller) {
+        this.controller = controller;
         corsiGrid = new GridPane();
         corsiGrid.setPadding(new Insets(10, 60, 10, 60));
         corsiGrid.setHgap(120);
         corsiGrid.setVgap(20);
 
+        scrollPane = new ScrollPane(corsiGrid);
+        scrollPane.setPadding(new Insets(10));
+        scrollPane.setBackground(null);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setFitToWidth(true);
+
+        this.setCenter(scrollPane);
+
+        this.setVisible(false);
+        this.setManaged(false);
+    }
+
+    public void initPanel(Utente utente){
+        this.utente = utente;
         ArrayList<Corso> corsiUtente = utente.getCorsi();
         int col = 0;
         int row = 0;
-        if (corsiUtente.size() > 0) {
+        if (!corsiUtente.isEmpty()) {
             for (Corso corso : corsiUtente) {
-                CorsoPanel tempCorsoPanel = new CorsoPanel(corso, controller);
+                CorsoPanel tempCorsoPanel = new CorsoPanel(controller);
+                tempCorsoPanel.setCorso(corso);
                 corsiGrid.add(tempCorsoPanel, col, row);
                 col++;
                 if (col >= 2) {
@@ -47,23 +66,12 @@ public class AccountCorsiPanel extends BorderPane {
             corsiGrid.add(noCorsiLabel, 0, 0);
         }
 
-        scrollPane = new ScrollPane(corsiGrid);
-        scrollPane.setPadding(new Insets(10));
-        scrollPane.setBackground(null);
-        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setFitToWidth(true);
-
-        this.setCenter(scrollPane);
-
         bottomBar = createBottomBar(utente);
         this.setBottom(bottomBar);
         BorderPane.setMargin(bottomBar, new Insets(10));
 
-        this.setVisible(false);
-        this.setManaged(false);
     }
+
 
     private HBox createBottomBar(Utente utente) {
         HBox bottomBar = new HBox(10);

@@ -24,19 +24,17 @@ public class AccountPage extends Stage {
     VBox accountPanel;
     StackPane content;
     BorderPane accountCorsiPanel;
+    Utente utente;
 
 
-    public AccountPage(Utente utente, Controller controller) {
+    public
+
+    AccountPage(Controller controller) {
         this.controller = controller;
         this.initStyle(StageStyle.TRANSPARENT);
         root = createRoot();
-
         content = new StackPane();
         content.setStyle("-fx-background-color: WHITE;");
-        accountPanel = createAccountPanel(utente);
-        accountCorsiPanel = createAccountCorsiPanel(utente, controller);
-        impostazioniPanel = new ImpostazioniPanel(controller);
-        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel);
 
         HBox topBar = createTopBar();
         root.setTop(topBar);
@@ -53,6 +51,17 @@ public class AccountPage extends Stage {
         this.setScene(scene);
 
     }
+
+    public void initPage(Utente utente){
+        this.utente = utente;
+        accountPanel = createAccountPanel(utente);
+        accountCorsiPanel = createAccountCorsiPanel(controller);
+        impostazioniPanel = new ImpostazioniPanel(controller);
+        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel);
+
+    }
+
+
 
     private BorderPane createRoot(){
         root = new BorderPane();
@@ -83,8 +92,9 @@ public class AccountPage extends Stage {
         return accountPanel;
     }
 
-    private AccountCorsiPanel createAccountCorsiPanel(Utente utente, Controller controller){
-        AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(utente, this.controller);
+    private AccountCorsiPanel createAccountCorsiPanel( Controller controller){
+        AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(this.controller);
+        accountCorsiPanel.initPanel(utente);
         return accountCorsiPanel;
     }
 

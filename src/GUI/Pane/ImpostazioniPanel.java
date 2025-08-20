@@ -14,6 +14,7 @@ import java.util.Objects;
 public class ImpostazioniPanel extends VBox {
     Controller controller;
     public ImpostazioniPanel(Controller controller) {
+        this.controller = controller;
         this.setSpacing(20);
         this.setPadding(new Insets(30));
         this.setAlignment(Pos.CENTER_LEFT);
@@ -26,7 +27,6 @@ public class ImpostazioniPanel extends VBox {
             controller.logOut();
 
         });
-
 
 
         this.getChildren().addAll(

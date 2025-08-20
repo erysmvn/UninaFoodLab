@@ -26,20 +26,42 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
 
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) {
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso){
+        nomeCorso = nomeCorso.toUpperCase();
         String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%' LIMIT 4";
         ArrayList<Corso> corsi = new ArrayList<>();
         try {
 
             Statement tempStmt = dbc.getStatement();
-            ResultSet tempRs = tempStmt.executeQuery(sql);
-            while (tempRs.next()) {
-                corsi.add(this.getCorsoByTitle(tempRs.getString("nome_corso")));
+            ResultSet rs = tempStmt.executeQuery(sql);
+            Corso corso;
+
+            while (rs.next()) {
+               corsi.add(corso=new Corso(
+                       rs.getInt("idcorso"),
+                       rs.getString("nome_corso"),
+                       rs.getInt("numerosessioni"),
+                       rs.getFloat("ore_totali"),
+                       rs.getInt("frequenza_settimanale"),
+                       rs.getDate("datainizio"),
+                       rs.getDate("datafine"),
+                       rs.getFloat("costo"),
+                       ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                       Difficolta.valueOf(rs.getString("difficolta") ),
+                       rs.getString("desc_corso")
+               ));
+               corso.setImagePath( this.buildPath(rs.getString("nome_corso") ) );
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
         return corsi;
+    }
+
+    private String buildPath(String nomeCorso){
+        nomeCorso = nomeCorso.replaceAll("\\s+", "");
+        String path = "/Images/"+nomeCorso+".png";
+        return path;
     }
 
     public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
@@ -49,9 +71,9 @@ public class CorsoDAO implements CorsoDAOInterface {
                 "GROUP BY corso.idCorso, corso.nome_corso " +
                 "ORDER BY NumStudenti DESC LIMIT " + numeroCorsi;
 
-        try (Statement stmtLocal = con.createStatement();
-             ResultSet rsLocal = stmtLocal.executeQuery(sql)) {
-
+        try {
+            Statement stmtLocal = con.createStatement();
+            ResultSet rsLocal = stmtLocal.executeQuery(sql);
             while (rsLocal.next()) {
                 Corso corso = getCorsoByTitle(rsLocal.getString("nome_corso"));
                 if (corso != null) {

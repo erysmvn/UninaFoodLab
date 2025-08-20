@@ -110,7 +110,7 @@ public class StudenteDAO implements StudenteDAOInterface {
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setString(1, studente.getMatricola());
-            stmt.setInt(2, corso.getIdcorso());
+            stmt.setInt(2, corso.getIdCorso());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

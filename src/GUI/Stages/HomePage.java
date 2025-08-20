@@ -6,7 +6,10 @@ import Entity.*;
 import GUI.Pane.*;
 import GUI.Buttons.*;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -15,12 +18,11 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.*;
-
 import javafx.util.Duration;
-import jdk.jshell.ImportSnippet;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -32,13 +34,18 @@ public class HomePage extends Stage {
     private HBox loginButtons;
     private Boolean isLoggedIn = false;
     private Boolean isChef = false;
-    private HBox corsiBox;
+    private HBox corsiBox;;
     private ArrayList<Corso> corsi;
+    private Timeline AnimazioneRicerca;
+    private CorsoDAO corsoDAO;
+    private TextField searchField;
+    private Button searchButton;
 
     public HomePage(Controller controller) {
         this.controller = controller;
         setFunctionalitiesHomePage();
         setAestheticsHomePage();
+        this.setCTRLW();
     }
 
 
@@ -46,9 +53,7 @@ public class HomePage extends Stage {
         root = new BorderPane();
         root.setTop(createTopBar());
         root.setCenter(createCenterContent());
-        scene = new Scene(root, 800, 600);
-        this.setScene(scene);
-        this.setCTRLW();
+
     }
 
     private void setCTRLW(){
@@ -67,11 +72,13 @@ public class HomePage extends Stage {
         this.setWidth(screenBounds.getWidth());
         this.setHeight(screenBounds.getHeight());
 
+        scene = new Scene(root, 800, 600);
+        this.setScene(scene);
+
     }
 
 
-    private VBox createTopBar() {
-        VBox topBar = new VBox();
+    private void setTopBarAesthetics(VBox topBar){
         topBar.setPadding(new Insets(10));
         topBar.setSpacing(20);
         topBar.setStyle("-fx-background-color: WHITE;");
@@ -81,8 +88,10 @@ public class HomePage extends Stage {
                 CornerRadii.EMPTY,
                 new BorderWidths(0,0,2,0)
         )));
+    }
 
-        BorderPane closePane = new BorderPane();
+    private BorderPane createCloseAndMinimizePane(){
+        BorderPane closeAndMinimizePane = new BorderPane();
         HBox controlButtons = new HBox(5);
         controlButtons.setAlignment(Pos.TOP_RIGHT);
 
@@ -92,10 +101,12 @@ public class HomePage extends Stage {
                     controller.endAll();
                 })
         );
+        closeAndMinimizePane.setRight(controlButtons);
+        return closeAndMinimizePane;
+    }
 
-        closePane.setRight(controlButtons);
-
-        Label uninaFoodLabel = new Label("UNINA FOOD LAB");
+    private Label createUninaFoodLabel(){
+        Label uninaFoodLabel = new Label(" UNINA FOOD LAB");
         uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
         Font timesNewRoman = Font.loadFont(
                 getClass().getResourceAsStream("/Images/times.ttf"),
@@ -104,10 +115,18 @@ public class HomePage extends Stage {
 
         uninaFoodLabel.setFont(timesNewRoman);
         uninaFoodLabel.setAlignment(Pos.CENTER);
+        return uninaFoodLabel;
+    }
 
+    private VBox createTopBar() {
+        VBox topBar = new VBox();
+        this.setTopBarAesthetics(topBar);
+
+        BorderPane closeAndMinimizePane = createCloseAndMinimizePane();
+        Label uninaFoodLabel = createUninaFoodLabel();
         loginButtons = createLoginButtonsBox();
 
-        topBar.getChildren().addAll(closePane, createLogoView(), uninaFoodLabel, loginButtons);
+        topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), uninaFoodLabel, loginButtons);
         topBar.setAlignment(Pos.TOP_CENTER);
 
         return topBar;
@@ -167,8 +186,14 @@ public class HomePage extends Stage {
     }
 
     private Button createSearchButton(){
-        Button searchButton = new Button("🔍");
-        searchButton.setStyle("-fx-font-size: 30px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: TRANSPARENT;");
+        searchButton = new Button("🔍");
+        searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE;");
+        searchButton.setBorder(new Border(new BorderStroke(
+                Color.valueOf("#3A6698"),
+                BorderStrokeStyle.SOLID,
+                new CornerRadii(7),
+                new BorderWidths(1.5)
+        )));
         searchButton.setFocusTraversable(true);
         searchButton.setMaxHeight(30);
         searchButton.setPrefHeight(30);
@@ -176,69 +201,171 @@ public class HomePage extends Stage {
         return  searchButton;
     }
 
+    private void setSearchFieldAesthetics(TextField field){
+        field.setFont(Font.font("Arial", 26));
+        field.setPrefHeight(30);
+        field.setPrefWidth(600);
+        field.setPromptText("Cerca un corso");
+        field.setBorder(new Border(new BorderStroke(
+                Color.valueOf("#3A6698"),
+                BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY,
+                new BorderWidths(1)
+        )));
+    }
+
+    private void setSearchButtonOnAction(Button searchButton) {
+        PauseTransition pause = new PauseTransition(Duration.seconds(6));
+
+        searchButton.setOnAction(Click -> {
+
+            corsiBox.getChildren().clear();
+
+            this.setLoadingPane();
+
+            pause.setOnFinished(pauseEnded -> {
+                AnimazioneRicerca.stop();
+                String nomeCorso = searchField.getText();
+
+                if (!nomeCorso.isEmpty()) {
+                    corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
+
+                    corsiBox.getChildren().clear();
+
+                    if (corsi.isEmpty()) {
+                        this.setNotFoundTextField();
+                    } else {
+                        CorsoPanel tempCorsoPanel;
+                        for (Corso corso : corsi) {
+                            tempCorsoPanel = new CorsoPanel(this.controller);
+                            tempCorsoPanel.setCorso(corso);
+                            corsiBox.getChildren().add(tempCorsoPanel);
+                        }
+                    }
+
+                } else {
+                    this.loadTopCorsi(corsoDAO);
+                }
+            });
+
+
+            pause.play();
+        });
+
+    }
     private HBox createSearchBar() {
 
         HBox searchBar = new HBox(10);
         searchBar.setPadding(new Insets(20));
         searchBar.setAlignment(Pos.TOP_CENTER);
 
-        TextField searchField = new TextField();
-        searchField.setFont(Font.font("Arial", 26));
 
-        searchField.setPrefHeight(30);
-        searchField.setPrefWidth(600);
-
-        searchField.setPromptText("Cerca un corso");
-        searchField.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1)
-        )));
-
-        searchField.setFocusTraversable(true);
         Button searchButton = createSearchButton();
+        this.setSearchButtonOnAction(searchButton);
 
-        CorsoDAO corsoDAO = new CorsoDAO(controller);
-        PauseTransition pause = new PauseTransition(Duration.seconds(10));
-
-
-        searchButton.setOnMouseClicked(e -> {
-            pause.setOnFinished(event->{
-                String nomeCorso = searchField.getText().toUpperCase();
-                if(!nomeCorso.isEmpty()){
-                    corsiBox.getChildren().clear();
-                    corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
-                    for(Corso corso : corsi){
-                        corsiBox.getChildren().add(new CorsoPanel(corso,controller ) );
-                    }
-                }
-            });
-
-            pause.play();
-
-        });
-
-        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
-            String sql = "SELECT * FROM corso WHERE nome_corso LIKE '%" + newValue + "%'";
-        });
+        searchField = new TextField();
+        this.setSearchFieldAesthetics(searchField);
+        this.setSearchFieldProprieties(searchField);
 
         searchBar.getChildren().addAll(searchField,searchButton);
 
         return searchBar;
     }
 
+    private void setSearchFieldProprieties(TextField searchField){
+
+        searchField.setFocusTraversable(true);
+        searchField.setOnKeyPressed(e->{
+            if(e.getCode() == KeyCode.ENTER)
+                    searchButton.fire();
+
+        });
+        searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && searchField.getText().isEmpty()) {
+               this.loadTopCorsi(corsoDAO);
+            }
+        });
+
+    }
+
+    private void setLoadingPane(){
+
+        StackPane loadingPane = new StackPane();
+        loadingPane.setPadding(new Insets(20));
+        Rectangle background = new Rectangle(600, 150);
+        background.setArcWidth(30);
+        background.setArcHeight(30);
+        background.setFill(Color.rgb(255, 255, 255, 0.85));
+
+        corsiBox.getChildren().add(loadingPane);
+        Text caricamentoText = new Text();
+        this.setTextAesthetics(caricamentoText);
+        AnimazioneRicerca = startAnimation(caricamentoText);
+
+        loadingPane.getChildren().addAll(background, caricamentoText);
+
+    }
+
+    private void setTextAesthetics(Text text){
+        text.setFill(Color.valueOf("#3A6698"));
+        text.setFont(
+                Font.loadFont(getClass().getResourceAsStream("/Images/times.ttf"), 70)
+        );
+    }
+
+    private Timeline startAnimation(Text caricamentoText){
+      Timeline AnimazionePuntini = new Timeline(
+                new KeyFrame(Duration.seconds(0), e -> caricamentoText.setText("Ricerca in corso")),
+                new KeyFrame(Duration.seconds(0.3), e -> caricamentoText.setText("Ricerca in corso.")),
+                new KeyFrame(Duration.seconds(0.6), e -> caricamentoText.setText("Ricerca in corso..")),
+                new KeyFrame(Duration.seconds(0.9), e -> caricamentoText.setText("Ricerca in corso...")),
+                new KeyFrame(Duration.seconds(1.2), e -> caricamentoText.setText("Ricerca in corso..."))
+        );
+        AnimazionePuntini.setCycleCount(Animation.INDEFINITE);
+        AnimazionePuntini.play();
+
+        return AnimazionePuntini;
+    }
+
+
+
+    private void setNotFoundTextField() {
+        Text notFound = new Text("Nessun corso trovato");
+        this.setTextAesthetics(notFound);
+        StackPane notFoundPane = new StackPane();
+        Rectangle bg = new Rectangle(600, 150);
+        bg.setArcWidth(30);
+        bg.setArcHeight(30);
+        bg.setFill(Color.rgb(255, 255, 255, 0.85));
+        notFoundPane.getChildren().addAll(bg, notFound);
+        corsiBox.getChildren().add(notFoundPane);
+    }
+
+    private void loadTopCorsi(CorsoDAO corsoDAO) {
+        corsiBox.getChildren().clear();
+        ArrayList<Corso> topCorsi = corsoDAO.getCorsiConPiuStudenti(4);
+        CorsoPanel tempCorsoPanel;
+
+        for (Corso corso : topCorsi) {
+            tempCorsoPanel = new CorsoPanel(this.controller);
+            tempCorsoPanel.setCorso(corso);
+            corsiBox.getChildren().add(tempCorsoPanel);
+        }
+    }
 
     private HBox createCorsiContainer() {
         corsiBox = new HBox(20);
         corsiBox.setAlignment(Pos.TOP_CENTER);
         corsiBox.setPadding(new Insets(20));
-
-        CorsoDAO corsoDAO = new CorsoDAO(controller);
+        //TODO oppure una funzione in controller getCorsiConPiuStudenti????
+        //---------------------------------------------------
+        corsoDAO = controller.getCorsoDAO();
         ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
+        // --------------------------------------------------
         CorsoPanel tempCorsoPanel;
         for(Corso c: corsi){
-            tempCorsoPanel = new CorsoPanel(c, controller);
+            tempCorsoPanel = new CorsoPanel(controller);
+            tempCorsoPanel.setCorso(c);
             corsiBox.getChildren().add(tempCorsoPanel);
         }
         return corsiBox;
@@ -249,18 +376,15 @@ public class HomePage extends Stage {
         center.setPadding(new Insets(20));
         center.setAlignment(Pos.TOP_CENTER);
 
-        // --- Sfondo del center ---
-
         Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoBianco.png")).toExternalForm());
 
         BackgroundSize backgroundSize = new BackgroundSize(
-                BackgroundSize.AUTO, // larghezza originale
-                BackgroundSize.AUTO, // altezza originale
-                false, // width proporzionale? no
-                false, // height proporzionale? no
-                true,  // mantieni proporzioni
-                false  // non ingrandire oltre la dimensione originale
-
+                BackgroundSize.AUTO,
+                BackgroundSize.AUTO,
+                false,
+                false,
+                true,
+                false
         );
 
         BackgroundImage backgroundImage = new BackgroundImage(
@@ -273,21 +397,14 @@ public class HomePage extends Stage {
 
         center.setBackground(new Background(backgroundImage));
 
-        // --- Ombra e profondità del center ---
-        DropShadow dropShadowCenter = new DropShadow(20, Color.rgb(0, 0, 0, 0.3));
-        InnerShadow innerShadowCenter = new InnerShadow(10, Color.rgb(0, 0, 0, 0.2));
 
-
-        // --- Barra di ricerca ---
         HBox searchBar = createSearchBar();
 
-        // --- Contenitore corsi ---
         HBox corsoRow = new HBox(20);
         corsoRow.setAlignment(Pos.CENTER);
 
-        HBox corsiBox = createCorsiContainer();
+        corsiBox = createCorsiContainer();
 
-        // Ombra esterna dei pannelli interni
         for (Node node : corsiBox.getChildren()) {
             if (node instanceof Region) {
                 DropShadow dropShadowPanel = new DropShadow(10, Color.rgb(0, 0, 0, 0.3));

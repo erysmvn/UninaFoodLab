@@ -51,6 +51,16 @@ public class Controller {
         return homePage.isLoggedIn();
     }
 
+    public CorsoDAO getCorsoDAO(){
+        return new CorsoDAO(this);
+    }
+    public ChefDAO getChefDAO(){
+        return new ChefDAO(this);
+    }
+    public StudenteDAO getStudenteDAO(){
+        return new StudenteDAO(this);
+    }
+
     public void tryLoginChef(String sql) throws SQLException{
         ChefDAO chefDao = new ChefDAO(this);
         Chef chef = chefDao.tryLogin(sql);
@@ -106,16 +116,27 @@ public class Controller {
         }
     }
 
-    public void openCorsoPage(Corso corso, Controller controller) {
-        ChefDAO chefDao = new ChefDAO(this);
+        public void openCorsoPage(Corso corso){
+            CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
 
-        System.out.println(corso.getNome());
-        Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
-        System.out.println(chef.getNome());
-        CorsoPage corsoPage = new CorsoPage(corso, chef, this);
+            if(existingPage != null){
+                if(existingPage.isShowing()){
+                    existingPage.toFront();
+                } else {
+                    existingPage.show();
+                }
+            } else {
+                ChefDAO chefDao = new ChefDAO(this);
+                Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
+                CorsoPage corsoPage = new CorsoPage( this);
+                corsoPage.initPage(corso,chef);
+                corsoPages.add(corsoPage);
 
-        corsoPage.show();
-    }
+                corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
+
+                corsoPage.show();
+            }
+        }
 
     private CorsoPage isCorsoPageAlreadyOpened(Corso c){
         for(CorsoPage cp : corsoPages){
@@ -126,23 +147,10 @@ public class Controller {
         return null;
 
     }
-
-    public void openCorsoPage(Corso corso){
-        CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
-
-        if(existingPage != null && existingPage.isShowing()){
-            existingPage.toFront();
-        } else {
-            ChefDAO chefDao = new ChefDAO(this);
-            Chef chef = chefDao.getChefByNomeCorso(corso.getNome());
-            CorsoPage corsoPage = new CorsoPage(corso, chef, this);
-            corsoPages.add(corsoPage);
-            corsoPage.show();
-        }
-    }
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
-            accountPage = new AccountPage(utente,this);
+            accountPage = new AccountPage(this);
+            accountPage.initPage(utente);
             accountPage.show();
         } else {
             accountPage.toFront();
@@ -163,8 +171,6 @@ public class Controller {
             StudenteDAO studenteDao = new StudenteDAO(this);
             studenteDao.subscribeToCourse(studente, corso);
             studente.addCorso(corso);
-        } else {
-            return;
         }
     }
 

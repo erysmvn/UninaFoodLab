@@ -67,6 +67,7 @@ public class Controller {
         if(chef != null){
             homePage.becomeHomePageChef(chef);
             this.utente = chef;
+            this.corsoPages.clear();
         }
     }
 
@@ -76,6 +77,8 @@ public class Controller {
         if(ch != null) {
             homePage.becomeHomePageChef(ch);
             this.utente = ch;
+            this.corsoPages.clear();
+
         }
     }
 
@@ -85,6 +88,7 @@ public class Controller {
         if(studente != null) {
             homePage.becomeHomePageStudente(studente);
             this.utente = studente;
+            this.corsoPages.clear();
         }
     }
 

@@ -2,13 +2,14 @@ package DAO;
 
 import Controller.Controller;
 import DAO.Interfaces.CorsoDAOInterface;
-import Entity.Chef;
-import Entity.Corso;
+import Entity.*;
 import DB.DBConnection;
 import Entity.Enum.*;
-import Entity.Ricetta;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CorsoDAO implements CorsoDAOInterface {
@@ -17,8 +18,6 @@ public class CorsoDAO implements CorsoDAOInterface {
     ResultSet rs;
     Connection con;
     Controller controller;
-
-
 
     public CorsoDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
@@ -39,20 +38,8 @@ public class CorsoDAO implements CorsoDAOInterface {
             Corso corso;
 
             while (rs.next()) {
-               corsi.add(corso=new Corso(
-                       rs.getInt("idcorso"),
-                       rs.getString("nome_corso"),
-                       rs.getInt("numerosessioni"),
-                       rs.getFloat("ore_totali"),
-                       rs.getInt("frequenza_settimanale"),
-                       rs.getDate("datainizio"),
-                       rs.getDate("datafine"),
-                       rs.getFloat("costo"),
-                       ModalitaCorso.getFromString( rs.getString("modcorso") ),
-                       Difficolta.valueOf(rs.getString("difficolta") ),
-                       rs.getString("desc_corso")
-               ));
-               corso.setImagePath( this.buildPath(rs.getString("nome_corso") ) );
+               corsi.add(createCorsoByResultSet(rs));
+
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -90,6 +77,71 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
+
+    private ArrayList<Sessione> getSessioniCorso(String nomeCorso)throws SQLException{
+        ArrayList<Sessione> sessioni = new ArrayList<>();
+
+        String sql = "SELECT * FROM corso NATURAL JOIN tiene NATURAL JOIN sessione WHERE nome_corso = ?";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, nomeCorso);
+        ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                sessioni.add(createSessioneByResultSet(rs));
+            }
+
+        return sessioni;
+    }
+
+    private Sessione createSessioneByResultSet(ResultSet rs) throws SQLException {
+        Sessione sessione = null;
+        String modalita = rs.getString("modalita");
+
+        LocalDate data = rs.getDate("data").toLocalDate();
+        LocalTime ora = rs.getTime("ora").toLocalTime();
+        LocalDateTime orario = LocalDateTime.of(data, ora);
+
+        if (modalita.equals("Presenza")) {
+            sessione = new SessionePresenza(
+                    rs.getString("luogo"),
+                    rs.getFloat("durata"),
+                    orario
+            );
+        }else{
+            sessione = new SessioneOnline(
+                        rs.getString("link_incontro"),
+                        rs.getFloat("durata"),
+                        orario
+                    );
+        }
+
+
+        return sessione;
+    }
+
+
+    private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {
+        Corso corso = new Corso(
+                rs.getInt("idcorso"),
+                rs.getString("nome_corso"),
+                rs.getInt("numerosessioni"),
+                rs.getFloat("ore_totali"),
+                rs.getInt("frequenza_settimanale"),
+                rs.getDate("datainizio"),
+                rs.getDate("datafine"),
+                rs.getFloat("costo"),
+                ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                Difficolta.valueOf(rs.getString("difficolta") ),
+                rs.getString("desc_corso")
+        );
+
+        String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
+        corso.setImagePath("/Images/"+nomeCorsoPulito+".png");
+        corso.setSessioni(this.getSessioniCorso(rs.getString("nome_corso")));
+
+        return  corso;
+    }
+
     @Override
     public Corso getCorsoByTitle(String Title) {
 
@@ -100,24 +152,9 @@ public class CorsoDAO implements CorsoDAOInterface {
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                corso = new Corso(
-                        rs.getInt("idcorso"),
-                        rs.getString("nome_corso"),
-                        rs.getInt("numerosessioni"),
-                        rs.getFloat("ore_totali"),
-                        rs.getInt("frequenza_settimanale"),
-                        rs.getDate("datainizio"),
-                        rs.getDate("datafine"),
-                        rs.getFloat("costo"),
-                        ModalitaCorso.getFromString( rs.getString("modcorso") ),
-                        Difficolta.valueOf(rs.getString("difficolta") ),
-                        rs.getString("desc_corso")
-                );
-                String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
-                corso.setImagePath("/Images/"+nomeCorsoPulito+".png");
+                corso = createCorsoByResultSet(rs);
             }else{
                 System.out.println("Corso non trovato");
-                System.out.println(sql);
             }
         }catch (SQLException sqle){
             System.out.println("Errore nel cercare il corso");

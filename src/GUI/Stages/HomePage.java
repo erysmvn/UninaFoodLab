@@ -110,9 +110,11 @@ public class HomePage extends Stage {
         Label uninaFoodLabel = new Label(" UNINA FOOD LAB");
         uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
         uninaFoodLabel.setStyle("-fx-font-weight: bold;");
-        uninaFoodLabel.setEffect(new Reflection());
+        Reflection reflection = new Reflection();
+        reflection.setFraction(1);
+        uninaFoodLabel.setEffect(reflection);
         Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Images/times.ttf"),
+                getClass().getResourceAsStream("/Images/microgrammanormal.ttf"),
                 50
         );
 

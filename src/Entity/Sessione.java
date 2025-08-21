@@ -1,9 +1,22 @@
 package Entity;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public abstract class Sessione {
-    Date data;
-    int ora;
-    float durata;
+    protected LocalDate data;
+    protected LocalDateTime orario;
+    protected float durata;
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public LocalDateTime getOra() {
+        return orario;
+    }
+
+    public float getDurata() {
+        return durata;
+    }
 }

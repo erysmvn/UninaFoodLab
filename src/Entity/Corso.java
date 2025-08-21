@@ -18,8 +18,11 @@ public class Corso {
     private String desc_corso;
     private Difficolta difficolta;
     private String imagePath;
-    ArrayList<Chef> chefs = null;
-    ArrayList<Ricetta> ricetteTrattate = null;
+
+    private ArrayList<Chef> chefs = null;
+    private ArrayList<Ricetta> ricetteTrattate = null;
+    private ArrayList<Sessione> sessioni = null;
+
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,
                  int frequenzaSettimanale, Date dataInizio, Date dataFine, float costo,
@@ -37,24 +40,21 @@ public class Corso {
         this.desc_corso = desc_corso;
     }
 
-    public String getNome(){
-        return nome;
-    }
-
     public void setImagePath(String imagePath){
         this.imagePath = imagePath;
+    }
+    public String getNome(){
+        return nome;
     }
     public String getImagePath() {
         return imagePath;
     }
-
     public ModalitaCorso getModalita_corso() {
         return  modalitaCorso;
     }
     public Difficolta getDifficolta() {
         return difficolta;
     }
-
     public Date getDataInizio() {
         return dataInizio;
     }
@@ -64,48 +64,34 @@ public class Corso {
     public float getCosto() {
         return costo;
     }
-
     public float getOreTotali() {
         return oreTotali;
     }
-
     public int getFrequenzaSettimanale(){
         return frequenzaSettimanale;
     }
-
     public String getDesc_corso() {
         return desc_corso;
     }
-
     public int getIdCorso() {
         return idcorso;
     }
-
     public void addRicetta(Ricetta ricetta) {
         ricetteTrattate.add(ricetta);
     }
-
     public void stampaRicette() {
         for (Ricetta ricetta: ricetteTrattate) {
             System.out.println(ricetta.getNome());
         }
     }
-
-    public ArrayList<Ricetta> getRicetteTrattate() {
-        return ricetteTrattate;
-    }
-
     public void allocaArrayRicette() {
         this.ricetteTrattate = new ArrayList<Ricetta>();
     }
-
-
     public void stampaChefs() {
         for (Chef chef: chefs) {
             System.out.println(chef.getNome() + "" + chef.getCognome());
         }
     }
-
     public String getStringOfChefs() {
         String toReturn = "";
         for (Chef chef: chefs) {
@@ -113,15 +99,23 @@ public class Corso {
         }
         return toReturn.substring(0, toReturn.length() - 2);
     }
-
     public ArrayList<Chef> getChefs() {
         return chefs;
+    }
+    public ArrayList<Ricetta> getRicetteTrattate() {
+        return ricetteTrattate;
+    }
+
+    public ArrayList<Sessione> getSessioni() {
+        return sessioni;
+    }
+    public void setSessioni(ArrayList<Sessione> sessioni) {
+        this.sessioni = sessioni;
     }
 
     public void addChef(Chef chef) {
         chefs.add(chef);
     }
-
     public void allocaArrayChefs() {
         this.chefs = new ArrayList<Chef>();
     }

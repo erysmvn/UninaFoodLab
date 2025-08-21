@@ -23,7 +23,6 @@ public class AccountPage extends Stage {
     Button corsiButton;
     Button calendarButton;
     Button clickedButton;
-
     
     VBox impostazioniPanel;
     VBox accountPanel;
@@ -31,8 +30,6 @@ public class AccountPage extends Stage {
     CalendarioPanel calendarioPanel;
 
     Utente utente;
-
-
 
     public
 
@@ -43,6 +40,7 @@ public class AccountPage extends Stage {
 
         root = createRoot();
         content = new StackPane();
+
         content.setStyle("-fx-background-color: WHITE;");
 
         scene = new Scene(root, 1050,750);
@@ -63,9 +61,11 @@ public class AccountPage extends Stage {
         accountPanel = createAccountPanel(utente);
         accountCorsiPanel = createAccountCorsiPanel(controller);
         impostazioniPanel = new ImpostazioniPanel(controller);
-        calendarioPanel = new CalendarioPanel();
-        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel,calendarioPanel);
+        calendarioPanel = new CalendarioPanel(controller);
+        calendarioPanel.initCalendario(utente);
 
+
+        content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel,calendarioPanel);
         HBox topBar = createTopBar();
         root.setTop(topBar);
         root.setCenter(content);
@@ -188,7 +188,7 @@ public class AccountPage extends Stage {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBar.getChildren().addAll(accountButton, corsiButton, impostazioniButton,calendarButton, spacer, minimizeBtn, closeBtn);
+        topBar.getChildren().addAll(accountButton, corsiButton,calendarButton,impostazioniButton, spacer, minimizeBtn, closeBtn);
 
         return  topBar;
     }
@@ -209,7 +209,7 @@ public class AccountPage extends Stage {
     private Button createImpostazioniButton(){
         Button impostazioniButton = new Button("Impostazioni");
         setNotCLickedAesthetics(impostazioniButton);
-        initButton(impostazioniButton,accountPanel);
+        initButton(impostazioniButton,impostazioniPanel);
         return impostazioniButton;
     }
 

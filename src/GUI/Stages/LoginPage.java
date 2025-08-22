@@ -186,7 +186,7 @@ public class LoginPage extends Stage {
             emailErrorLabel.setText("");
             passwordErrorLabel.setText("");
             errorLoginLabel.setText("");
-            callTheRightLogin(emailField.getText(), passwordField.getText());
+            doLogin(emailField.getText(), passwordField.getText());
         }
     }
 
@@ -205,31 +205,15 @@ public class LoginPage extends Stage {
         return loginButton;
     }
 
-    public void callTheRightLogin(String email, String password) {
+    public void doLogin(String email, String password) {
+        try {
+            controller.loginMethod(email, password);
+            this.close();
 
-        if (email.contains("@studenti.unina.it")) {
-            String sql = "Select * from studente where email = '" + email + "' AND passw = md5('" + password + "')";
-            System.out.println(password);
-            System.out.println(sql);
-            try {
-                controller.tryLoginStudente(sql);
-                this.close();
-
-            } catch (SQLException sqle) {
-                showErrorLoginLabel();
-            }
-        } else {
-            String sql = "Select * from chef where email = '" + email + "' AND  passw = md5('" + password + "')";
-            try {
-                controller.tryLoginChef(sql);
-                this.close();
-
-            } catch (SQLException sqle) {
-                showErrorLoginLabel();
-            }
+        } catch (SQLException sqle) {
+            showErrorLoginLabel();
         }
     }
-
 
     public void showErrorLoginLabel() {
         errorLoginLabel.setTextFill(Color.RED);

@@ -128,43 +128,42 @@ public class Controller {
 
 
     // User
-    public void tryLoginChef(String sql) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(this);
-        Chef chef = chefDao.tryLogin(sql);
-        if(chef != null){
-            homePage.becomeHomePageChef(chef);
-            this.utente = chef;
-            this.corsoPages.clear();
+    public void loginMethod(String email, String password) throws SQLException {
+        if (email.contains("@studenti.unina.it")) {
+            StudenteDAO studenteDao = getStudenteDAO();
+            Studente studente = studenteDao.login(email, password);
+            if(studente != null) {
+                homePage.becomeHomePageStudente(studente);
+                this.utente = studente;
+                this.corsoPages.clear();
+            }
+        } else {
+            ChefDAO chefDao = getChefDAO();
+            Chef chef = chefDao.login(email, password);
+            if(chef != null){
+                homePage.becomeHomePageChef(chef);
+                this.utente = chef;
+                this.corsoPages.clear();
+            }
         }
     }
 
-    public void tryRegisterChef(Chef chef) throws SQLException{
-        ChefDAO chefDao = new ChefDAO(this);
-        Chef ch = chefDao.tryRegister(chef);
-        if(ch != null) {
-            homePage.becomeHomePageChef(ch);
-            this.utente = ch;
-            this.corsoPages.clear();
-
-        }
-    }
-
-    public void tryLoginStudente(String sql) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(this);
-        Studente studente = studenteDao.tryLogin(sql);
-        if(studente != null) {
-            homePage.becomeHomePageStudente(studente);
-            this.utente = studente;
-            this.corsoPages.clear();
-        }
-    }
-
-    public void tryRegisterStudente(Studente studente) throws SQLException{
-        StudenteDAO studenteDao = new StudenteDAO(this);
-        Studente stud = studenteDao.tryRegister(studente);
-        if(stud != null){
-            homePage.becomeHomePageStudente(stud);
-            this.utente = stud;
+    public void registerMethod(Utente utente) throws SQLException {
+        if (utente instanceof Chef chef) {
+            ChefDAO chefDao = getChefDAO();
+            Chef ch = chefDao.register(chef);
+            if(ch != null){
+                homePage.becomeHomePageChef(ch);
+                this.utente = ch;
+                this.corsoPages.clear();
+            }
+        } else if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = getStudenteDAO();
+            Studente st = studenteDao.register(studente);
+            if(st != null){
+                homePage.becomeHomePageStudente(st);
+                this.utente = st;
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public class StudenteDAO implements StudenteDAOInterface {
     Connection con;
     Controller controller;
 
-
+    // Constructors
     public StudenteDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
@@ -24,8 +24,11 @@ public class StudenteDAO implements StudenteDAOInterface {
         this.controller = controller;
     }
 
-    public Studente tryLogin(String sql) throws SQLException {
+    // Methods
+    public Studente login(String email, String password) throws SQLException {
         Studente studente = null;
+
+        String sql = "Select * from studente where email = '" + email + "' AND passw = md5('" + password + "')";
         rs = stmt.executeQuery(sql);
         if(rs.next()){
             studente = new Studente(
@@ -44,7 +47,7 @@ public class StudenteDAO implements StudenteDAOInterface {
         return studente;
     }
 
-    public Studente tryRegister(Studente studente) throws SQLException {
+    public Studente register(Studente studente) throws SQLException {
         String sql = "INSERT INTO studente (matricola, nome_stud, cognome, email, passw) VALUES (?, ?, ?, ?, md5(?))";
 
         try  {
@@ -56,7 +59,7 @@ public class StudenteDAO implements StudenteDAOInterface {
             pstmt.setString(5, studente.getPassw());
 
             int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted > 0) {
+            if (rowsInserted == 0) {
                 Exception exc  = new Exception("No row inserted");
                 throw exc;
             }
@@ -68,28 +71,6 @@ public class StudenteDAO implements StudenteDAOInterface {
         }
 
         return studente;
-    }
-
-    public ArrayList<Corso> getCorsiFromStudente(Studente studente) {
-        ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(controller);
-
-        String sql = "SELECT DISTINCT c.nome_corso " +
-                "FROM corso c NATURAL JOIN studente s NATURAL JOIN segue " +
-                "WHERE s.email = '" + studente.getEmail() + "'";
-
-        try {
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(sql);
-            while (rs2.next()) {
-                Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
-                corsi.add(corso);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-
-        return corsi;
     }
 
     public void subscribeToCourse(Studente studente, Corso corso) {
@@ -137,6 +118,30 @@ public class StudenteDAO implements StudenteDAOInterface {
             throw new RuntimeException("Errore durante la verifica di iscrizione al corso", e);
         }
         return false;
+    }
+
+
+    // Get methods
+    public ArrayList<Corso> getCorsiFromStudente(Studente studente) {
+        ArrayList<Corso> corsi = new ArrayList<>();
+        CorsoDAO corsoDao = new CorsoDAO(controller);
+
+        String sql = "SELECT DISTINCT c.nome_corso " +
+                "FROM corso c NATURAL JOIN studente s NATURAL JOIN segue " +
+                "WHERE s.email = '" + studente.getEmail() + "'";
+
+        try {
+            Statement stmt2 = con.createStatement();
+            ResultSet rs2 = stmt2.executeQuery(sql);
+            while (rs2.next()) {
+                Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
+                corsi.add(corso);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return corsi;
     }
 
 }

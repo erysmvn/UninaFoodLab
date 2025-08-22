@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class AccountCorsiPanel extends BorderPane {
     public void initPanel(Utente utente){
         this.utente = utente;
         ArrayList<Corso> corsiUtente = utente.getCorsi();
-        if (!corsiUtente.isEmpty()) {
+        if (!corsiUtente.isEmpty() && corsiUtente != null) {
             for (Corso corso : corsiUtente) {
                 ElencoCorsiPanel corsoPan = new ElencoCorsiPanel(controller);
                 corsoPan.setCorso(corso);
@@ -99,7 +100,8 @@ public class AccountCorsiPanel extends BorderPane {
         this.setFocusPropreties(iscrivitiButton);
         this.setOnMouseTraverse(iscrivitiButton);
         iscrivitiButton.setOnAction(e -> {
-
+            Stage stage = (Stage) this.getScene().getWindow();
+            stage.close(); // Chiude AccountPage
         });
 
         return iscrivitiButton;

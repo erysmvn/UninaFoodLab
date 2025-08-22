@@ -19,6 +19,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     Connection con;
     Controller controller;
 
+    // Constructors
     public CorsoDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
@@ -27,6 +28,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
 
+    // Methods
     public ArrayList<Corso> searchCorsiLikeString(String nomeCorso){
         nomeCorso = nomeCorso.toUpperCase();
         String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%' LIMIT 4";
@@ -53,46 +55,6 @@ public class CorsoDAO implements CorsoDAOInterface {
         return path;
     }
 
-    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
-        ArrayList<Corso> corsi = new ArrayList<>();
-        String sql = "SELECT corso.nome_corso, count(segue.matricola) as NumStudenti " +
-                "FROM corso NATURAL JOIN segue NATURAL JOIN studente " +
-                "GROUP BY corso.idCorso, corso.nome_corso " +
-                "ORDER BY NumStudenti DESC LIMIT " + numeroCorsi;
-
-        try {
-            Statement stmtLocal = con.createStatement();
-            ResultSet rsLocal = stmtLocal.executeQuery(sql);
-            while (rsLocal.next()) {
-                Corso corso = getCorsoByTitle(rsLocal.getString("nome_corso"));
-                if (corso != null) {
-                    corsi.add(corso);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return corsi;
-    }
-
-
-    private ArrayList<Sessione> getSessioniCorso(String nomeCorso)throws SQLException{
-        ArrayList<Sessione> sessioni = new ArrayList<>();
-
-        String sql = "SELECT * FROM corso NATURAL JOIN tiene NATURAL JOIN sessione WHERE nome_corso = ?";
-        PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1, nomeCorso);
-        ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                sessioni.add(createSessioneByResultSet(rs));
-            }
-
-        return sessioni;
-    }
-
     private Sessione createSessioneByResultSet(ResultSet rs) throws SQLException {
         Sessione sessione = null;
         String modalita = rs.getString("modalita");
@@ -109,10 +71,10 @@ public class CorsoDAO implements CorsoDAOInterface {
             );
         }else{
             sessione = new SessioneOnline(
-                        rs.getString("link_incontro"),
-                        rs.getFloat("durata"),
-                        orario
-                    );
+                    rs.getString("link_incontro"),
+                    rs.getFloat("durata"),
+                    orario
+            );
         }
 
 
@@ -142,6 +104,47 @@ public class CorsoDAO implements CorsoDAOInterface {
         return  corso;
     }
 
+
+    // Get methods
+    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
+        ArrayList<Corso> corsi = new ArrayList<>();
+        String sql = "SELECT corso.nome_corso, count(segue.matricola) as NumStudenti " +
+                "FROM corso NATURAL JOIN segue NATURAL JOIN studente " +
+                "GROUP BY corso.idCorso, corso.nome_corso " +
+                "ORDER BY NumStudenti DESC LIMIT " + numeroCorsi;
+
+        try {
+            Statement stmtLocal = con.createStatement();
+            ResultSet rsLocal = stmtLocal.executeQuery(sql);
+            while (rsLocal.next()) {
+                Corso corso = getCorsoByTitle(rsLocal.getString("nome_corso"));
+                if (corso != null) {
+                    corsi.add(corso);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return corsi;
+    }
+
+    private ArrayList<Sessione> getSessioniCorso(String nomeCorso)throws SQLException{
+        ArrayList<Sessione> sessioni = new ArrayList<>();
+
+        String sql = "SELECT * FROM corso NATURAL JOIN tiene NATURAL JOIN sessione WHERE nome_corso = ?";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, nomeCorso);
+        ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                sessioni.add(createSessioneByResultSet(rs));
+            }
+
+        return sessioni;
+    }
+
     @Override
     public Corso getCorsoByTitle(String Title) {
 
@@ -168,7 +171,6 @@ public class CorsoDAO implements CorsoDAOInterface {
     public void getRicetteTrattate(Corso corso){
         corso.allocaArrayRicette();
         Ricetta ricetta = null;
-        System.out.println("sto aggiungendo");
         String sql = "SELECT DISTINCT nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
                 "FROM corso NATURAL JOIN sessione NATURAL JOIN tratta NATURAL JOIN ricetta " +
                 "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
@@ -195,7 +197,6 @@ public class CorsoDAO implements CorsoDAOInterface {
     public void getChefs(Corso corso){
         corso.allocaArrayChefs();
         Chef chef = null;
-        System.out.println("sto aggiungendo");
         String sql = "SELECT DISTINCT nome_chef, cognome, email, passw " +
                 "FROM chef NATURAL JOIN tiene NATURAL JOIN corso " +
                 "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";

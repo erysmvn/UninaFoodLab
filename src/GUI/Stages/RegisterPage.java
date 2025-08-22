@@ -229,10 +229,10 @@ public class RegisterPage extends Stage {
                 try {
                     if (matricola == null || matricola.trim().isEmpty()) {
                         Chef newChef = new Chef(nome, cognome, email, password);
-                        controller.tryRegisterChef(newChef);
+                        controller.registerMethod(newChef);
                     } else {
                         Studente newStudente = new Studente(matricola, nome, cognome, email, password);
-                        controller.tryRegisterStudente(newStudente);
+                        controller.registerMethod(newStudente);
                     }
                 this.close();
                 } catch (SQLException exc) {

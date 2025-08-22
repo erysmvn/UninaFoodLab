@@ -1,0 +1,633 @@
+/*
+ *  Copyright (C) 2017 Dirk Lemmermann Software & Consulting (dlsc.com)
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Base colors for the predefined styles - REVISED COLOR SCHEME
+ */
+
+* {
+    -fx-font-family: "Arial";
+
+    -primary-color: #3A6698;          /* Changed to the specified blue */
+    -secondary-color: #5A86B8;         /* Lighter shade of primary */
+    -highlight-color: #7FA6D0;         /* Even lighter for highlights */
+    -light-text: #666666;
+    -border-color: #D0D8E0;            /* Softer border color */
+
+    -usage-very-low-color: #E8F0F8;
+    -usage-low-color: #D0E0F0;
+    -usage-medium-color: #7FA6D0;
+    -usage-high-color: #3A6698;
+    -usage-very-high-color: #234469;
+
+    -usage-very-low-text-color: #3A6698;
+    -usage-low-text-color: #3A6698;
+    -usage-medium-text-color: white;
+    -usage-high-text-color: white;
+    -usage-very-high-text-color: white;
+
+    -today-fill-color: #3A6698;        /* Using the specified blue for today */
+    -today-stroke-color: #234469;      /* Darker shade for border */
+    -weekend-fill-color: #F8FAFC;      /* Very subtle weekend coloring */
+}
+
+/* Toolbar - ENHANCED */
+#toolbar {
+    -fx-padding: 10;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -border-color;
+    -fx-background-color: white;
+}
+
+#search-field {
+    -fx-background-radius: 100px;
+    -fx-pref-width: 200px;
+    -fx-border-color: -border-color;
+    -fx-prompt-text-fill: derive(-light-text, 20%);
+}
+
+/* Calendar Page - ENHANCED */
+.calendar-page {
+    -fx-background-color: white;
+}
+.calendar-page > .container > .header > .date-text {
+    -fx-font-size: 2em;
+    -fx-text-fill: -primary-color;
+}
+
+/* Day View - ENHANCED */
+.day-page > .container > .content > .left-side > .header {
+    -fx-background-color: #F0F8FF; /* Aliceblue variant */
+    -fx-background-radius: 4px;
+    -fx-padding: 0 1em;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1px 0;
+}
+.day-page > .container > .content > .left-side > .header > .today-label {
+    -fx-font-size: 6em;
+    -fx-text-fill: -primary-color;
+    -fx-opacity: 0.8;
+}
+
+/* Year / Month View - ENHANCED */
+.year-month-view > .container > .header > .month-header > .month-label,
+.year-month-view > .container > .header > .year-header > .year-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: -primary-color;
+}
+
+.year-month-view > .container > .day-of-week-label,
+.year-month-view > .container > .week-label {
+    -fx-text-fill: -secondary-color;
+}
+
+.year-month-view > .container > .today {
+    -fx-background-color: -today-fill-color;
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10em;
+}
+
+/* Month View - ENHANCED */
+.month-view > .container > .day {
+    -fx-border-color: -border-color transparent transparent transparent;
+}
+.month-view > .container > .today {
+    -fx-background-color: -today-fill-color;
+    -fx-text-fill: white;
+}
+.month-view > .container > .day > .header > .day-of-month-label {
+    -fx-text-fill: -light-text;
+}
+
+/* Lines / Separators - ENHANCED */
+.day-view > .half-hour-line,
+.day-view > .full-hour-line {
+    -fx-stroke: -border-color;
+}
+.day-view > .current-time-line {
+    -fx-stroke: -primary-color;
+    -fx-stroke-width: 2px;
+}
+
+/* Time Scale - ENHANCED */
+.time-scale > .time-label {
+    -fx-text-fill: -light-text;
+}
+.time-scale > .current-time-label {
+    -fx-text-fill: -primary-color;
+    -fx-font-weight: bold;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Styles needed by the AllDayView - ENHANCED.
+ */
+
+.all-day-view {
+    -fx-min-height: 2.0em;
+    -fx-row-height: 20.0px;
+    -fx-row-spacing: 2.0px;
+    -fx-column-spacing: 2.0px;
+}
+
+.all-day-view > .container > .day-region {
+    -fx-border-width: 0.0 0.0 1.0 0.0;
+    -fx-border-color: transparent transparent -border-color transparent;
+}
+
+.all-day-view > .container > .today {
+    -fx-border-color: transparent transparent -primary-color transparent;
+    -fx-background-color: #F8FAFC;
+}
+
+.all-day-view > .container > .weekend {
+    -fx-background-color: -weekend-fill-color;
+}
+
+/* Continua con il resto del CSS mantenendo le modifiche di colore coerenti... */
+
+/* ENHANCED: Default styles for calendar entries */
+.default-style-entry {
+    -fx-background-color: #E8F0F8; /* Light blue background */
+    -fx-background-radius: 3px;
+    -fx-background-insets: 1.0;
+    -fx-border-insets: 1.0;
+    -fx-border-width: 0.0 0.0 0.0 3.0;
+    -fx-border-color: -primary-color;
+}
+
+.default-style-entry:selected {
+    -fx-background-color: -primary-color;
+    -fx-border-width: 0.0;
+}
+
+.default-style-entry-time-label {
+    -fx-font-size: 0.9em;
+    -fx-padding: 4.0 4.0 2.0 4.0;
+    -fx-text-fill: #3A6698;
+}
+
+.default-style-entry-title-label {
+    -fx-font-size: 0.9em;
+    -fx-font-weight: bold;
+    -fx-padding: 0.0 4.0 0.0 4.0;
+    -fx-text-fill: #234469;
+}
+
+.default-style-entry:selected .default-style-entry-time-label,
+.default-style-entry:selected .default-style-entry-title-label {
+    -fx-text-fill: white;
+}
+
+/* ENHANCED: Small entries */
+.default-style-entry-small {
+    -fx-padding: 0.15em 0.5em 0.15em 0.5em;
+    -fx-font-size: 0.9em;
+    -fx-background-color: #E8F0F8;
+    -fx-border-color: -primary-color;
+    -fx-border-width: 0 0 0 2px;
+}
+
+.default-style-entry-small-time-label {
+    -fx-font-size: 0.8em;
+    -fx-text-fill: #5A86B8;
+}
+
+.default-style-entry-small-title-label {
+    -fx-text-fill: #234469;
+}
+
+.default-style-calendar-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: -primary-color;
+    -fx-alignment: center;
+    -fx-padding: 0.4em;
+    -fx-text-overrun: clip;
+}
+
+/* ENHANCED: Popover styles */
+.popover-header {
+    -fx-padding: 10.0 0.0 10.0 10.0;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent -border-color transparent;
+    -fx-border-insets: 0.0 10.0 0.0 10.0;
+}
+
+.popover-header > .title {
+    -fx-padding: 0.0;
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 16px;
+}
+
+/* ENHANCED: Agenda View */
+.agenda-view-list-cell > .container > .header {
+    -fx-border-color: transparent transparent -border-color transparent;
+}
+
+.agenda-view-list-cell > .container > .header.today {
+    -fx-border-color: transparent transparent -primary-color transparent;
+}
+
+.agenda-view-list-cell > .container > .header > .date-label,
+.agenda-view-list-cell > .container > .header > .weekday-label {
+    -fx-text-fill: #666;
+}
+
+.agenda-view-list-cell > .container > .header > .today {
+    -fx-text-fill: -primary-color;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Button Styles - ENHANCED
+ */
+
+.button {
+    -fx-background-color: white;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #F0F8FF;
+    -fx-border-color: -primary-color;
+}
+
+.button:pressed {
+    -fx-background-color: #E0E8F0;
+}
+
+.button:focused {
+    -fx-border-color: -primary-color;
+    -fx-border-width: 2px;
+}
+
+.button.primary {
+    -fx-background-color: white;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -primary-color;
+}
+
+.button.primary:hover {
+    -fx-background-color: #2A5688;
+}
+
+.button.primary:pressed {
+    -fx-background-color: #1A4678;
+}
+
+/* Toolbar buttons */
+#toolbar .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: white;
+}
+
+#toolbar .button:hover {
+    -fx-background-color: #F0F8FF;
+    -fx-border-color: -border-color;
+}
+
+#toolbar .button:pressed {
+    -fx-background-color: #E0E8F0;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Weekday Styles - ENHANCED
+ */
+
+.weekday-header {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 8px 4px;
+}
+
+.weekday-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+    -fx-alignment: center;
+}
+
+.weekday-header.today {
+    -fx-background-color: #E8F0F8;
+    -fx-border-color: -primary-color;
+}
+
+.weekday-header.weekend {
+    -fx-background-color: -weekend-fill-color;
+}
+
+.weekday-header.weekend .weekday-label {
+    -fx-text-fill: #5A86B8 !important;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Day of Week Labels in Various Views - ENHANCED
+ */
+
+/* Month view day headers */
+.month-view .day-of-week-header {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.month-view .day-of-week-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+    -fx-alignment: center;
+    -fx-padding: 8px 0;
+}
+/* Year view day headers */
+.year-view .day-of-week-label {
+    -fx-font-size: 0.9em;
+    -fx-text-fill: -secondary-color;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+/* Week view headers */
+.week-view .day-header {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px 5px;
+}
+
+.week-view .day-header .date-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color !important;
+    -fx-alignment: center;
+}
+
+.week-view .day-header .weekday-label {
+    -fx-text-fill: -secondary-color !important;
+    -fx-alignment: center;
+}
+
+.week-view .day-header.today {
+    -fx-background-color: #E8F0F8;
+    -fx-border-color: -primary-color;
+}
+
+.week-view .day-header.today .date-label {
+    -fx-text-fill: -primary-color !important;
+    -fx-font-weight: bold;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Navigation Controls - ENHANCED
+ */
+
+.navigation-controls {
+    -fx-spacing: 10px;
+    -fx-padding: 5px;
+    -fx-alignment: center-left;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 3px;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-padding: 0;
+}
+
+.nav-button:hover {
+    -fx-background-color: #F0F8FF;
+    -fx-border-color: -primary-color;
+}
+
+.nav-button:armed {
+    -fx-background-color: #E0E8F0;
+}
+
+.nav-button .arrow {
+    -fx-fill: -primary-color;
+}
+
+.nav-button:hover .arrow {
+    -fx-fill: #2A5688;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Today Button - ENHANCED
+ */
+
+.today-button {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -primary-color;
+    -fx-border-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-font-weight: bold;
+    -fx-border-width: 2px;
+}
+
+.today-button:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: -primary-color;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}
+
+.today-button:pressed {
+    -fx-background-color: transparent !important;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}
+
+.today-button:focused {
+    -fx-border-color: -primary-color;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * View Switch Buttons - ENHANCED
+ */
+
+.view-toggle-button {
+    -fx-background-color: white !important;
+    -fx-text-fill: primary-color;
+    -fx-border-color: primary-color;
+    -fx-padding: 8px 16px;
+}
+
+.view-toggle-button:selected {
+    -fx-background-color: white !important;
+    -fx-text-fill: primary-color;
+    -fx-border-color: primary-color;
+    -fx-padding: 8px 16px;
+}
+
+.view-toggle-button:hover {
+    -fx-background-color: white !important;
+    -fx-text-fill: primary-color;
+    -fx-border-color: primary-color;
+    -fx-padding: 8px 16px;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Form Controls - ENHANCED
+ */
+
+.text-field, .combo-box, .date-picker {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 8px;
+    -fx-text-fill: #333333;
+}
+
+.text-field:focused, .combo-box:focused, .date-picker:focused {
+    -fx-border-color: -primary-color;
+    -fx-border-width: 2px;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: aliceblue;
+}
+
+.combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: aliceblue;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Scroll Bars - ENHANCED
+ */
+
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #F8F8F8;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: primary-color;
+    -fx-background-radius: 8px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: primary-color;
+}
+
+.scroll-bar .thumb:pressed {
+    -fx-background-color: primary-color;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 3px;
+}
+
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+    -fx-background-color: #A0A8B0;
+}
+
+.scroll-bar .increment-arrow:hover, .scroll-bar .decrement-arrow:hover {
+    -fx-background-color: -primary-color;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Checkbox and Radio Button - ENHANCED
+ */
+
+.check-box, .radio-button {
+    -fx-text-fill: -primary-color;
+}
+
+.check-box .box, .radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 3px;
+}
+
+.check-box:selected .mark, .radio-button:selected .dot {
+    -fx-background-color: -primary-color;
+}
+
+.check-box:hover .box, .radio-button:hover .radio {
+    -fx-border-color: -primary-color;
+}
+
+.check-box:selected .box, .radio-button:selected .radio {
+    -fx-border-color: -primary-color;
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Context Menu - ENHANCED
+ */
+
+.context-menu {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-padding: 4px;
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 6px 12px;
+}
+
+.menu-item:hover {
+    -fx-background-color: #F0F8FF;
+}
+
+.menu-item:focused {
+    -fx-background-color: -primary-color;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}
+
+.separator {
+    -fx-background-color: -border-color;
+    -fx-padding: 4px 0 0 0;
+}

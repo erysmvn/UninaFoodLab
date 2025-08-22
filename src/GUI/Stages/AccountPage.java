@@ -176,9 +176,9 @@
             )));
 
             accountButton = createAccountButton();
+            calendarButton = createCalendarButton();
             corsiButton = createCorsiButton();
             impostazioniButton = createImpostazioniButton();
-            calendarButton = createCalendarButton();
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
             CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -228,7 +228,6 @@
             button.focusedProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue) {
                     setNotCLickedAesthetics(button);
-                    button.fire();
                 } else {
                     setNotCLickedAesthetics(button);
                 }

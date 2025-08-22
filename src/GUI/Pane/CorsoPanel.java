@@ -91,8 +91,10 @@ public class CorsoPanel extends Pane {
 
     private Label createTitolo(String titolo){
         Label titoloLabel = new Label(titolo);
-        titoloLabel.setFont(Font.font("Nimbus Roman", 25));
-        titoloLabel.setTextFill(Color.valueOf("#3A6698"));
+        titoloLabel.setFont(Font.font("22313F", 25));
+        titoloLabel.setTextFill(Color.valueOf("#2F3A42"));
+        titoloLabel.setStyle("-fx-font-weight: bold");
+        titoloLabel.setPadding(new Insets(10, 15, 10, 15));
         return titoloLabel;
     }
 }

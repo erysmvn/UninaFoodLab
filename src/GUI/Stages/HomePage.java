@@ -130,7 +130,7 @@ public class HomePage extends Stage {
         Label uninaFoodLabel = createUninaFoodLabel();
         loginButtons = createLoginButtonsBox();
 
-        topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), uninaFoodLabel, loginButtons);
+        topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), loginButtons);
         topBar.setAlignment(Pos.TOP_CENTER);
 
         return topBar;
@@ -138,10 +138,10 @@ public class HomePage extends Stage {
 
 
     private ImageView createLogoView() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/UninaFoodLabLogo.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoHomePage.png")));
         ImageView logoView = new ImageView(logoImage);
-        logoView.setFitWidth(200);
-        logoView.setFitHeight(200);
+        logoView.setFitWidth(600);
+        logoView.setFitHeight(600);
         logoView.setPreserveRatio(true);
         return logoView;
     }

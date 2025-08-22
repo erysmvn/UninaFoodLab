@@ -69,7 +69,7 @@ public class LoginPage extends Stage {
         Region spacer = new Region();
         spacer.setPrefHeight(8);
         Region spacer2 = new Region();
-        spacer2.setPrefHeight(10);
+        spacer2.setPrefHeight(0.12);
         Region spacer3 = new Region();
         spacer3.setPrefHeight(7);
 
@@ -85,7 +85,6 @@ public class LoginPage extends Stage {
         centerBox.getChildren().addAll(
                 logo,
                 spacer3,
-                uninaFoodLabel,
                 spacer,
                 emailBox,
                 passwordBox,
@@ -155,13 +154,12 @@ public class LoginPage extends Stage {
     }
 
     private ImageView createLogo() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/UninaFoodLabLogo.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoLoginPage.png")));
         ImageView logoView = new ImageView(logoImage);
-        logoView.setFitWidth(220);
+        logoView.setFitWidth(450);
         logoView.setPreserveRatio(true);
         return logoView;
     }
-
 
     public void mostraInserireEmail() {
         root.requestFocus();
@@ -195,6 +193,9 @@ public class LoginPage extends Stage {
         loginButton.setTextFill(Color.WHITE);
         loginButton.setStyle("-fx-background-color:  \"#3A6698\" ;");
 
+        loginButton.setPrefWidth(100);
+        loginButton.setPrefHeight(30);
+
         loginButton.setOnAction(event -> {
             String email = emailField.getText();
             String password = passwordField.getText();
@@ -224,6 +225,9 @@ public class LoginPage extends Stage {
         Button registerButton = new Button("Register");
         registerButton.setTextFill(Color.WHITE);
         registerButton.setStyle("-fx-background-color: \"#3A6698\";");
+
+        registerButton.setPrefWidth(100);
+        registerButton.setPrefHeight(30);
 
         registerButton.setOnAction(event -> {
             controller.openRegisterPage();

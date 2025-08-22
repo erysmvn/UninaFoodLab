@@ -6,14 +6,11 @@ import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
-import com.calendarfx.view.MonthSheetView;
 import com.calendarfx.view.page.YearPage;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.input.MouseButton;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -36,6 +33,7 @@ public class CalendarioPanel extends Pane {
 
     private CalendarView createCalendarView(){
         calendarView = new CalendarView();
+        calendarView.getStylesheets().add(getClass().getResource("/myCalendar.css").toExternalForm());
 
         sessioniPresenzaCalendar = new Calendar("Sessioni in presenza");
         sessioniPresenzaCalendar.setStyle(Calendar.Style.STYLE2);
@@ -54,49 +52,84 @@ public class CalendarioPanel extends Pane {
         calendarView.prefWidthProperty().bind(this.widthProperty());
         calendarView.prefHeightProperty().bind(this.heightProperty());
 
+
         return calendarView;
     }
 
+
     private void disableCalendarFunction(){
 
+        calendarView.setEntryEditPolicy(param -> null);
         calendarView.setEntryContextMenuCallback(param -> null);
-        calendarView.setDateDetailsCallback(param -> null);
-        calendarView.setEntryEditPolicy(param->null);
         calendarView.setEntryDetailsPopOverContentCallback(param -> null);
+        calendarView.setEntryDetailsCallback(click -> null);
+        calendarView.setDateDetailsCallback(param -> null);
         calendarView.setContextMenuCallback(param -> null);
+        calendarView.setEntryEditPolicy(param->null);
         calendarView.setShowAddCalendarButton(false);
         calendarView.setShowPrintButton(false);
         calendarView.setShowPageSwitcher(true);
 
+
+        blockEmptyGridDoubleClick(calendarView);
+
         calendarView.setEntryDetailsCallback(click -> {
-            if (click.getEntry() != null && click.getEntry().getUserObject() instanceof Corso corso) {
-                if (calendarView.getSelectedPageView() instanceof YearPage) {
-                    calendarView.showMonthPage();
-                    calendarView.setDate(click.getEntry().getStartDate());
-                } else {
-                    controller.openCorsoPage(corso);
-                }
-            }
-            return null;
-        });
 
-        calendarView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (e.getButton() == MouseButton.SECONDARY || e.getClickCount() > 1)
-                    e.consume();
-        });
+                    if (click.getEntry() != null && click.getEntry().getUserObject() instanceof Corso corso) {
+                        if (calendarView.getSelectedPageView() instanceof YearPage) {
+                            calendarView.showMonthPage();
+                            calendarView.setDate(click.getEntry().getStartDate());
+                        } else {
 
-        sessioniOnlineCalendar.addEventHandler( e->{
-                if ( e.getSource() == MouseEvent.MOUSE_CLICKED)
-                    e.consume();
+                            controller.openCorsoPage(corso);
+                        }
+                    }
+                    return null;
+                });
 
-        });
-        sessioniPresenzaCalendar.addEventHandler(   e-> {
 
-                if(e.getSource() == MouseEvent.MOUSE_CLICKED)
-                    e.consume();
-        });
     }
+    private void blockEmptyGridDoubleClick(CalendarView calendarView) {
 
+        EventHandler<MouseEvent> filter = e -> {
+            if (e.getEventType() == MouseEvent.MOUSE_CLICKED
+                    && e.getClickCount() > 1) {
+
+                Node node = e.getPickResult() != null ? e.getPickResult().getIntersectedNode() : null;
+
+                boolean clickedOnEntry = false;
+
+                while (node != null) {
+                    var styles = node.getStyleClass();
+                    if (styles != null && styles.contains("entry-view")) {
+                        clickedOnEntry = true;
+                        break;
+                    }
+
+                    System.out.println(node.getClass().getSimpleName());
+
+                    if ("DayEntryView".equals(node.getClass().getSimpleName())) {
+                        clickedOnEntry = true;
+                        break;
+                    }
+                    node = node.getParent();
+                }
+
+                if (!clickedOnEntry) {
+                    e.consume();
+                }
+
+            }
+
+
+        };
+
+        calendarView.addEventFilter(MouseEvent.MOUSE_CLICKED, filter);
+        calendarView.getDayPage().addEventFilter(MouseEvent.MOUSE_CLICKED, filter);
+        calendarView.getWeekPage().addEventFilter(MouseEvent.MOUSE_CLICKED, filter);
+        calendarView.getMonthPage().addEventFilter(MouseEvent.MOUSE_CLICKED, filter);
+
+    }
 
 
     public void initCalendario(Utente utente) {
@@ -131,6 +164,7 @@ public class CalendarioPanel extends Pane {
                     entry.setUserObject(corso);
                     sessioniOnlineCalendar.addEntry(entry);
                 }
+
             }
         }
     }

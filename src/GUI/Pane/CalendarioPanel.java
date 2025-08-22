@@ -33,14 +33,11 @@ public class CalendarioPanel extends Pane {
 
     private CalendarView createCalendarView(){
         calendarView = new CalendarView();
-        calendarView.getStylesheets().add(getClass().getResource("/myCalendar.css").toExternalForm());
+        calendarView.getStylesheets().add(getClass().getResource("/testCalendar.css").toExternalForm());
 
         sessioniPresenzaCalendar = new Calendar("Sessioni in presenza");
-        sessioniPresenzaCalendar.setStyle(Calendar.Style.STYLE2);
         sessioniPresenzaCalendar.setReadOnly(true);
-
         sessioniOnlineCalendar = new Calendar("Sessioni online");
-        sessioniOnlineCalendar.setStyle(Calendar.Style.STYLE5);
         sessioniOnlineCalendar.setReadOnly(true);
 
         CalendarSource source = new CalendarSource("Sessioni");
@@ -49,8 +46,12 @@ public class CalendarioPanel extends Pane {
         calendarView.getCalendarSources().clear();
         calendarView.getCalendarSources().add(source);
 
+        sessioniPresenzaCalendar.setStyle(calendarView.getStyle());
+        sessioniOnlineCalendar.setStyle(calendarView.getStyle());
         calendarView.prefWidthProperty().bind(this.widthProperty());
         calendarView.prefHeightProperty().bind(this.heightProperty());
+
+
 
 
         return calendarView;
@@ -88,6 +89,7 @@ public class CalendarioPanel extends Pane {
                 });
 
 
+
     }
     private void blockEmptyGridDoubleClick(CalendarView calendarView) {
 
@@ -105,8 +107,6 @@ public class CalendarioPanel extends Pane {
                         clickedOnEntry = true;
                         break;
                     }
-
-                    System.out.println(node.getClass().getSimpleName());
 
                     if ("DayEntryView".equals(node.getClass().getSimpleName())) {
                         clickedOnEntry = true;

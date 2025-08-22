@@ -86,13 +86,13 @@ public class CorsoPage extends Stage {
     public void initPage(Corso corso){
         this.corso = corso;
 
-        // VBox per le info del corso
-        VBox infoBox = new VBox(10); // spacing tra le righe
+
+        VBox infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_LEFT);
 
         addImageCorso(corso.getImagePath());
 
-        // Titolo del corso
+
         Label nomeCorso = new Label(corso.getNome());
         nomeCorso.setFont(Font.font("Nimbus Roman", 40));
         nomeCorso.setTextFill(Color.valueOf("#3A6698"));
@@ -100,7 +100,7 @@ public class CorsoPage extends Stage {
         infoBox.getChildren().add(nomeCorso);
 
 
-        // Chef
+
         controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso
         corso.stampaChefs();
 
@@ -112,7 +112,7 @@ public class CorsoPage extends Stage {
         TextFlow nomeChef = new TextFlow(chefLabel, chefValue);
         infoBox.getChildren().add(nomeChef);
 
-        // Modalità
+
         Text modalitaLabel = new Text("Modalità: ");
         modalitaLabel.setStyle("-fx-font-weight: bold;");
         Text modalitaValue = new Text(corso.getModalita_corso().getLabel());
@@ -121,7 +121,7 @@ public class CorsoPage extends Stage {
         TextFlow modalita = new TextFlow(modalitaLabel, modalitaValue);
         infoBox.getChildren().add(modalita);
 
-        // Difficoltà
+
         Text diffLabel = new Text("Difficoltà: ");
         diffLabel.setStyle("-fx-font-weight: bold;");
         Text diffValue = new Text(corso.getDifficolta().toString());
@@ -130,7 +130,7 @@ public class CorsoPage extends Stage {
         TextFlow difficolta = new TextFlow(diffLabel, diffValue);
         infoBox.getChildren().add(difficolta);
 
-        // Periodo
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Text periodoLabel = new Text("Periodo: ");
         periodoLabel.setStyle("-fx-font-weight: bold;");
@@ -153,7 +153,7 @@ public class CorsoPage extends Stage {
         TextFlow ore = new TextFlow(oreLabel, oreValue);
         infoBox.getChildren().add(ore);
 
-        // Frequenza settimanale
+
         Text freqLabel = new Text("Frequenza: ");
         freqLabel.setStyle("-fx-font-weight: bold;");
         Text freqValue = new Text(
@@ -205,7 +205,7 @@ public class CorsoPage extends Stage {
             ricettaLabel.setFont(Font.font("Nimbus Roman", 17));
             ricettaLabel.setTextFill(Color.valueOf("#000000"));
             ricettaLabel.setAlignment(Pos.CENTER_LEFT);
-            ricettaLabel.setStyle("-fx-font-weight: italic; -fx-cursor: hand;");
+            ricettaLabel.setStyle("-fx-font-weight: italic;-fx-cursor: hand;");
 
             // Evento click sulla label
             ricettaLabel.setOnMouseClicked(event -> {

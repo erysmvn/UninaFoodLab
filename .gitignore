@@ -51,6 +51,7 @@ Desktop.ini
 *.swo
 
 ### Personale ###
+UninaFoodLab.iml
 ./src/DB/DBConnection.java
 ./UninaFoodLab/UninaFoodLab.iml
 ./.idea

@@ -70,6 +70,9 @@
             root.setTop(topBar);
             root.setCenter(content);
 
+            showOnlyPanel(accountPanel);
+            setButtonAsActive(accountButton);
+
         }
 
 
@@ -176,8 +179,8 @@
             )));
 
             accountButton = createAccountButton();
-            calendarButton = createCalendarButton();
             corsiButton = createCorsiButton();
+            calendarButton = createCalendarButton();
             impostazioniButton = createImpostazioniButton();
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
@@ -186,7 +189,7 @@
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            topBar.getChildren().addAll(accountButton, corsiButton,calendarButton,impostazioniButton, spacer, minimizeBtn, closeBtn);
+            topBar.getChildren().addAll(accountButton, corsiButton, calendarButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
 
             return  topBar;
         }
@@ -228,6 +231,7 @@
             button.focusedProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue) {
                     setNotCLickedAesthetics(button);
+//                    button.fire();
                 } else {
                     setNotCLickedAesthetics(button);
                 }

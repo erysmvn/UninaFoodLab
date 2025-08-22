@@ -52,8 +52,6 @@ public class CalendarioPanel extends Pane {
         calendarView.prefHeightProperty().bind(this.heightProperty());
 
 
-
-
         return calendarView;
     }
 
@@ -70,6 +68,7 @@ public class CalendarioPanel extends Pane {
         calendarView.setShowAddCalendarButton(false);
         calendarView.setShowPrintButton(false);
         calendarView.setShowPageSwitcher(true);
+        calendarView.setShowPageToolBarControls(false);
 
 
         blockEmptyGridDoubleClick(calendarView);
@@ -81,7 +80,6 @@ public class CalendarioPanel extends Pane {
                             calendarView.showMonthPage();
                             calendarView.setDate(click.getEntry().getStartDate());
                         } else {
-
                             controller.openCorsoPage(corso);
                         }
                     }

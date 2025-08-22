@@ -20,7 +20,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
@@ -114,7 +113,7 @@ public class HomePage extends Stage {
         reflection.setFraction(1);
         uninaFoodLabel.setEffect(reflection);
         Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Images/microgrammanormal.ttf"),
+                getClass().getResourceAsStream("/Media/microgrammanormal.ttf"),
                 50
         );
 
@@ -139,7 +138,7 @@ public class HomePage extends Stage {
 
 
     private ImageView createLogoView() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/UninaFoodLabLogo.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/UninaFoodLabLogo.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(200);
         logoView.setFitHeight(200);
@@ -159,7 +158,7 @@ public class HomePage extends Stage {
     }
 
     private Button createLoginButtonWithImage(){
-        Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/LoginImage.png")));
+        Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LoginImage.png")));
         ImageView loginView = new ImageView(loginImage);
 
         loginView.setPreserveRatio(true);
@@ -314,7 +313,7 @@ public class HomePage extends Stage {
     private void setTextAesthetics(Text text){
         text.setFill(Color.valueOf("#3A6698"));
         text.setFont(
-                Font.loadFont(getClass().getResourceAsStream("/Images/times.ttf"), 70)
+                Font.loadFont(getClass().getResourceAsStream("/Media/times.ttf"), 70)
         );
     }
 
@@ -381,7 +380,7 @@ public class HomePage extends Stage {
         center.setPadding(new Insets(20));
         center.setAlignment(Pos.TOP_CENTER);
 
-        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Images/sfondoBianco.png")).toExternalForm());
+        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Media/sfondoBianco.png")).toExternalForm());
 
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO,

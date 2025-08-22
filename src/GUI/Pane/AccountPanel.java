@@ -27,7 +27,7 @@ public class AccountPanel extends VBox {
     }
 
     private ImageView createLogoView() {
-        javafx.scene.image.Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/uninaLogoAccountPage.png")));
+        javafx.scene.image.Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/uninaLogoAccountPage.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(850);
         logoView.setFitHeight(200);

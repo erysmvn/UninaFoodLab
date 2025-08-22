@@ -39,7 +39,7 @@ public class ImpostazioniPanel extends VBox {
 
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/Images/uninaLogoAccountPage.png")
+                getClass().getResourceAsStream("/Media/uninaLogoAccountPage.png")
         ));
         ImageView logoView = new ImageView(logoImage);
         

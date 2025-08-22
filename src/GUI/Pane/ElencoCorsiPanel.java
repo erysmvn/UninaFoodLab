@@ -41,7 +41,7 @@ public class ElencoCorsiPanel extends Pane {
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
             System.out.println("Immagine non trovata: " + imagePath + " -> uso fallback.");
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/UninaFoodLabLogo.png")));
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/UninaFoodLabLogo.png")));
         }
 
         ImageView imageView = new ImageView(image);

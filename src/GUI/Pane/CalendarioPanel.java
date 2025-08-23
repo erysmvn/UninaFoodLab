@@ -178,7 +178,6 @@ public class CalendarioPanel extends Pane {
         }
         if (firstDate != null) {
             calendarView.setDate(firstDate.toLocalDate());
-            calendarView.showDayPage();
         }
     }
 }

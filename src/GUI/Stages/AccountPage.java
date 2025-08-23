@@ -64,18 +64,20 @@
             calendarioPanel = new CalendarioPanel(controller);
             calendarioPanel.initCalendario(utente);
 
-
             content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel,calendarioPanel);
+
             HBox topBar = createTopBar();
             root.setTop(topBar);
             root.setCenter(content);
 
+            showOnlyPanel(accountPanel);
         }
 
 
         private Button createCalendarButton(){
 
             Button calendarButton = new Button("Calendario");
+            setNotCLickedAesthetics(calendarButton);
             setFocusPropreties(calendarButton);
             setOnMouseTraverse(calendarButton, calendarioPanel);
             initButton(calendarButton,calendarioPanel);
@@ -175,10 +177,10 @@
                     new BorderWidths(0,0,2, 0)
             )));
 
-            accountButton = createAccountButton();
-            calendarButton = createCalendarButton();
             corsiButton = createCorsiButton();
             impostazioniButton = createImpostazioniButton();
+            calendarButton = createCalendarButton();
+            accountButton = createAccountButton();
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
             CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -192,20 +194,20 @@
         }
 
         private Button createAccountButton(){
-            Button accountButton = new Button("Account");
+            accountButton = new Button("Account");
             setClickedAesthetics(accountButton);
             initButton(accountButton,accountPanel);
             clickedButton = accountButton;
             return accountButton;
         }
         private Button createCorsiButton(){
-            Button corsiButton = new Button("Corsi");
+            corsiButton = new Button("Corsi");
             setNotCLickedAesthetics(corsiButton);
             initButton(corsiButton,accountCorsiPanel);
             return corsiButton;
         }
         private Button createImpostazioniButton(){
-            Button impostazioniButton = new Button("Impostazioni");
+            impostazioniButton = new Button("Impostazioni");
             setNotCLickedAesthetics(impostazioniButton);
             initButton(impostazioniButton,impostazioniPanel);
             return impostazioniButton;
@@ -213,27 +215,21 @@
 
         private void setOnMouseTraverse(Button button, Pane panel) {
             button.setOnMouseEntered(e -> {
-                        setClickedAesthetics(button);
-                    }
-            );
+                if(clickedButton != button) setClickedAesthetics(button);
+            });
 
             button.setOnMouseExited(e -> {
-                    if(clickedButton != button)
-                        setNotCLickedAesthetics(button);
+                if(clickedButton != button) setNotCLickedAesthetics(button);
             });
         }
 
         private void setFocusPropreties(Button button) {
             button.setFocusTraversable(true);
             button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue) {
-                    setNotCLickedAesthetics(button);
-                } else {
+                if(clickedButton != button){
                     setNotCLickedAesthetics(button);
                 }
-
             });
-
         }
 
 

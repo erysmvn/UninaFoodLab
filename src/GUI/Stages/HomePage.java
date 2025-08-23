@@ -176,6 +176,7 @@ public class HomePage extends Stage {
         return loginButton;
     }
 
+
     private Button createLoginButton() {
         Button loginButton = new Button("Login");
         loginButton.setFont(Font.font("Arial", 20));
@@ -424,14 +425,25 @@ public class HomePage extends Stage {
     }
 
     private Button createAccountButton(Utente utente) {
+        /*
         Button accountButton = new Button("Account");
         accountButton.setFont(Font.font("Arial", 20));
-        accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
-        accountButton.setFocusTraversable(false);
+        */
+
+        Button accountButton = new Button();
+        Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/homeLogo.png")));
+        ImageView houseView = new ImageView(houseImage);
+        houseView.setFitHeight(30);
+        houseView.setFitWidth(30);
+        accountButton.setGraphic(houseView);
+
+        //accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
+
+        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white");
+
         accountButton.setOnAction(e -> {
             controller.openAccountPage(utente);
         });
-        this.setFocusPropreties(accountButton);
 
         return accountButton;
     }

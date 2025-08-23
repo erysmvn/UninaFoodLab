@@ -40,6 +40,8 @@ public class HomePage extends Stage {
     private CorsoDAO corsoDAO;
     private TextField searchField;
     private Button searchButton;
+    private Button homeButton;
+    private Utente utente = null;
 
     public HomePage(Controller controller) {
         this.controller = controller;
@@ -105,29 +107,13 @@ public class HomePage extends Stage {
         return closeAndMinimizePane;
     }
 
-    private Label createUninaFoodLabel(){
-        Label uninaFoodLabel = new Label(" UNINA FOOD LAB");
-        uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
-        uninaFoodLabel.setStyle("-fx-font-weight: bold;");
-        Reflection reflection = new Reflection();
-        reflection.setFraction(1);
-        uninaFoodLabel.setEffect(reflection);
-        Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Media/microgrammanormal.ttf"),
-                50
-        );
-
-        uninaFoodLabel.setFont(timesNewRoman);
-        uninaFoodLabel.setAlignment(Pos.CENTER);
-        return uninaFoodLabel;
-    }
 
     private VBox createTopBar() {
         VBox topBar = new VBox();
         this.setTopBarAesthetics(topBar);
 
         BorderPane closeAndMinimizePane = createCloseAndMinimizePane();
-        Label uninaFoodLabel = createUninaFoodLabel();
+
         loginButtons = createLoginButtonsBox();
 
         topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), loginButtons);
@@ -135,7 +121,6 @@ public class HomePage extends Stage {
 
         return topBar;
     }
-
 
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoHomePage.png")));
@@ -424,28 +409,28 @@ public class HomePage extends Stage {
         return center;
     }
 
-    private Button createAccountButton(Utente utente) {
-        /*
-        Button accountButton = new Button("Account");
-        accountButton.setFont(Font.font("Arial", 20));
-        */
+    private Button createHomeButton(){
 
-        Button accountButton = new Button();
+        homeButton = new Button("Home");
+
         Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/homeLogo.png")));
         ImageView houseView = new ImageView(houseImage);
+
         houseView.setFitHeight(30);
         houseView.setFitWidth(30);
-        accountButton.setGraphic(houseView);
 
-        //accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
+        homeButton.setGraphic(houseView);
+        homeButton.setContentDisplay(ContentDisplay.LEFT);
+        homeButton.setGraphicTextGap(10);
 
-        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white");
+        homeButton.setFont(Font.font("Nimbus Roman", 18));
+        homeButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698;");
 
-        accountButton.setOnAction(e -> {
+        homeButton.setOnAction(e -> {
             controller.openAccountPage(utente);
         });
 
-        return accountButton;
+        return homeButton;
     }
 
     private void setOnMouseTraverse(Button button){
@@ -483,20 +468,13 @@ public class HomePage extends Stage {
 
     }
 
-    public void becomeHomePageChef(Chef chef){
-        //TODO
+    public void setUtente(Utente utente){
+        this.utente = utente;
+        createHomeButton();
         loginButtons.getChildren().clear();
-        loginButtons.getChildren().add(createAccountButton(chef));
-        setLoggedIn();
-        setChef();
+        loginButtons.getChildren().add(homeButton);
     }
 
-    public void becomeHomePageStudente(Studente studente){
-        //TODO
-        loginButtons.getChildren().clear();
-        loginButtons.getChildren().add(createAccountButton(studente));
-        setLoggedIn();
-    }
 
     public Boolean isLoggedIn(){
         return isLoggedIn;

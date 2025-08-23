@@ -52,7 +52,6 @@ Desktop.ini
 
 ### Personale ###
 ./src/DB/DBConnection.java
-./UninaFoodLab/UninaFoodLab.iml
 ./.idea
 .idea/workspace.xml
-*.iml
+UninaFoodLab.iml

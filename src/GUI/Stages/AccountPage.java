@@ -31,9 +31,7 @@
 
         Utente utente;
 
-        public
-
-        AccountPage(Controller controller){
+        public AccountPage(Controller controller){
 
             this.controller = controller;
             this.initStyle(StageStyle.TRANSPARENT);
@@ -71,6 +69,7 @@
             root.setCenter(content);
 
             showOnlyPanel(accountPanel);
+            setButtonAsActive(accountButton);
         }
 
 
@@ -177,10 +176,10 @@
                     new BorderWidths(0,0,2, 0)
             )));
 
-            corsiButton = createCorsiButton();
-            impostazioniButton = createImpostazioniButton();
-            calendarButton = createCalendarButton();
             accountButton = createAccountButton();
+            corsiButton = createCorsiButton();
+            calendarButton = createCalendarButton();
+            impostazioniButton = createImpostazioniButton();
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
             CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -188,7 +187,7 @@
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            topBar.getChildren().addAll(accountButton, corsiButton,calendarButton,impostazioniButton, spacer, minimizeBtn, closeBtn);
+            topBar.getChildren().addAll(accountButton, corsiButton, calendarButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
 
             return  topBar;
         }

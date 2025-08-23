@@ -231,7 +231,6 @@
             button.focusedProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue) {
                     setNotCLickedAesthetics(button);
-//                    button.fire();
                 } else {
                     setNotCLickedAesthetics(button);
                 }

@@ -25,7 +25,7 @@ public class ImpostazioniPanel extends VBox {
         Button profiloButton = setAestheticsButton("Modifica Profilo");
 
         Button supportoButton = setAestheticsButton("Supporto");
-        profiloButton.setOnAction(e -> {
+        supportoButton.setOnAction(e -> {
            // TODO apri scrivi nuova mail su client di sistema alla mail supportfoodlab@uninasupport.it
             try {
                 controller.openEmail(

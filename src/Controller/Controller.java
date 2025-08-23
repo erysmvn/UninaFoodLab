@@ -128,43 +128,40 @@ public class Controller {
 
 
     // User
-    public void loginMethod(String email, String password) throws SQLException {
+    public void loginMethod(String email, String password) throws SQLException{
+
         if (email.contains("@studenti.unina.it")) {
             StudenteDAO studenteDao = getStudenteDAO();
-            Studente studente = studenteDao.login(email, password);
-            if(studente != null) {
-                homePage.becomeHomePageStudente(studente);
-                this.utente = studente;
-                this.corsoPages.clear();
-            }
+            utente = studenteDao.login(email, password);
+
         } else {
             ChefDAO chefDao = getChefDAO();
-            Chef chef = chefDao.login(email, password);
-            if(chef != null){
-                homePage.becomeHomePageChef(chef);
-                this.utente = chef;
-                this.corsoPages.clear();
-            }
+            utente = chefDao.login(email, password);
         }
+
+        homePage.setUtente(utente);
+        this.corsoPages.clear();
     }
 
     public void registerMethod(Utente utente) throws SQLException {
+
         if (utente instanceof Chef chef) {
             ChefDAO chefDao = getChefDAO();
             Chef ch = chefDao.register(chef);
             if(ch != null){
-                homePage.becomeHomePageChef(ch);
                 this.utente = ch;
-                this.corsoPages.clear();
             }
         } else if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
             Studente st = studenteDao.register(studente);
             if(st != null){
-                homePage.becomeHomePageStudente(st);
                 this.utente = st;
             }
         }
+
+        homePage.setUtente(utente);
+        this.corsoPages.clear();
+
     }
 
     public void logOut(){

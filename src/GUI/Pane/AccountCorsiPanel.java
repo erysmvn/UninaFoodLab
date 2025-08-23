@@ -6,12 +6,15 @@ import Controller.Controller;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AccountCorsiPanel extends BorderPane {
 
@@ -26,7 +29,7 @@ public class AccountCorsiPanel extends BorderPane {
 
         corsiBox = new VBox(10);
         corsiBox.setPadding(new Insets(10, 60, 10, 60));
-        corsiBox.setSpacing(20); // simile a Vgap
+        corsiBox.setSpacing(20);
 
         ScrollPane scrollPane = new ScrollPane(corsiBox);
         scrollPane.setPadding(new Insets(10));
@@ -52,19 +55,30 @@ public class AccountCorsiPanel extends BorderPane {
                 corsiBox.getChildren().add(corsoPan);
             }
         } else {
-            Label noCorsiLabel = new Label();
-            noCorsiLabel.setText("Non sei iscritto a nessun corso");
-            noCorsiLabel.setStyle("-fx-text-fill: red;");
-            noCorsiLabel.setPadding(new Insets(10, 10, 10, 10));
-            noCorsiLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-
-            corsiBox.getChildren().add(noCorsiLabel);
+            VBox emptyMessageBox;
+            if (utente instanceof Studente studente) {
+                emptyMessageBox = createEmptyCoursesMessage(
+                        "Non sei iscritto a nessun corso",
+                        "/Media/Icons/notFoundIcon.png"
+                );
+            } else if (utente instanceof Chef chef) {
+                emptyMessageBox = createEmptyCoursesMessage(
+                        "Non stai tenendo nessun corso",
+                        "/Media/Icons/notFoundIcon.png"
+                );
+            } else {
+                emptyMessageBox = createEmptyCoursesMessage(
+                        "Nessun corso disponibile",
+                        null
+                );
+            }
+            corsiBox.getChildren().add(emptyMessageBox);
         }
+
 
         bottomBar = createBottomBar(utente);
         this.setBottom(bottomBar);
         BorderPane.setMargin(bottomBar, new Insets(10));
-
     }
 
 
@@ -96,23 +110,27 @@ public class AccountCorsiPanel extends BorderPane {
 
     private Button createIscrivitiButton() {
         Button iscrivitiButton = new Button("Iscriviti ad un corso");
-        iscrivitiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        this.setFocusPropreties(iscrivitiButton);
-        this.setOnMouseTraverse(iscrivitiButton);
+        this.setButtonPropreties(iscrivitiButton);
         iscrivitiButton.setOnAction(e -> {
             Stage stage = (Stage) this.getScene().getWindow();
-            stage.close(); // Chiude AccountPage
+            stage.close();
         });
 
         return iscrivitiButton;
     }
 
     private Button createAggiungiButton() {
-        Button aggiungiButton = new Button("Aggiungi");
-        aggiungiButton.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        this.setOnMouseTraverse(aggiungiButton);
-        this.setFocusPropreties(aggiungiButton);
+        Button aggiungiButton = new Button("Aggiungi un nuovo corso");
+        this.setButtonPropreties(aggiungiButton);
+
         return aggiungiButton;
+    }
+
+    private void setButtonPropreties(Button button) {
+        button.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
+        button.setPadding(new Insets(10, 10, 10, 10));
+        this.setOnMouseTraverse(button);
+        this.setFocusPropreties(button);
     }
 
     private void setOnMouseTraverse(Button button) {
@@ -146,8 +164,38 @@ public class AccountCorsiPanel extends BorderPane {
             } else {
                 button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
             }
-
         });
+    }
 
+    private VBox createEmptyCoursesMessage(String message, String iconPath) {
+        VBox box = new VBox(10);
+        box.setAlignment(Pos.CENTER);
+
+        Label label = new Label(message);
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setAlignment(Pos.CENTER);
+        label.setPadding(new Insets(50, 10, 10, 10));
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                45
+        );
+        label.setFont(robotoFont);
+
+        ImageView iconView = new ImageView(iconPath);
+        if (iconPath != null) {
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath)));
+            iconView = new ImageView(icon);
+            iconView.setFitWidth(60);
+            iconView.setFitHeight(60);
+            iconView.setPreserveRatio(true);
+        }
+
+        if (iconView != null) {
+            box.getChildren().addAll(label, iconView);
+        } else {
+            box.getChildren().add(label);
+        }
+
+        return box;
     }
 }

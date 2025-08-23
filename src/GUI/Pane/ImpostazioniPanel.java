@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.Objects;
 
@@ -20,12 +21,26 @@ public class ImpostazioniPanel extends VBox {
         this.setAlignment(Pos.CENTER_LEFT);
         
         ImageView logoView = createLogoView();
+
         Button profiloButton = setAestheticsButton("Modifica Profilo");
+
         Button supportoButton = setAestheticsButton("Supporto");
+        profiloButton.setOnAction(e -> {
+           // TODO apri scrivi nuova mail su client di sistema alla mail supportfoodlab@uninasupport.it
+            try {
+                controller.openEmail(
+                        "supportfoodlab@uninasupport.it",
+                        "Richiesta Supporto",
+                        "Ciao,\nho bisogno di assistenza per..."
+                );
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         Button logoutButton = setAestheticsButton("Logout");
         logoutButton.setOnAction(e -> {
             controller.logOut();
-
         });
 
 
@@ -51,6 +66,11 @@ public class ImpostazioniPanel extends VBox {
 
     private Button setAestheticsButton(String nomeButton) {
         Button button = new Button(nomeButton);
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
+        button.setFont(robotoFont);
         button.setStyle("-fx-background-color: transparent; -fx-text-fill: #3a6698; -fx-font-size: 30px; -fx-font-weight: bold; -fx-cursor: hand;");
         this.setFocusPropreties(button);
         this.setOnMouseTraverse(button);
@@ -97,9 +117,7 @@ public class ImpostazioniPanel extends VBox {
                         new BorderWidths( 0)
                 )));
             }
-
         });
-
     }
 
 }

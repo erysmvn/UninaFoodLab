@@ -83,15 +83,21 @@ public class AccountPanel extends VBox {
     }
 
     public Label setAesteticsInfoLabel(Label label) {
-        Font valueFont = Font.font("Arial", 20);
-        label.setFont(valueFont);
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
+        label.setFont(robotoFont);
         return label;
     }
 
     public Label setMetadataAestetics(Label label){
-        Font labelFont = Font.font("Nimbus Roman", 25);
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
         Color labelColor = Color.valueOf("#3A6698");
-        label.setFont(labelFont);
+        label.setFont(robotoFont);
         label.setTextFill(labelColor);
         return label;
     }

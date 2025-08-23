@@ -10,6 +10,7 @@
     import javafx.scene.layout.*;
     import javafx.scene.control.*;
     import javafx.scene.paint.Color;
+    import javafx.scene.text.Font;
     import javafx.stage.*;
 
     public class AccountPage extends Stage {
@@ -111,11 +112,21 @@
         }
 
         private void setNotCLickedAesthetics(Button button) {
+            Font robotoFont = Font.loadFont(
+                    getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                    12
+            );
+            button.setFont(robotoFont);
             button.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
             button.setBorder(Border.EMPTY);
         }
 
         private void setClickedAesthetics(Button button) {
+            Font robotoFont = Font.loadFont(
+                    getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                    12
+            );
+            button.setFont(robotoFont);
             button.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698; -fx-cursor: hand;");
             button.setBorder(new Border(new BorderStroke(
                     Color.valueOf("#3A6698"),

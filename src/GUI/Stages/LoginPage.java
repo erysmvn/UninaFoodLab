@@ -73,15 +73,6 @@ public class LoginPage extends Stage {
         Region spacer3 = new Region();
         spacer3.setPrefHeight(7);
 
-        Label uninaFoodLabel = new Label("UNINA FOOD LAB");
-        uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
-        Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Media/Fonts/times.ttf"),
-                30
-        );
-
-        uninaFoodLabel.setFont(timesNewRoman);
-
         centerBox.getChildren().addAll(
                 logo,
                 spacer3,

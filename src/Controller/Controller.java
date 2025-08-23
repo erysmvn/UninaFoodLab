@@ -5,6 +5,9 @@ import DB.DBConnection;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
+
+import java.awt.*;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -207,6 +210,50 @@ public class Controller {
         corsoDao.getChefs(corso);
     }
 
+
+    // Mail
+    public void openEmail(String to, String subject, String body) {
+        try {
+            String uriStr = String.format(
+                    "mailto:%s?subject=%s&body=%s",
+                    to,
+                    encode(subject),
+                    encode(body)
+            );
+            URI mailto = new URI(uriStr);
+
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+
+                try {
+                    desktop.browse(mailto);
+                    return;
+                } catch (Exception ex) {
+                    try {
+                        desktop.mail(mailto);
+                        return;
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("mac")) {
+                Runtime.getRuntime().exec(new String[]{"open", mailto.toString()});
+            } else if (os.contains("win")) {
+                Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", mailto.toString()});
+            } else {
+                Runtime.getRuntime().exec(new String[]{"xdg-open", mailto.toString()});
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private String encode(String text) {
+        return text.replace(" ", "%20")
+                .replace("\n", "%0A");
+    }
 
 
     public void endAll(){

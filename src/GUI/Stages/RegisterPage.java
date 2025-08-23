@@ -185,7 +185,11 @@ public class RegisterPage extends Stage {
 
         Label labelBenvenuto = new Label("Benvenuto!");
         labelBenvenuto.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;");
-        labelBenvenuto.setFont(Font.font("", 45));
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                45
+        );
+        labelBenvenuto.setFont(robotoFont);
         labelBenvenuto.setAlignment(Pos.CENTER);
 
         CircleButton closeButton = createCloseButton();
@@ -268,7 +272,8 @@ public class RegisterPage extends Stage {
             lblCognomeError.setText("");
         }
 
-        if (txtEmail.getText().trim().isEmpty() || !txtEmail.getText().contains("@")) {
+        if (txtEmail.getText().trim().isEmpty() || !txtEmail.getText().contains("@") || !txtEmail.getText().contains(".") ||
+                txtEmail.getText().lastIndexOf('.') < txtEmail.getText().indexOf('@')) {
             valid = false;
             txtEmail.setStyle("-fx-border-color: red;");
             lblEmailError.setText("Inserire email valida");
@@ -277,7 +282,7 @@ public class RegisterPage extends Stage {
             lblEmailError.setText("");
         }
 
-        if (txtEmail.getText().contains("@studenti") && txtMatricola.isVisible() && txtMatricola.getText().trim().isEmpty()) {
+        if (txtEmail.getText().contains("@studenti.unina.it") && txtMatricola.isVisible() && txtMatricola.getText().trim().isEmpty()) {
             valid = false;
             txtMatricola.setStyle("-fx-border-color: red;");
             lblMatricolaError.setText("Inserire matricola");
@@ -360,7 +365,7 @@ public class RegisterPage extends Stage {
         button.setFocusTraversable(true);
         button.focusedProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
+                button.setStyle("-fx-background-color: WHITE; -fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
                 button.setBorder(new Border(new BorderStroke(
                         Color.valueOf("#3A6698"),
                         BorderStrokeStyle.SOLID,

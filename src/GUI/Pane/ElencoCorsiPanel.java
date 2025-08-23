@@ -115,14 +115,22 @@ public class ElencoCorsiPanel extends Pane {
 
     private Label createTitolo(String titolo){
         Label titoloLabel = new Label(titolo);
-        titoloLabel.setFont(Font.font("Nimbus Roman", 20));
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
+        titoloLabel.setFont(robotoFont);
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
         return titoloLabel;
     }
 
     private Label creaChefs(String chefs){
         Label chefsLabel = new Label(chefs);
-        chefsLabel.setFont(Font.font("Nimbus Roman", 12));
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                12
+        );
+        chefsLabel.setFont(robotoFont);
         chefsLabel.setTextFill(Color.valueOf("#000000"));
         return chefsLabel;
     }

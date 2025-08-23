@@ -134,46 +134,48 @@ public class HomePage extends Stage {
     private HBox createLoginButtonsBox() {
         HBox buttonsBox = new HBox(20);
         buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.getChildren().addAll(
-                createLoginButtonWithImage(),
+        buttonsBox.getChildren().add(
                 createLoginButton()
         );
 
         return buttonsBox;
     }
 
-    private Button createLoginButtonWithImage(){
+
+    private Button createLoginButton() {
+        Button loginButton = new Button("Login");
+
         Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/LoginImage.png")));
         ImageView loginView = new ImageView(loginImage);
-
-        loginView.setPreserveRatio(true);
-        loginView.setFitWidth(35);
-        loginView.setFitHeight(35);
-
-        Button loginButton = new Button();
+        loginView.setFitWidth(30);
+        loginView.setFitHeight(30);
         loginButton.setGraphic(loginView);
-        loginButton.setStyle("-fx-background-color: TRANSPARENT; -fx-cursor: hand;");
-        loginButton.setOnMouseClicked(e -> {
-                    controller.openLoginPage();
-                }
+        loginButton.setContentDisplay(ContentDisplay.LEFT);
+        loginButton.setGraphicTextGap(10);
+
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
         );
+        loginButton.setFont(robotoFont);
+
+        loginButton.setStyle(
+                "-fx-border-color: #3a6698;" +
+                        "-fx-border-width: 1px;" +
+                        "-fx-border-radius: 30px;" +
+                        "-fx-background-color: white;" +
+                        "-fx-text-fill: #3a6698;" +
+                        "-fx-cursor: hand;"
+        );
+
+        loginButton.setOnAction(e -> {
+            controller.openLoginPage();
+        });
 
         return loginButton;
     }
 
 
-    private Button createLoginButton() {
-        Button loginButton = new Button("Login");
-        loginButton.setFont(Font.font("Arial", 20));
-        loginButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
-        loginButton.setFocusTraversable(false);
-        loginButton.setOnAction(e ->{
-            controller.openLoginPage();
-        });
-        this.setOnMouseTraverse(loginButton);
-        this.setFocusPropreties(loginButton);
-        return  loginButton;
-    }
 
     private Button createSearchButton(){
         searchButton = new Button("🔍");
@@ -427,8 +429,13 @@ public class HomePage extends Stage {
         homeButton.setContentDisplay(ContentDisplay.LEFT);
         homeButton.setGraphicTextGap(10);
 
-        homeButton.setFont(Font.font("Nimbus Roman", 18));
-        homeButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698;");
+
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
+        homeButton.setFont(robotoFont);
+        homeButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698; -fx-cursor: hand;");
 
 
         homeButton.setOnAction(e -> {
@@ -495,7 +502,7 @@ public class HomePage extends Stage {
     public void setLogOut() {
         this.isLoggedIn = false;
         loginButtons.getChildren().clear();
-        loginButtons.getChildren().addAll(createLoginButtonWithImage(),createLoginButton());
+        loginButtons.getChildren().add(createLoginButton());
     }
 
     public void setChef() {

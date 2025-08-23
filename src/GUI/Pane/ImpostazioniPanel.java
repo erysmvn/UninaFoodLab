@@ -39,7 +39,7 @@ public class ImpostazioniPanel extends VBox {
 
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/Media/LogoHomePage.png")
+                getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")
         ));
         ImageView logoView = new ImageView(logoImage);
         
@@ -51,7 +51,7 @@ public class ImpostazioniPanel extends VBox {
 
     private Button setAestheticsButton(String nomeButton) {
         Button button = new Button(nomeButton);
-        button.setStyle("-fx-background-color: transparent; -fx-text-fill: #3a6698; -fx-font-size: 30px; -fx-font-weight: bold;");
+        button.setStyle("-fx-background-color: transparent; -fx-text-fill: #3a6698; -fx-font-size: 30px; -fx-font-weight: bold; -fx-cursor: hand;");
         this.setFocusPropreties(button);
         this.setOnMouseTraverse(button);
         return button;

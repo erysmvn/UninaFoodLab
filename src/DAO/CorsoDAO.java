@@ -51,7 +51,7 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     private String buildPath(String nomeCorso){
         nomeCorso = nomeCorso.replaceAll("\\s+", "");
-        String path = "/Media/" +nomeCorso+".png";
+        String path = "/Media/CoursesImages/" +nomeCorso+".png";
         return path;
     }
 
@@ -98,7 +98,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         );
 
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
-        corso.setImagePath("/Media/" +nomeCorsoPulito+".png");
+        corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
         corso.setSessioni(this.getSessioniCorso(rs.getString("nome_corso")));
 
         return  corso;

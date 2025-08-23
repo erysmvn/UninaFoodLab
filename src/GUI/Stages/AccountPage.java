@@ -116,7 +116,7 @@
         }
 
         private void setClickedAesthetics(Button button) {
-            button.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698;");
+            button.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698; -fx-cursor: hand;");
             button.setBorder(new Border(new BorderStroke(
                     Color.valueOf("#3A6698"),
                     BorderStrokeStyle.SOLID,
@@ -157,7 +157,7 @@
             return accountPanel;
         }
 
-        private AccountCorsiPanel createAccountCorsiPanel( Controller controller){
+        private AccountCorsiPanel createAccountCorsiPanel(Controller controller){
             AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(this.controller);
             accountCorsiPanel.initPanel(utente);
             return accountCorsiPanel;
@@ -199,12 +199,14 @@
             clickedButton = accountButton;
             return accountButton;
         }
+
         private Button createCorsiButton(){
             corsiButton = new Button("Corsi");
             setNotCLickedAesthetics(corsiButton);
             initButton(corsiButton,accountCorsiPanel);
             return corsiButton;
         }
+
         private Button createImpostazioniButton(){
             impostazioniButton = new Button("Impostazioni");
             setNotCLickedAesthetics(impostazioniButton);
@@ -230,8 +232,6 @@
                 }
             });
         }
-
-
 
         private void showOnlyPanel(Pane panelToShow) {
             Pane[] allPanels = {accountPanel, accountCorsiPanel, impostazioniPanel, calendarioPanel};

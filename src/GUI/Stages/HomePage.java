@@ -113,7 +113,7 @@ public class HomePage extends Stage {
         reflection.setFraction(1);
         uninaFoodLabel.setEffect(reflection);
         Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Media/microgrammanormal.ttf"),
+                getClass().getResourceAsStream("/Media/Fonts/microgrammanormal.ttf"),
                 50
         );
 
@@ -138,7 +138,7 @@ public class HomePage extends Stage {
 
 
     private ImageView createLogoView() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoHomePage.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(600);
         logoView.setFitHeight(600);
@@ -158,7 +158,7 @@ public class HomePage extends Stage {
     }
 
     private Button createLoginButtonWithImage(){
-        Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LoginImage.png")));
+        Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/LoginImage.png")));
         ImageView loginView = new ImageView(loginImage);
 
         loginView.setPreserveRatio(true);
@@ -314,7 +314,7 @@ public class HomePage extends Stage {
     private void setTextAesthetics(Text text){
         text.setFill(Color.valueOf("#3A6698"));
         text.setFont(
-                Font.loadFont(getClass().getResourceAsStream("/Media/times.ttf"), 70)
+                Font.loadFont(getClass().getResourceAsStream("/Media/Fonts/times.ttf"), 70)
         );
     }
 
@@ -381,7 +381,7 @@ public class HomePage extends Stage {
         center.setPadding(new Insets(20));
         center.setAlignment(Pos.TOP_CENTER);
 
-        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Media/sfondoBianco.png")).toExternalForm());
+        Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Media/Background/sfondoBianco.png")).toExternalForm());
 
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO,
@@ -431,15 +431,15 @@ public class HomePage extends Stage {
         */
 
         Button accountButton = new Button();
-        Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/homeLogo.png")));
+        Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/homeLogo.png")));
         ImageView houseView = new ImageView(houseImage);
         houseView.setFitHeight(30);
         houseView.setFitWidth(30);
         accountButton.setGraphic(houseView);
 
-        //accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
+//        accountButton.setStyle("-fx-background-color: \"#3A6698\"; -fx-text-fill: WHITE; -fx-cursor: hand;");
 
-        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white");
+        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-cursor: hand;");
 
         accountButton.setOnAction(e -> {
             controller.openAccountPage(utente);

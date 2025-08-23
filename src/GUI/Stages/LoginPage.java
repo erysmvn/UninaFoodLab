@@ -76,7 +76,7 @@ public class LoginPage extends Stage {
         Label uninaFoodLabel = new Label("UNINA FOOD LAB");
         uninaFoodLabel.setTextFill(Color.valueOf("#3A6698"));
         Font timesNewRoman = Font.loadFont(
-                getClass().getResourceAsStream("/Media/times.ttf"),
+                getClass().getResourceAsStream("/Media/Fonts/times.ttf"),
                 30
         );
 
@@ -154,7 +154,7 @@ public class LoginPage extends Stage {
     }
 
     private ImageView createLogo() {
-        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoLoginPage.png")));
+        Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoLoginPage.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(450);
         logoView.setPreserveRatio(true);

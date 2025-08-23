@@ -27,15 +27,15 @@ public class AccountPanel extends VBox {
     }
 
     private ImageView createLogoView() {
-        javafx.scene.image.Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/LogoHomePage.png")));
+        javafx.scene.image.Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")));
         ImageView logoView = new ImageView(logoImage);
         logoView.setFitWidth(750);
         logoView.setFitHeight(250);
         logoView.setPreserveRatio(true);
         return logoView;
     }
-    private GridPane creaGrigliaAccount(Utente utente) {
 
+    private GridPane creaGrigliaAccount(Utente utente) {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(50);
@@ -56,6 +56,7 @@ public class AccountPanel extends VBox {
         Button buttonPassword = new Button("👁");
         buttonPassword.setBackground(Background.EMPTY);
         buttonPassword.setTextFill(Color.valueOf("#3A6698"));
+        buttonPassword.setStyle("-fx-cursor: hand");
         buttonPassword.setOnAction(e -> {
             if (passwordValue.getText().contains("*")) {
                 passwordValue.setText(utente.getPassw());
@@ -72,6 +73,7 @@ public class AccountPanel extends VBox {
             grid.add(matricolaValue, 1, rowIndex);
             rowIndex++;
         }
+
         grid.add(nomeLabel, 0, rowIndex);grid.add(nomeValue, 1, rowIndex++);
         grid.add(cognomeLabel, 0, rowIndex);grid.add(cognomeValue, 1, rowIndex++);
         grid.add(emailLabel, 0, rowIndex);grid.add(emailValue, 1, rowIndex++);

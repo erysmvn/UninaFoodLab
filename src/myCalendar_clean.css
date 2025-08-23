@@ -493,6 +493,7 @@
     -fx-text-fill: primary-color;
     -fx-border-color: primary-color;
     -fx-padding: 8px 16px;
+    -fx-cursor: hand;
 }
 
 /*

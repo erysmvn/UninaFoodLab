@@ -44,7 +44,7 @@ public class CorsoPanel extends Pane {
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
             System.out.println("Immagine non trovata: " + imagePath + " -> uso fallback.");
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/UninaFoodLabLogo.png")));
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/UninaFoodLabLogo.png")));
         }
 
         ImageView imageView = new ImageView(image);

@@ -73,6 +73,36 @@ public class StudenteDAO implements StudenteDAOInterface {
         return studente;
     }
 
+    public Boolean checkOldPassword(String oldPassword, Studente studente) {
+        int count = 0;
+        try {
+            String sql = "SELECT COUNT(*) FROM Studente WHERE passw = md5('" + oldPassword + "') AND matricola = '" + studente.getMatricola() + "'";
+            rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore", e);
+        }
+        return count > 0;
+    }
+
+    public void changeUserPassword(String newPassword, Studente studente) {
+        try {
+            String sql = "UPDATE Studente SET passw = md5('" + newPassword + "') WHERE matricola = '" + studente.getMatricola() + "'";
+            stmt.executeQuery(sql);
+            sql = "SELECT passw FROM Studente WHERE matricola = '" + studente.getMatricola() + "'";
+            rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                studente.setPassw(rs.getString("passw"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore", e);
+        }
+    }
+
     public void subscribeToCourse(Studente studente, Corso corso) {
         try {
             String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";

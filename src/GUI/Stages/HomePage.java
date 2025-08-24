@@ -344,25 +344,6 @@ public class HomePage extends Stage {
         }
     }
 
-/*
-    private HBox createCorsiContainer() {
-        corsiBox = new HBox(20);
-        corsiBox.setAlignment(Pos.TOP_CENTER);
-        corsiBox.setPadding(new Insets(20));
-        //TODO oppure una funzione in controller getCorsiConPiuStudenti????
-        //---------------------------------------------------
-        corsoDAO = controller.getCorsoDAO();
-        ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
-        // --------------------------------------------------
-        CorsoPanel tempCorsoPanel;
-        for(Corso c: corsi){
-            tempCorsoPanel = new CorsoPanel(controller);
-            tempCorsoPanel.setCorso(c);
-            corsiBox.getChildren().add(tempCorsoPanel);
-        }
-        return corsiBox;
-    }
-*/
 
 private ScrollPane createCorsiContainer() {
     HBox corsiHBox = new HBox(20);
@@ -506,6 +487,7 @@ private ScrollPane createCorsiContainer() {
     public void setUtente(Utente utente){
         this.utente = utente;
         createHomeButton();
+        setLoggedIn();
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(homeButton);
     }

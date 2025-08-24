@@ -1,27 +1,38 @@
 package GUI.Pane;
 
 import Controller.Controller;
+import Entity.Chef;
 import Entity.Corso;
+import Entity.Studente;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class ElencoCorsiPanel extends Pane {
 
         Controller controller;
         Corso corso;
         HBox content;
+        AccountCorsiPanel parent;
 
-    public ElencoCorsiPanel(Controller controller) {
+    public ElencoCorsiPanel(AccountCorsiPanel parent, Controller controller) {
+        this.parent = parent;
         this.controller = controller;
         content = new HBox(10);
         content.setAlignment(Pos.TOP_CENTER);
@@ -90,24 +101,19 @@ public class ElencoCorsiPanel extends Pane {
         Label chefsLabel = creaChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
 
-        // VBox immagine
         VBox immagineBox  = new VBox(imageView);
         immagineBox.setAlignment(Pos.CENTER);
-        immagineBox.setPrefWidth(160); // larghezza fissa per tutte le immagini
+        immagineBox.setPrefWidth(160);
 
-        // VBox info corso
         VBox infoBox = new VBox(10, titoloLabel, chefsLabel);
         infoBox.setAlignment(Pos.CENTER_LEFT);
-        infoBox.setPrefWidth(700); // larghezza fissa o flessibile
+        infoBox.setPrefWidth(700);
         infoBox.setMaxWidth(Double.MAX_VALUE);
 
-        // VBox info corso
         VBox buttonBox = new VBox(10, unsubscribeButton);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         buttonBox.setMaxWidth(Double.MAX_VALUE);
 
-
-        // Imposto HBox principale
         content.getChildren().clear();
         content.getChildren().addAll(immagineBox, infoBox, buttonBox);
         content.setAlignment(Pos.CENTER_LEFT);
@@ -141,12 +147,77 @@ public class ElencoCorsiPanel extends Pane {
         unsubscribeButton.setStyle("-fx-background-color: \"#da3d26\";");
 
         unsubscribeButton.setOnAction(event -> {
-            controller.unsubscribeToCourse(corso);
+            if (controller.getUtente() instanceof Studente studente) {
+                showConfirmPanel("Sei sicuro di voler annullare l'iscrizione al corso?", () -> {
+                    controller.unsubscribeToCourse(corso);
+                });
+            } else if (controller.getUtente() instanceof Chef chef) {
+                showConfirmPanel("Sei sicuro di voler eliminare il corso?", () -> {
+                    controller.deleteCorso(corso);
+                });
+            }
         });
 
         this.setOnMouseTraverse(unsubscribeButton);
         this.setFocusPropreties(unsubscribeButton);
         return unsubscribeButton;
+    }
+
+    private void showConfirmPanel(String message, Runnable onConfirm) {
+        Stage confirmStage = new Stage();
+        confirmStage.initModality(Modality.APPLICATION_MODAL);
+        confirmStage.initStyle(StageStyle.TRANSPARENT);
+
+        // Layout principale
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
+        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(15), new BorderWidths(2))));
+
+        Label label = new Label(message);
+        label.setFont(Font.font("System", FontWeight.BOLD, 18));
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setWrapText(true);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setMaxWidth(300);
+
+        Button yesButton = new Button("Si");
+        Button noButton = new Button("No");
+
+        styleConfirmButton(yesButton, Color.valueOf("#3A6698"));
+        styleConfirmButton(noButton, Color.valueOf("#da3d26"));
+
+        HBox buttons = new HBox(15, yesButton, noButton);
+        buttons.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(label, buttons);
+
+        Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+        confirmStage.setScene(scene);
+
+        yesButton.setOnAction(e -> {
+            onConfirm.run(); // esegue l'azione passata
+            controller.refreshCorsi(parent);
+            confirmStage.close();
+        });
+
+        noButton.setOnAction(e -> confirmStage.close());
+
+        confirmStage.showAndWait();
+    }
+
+    // Stile pulsante coerente con il resto della UI
+    private void styleConfirmButton(Button button, Color color) {
+        button.setPrefSize(80, 30);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
+
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
 

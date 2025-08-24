@@ -34,6 +34,10 @@ public class Utente {
         this.corsi = corsi;
     }
 
+    public void setPassw(String passw) {
+        this.passw = passw;
+    }
+
     public void addCorso(Corso corso) {
         corsi.add(corso);
     }

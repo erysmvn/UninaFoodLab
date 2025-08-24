@@ -4,6 +4,7 @@ import Controller.Controller;
 import DB.DBConnection;
 import Entity.Chef;
 import Entity.Corso;
+import Entity.Studente;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ChefDAO {
         ResultSet rs = stmt.executeQuery(sql);
         if(rs.next()){
             chef = new Chef(
+                    rs.getInt("idchef"),
                     rs.getString("nome_chef"),
                     rs.getString("cognome"),
                     rs.getString("email"),
@@ -61,6 +63,15 @@ public class ChefDAO {
                 throw exc;
             }
 
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    chef.setIdchef(id);
+                } else {
+                    throw new SQLException("Creating chef failed, no ID obtained.");
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception exc) {
@@ -68,6 +79,36 @@ public class ChefDAO {
         }
 
         return chef;
+    }
+
+    public Boolean checkOldPassword(String oldPassword, Chef chef) {
+        int count = 0;
+        try {
+            String sql = "SELECT COUNT(*) FROM chef WHERE passw = md5('" + oldPassword + "') AND idchef = '" + chef.getIdchef() + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore", e);
+        }
+        return count > 0;
+    }
+
+    public void changeUserPassword(String newPassword, Chef chef) {
+        try {
+            String sql = "UPDATE chef SET passw = md5('" + newPassword + "') WHERE idchef = '" + chef.getIdchef() + "'";
+            stmt.executeQuery(sql);
+            sql = "SELECT passw FROM chef WHERE idchef = '" + chef.getIdchef() + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                chef.setPassw(rs.getString("passw"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore", e);
+        }
     }
 
 
@@ -79,6 +120,7 @@ public class ChefDAO {
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 chef = new Chef(
+                        rs.getInt("idchef"),
                         rs.getString("nome_chef"),
                         rs.getString("cognome"),
                         rs.getString("email"),
@@ -111,6 +153,7 @@ public class ChefDAO {
 
             if (rs.next()) {
                 Chef chef = new Chef(
+                        rs.getInt("idchef"),
                         rs.getString("nome_chef"),
                         rs.getString("cognome"),
                         rs.getString("email"),

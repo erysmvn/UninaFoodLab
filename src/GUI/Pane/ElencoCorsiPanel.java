@@ -101,6 +101,8 @@ public class ElencoCorsiPanel extends Pane {
         Label chefsLabel = creaChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
 
+        Button addSessionButton = createAddSessionButton();
+
         VBox immagineBox  = new VBox(imageView);
         immagineBox.setAlignment(Pos.CENTER);
         immagineBox.setPrefWidth(160);
@@ -115,7 +117,11 @@ public class ElencoCorsiPanel extends Pane {
         buttonBox.setMaxWidth(Double.MAX_VALUE);
 
         content.getChildren().clear();
-        content.getChildren().addAll(immagineBox, infoBox, buttonBox);
+        if (controller.getUtente() instanceof Chef) {
+            content.getChildren().addAll(immagineBox, infoBox, addSessionButton, buttonBox);
+        } else {
+            content.getChildren().addAll(immagineBox, infoBox, buttonBox);
+        }
         content.setAlignment(Pos.CENTER_LEFT);
     }
 
@@ -139,6 +145,20 @@ public class ElencoCorsiPanel extends Pane {
         chefsLabel.setFont(robotoFont);
         chefsLabel.setTextFill(Color.valueOf("#000000"));
         return chefsLabel;
+    }
+
+    private Button createAddSessionButton(){
+        Button addSessionButton = new Button("Aggiungi sessione");
+        addSessionButton.setTextFill(Color.WHITE);
+        addSessionButton.setStyle("-fx-background-color: \"#3A6698\";");
+
+        addSessionButton.setOnAction(event -> {
+            // TODO addSessionePage
+        });
+
+        this.setOnMouseTraverseBlue(addSessionButton);
+        this.setFocusPropretiesBlue(addSessionButton);
+        return addSessionButton;
     }
 
     private Button createUnsubscribeButton(){
@@ -220,6 +240,28 @@ public class ElencoCorsiPanel extends Pane {
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
+
+    private void setOnMouseTraverseBlue(Button button) {
+        button.setOnMouseEntered(e -> {
+                    button.setStyle("-fx-background-color: #325A8C; -fx-cursor: hand;");
+                }
+        );
+        button.setOnMouseExited(e -> {
+                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
+                }
+        );
+    }
+
+    private void setFocusPropretiesBlue(Button button) {
+        button.setFocusTraversable(true);
+        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue) {
+                button.setStyle("-fx-background-color: #325A8C; -fx-cursor: hand;");
+            } else {
+                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
+            }
+        });
+    }
 
     private void setOnMouseTraverse(Button button) {
         button.setOnMouseEntered(e -> {

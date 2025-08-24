@@ -210,7 +210,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     public void getChefs(Corso corso){
         corso.allocaArrayChefs();
         Chef chef = null;
-        String sql = "SELECT DISTINCT nome_chef, cognome, email, passw " +
+        String sql = "SELECT DISTINCT idchef, nome_chef, cognome, email, passw " +
                 "FROM chef NATURAL JOIN tiene NATURAL JOIN corso " +
                 "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
 

@@ -2,6 +2,7 @@ package Controller;
 
 import Entity.*;
 import DB.DBConnection;
+import GUI.Pane.AccountCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
@@ -16,6 +17,7 @@ public class Controller {
     private LoginPage loginPage;
     private AccountPage accountPage;
     private RegisterPage registerPage;
+    private ChangePasswordPage modificaPasswordPage;
 
     private DBConnection dbc;
 
@@ -158,6 +160,19 @@ public class Controller {
         }
     }
 
+    public void openModificaPassword() {
+        if(modificaPasswordPage == null || !modificaPasswordPage.isShowing()) {
+            modificaPasswordPage = new ChangePasswordPage(this);
+            modificaPasswordPage.show();
+        } else {
+            modificaPasswordPage.toFront();
+        }
+    }
+
+    public void refreshCorsi(AccountCorsiPanel accountCorsiPanel) {
+        accountCorsiPanel.showCorsi();
+    }
+
 
 
     // User
@@ -201,6 +216,28 @@ public class Controller {
         this.utente = null;
         homePage.setLogOut();
         accountPage.close();
+    }
+
+    public Boolean checkOldPassword(String oldPassword){
+        Boolean result = false;
+        if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = getStudenteDAO();
+            result = studenteDao.checkOldPassword(oldPassword, studente);
+        } else if (utente instanceof Chef chef) {
+            ChefDAO chefDao = getChefDAO();
+            result = chefDao.checkOldPassword(oldPassword, chef);
+        }
+        return result;
+    }
+
+    public void changeUserPassword(String newPassword){
+        if (utente instanceof Studente studente) {
+            StudenteDAO studenteDao = getStudenteDAO();
+             studenteDao.changeUserPassword(newPassword, studente);
+        } else if (utente instanceof Chef chef) {
+            ChefDAO chefDao = getChefDAO();
+            chefDao.changeUserPassword(newPassword, chef);
+        }
     }
 
     public void subscribeToCourse(Corso corso){
@@ -248,6 +285,11 @@ public class Controller {
     public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) {
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.searchCorsiLikeString(nomeCorso);
+    }
+
+    public void deleteCorso(Corso corso) {
+        CorsoDAO corsoDao = getCorsoDAO();
+//        corsoDao.delete(corso);
     }
 
 

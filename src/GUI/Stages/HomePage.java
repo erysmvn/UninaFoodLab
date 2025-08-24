@@ -32,7 +32,9 @@ public class HomePage extends Stage {
     private ScrollPane corsiScrollPane;
     private Scene scene;
     private HBox loginButtons;
-    private HBox corsiBox;;
+    private HBox corsiBox;
+    private Boolean isLoggedIn = false;
+    private Boolean isChef = false;
     private ArrayList<Corso> corsi;
     private Timeline AnimazioneRicerca;
     private TextField searchField;
@@ -478,14 +480,28 @@ private ScrollPane createCorsiContainer() {
             }
 
         });
+    }
 
+    public Boolean isLoggedIn(){
+        return isLoggedIn;
+    }
+
+    public Boolean isChef(){
+        return isChef;
+    }
+
+    public void setLoggedIn() {
+        isLoggedIn = true;
+    }
+
+    public void setChef() {
+        isChef = true;
     }
 
     public void setUtente(Utente utente){
         this.utente = utente;
-        if(homeButton == null){
-            createHomeButton();
-        }
+        createHomeButton();
+        setLoggedIn();
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(homeButton);
     }

@@ -104,6 +104,18 @@ public class CorsoDAO implements CorsoDAOInterface {
         return  corso;
     }
 
+    public void delete(Corso corso) {
+        String sql = "DELETE FROM Corso WHERE idcorso = '" + corso.getIdCorso() + "'";
+
+        try  {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+    }
+
 
     // Get methods
     public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
@@ -206,6 +218,7 @@ public class CorsoDAO implements CorsoDAOInterface {
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 while (rs.next()) {
                     chef = new Chef(
+                            rs.getInt("idchef"),
                             rs.getString("nome_chef"),
                             rs.getString("cognome"),
                             rs.getString("email"),

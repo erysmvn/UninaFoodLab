@@ -22,7 +22,11 @@ public class ImpostazioniPanel extends VBox {
         
         ImageView logoView = createLogoView();
 
-        Button profiloButton = setAestheticsButton("Modifica Profilo");
+        Button modificaPassword = setAestheticsButton("Modifica Password");
+        modificaPassword.setOnAction(e -> {
+            controller.openModificaPassword();
+        });
+
 
         Button supportoButton = setAestheticsButton("Supporto");
         supportoButton.setOnAction(e -> {
@@ -46,7 +50,7 @@ public class ImpostazioniPanel extends VBox {
 
         this.getChildren().addAll(
                 logoView,
-                profiloButton,
+                modificaPassword,
                 supportoButton,
                 logoutButton
         );

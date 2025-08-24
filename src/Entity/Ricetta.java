@@ -76,7 +76,11 @@ public class Ricetta {
         for (String allergene : allergeniRicetta) {
             toreturn += allergene + ", ";
         }
-        toreturn = toreturn.substring(0, toreturn.length() - 2);
+        if (toreturn.length() > 2) {
+            toreturn = toreturn.substring(0, toreturn.length() - 2);
+        } else {
+            toreturn = "Nessuno";
+        }
         return toreturn;
     }
 }

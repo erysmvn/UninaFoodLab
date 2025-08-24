@@ -61,8 +61,6 @@ public class RicettaDAO {
 
     public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) {
         ricetta.allocaArrayIngredienti();
-        System.out.println(ricetta.getIdRicetta());
-        System.out.println(ingrediente.getIdIngrediente());
         String sql = "SELECT quantità, unità " +
                 "FROM forma NATURAL JOIN ricetta NATURAL JOIN ingrediente " +
                 "WHERE idricetta = " + "'" +ricetta.getIdRicetta()+"' AND idingrediente = " + "'" +ingrediente.getIdIngrediente()+"'";

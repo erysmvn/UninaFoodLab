@@ -361,21 +361,6 @@ public class CorsoPage extends Stage {
             // Evento click sulla label
             ricettaLabel.setOnMouseClicked(event -> {
                 controller.openRicettaPage(r);
-//                Stage detailStage = new Stage();
-//                detailStage.setTitle(r.getNome());
-//
-//                Text descrizioneText = new Text(r.getDescrizione());
-//                descrizioneText.setWrappingWidth(400);
-//
-//                ScrollPane scrollPaneDesc = new ScrollPane(descrizioneText);
-//                scrollPaneDesc.setFitToWidth(true);
-//
-//                VBox layout = new VBox(scrollPaneDesc);
-//                layout.setPadding(new Insets(10));
-//
-//                Scene scene = new Scene(layout, 450, 300);
-//                detailStage.setScene(scene);
-//                detailStage.show();
             });
 
             descBox.getChildren().add(ricettaLabel);

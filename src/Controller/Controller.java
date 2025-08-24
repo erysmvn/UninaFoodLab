@@ -222,27 +222,30 @@ public class Controller {
             );
             URI mailto = new URI(uriStr);
 
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("linux")) {
+                new ProcessBuilder("xdg-open", mailto.toString()).start();
+                return;
+            }
+
             if (Desktop.isDesktopSupported()) {
                 Desktop desktop = Desktop.getDesktop();
-
                 try {
-                    desktop.browse(mailto);
+                    desktop.mail(mailto);
                     return;
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
                     try {
-                        desktop.mail(mailto);
+                        desktop.browse(mailto);
                         return;
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored2) {}
                 }
             }
 
-            String os = System.getProperty("os.name").toLowerCase();
             if (os.contains("mac")) {
-                Runtime.getRuntime().exec(new String[]{"open", mailto.toString()});
+                new ProcessBuilder("open", mailto.toString()).start();
             } else if (os.contains("win")) {
-                Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", mailto.toString()});
-            } else {
-                new ProcessBuilder("xdg-open", mailto.toString()).start();
+                new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", mailto.toString()).start();
             }
 
         } catch (Exception ex) {

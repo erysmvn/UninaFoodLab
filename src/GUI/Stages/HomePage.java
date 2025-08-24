@@ -32,8 +32,6 @@ public class HomePage extends Stage {
     private ScrollPane corsiScrollPane;
     private Scene scene;
     private HBox loginButtons;
-    private Boolean isLoggedIn = false;
-    private Boolean isChef = false;
     private HBox corsiBox;;
     private ArrayList<Corso> corsi;
     private Timeline AnimazioneRicerca;
@@ -345,26 +343,6 @@ public class HomePage extends Stage {
         }
     }
 
-/*
-    private HBox createCorsiContainer() {
-        corsiBox = new HBox(20);
-        corsiBox.setAlignment(Pos.TOP_CENTER);
-        corsiBox.setPadding(new Insets(20));
-        //TODO oppure una funzione in controller getCorsiConPiuStudenti????
-        //---------------------------------------------------
-        corsoDAO = controller.getCorsoDAO();
-        ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
-        // --------------------------------------------------
-        CorsoPanel tempCorsoPanel;
-        for(Corso c: corsi){
-            tempCorsoPanel = new CorsoPanel(controller);
-            tempCorsoPanel.setCorso(c);
-            corsiBox.getChildren().add(tempCorsoPanel);
-        }
-        return corsiBox;
-    }
-*/
-
 private ScrollPane createCorsiContainer() {
     HBox corsiHBox = new HBox(20);
     corsiHBox.setAlignment(Pos.CENTER);
@@ -506,32 +484,19 @@ private ScrollPane createCorsiContainer() {
 
     public void setUtente(Utente utente){
         this.utente = utente;
-        createHomeButton();
+        if(homeButton == null){
+            createHomeButton();
+        }
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(homeButton);
     }
 
-
-    public Boolean isLoggedIn(){
-        return isLoggedIn;
-    }
-
-    public Boolean isChef(){
-        return isChef;
-    }
-
-    public void setLoggedIn() {
-        isLoggedIn = true;
-    }
+    
     public void setLogOut() {
-        this.isLoggedIn = false;
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(createLoginButton());
     }
 
-    public void setChef() {
-        isChef = true;
-    }
 }
 
 

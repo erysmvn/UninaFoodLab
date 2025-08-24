@@ -47,9 +47,11 @@ public class ImpostazioniPanel extends VBox {
             controller.logOut();
         });
 
-
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
         this.getChildren().addAll(
                 logoView,
+                spacer,
                 modificaPassword,
                 supportoButton,
                 logoutButton

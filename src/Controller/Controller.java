@@ -48,11 +48,11 @@ public class Controller {
     }
 
     public boolean isHomePageChef() {
-        return homePage.isChef();
+        return homePage.getIsChef();
     }
 
     public boolean isAlreadyLoggedIn() {
-        return homePage.isLoggedIn();
+        return homePage.getIsLoggedIn();
     }
 
     public CorsoDAO getCorsoDAO(){
@@ -201,6 +201,19 @@ public class Controller {
         this.utente = null;
         homePage.setLogOut();
         accountPage.close();
+    }
+
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
+        CorsoDAO corsoDAO = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
+        return corsi;
+    }
+
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef){
+        CorsoDAO corsoDao = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
+
+        return corsi;
     }
 
     public void subscribeToCourse(Corso corso){

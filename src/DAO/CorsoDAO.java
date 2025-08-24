@@ -49,6 +49,42 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
+        tipologia = tipologia.toUpperCase();
+        ArrayList<Corso> corsi = new ArrayList<>();
+        String sql = "select * from corso natural join caratterizzato natural join tipologiacorso t where t.nome_tipo ilike ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, "%" + tipologia + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                corsi.add(createCorsoByResultSet(rs));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return corsi;
+    }
+
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef){
+        nomeChef = nomeChef.toUpperCase();
+        ArrayList<Corso> corsi = new ArrayList<>();
+        String sql = "select * from corso natural join tiene natural join chef ch where ch.nome_chef ilike ? OR ch.cognome ilike ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, "%" + nomeChef + "%");
+            stmt.setString(2, "%" + nomeChef + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                corsi.add( createCorsoByResultSet(rs));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return corsi;
+    }
+
     private String buildPath(String nomeCorso){
         nomeCorso = nomeCorso.replaceAll("\\s+", "");
         String path = "/Media/CoursesImages/" +nomeCorso+".png";

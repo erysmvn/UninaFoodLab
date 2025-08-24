@@ -37,7 +37,6 @@ public class HomePage extends Stage {
     private HBox corsiBox;;
     private ArrayList<Corso> corsi;
     private Timeline AnimazioneRicerca;
-    private CorsoDAO corsoDAO;
     private TextField searchField;
     private Button searchButton;
     private Button homeButton;
@@ -220,7 +219,7 @@ public class HomePage extends Stage {
                 String nomeCorso = searchField.getText();
 
                 if (!nomeCorso.isEmpty()) {
-                    corsi = corsoDAO.searchCorsiLikeString(nomeCorso);
+                    corsi = controller.searchCorsiLikeString(nomeCorso);
 
                     corsiBox.getChildren().clear();
 
@@ -236,7 +235,7 @@ public class HomePage extends Stage {
                     }
 
                 } else {
-                    this.loadTopCorsi(corsoDAO);
+                    this.loadTopCorsi();
                 }
             });
 
@@ -274,7 +273,7 @@ public class HomePage extends Stage {
         });
         searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal && searchField.getText().isEmpty()) {
-               this.loadTopCorsi(corsoDAO);
+               this.loadTopCorsi();
             }
         });
 
@@ -333,9 +332,9 @@ public class HomePage extends Stage {
         corsiBox.getChildren().add(notFoundPane);
     }
 
-    private void loadTopCorsi(CorsoDAO corsoDAO) {
+    private void loadTopCorsi() {
         corsiBox.getChildren().clear();
-        ArrayList<Corso> topCorsi = corsoDAO.getCorsiConPiuStudenti(4);
+        ArrayList<Corso> topCorsi = controller.getMostFollowedCourses(4);
         CorsoPanel tempCorsoPanel;
 
         for (Corso corso : topCorsi) {
@@ -370,8 +369,8 @@ private ScrollPane createCorsiContainer() {
     corsiHBox.setAlignment(Pos.CENTER);
     corsiHBox.setPadding(new Insets(20));
 
-    corsoDAO = controller.getCorsoDAO();
-    ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
+
+    ArrayList<Corso> corsi = controller.getMostFollowedCourses(4);;
 
     for (Corso c : corsi) {
         CorsoPanel tempCorsoPanel = new CorsoPanel(controller);

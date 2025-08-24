@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -230,14 +231,16 @@ public class CorsoPage extends Stage {
     }
 
     private void buildInfoBox(VBox infoBox) {
-        Label nomeCorso = new Label(corso.getNome());
+        Text nomeCorso = new Text(corso.getNome());
         nomeCorso.setFont(Font.font(40));
-        nomeCorso.setTextFill(Color.valueOf("#3A6698"));
+        nomeCorso.setFill(Color.valueOf("#3A6698"));
         nomeCorso.setStyle("-fx-font-weight: bold;");
 
-        nomeCorso.setMaxWidth(800);
-        nomeCorso.setWrapText(true);
-        infoBox.getChildren().add(nomeCorso);
+        TextFlow nomeCorsoFlow = new TextFlow(nomeCorso);
+        nomeCorsoFlow.setMaxWidth(400);
+        nomeCorsoFlow.setPrefWidth(400);
+        nomeCorsoFlow.setTextAlignment(TextAlignment.LEFT);
+        infoBox.getChildren().add(nomeCorsoFlow);
 
 
         controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso

@@ -49,10 +49,28 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
+    public ArrayList<Corso> getAllCourses(){
+        String sql = "SELECT * FROM corso";
+        ArrayList<Corso> corsi = new ArrayList<>();
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                corsi.add(createCorsoByResultSet(rs));
+            }
+        }catch (SQLException e){
+
+        }
+
+        return corsi;
+    }
+
     public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
         tipologia = tipologia.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
-        String sql = "select * from corso natural join caratterizzato natural join tipologiacorso t where t.nome_tipo ilike ?";
+        String sql = "select distinct c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
+                "c.datafine, c.costo,c.modcorso,c.difficolta,c.frequenza_settimanale,c.ore_totali, c.numerosessioni "+
+                "from corso c natural join caratterizzato natural join tipologiacorso t where t.nome_tipo ilike ?";
         try {
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + tipologia + "%");
@@ -69,7 +87,9 @@ public class CorsoDAO implements CorsoDAOInterface {
     public ArrayList<Corso> searchCorsiByChef(String nomeChef){
         nomeChef = nomeChef.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
-        String sql = "select * from corso natural join tiene natural join chef ch where ch.nome_chef ilike ? OR ch.cognome ilike ?";
+        String sql = "select distinct  c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
+                " c.datafine, c.costo,c.modcorso,c.difficolta,c.frequenza_settimanale,c.ore_totali, c.numerosessioni" +
+                " from corso c natural join tiene natural join chef ch where ch.nome_chef ilike ? OR ch.cognome ilike ?";
         try {
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + nomeChef + "%");

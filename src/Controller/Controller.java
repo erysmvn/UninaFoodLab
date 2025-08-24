@@ -280,6 +280,10 @@ public class Controller {
         }
     }
 
+    public ArrayList<Corso> getAllCourses(){
+        CorsoDAO corsoDao = getCorsoDAO();
+        return corsoDao.getAllCourses();
+    }
 
     // Corso
     public void getRicetteTrattate(Corso corso) {

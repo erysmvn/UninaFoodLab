@@ -42,7 +42,7 @@ public class HomePage extends Stage {
     private Timeline AnimazioneRicerca;
     private TextField searchField;
     private Button searchButton;
-    private Button filterButton;
+    private Button tuttiCorsi;
     private Button homeButton;
     private Utente utente = null;
 
@@ -216,6 +216,8 @@ public class HomePage extends Stage {
 
         searchButton.setOnAction(Click -> {
 
+            setNotClickedButtonAesthetic(tuttiCorsi);
+
             corsiBox.getChildren().clear();
 
             this.setLoadingPane();
@@ -307,23 +309,40 @@ public class HomePage extends Stage {
         ToggleButton tipologiaChoice = new ToggleButton("Tipologia");
         tipologiaChoice.setToggleGroup(choiceGroup);
 
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        tuttiCorsi = new Button("Mostra tutti");;
 
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
 
-        corsoChoice.setStyle(selected);
-        chefChoice.setStyle(base);
-        tipologiaChoice.setStyle(base);
+        tuttiCorsi.setOnAction(event -> {
+            
+            if(tuttiCorsi.getStyle().equals("-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                    "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;")) {
+
+                setClickedButtonAesthetic(tuttiCorsi);
+                ArrayList<Corso> corsi = controller.getAllCourses();
+                if (corsi != null) {
+                    CorsoPanel tempCorsoPanel;
+                    for (Corso corso : corsi) {
+                        tempCorsoPanel = new CorsoPanel(this.controller);
+                        tempCorsoPanel.setCorso(corso);
+                        corsiBox.getChildren().add(tempCorsoPanel);
+                    }
+                }
+            }
+
+        });
+
+        setClickedButtonAesthetic(corsoChoice);
+        setNotClickedButtonAesthetic(tuttiCorsi);
+        setNotClickedButtonAesthetic(chefChoice);
+        setNotClickedButtonAesthetic(tipologiaChoice);
 
         choiceGroup.selectedToggleProperty().addListener((obs, oldT, choosed) -> {
             for (Toggle tb : choiceGroup.getToggles()) {
                 ToggleButton temptb = (ToggleButton) tb;
                 if(temptb == choosed)
-                    temptb.setStyle(selected);
+                    setClickedButtonAesthetic(temptb);
                 else
-                    temptb.setStyle(base);
+                    setNotClickedButtonAesthetic(temptb);
             }
 
             if (choosed != null) {
@@ -335,10 +354,11 @@ public class HomePage extends Stage {
                 }
             } else {
                 searchField.setPromptText("Cerca per nome corso");
+                setClickedButtonAesthetic(corsoChoice);
             }
 
         });
-        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice);
+        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice, tuttiCorsi);
         return choiceBox;
     }
 
@@ -605,6 +625,34 @@ private ScrollPane createCorsiContainer() {
     public void setLogOut() {
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(createLoginButton());
+    }
+
+    private void setNotClickedButtonAesthetic(ToggleButton button){
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(base);
+    }
+
+    private void setClickedButtonAesthetic(ToggleButton button){
+        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(selected);
+    }
+
+    private void setNotClickedButtonAesthetic(Button button){
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(base);
+    }
+
+    private void setClickedButtonAesthetic(Button button){
+        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(selected);
     }
 
 }

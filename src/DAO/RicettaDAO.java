@@ -86,16 +86,15 @@ public class RicettaDAO {
         String sql = "SELECT DISTINCT allergeni " +
                 "FROM ingrediente NATURAL JOIN forma NATURAL JOIN ricetta " +
                 "WHERE idricetta = " + "'" +ricetta.getIdRicetta()+"'";
-        Set<String> allergeniSet = new HashSet<>(); // set temporaneo
+        Set<String> allergeniSet = new HashSet<>();
         try  {
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 while (rs.next()) {
                     String allergeniStr = rs.getString("allergeni");
                     if (allergeniStr != null && !allergeniStr.isEmpty()) {
-                        // Divido la stringa per virgole e rimuovo eventuali spazi
                         String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
                         for (String allergene : allergeniArray) {
-                            allergeniSet.add(allergene); // aggiunge solo se non c'è già
+                            allergeniSet.add(allergene);
                         }
                     }
                 }

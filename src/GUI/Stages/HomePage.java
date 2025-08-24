@@ -582,6 +582,9 @@ private ScrollPane createCorsiContainer() {
         this.utente = utente;
         createHomeButton();
         setLoggedIn();
+        if (utente instanceof Chef){
+            setChef();
+        }
         loginButtons.getChildren().clear();
         loginButtons.getChildren().add(homeButton);
     }

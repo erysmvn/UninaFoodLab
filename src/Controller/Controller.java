@@ -50,11 +50,11 @@ public class Controller {
     }
 
     public boolean isHomePageChef() {
-        return homePage.isChef();
+        return homePage.getIsChef();
     }
 
     public boolean isAlreadyLoggedIn() {
-        return homePage.isLoggedIn();
+        return homePage.getIsLoggedIn();
     }
 
     public CorsoDAO getCorsoDAO(){
@@ -218,6 +218,7 @@ public class Controller {
         accountPage.close();
     }
 
+
     public Boolean checkOldPassword(String oldPassword){
         Boolean result = false;
         if (utente instanceof Studente studente) {
@@ -230,14 +231,28 @@ public class Controller {
         return result;
     }
 
-    public void changeUserPassword(String newPassword){
+    public void changeUserPassword(String newPassword) {
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
-             studenteDao.changeUserPassword(newPassword, studente);
+            studenteDao.changeUserPassword(newPassword, studente);
         } else if (utente instanceof Chef chef) {
             ChefDAO chefDao = getChefDAO();
             chefDao.changeUserPassword(newPassword, chef);
         }
+    }
+
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
+        CorsoDAO corsoDAO = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
+        return corsi;
+    }
+
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef){
+        CorsoDAO corsoDao = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
+
+        return corsi;
+
     }
 
     public void subscribeToCourse(Corso corso){

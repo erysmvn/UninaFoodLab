@@ -171,7 +171,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     public void getRicetteTrattate(Corso corso){
         corso.allocaArrayRicette();
         Ricetta ricetta = null;
-        String sql = "SELECT DISTINCT nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
+        String sql = "SELECT DISTINCT idricetta, nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
                 "FROM corso NATURAL JOIN sessione NATURAL JOIN tratta NATURAL JOIN ricetta " +
                 "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
 
@@ -179,6 +179,7 @@ public class CorsoDAO implements CorsoDAOInterface {
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 while (rs.next()) {
                     ricetta = new Ricetta(
+                            rs.getInt("idricetta"),
                             rs.getString("nome_ricetta"),
                     rs.getString("descrizione_ricetta"),
                     rs.getInt("tempo_Di_Preparazione"),

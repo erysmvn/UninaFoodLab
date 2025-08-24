@@ -48,7 +48,7 @@ public class CorsoPage extends Stage {
         topHbox = new HBox(15);
         topHbox.setPadding(new Insets(50, 0, 10, 0));
         topHbox.setAlignment(Pos.TOP_CENTER);
-        topHbox.setSpacing(20);
+        topHbox.setSpacing(40);
         topHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
 
         bottomHbox = new HBox(15);
@@ -78,7 +78,7 @@ public class CorsoPage extends Stage {
 
         vbox.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox);
 
-        Scene scene = new Scene(vbox, 850, 700);
+        Scene scene = new Scene(vbox, 900, 750);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
     }
@@ -88,94 +88,16 @@ public class CorsoPage extends Stage {
 
 
         VBox infoBox = new VBox(10);
+        infoBox.setAlignment(Pos.TOP_RIGHT);
+
+        VBox imgBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_LEFT);
 
-        addImageCorso(corso.getImagePath());
+        addImageCorso(corso.getImagePath(), imgBox);
 
-
-        Label nomeCorso = new Label(corso.getNome());
-        nomeCorso.setFont(Font.font("Nimbus Roman", 40));
-        nomeCorso.setTextFill(Color.valueOf("#3A6698"));
-        nomeCorso.setStyle("-fx-font-weight: bold;");
-        infoBox.getChildren().add(nomeCorso);
-
-
-
-        controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso
-        corso.stampaChefs();
-
-        Text chefLabel = new Text("Chef: ");
-        chefLabel.setStyle("-fx-font-weight: bold;");
-        Text chefValue = new Text(corso.getStringOfChefs());
-        chefLabel.setFont(Font.font(20));
-        chefValue.setFont(Font.font(20));
-        TextFlow nomeChef = new TextFlow(chefLabel, chefValue);
-        infoBox.getChildren().add(nomeChef);
-
-
-        Text modalitaLabel = new Text("Modalità: ");
-        modalitaLabel.setStyle("-fx-font-weight: bold;");
-        Text modalitaValue = new Text(corso.getModalita_corso().getLabel());
-        modalitaLabel.setFont(Font.font(20));
-        modalitaValue.setFont(Font.font(20));
-        TextFlow modalita = new TextFlow(modalitaLabel, modalitaValue);
-        infoBox.getChildren().add(modalita);
-
-
-        Text diffLabel = new Text("Difficoltà: ");
-        diffLabel.setStyle("-fx-font-weight: bold;");
-        Text diffValue = new Text(corso.getDifficolta().toString());
-        diffLabel.setFont(Font.font(20));
-        diffValue.setFont(Font.font(20));
-        TextFlow difficolta = new TextFlow(diffLabel, diffValue);
-        infoBox.getChildren().add(difficolta);
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Text periodoLabel = new Text("Periodo: ");
-        periodoLabel.setStyle("-fx-font-weight: bold;");
-        Text periodoValue = new Text(
-                sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine())
-        );
-        periodoLabel.setFont(Font.font(20));
-        periodoValue.setFont(Font.font(20));
-        TextFlow date = new TextFlow(periodoLabel, periodoValue);
-        infoBox.getChildren().add(date);
-
-        // Ore totali
-        DecimalFormat df = new DecimalFormat("#.##");
-        Text oreLabel = new Text("Ore totali: ");
-        oreLabel.setStyle("-fx-font-weight: bold;");
-        Text oreValue = new Text(
-                df.format(corso.getOreTotali()));
-        oreLabel.setFont(Font.font(20));
-        oreValue.setFont(Font.font(20));
-        TextFlow ore = new TextFlow(oreLabel, oreValue);
-        infoBox.getChildren().add(ore);
-
-
-        Text freqLabel = new Text("Frequenza: ");
-        freqLabel.setStyle("-fx-font-weight: bold;");
-        Text freqValue = new Text(
-                corso.getFrequenzaSettimanale() +
-                        (corso.getFrequenzaSettimanale() == 1 ? " lezione a settimana" : " lezioni a settimana")
-        );
-        freqLabel.setFont(Font.font(20));
-        freqValue.setFont(Font.font(20));
-        TextFlow frequenza = new TextFlow(freqLabel, freqValue);
-        infoBox.getChildren().add(frequenza);
-
-        // Costo
-        Text costoLabel = new Text("Costo: ");
-        costoLabel.setStyle("-fx-font-weight: bold;");
-        Text costoValue = new Text(df.format(corso.getCosto()) + " €");
-        costoLabel.setFont(Font.font(20));
-        costoValue.setFont(Font.font(20));
-        TextFlow costo = new TextFlow(costoLabel, costoValue);
-        infoBox.getChildren().add(costo);
+        this.buildInfoBox(infoBox);
 
         controller.getRicetteTrattate(corso);
-        corso.stampaRicette();
 
         if (!controller.isHomePageChef()) {
             Button subscribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
@@ -187,86 +109,50 @@ public class CorsoPage extends Stage {
         footerVbox.getChildren().add(closeButton);
         HBox.setMargin(closeButton, new Insets(0, 0, 10, 0));
 
-        // VBox per la descrizione con scrollpane
         VBox descBox = new VBox();
         descBox.setAlignment(Pos.TOP_LEFT);
 
-        // Titolo del corso
-        Label ricetteTrattate = new Label("Ricette trattate: ");
-        ricetteTrattate.setFont(Font.font("Nimbus Roman", 30));
-        ricetteTrattate.setTextFill(Color.valueOf("#000000"));
-        ricetteTrattate.setStyle("-fx-font-weight: bold;");
-        ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
-        descBox.getChildren().add(ricetteTrattate);
-        descBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
+        this.buildDescBox(descBox);
 
-        for (Ricetta r : corso.getRicetteTrattate()) {
-            Label ricettaLabel = new Label(r.getNome());
-            ricettaLabel.setFont(Font.font("Nimbus Roman", 17));
-            ricettaLabel.setTextFill(Color.valueOf("#000000"));
-            ricettaLabel.setAlignment(Pos.CENTER_LEFT);
-            ricettaLabel.setStyle("-fx-font-weight: italic;-fx-cursor: hand;");
+        Region spacer1 = new Region();
+        Region spacer2 = new Region();
+        Region spacer3 = new Region();
 
-            // Evento click sulla label
-            ricettaLabel.setOnMouseClicked(event -> {
-                // Nuova finestra con descrizione
-                Stage detailStage = new Stage();
-                detailStage.setTitle(r.getNome());
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        HBox.setHgrow(spacer3, Priority.ALWAYS);
 
-                Text descrizioneText = new Text(r.getDescrizione());
-                descrizioneText.setWrappingWidth(400);
-
-                ScrollPane scrollPaneDesc = new ScrollPane(descrizioneText);
-                scrollPaneDesc.setFitToWidth(true);
-
-                VBox layout = new VBox(scrollPaneDesc);
-                layout.setPadding(new Insets(10));
-
-                Scene scene = new Scene(layout, 450, 300);
-                detailStage.setScene(scene);
-                detailStage.show();
-            });
-
-            descBox.getChildren().add(ricettaLabel);
-        }
-
-        topHbox.getChildren().add(infoBox);
-        topHbox.setMargin(infoBox, new Insets(0, 0, 0, 20));
+        topHbox.getChildren().addAll(spacer1, imgBox, spacer2, infoBox, spacer3);
+        topHbox.setMargin(imgBox, new Insets(20, 0, 0, 0));
         bottomHbox.getChildren().add(descBox);
     }
 
-    private void addImageCorso(String imagePath) {
+    private void addImageCorso(String imagePath, VBox imgBox) {
         ImageView imageView;
         try {
             Image image = new Image(imagePath);
             imageView = new ImageView(image);
 
-            // Dimensione quadrata desiderata
             double size = 250;
 
-            // Calcoliamo i rapporti per ritaglio centrale
             double imgWidth = image.getWidth();
             double imgHeight = image.getHeight();
 
             double x = 0, y = 0, width = imgWidth, height = imgHeight;
 
             if (imgWidth > imgHeight) {
-                // Ritaglio in larghezza
                 width = imgHeight;
                 x = (imgWidth - imgHeight) / 2;
             } else if (imgHeight > imgWidth) {
-                // Ritaglio in altezza
                 height = imgWidth;
                 y = (imgHeight - imgWidth) / 2;
             }
 
-            // Applichiamo il ritaglio
             imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, width, height));
             imageView.setFitWidth(size);
             imageView.setFitHeight(size);
             imageView.setPreserveRatio(false);
 
-            // Clip opzionale per bordi arrotondati
             Rectangle clip = new Rectangle(size, size);
             clip.setArcWidth(20);
             clip.setArcHeight(20);
@@ -276,8 +162,7 @@ public class CorsoPage extends Stage {
             imageView = new ImageView();
         }
 
-        topHbox.getChildren().add(imageView);
-        topHbox.setMargin(imageView, new Insets(20, 20, 0, 0)); // sposta verso il basso
+        imgBox.getChildren().add(imageView);
     }
 
     public Corso getCorso() {
@@ -343,5 +228,157 @@ public class CorsoPage extends Stage {
                 button.setBorder(null);
             }
         });
+    }
+
+    private void buildInfoBox(VBox infoBox) {
+        Label nomeCorso = new Label(corso.getNome());
+        nomeCorso.setFont(Font.font(40));
+        nomeCorso.setTextFill(Color.valueOf("#3A6698"));
+        nomeCorso.setStyle("-fx-font-weight: bold;");
+
+        nomeCorso.setMaxWidth(800);
+        nomeCorso.setWrapText(true);
+        infoBox.getChildren().add(nomeCorso);
+
+
+        controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso
+
+        Text chefLabel = new Text("Chef: ");
+        chefLabel.setStyle("-fx-font-weight: bold;");
+        Text chefValue = new Text(corso.getStringOfChefs());
+        chefLabel.setFont(Font.font(20));
+        chefValue.setFont(Font.font(20));
+        TextFlow nomeChef = new TextFlow(chefLabel, chefValue);
+
+        nomeChef.setMaxWidth(400);
+        nomeChef.setPrefWidth(400);
+        nomeChef.setLineSpacing(2);
+        infoBox.getChildren().add(nomeChef);
+
+
+        Text modalitaLabel = new Text("Modalità: ");
+        modalitaLabel.setStyle("-fx-font-weight: bold;");
+        Text modalitaValue = new Text(corso.getModalita_corso().getLabel());
+        modalitaLabel.setFont(Font.font(20));
+        modalitaValue.setFont(Font.font(20));
+        TextFlow modalita = new TextFlow(modalitaLabel, modalitaValue);
+
+        modalita.setMaxWidth(400);
+        modalita.setPrefWidth(400);
+        modalita.setLineSpacing(2);
+        infoBox.getChildren().add(modalita);
+
+
+        Text diffLabel = new Text("Difficoltà: ");
+        diffLabel.setStyle("-fx-font-weight: bold;");
+        Text diffValue = new Text(corso.getDifficolta().toString());
+        diffLabel.setFont(Font.font(20));
+        diffValue.setFont(Font.font(20));
+        TextFlow difficolta = new TextFlow(diffLabel, diffValue);
+
+        difficolta.setMaxWidth(400);
+        difficolta.setPrefWidth(400);
+        difficolta.setLineSpacing(2);
+        infoBox.getChildren().add(difficolta);
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Text periodoLabel = new Text("Periodo: ");
+        periodoLabel.setStyle("-fx-font-weight: bold;");
+        Text periodoValue = new Text(
+                sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine())
+        );
+        periodoLabel.setFont(Font.font(20));
+        periodoValue.setFont(Font.font(20));
+        TextFlow date = new TextFlow(periodoLabel, periodoValue);
+
+        date.setMaxWidth(400);
+        date.setPrefWidth(400);
+        date.setLineSpacing(2);
+        infoBox.getChildren().add(date);
+
+        // Ore totali
+        DecimalFormat df = new DecimalFormat("#.##");
+        Text oreLabel = new Text("Ore totali: ");
+        oreLabel.setStyle("-fx-font-weight: bold;");
+        Text oreValue = new Text(
+                df.format(corso.getOreTotali()));
+        oreLabel.setFont(Font.font(20));
+        oreValue.setFont(Font.font(20));
+        TextFlow ore = new TextFlow(oreLabel, oreValue);
+
+        ore.setMaxWidth(400);
+        ore.setPrefWidth(400);
+        ore.setLineSpacing(2);
+        infoBox.getChildren().add(ore);
+
+
+        Text freqLabel = new Text("Frequenza: ");
+        freqLabel.setStyle("-fx-font-weight: bold;");
+        Text freqValue = new Text(
+                corso.getFrequenzaSettimanale() +
+                        (corso.getFrequenzaSettimanale() == 1 ? " lezione a settimana" : " lezioni a settimana")
+        );
+        freqLabel.setFont(Font.font(20));
+        freqValue.setFont(Font.font(20));
+        TextFlow frequenza = new TextFlow(freqLabel, freqValue);
+
+        frequenza.setMaxWidth(400);
+        frequenza.setPrefWidth(400);
+        frequenza.setLineSpacing(2);
+        infoBox.getChildren().add(frequenza);
+
+        // Costo
+        Text costoLabel = new Text("Costo: ");
+        costoLabel.setStyle("-fx-font-weight: bold;");
+        Text costoValue = new Text(df.format(corso.getCosto()) + " €");
+        costoLabel.setFont(Font.font(20));
+        costoValue.setFont(Font.font(20));
+        TextFlow costo = new TextFlow(costoLabel, costoValue);
+
+        costo.setMaxWidth(400);
+        costo.setPrefWidth(400);
+        costo.setLineSpacing(2);
+        infoBox.getChildren().add(costo);
+    }
+
+    private void buildDescBox(VBox descBox) {
+        Label ricetteTrattate = new Label("Ricette trattate: ");
+        ricetteTrattate.setFont(Font.font(30));;
+        ricetteTrattate.setTextFill(Color.valueOf("#000000"));
+        ricetteTrattate.setStyle("-fx-font-weight: bold;");
+        ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
+        descBox.getChildren().add(ricetteTrattate);
+        descBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
+
+        for (Ricetta r : corso.getRicetteTrattate()) {
+            Label ricettaLabel = new Label("   \u2022 " + r.getNome());
+            ricettaLabel.setFont(Font.font(17));;
+            ricettaLabel.setTextFill(Color.valueOf("#000000"));
+            ricettaLabel.setAlignment(Pos.CENTER_LEFT);
+            ricettaLabel.setStyle("-fx-cursor: hand;");
+
+            // Evento click sulla label
+            ricettaLabel.setOnMouseClicked(event -> {
+                controller.openRicettaPage(r);
+//                Stage detailStage = new Stage();
+//                detailStage.setTitle(r.getNome());
+//
+//                Text descrizioneText = new Text(r.getDescrizione());
+//                descrizioneText.setWrappingWidth(400);
+//
+//                ScrollPane scrollPaneDesc = new ScrollPane(descrizioneText);
+//                scrollPaneDesc.setFitToWidth(true);
+//
+//                VBox layout = new VBox(scrollPaneDesc);
+//                layout.setPadding(new Insets(10));
+//
+//                Scene scene = new Scene(layout, 450, 300);
+//                detailStage.setScene(scene);
+//                detailStage.show();
+            });
+
+            descBox.getChildren().add(ricettaLabel);
+        }
     }
 }

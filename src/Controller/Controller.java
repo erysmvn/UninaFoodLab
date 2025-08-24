@@ -22,6 +22,7 @@ public class Controller {
     private Utente utente;
 
     private ArrayList<CorsoPage> corsoPages = new ArrayList<>();
+    private ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
 
     public Controller(){
         dbc = new DBConnection();
@@ -104,6 +105,35 @@ public class Controller {
         for(CorsoPage cp : corsoPages){
             if(cp.getCorso().getIdCorso() == c.getIdCorso()){
                 return cp;
+            }
+        }
+        return null;
+    }
+
+    public void openRicettaPage(Ricetta ricetta){
+        RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
+
+        if(existingPage != null){
+            if(existingPage.isShowing()){
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            RicettaPage ricettaPage = new RicettaPage( this);
+            ricettaPage.initPage(ricetta);
+            ricettaPages.add(ricettaPage);
+
+            ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
+
+            ricettaPage.show();
+        }
+    }
+
+    private RicettaPage isRicettaPageAlreadyOpened(Ricetta r){
+        for(RicettaPage rp : ricettaPages){
+            if(rp.getRicetta().getIdRicetta() == r.getIdRicetta()){
+                return rp;
             }
         }
         return null;
@@ -209,6 +239,25 @@ public class Controller {
         CorsoDAO corsoDao = new CorsoDAO(this);
         corsoDao.getChefs(corso);
     }
+
+
+    // Ricetta
+    public void getIngredientiRicetta(Ricetta Ricetta) {
+        RicettaDAO ricettaDao = new RicettaDAO(this);
+        ricettaDao.getIngredienti(Ricetta);
+    }
+
+    public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) {
+        RicettaDAO ricettaDao = new RicettaDAO(this);
+        String toReturn = ricettaDao.getQuantitaIngrediente(Ricetta, Ingrediente);
+        return toReturn;
+    }
+
+    public void getAllergeniRicetta(Ricetta Ricetta) {
+        RicettaDAO ricettaDao = new RicettaDAO(this);
+        ricettaDao.getAllergeniRicetta(Ricetta);
+    }
+
 
 
     // Mail

@@ -242,7 +242,7 @@ public class Controller {
             } else if (os.contains("win")) {
                 Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", mailto.toString()});
             } else {
-                Runtime.getRuntime().exec(new String[]{"xdg-open", mailto.toString()});
+                new ProcessBuilder("xdg-open", mailto.toString()).start();
             }
 
         } catch (Exception ex) {

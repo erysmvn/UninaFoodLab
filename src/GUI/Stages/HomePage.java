@@ -13,7 +13,6 @@ import javafx.animation.Timeline;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.effect.*;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
@@ -30,6 +29,7 @@ public class HomePage extends Stage {
 
     private Controller controller;
     private BorderPane root;
+    private ScrollPane corsiScrollPane;
     private Scene scene;
     private HBox loginButtons;
     private Boolean isLoggedIn = false;
@@ -345,6 +345,7 @@ public class HomePage extends Stage {
         }
     }
 
+/*
     private HBox createCorsiContainer() {
         corsiBox = new HBox(20);
         corsiBox.setAlignment(Pos.TOP_CENTER);
@@ -362,6 +363,40 @@ public class HomePage extends Stage {
         }
         return corsiBox;
     }
+*/
+
+private ScrollPane createCorsiContainer() {
+    HBox corsiHBox = new HBox(20);
+    corsiHBox.setAlignment(Pos.CENTER);
+    corsiHBox.setPadding(new Insets(20));
+
+    corsoDAO = controller.getCorsoDAO();
+    ArrayList<Corso> corsi = corsoDAO.getCorsiConPiuStudenti(4);
+
+    for (Corso c : corsi) {
+        CorsoPanel tempCorsoPanel = new CorsoPanel(controller);
+        tempCorsoPanel.setCorso(c);
+        corsiHBox.getChildren().add(tempCorsoPanel);
+    }
+
+    corsiScrollPane = new ScrollPane(corsiHBox);
+
+    corsiScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    corsiScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    corsiScrollPane.setFitToHeight(true);;
+    corsiScrollPane.setPannable(true);
+    corsiScrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+
+
+    corsiScrollPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+        event.consume();
+    });
+
+
+    this.corsiBox = corsiHBox;
+
+    return corsiScrollPane;
+}
 
     private VBox createCenterContent() {
         VBox center = new VBox(20);
@@ -389,24 +424,15 @@ public class HomePage extends Stage {
 
         center.setBackground(new Background(backgroundImage));
 
-
         HBox searchBar = createSearchBar();
 
         HBox corsoRow = new HBox(20);
         corsoRow.setAlignment(Pos.CENTER);
-
-        corsiBox = createCorsiContainer();
-
-        for (Node node : corsiBox.getChildren()) {
-            if (node instanceof Region) {
-                DropShadow dropShadowPanel = new DropShadow(10, Color.rgb(0, 0, 0, 0.3));
-                node.setEffect(dropShadowPanel);
-            }
-        }
-
-        corsoRow.getChildren().add(corsiBox);
-
-        center.getChildren().addAll(searchBar, corsoRow);
+        ScrollPane corsiScrollPane = createCorsiContainer();
+        HBox scrollContainer = new HBox();
+        scrollContainer.setAlignment(Pos.CENTER);
+        scrollContainer.getChildren().add(corsiScrollPane);
+        center.getChildren().addAll(searchBar, scrollContainer);
 
         return center;
     }
@@ -422,13 +448,11 @@ public class HomePage extends Stage {
         houseView.setFitHeight(30);
         houseView.setFitWidth(30);
 
-
         accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-cursor: hand;");
 
         homeButton.setGraphic(houseView);
         homeButton.setContentDisplay(ContentDisplay.LEFT);
         homeButton.setGraphicTextGap(10);
-
 
         Font robotoFont = Font.loadFont(
                 getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),

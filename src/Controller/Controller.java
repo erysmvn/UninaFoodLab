@@ -240,6 +240,17 @@ public class Controller {
         corsoDao.getChefs(corso);
     }
 
+    public ArrayList<Corso> getMostFollowedCourses(int limit) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        return corsoDao.getCorsiConPiuStudenti(limit);
+    }
+
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        return corsoDao.searchCorsiLikeString(nomeCorso);
+    }
+
+
 
     // Ricetta
     public void getIngredientiRicetta(Ricetta Ricetta) {

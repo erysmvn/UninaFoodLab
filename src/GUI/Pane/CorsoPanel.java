@@ -10,9 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.text.*;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.text.Text;
 
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ public class CorsoPanel extends VBox {
     Controller controller;
     Corso corso;
     ImageView imageView;
-    Text titoloText;
+    TextFlow titoloText;
 
     public CorsoPanel(Controller controller) {
         this.controller = controller;
@@ -48,14 +47,19 @@ public class CorsoPanel extends VBox {
         getChildren().addAll(imageView, titoloText);
     }
 
-    private Text createTitolo(String titolo) {
+    private TextFlow createTitolo(String titolo) {
         Text titoloText = new Text(titolo);
-        titoloText.setFont(Font.font("Arial", 25));
+        titoloText.setFont(Font.font("System", FontWeight.BOLD, 25));
+        TextFlow titoloFlow = new TextFlow(titoloText);
         titoloText.setFill(Color.valueOf("#2F3A42"));
-        titoloText.setStyle("-fx-font-weight: bold;");
-
         titoloText.setFocusTraversable(false);
-        return titoloText;
+
+        titoloFlow.setTextAlignment(TextAlignment.CENTER);
+        titoloFlow.setMaxWidth(400);
+        titoloFlow.setPrefWidth(400);
+        titoloFlow.setLineSpacing(2);
+
+        return titoloFlow;
     }
 
     private ImageView createImage(String path) {

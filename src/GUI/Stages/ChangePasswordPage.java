@@ -29,11 +29,8 @@ public class ChangePasswordPage extends Stage {
         private TextField txtVecchiaPassword;
         private PasswordField txtNuovaPassword;
         private PasswordField txtRipetiPassword;
-        private Label lblNomeError;
-        private Label lblCognomeError;
-        private Label lblEmailError;
-        private Label lblMatricolaError;
-        private Label lblPasswordError;
+        private Label lblVecchiaPasswordError;
+        private Label lblNuovaPasswordError;
         private Label lblRipetiPasswordError;
 
         public ChangePasswordPage(Controller controller) {
@@ -85,27 +82,27 @@ public class ChangePasswordPage extends Stage {
         private VBox createVecchiaPasswordBox() {
             Label lbl = new Label("Vecchia Password *");
             txtVecchiaPassword = new PasswordField();
-            lblPasswordError = new Label("");
-            lblPasswordError.setTextFill(Color.RED);
+            lblVecchiaPasswordError = new Label("");
+            lblVecchiaPasswordError.setTextFill(Color.RED);
             txtVecchiaPassword.setStyle(
                     "-fx-display-caret: true;" +
                             "-fx-echo-char: '*';"
             );
 
-            return new VBox(5, lbl, txtVecchiaPassword, lblPasswordError);
+            return new VBox(5, lbl, txtVecchiaPassword, lblVecchiaPasswordError);
         }
 
         private VBox createNuovaPasswordBox() {
             Label lbl = new Label("Nuova Password *");
             txtNuovaPassword = new PasswordField();
-            lblPasswordError = new Label("");
-            lblPasswordError.setTextFill(Color.RED);
+            lblNuovaPasswordError = new Label("");
+            lblNuovaPasswordError.setTextFill(Color.RED);
             txtNuovaPassword.setStyle(
                     "-fx-display-caret: true;" +
                             "-fx-echo-char: '*';"
             );
 
-            return new VBox(5, lbl, txtNuovaPassword, lblPasswordError);
+            return new VBox(5, lbl, txtNuovaPassword, lblNuovaPasswordError);
         }
 
         private VBox createRipetiPasswordBox() {
@@ -123,7 +120,7 @@ public class ChangePasswordPage extends Stage {
             grid.setPadding(new Insets(10));
 
             grid.add(createVecchiaPasswordBox(), 0, 0);
-            grid.add(createNuovaPasswordBox(), 1, 0);
+            grid.add(createNuovaPasswordBox(), 0, 1);
             grid.add(createRipetiPasswordBox(), 1, 1);
 
             return grid;
@@ -173,24 +170,24 @@ public class ChangePasswordPage extends Stage {
             if (txtVecchiaPassword.getText().trim().isEmpty()) {
                 valid = false;
                 txtVecchiaPassword.setStyle("-fx-border-color: red;");
-                lblNomeError.setText("Inserire vecchia password");
+                lblVecchiaPasswordError.setText("Inserire vecchia password");
             } else if (!controller.checkOldPassword(txtVecchiaPassword.getText())) {
                 valid = false;
                 txtVecchiaPassword.setStyle("-fx-border-color: red;");
-                lblNomeError.setText("Password errata");
+                lblVecchiaPasswordError.setText("Password errata");
             }
             else {
                 txtVecchiaPassword.setStyle(null);
-                lblNomeError.setText("");
+                lblVecchiaPasswordError.setText("");
             }
 
             if (txtNuovaPassword.getText().trim().isEmpty()) {
                 valid = false;
                 txtNuovaPassword.setStyle("-fx-border-color: red;");
-                lblCognomeError.setText("Inserire nuova password");
+                lblNuovaPasswordError.setText("Inserire nuova password");
             } else {
                 txtNuovaPassword.setStyle(null);
-                lblCognomeError.setText("");
+                lblNuovaPasswordError.setText("");
             }
 
             if (txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().trim().isEmpty()) {

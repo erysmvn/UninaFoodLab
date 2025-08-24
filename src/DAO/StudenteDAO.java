@@ -89,17 +89,20 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     public void changeUserPassword(String newPassword, Studente studente) {
-        try {
-            String sql = "UPDATE Studente SET passw = md5('" + newPassword + "') WHERE matricola = '" + studente.getMatricola() + "'";
-            stmt.executeQuery(sql);
-            sql = "SELECT passw FROM Studente WHERE matricola = '" + studente.getMatricola() + "'";
-            rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                studente.setPassw(rs.getString("passw"));
+        String sql = "UPDATE Studente SET passw = md5(?) WHERE matricola = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setString(2, studente.getMatricola());
+            int rows = ps.executeUpdate();
+
+            if (rows > 0) {
+                studente.setPassw(newPassword);
+            } else {
+                throw new RuntimeException("Nessuna riga aggiornata");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Errore", e);
+            throw new RuntimeException("Errore durante l'aggiornamento password", e);
         }
     }
 

@@ -31,7 +31,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     // Methods
     public ArrayList<Corso> searchCorsiLikeString(String nomeCorso){
         nomeCorso = nomeCorso.toUpperCase();
-        String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%' LIMIT 4";
+        String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%'";
         ArrayList<Corso> corsi = new ArrayList<>();
         try {
 

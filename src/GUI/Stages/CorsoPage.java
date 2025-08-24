@@ -39,7 +39,6 @@ public class CorsoPage extends Stage {
         this.initStyle(StageStyle.TRANSPARENT);
 
         vbox = new VBox(15);
-        vbox.setPadding(new Insets(50, 0, 0, 0));
         vbox.setPadding(new Insets(15));
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));

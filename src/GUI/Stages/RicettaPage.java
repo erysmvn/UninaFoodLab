@@ -40,7 +40,7 @@ public class RicettaPage extends Stage {
         vbox = new VBox(15);
         vbox.setPadding(new Insets(50, 0, 0, 0));
         vbox.setPadding(new Insets(15));
-        vbox.setAlignment(Pos.TOP_CENTER);
+        vbox.setAlignment(Pos.TOP_LEFT);
         vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
         vbox.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
 
@@ -103,15 +103,30 @@ public class RicettaPage extends Stage {
         this.buildDescBox(descBox);
 
         Region spacer1 = new Region();
+        spacer1.setMinWidth(20);
+        spacer1.setPrefWidth(30);
+        spacer1.setMaxWidth(50);
+
         Region spacer2 = new Region();
         Region spacer3 = new Region();
 
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
         HBox.setHgrow(spacer2, Priority.ALWAYS);
         HBox.setHgrow(spacer3, Priority.ALWAYS);
 
-        topHbox.getChildren().addAll(spacer1, infoBox, spacer3);
-        bottomHbox.getChildren().add(descBox);
+        Region spacer4 = new Region();
+        spacer4.setMinWidth(20);
+        spacer4.setPrefWidth(30);
+        spacer4.setMaxWidth(50);
+
+        Region spacer5 = new Region();
+        spacer5.setMinWidth(20);
+        spacer5.setPrefWidth(30);
+        spacer5.setMaxWidth(100);
+
+        HBox.setHgrow(spacer5, Priority.ALWAYS);
+
+        topHbox.getChildren().addAll(spacer1, infoBox, spacer2, spacer3);
+        bottomHbox.getChildren().addAll(spacer4, descBox, spacer5);
     }
 
 

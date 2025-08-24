@@ -27,7 +27,7 @@ public class StudenteDAO implements StudenteDAOInterface {
     // Methods
     public Studente login(String email, String password) throws SQLException {
         Studente studente = null;
-
+        email = email.trim();
         String sql = "Select * from studente where email = '" + email + "' AND passw = md5('" + password + "')";
         rs = stmt.executeQuery(sql);
         if(rs.next()){

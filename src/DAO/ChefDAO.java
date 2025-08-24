@@ -26,7 +26,7 @@ public class ChefDAO {
     // Methods
     public Chef login(String email, String password) throws SQLException{
         Chef chef = null;
-
+        email = email.trim();
         String sql = "Select * from chef where email = '" + email + "' AND  passw = md5('" + password + "')";
         ResultSet rs = stmt.executeQuery(sql);
         if(rs.next()){

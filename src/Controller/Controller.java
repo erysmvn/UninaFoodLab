@@ -51,11 +51,11 @@ public class Controller {
     }
 
     public boolean isHomePageChef() {
-        return homePage.getIsChef();
+        return homePage.isChef();
     }
 
     public boolean isAlreadyLoggedIn() {
-        return homePage.getIsLoggedIn();
+        return homePage.isLoggedIn();
     }
 
     public CorsoDAO getCorsoDAO(){
@@ -366,6 +366,7 @@ public class Controller {
         return text.replace(" ", "%20")
                 .replace("\n", "%0A");
     }
+
 
 
     public void endAll(){

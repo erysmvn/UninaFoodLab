@@ -1,8 +1,6 @@
 package GUI.Stages;
 
 import Controller.Controller;
-import Entity.Chef;
-import Entity.Studente;
 import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,8 +17,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.sql.SQLException;
 
 public class ChangePasswordPage extends Stage {
 
@@ -39,7 +35,7 @@ public class ChangePasswordPage extends Stage {
             this.setRoot();
             this.setRootAesthetics();
 
-            Scene scene = new Scene(root, 850, 650);
+            Scene scene = new Scene(root, 600, 400);
             scene.setFill(Color.TRANSPARENT);
             scene.setOnKeyPressed(e->{
                 if(e.isControlDown() && e.getCode()== KeyCode.W){
@@ -52,20 +48,24 @@ public class ChangePasswordPage extends Stage {
         }
 
         private void setRoot(){
-            Label lblDati = new Label("Modifica Password");
-            lblDati.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;");
+            Label lblDati = new Label(" Modifica Password");
+            lblDati.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698; -fx-font-size: 28;");
 
             GridPane gridDati = createGridDati();
             HBox bottomBox = createBottomBox();
+            HBox funcBox = createFunctionalityButtonBox();
 
             Region spacer = new Region();
             VBox.setVgrow(spacer, Priority.ALWAYS);
 
-            root = new VBox(15, lblDati, gridDati, spacer, bottomBox);
+            Region spacer1 = new Region();
+            VBox.setVgrow(spacer1, Priority.ALWAYS);
+
+            root = new VBox(15, funcBox, spacer1, lblDati, gridDati, spacer, bottomBox);
         }
 
         private void setRootAesthetics(){
-            root.setPadding(new Insets(15));
+            root.setPadding(new Insets(30, 30, 30, 30));
             root.setAlignment(Pos.TOP_LEFT);
             root.setBackground(new Background(
                     new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -158,8 +158,7 @@ public class ChangePasswordPage extends Stage {
                 }
             }
             });
-            this.setOnMouseTraverse(confermaButton);
-            this.setFocusProperties(confermaButton);
+            this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
             return confermaButton;
         }
@@ -206,43 +205,31 @@ public class ChangePasswordPage extends Stage {
             return valid;
         }
 
-        private void setOnMouseTraverse(Button button) {
-            button.setOnMouseEntered(e -> {
-                        button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                        button.setBorder(new Border(new BorderStroke(
-                                Color.valueOf("#3A6698"),
-                                BorderStrokeStyle.SOLID,
-                                CornerRadii.EMPTY,
-                                new BorderWidths(0, 0, 1, 0)
-                        )));
-                    }
-            );
-            button.setOnMouseExited(e -> {
-                        button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                    }
-            );
-        }
+    public HBox createFunctionalityButtonBox() {
+        HBox funcBox = new HBox(5);
+        funcBox.setAlignment(Pos.TOP_RIGHT);
+        funcBox.setSpacing(10);
 
-        private void setFocusProperties(Button button) {
-            button.setFocusTraversable(true);
-            button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue) {
-                    button.setStyle("-fx-background-color: WHITE; -fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0, 0, 1, 0)
-                    )));
-                } else {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                }
+        CircleButton closeButton = createCloseButton();
+        CircleButton minimizeButton = createMinimizeButton();
 
-            });
+        funcBox.getChildren().addAll(minimizeButton, closeButton);
+        return funcBox;
+    }
 
-        }
+    private CircleButton createMinimizeButton() {
+        CircleButton minimizeButton = new CircleButton();
+        minimizeButton.setToMinimizeButtonWithAction(this);
+        return minimizeButton;
+    }
 
-    private void styleConfirmButton(Button button, Color color) {
+    private CircleButton createCloseButton() {
+        CircleButton minimizeButton = new CircleButton();
+        minimizeButton.setToCloseButtonWithAction(this);
+        return minimizeButton;
+    }
+
+    private void styleButton(Button button, Color color) {
         button.setPrefSize(80, 30);
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);

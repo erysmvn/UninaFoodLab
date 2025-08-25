@@ -33,7 +33,7 @@ public class CalendarioPanel extends Pane {
 
     private CalendarView createCalendarView(){
         calendarView = new CalendarView();
-        calendarView.getStylesheets().add(getClass().getResource("/testCalendar.css").toExternalForm());
+        calendarView.getStylesheets().add(getClass().getResource("/Media/StyleSheets/calendarStyle.css").toExternalForm());
 
         sessioniPresenzaCalendar = new Calendar("Sessioni in presenza");
         sessioniPresenzaCalendar.setReadOnly(true);

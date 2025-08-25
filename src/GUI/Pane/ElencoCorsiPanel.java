@@ -57,25 +57,20 @@ public class ElencoCorsiPanel extends Pane {
 
         ImageView imageView = new ImageView(image);
 
-        // Dimensioni target = quelle del pannello
         double targetWidth = 150;
         double targetHeight = 150;
 
-        // Dimensioni originali immagine
         double imgWidth = image.getWidth();
         double imgHeight = image.getHeight();
 
-        // Rapporto scala per "cover"
         double scale = Math.max(targetWidth / imgWidth, targetHeight / imgHeight);
 
         double newWidth = imgWidth * scale;
         double newHeight = imgHeight * scale;
 
-        // Calcolo offset per ritaglio centrale
         double x = (newWidth - targetWidth) / 2 / scale;
         double y = (newHeight - targetHeight) / 2 / scale;
 
-        // Imposto viewport (ritaglio)
         imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, targetWidth / scale, targetHeight / scale));
 
         // Fit al pannello
@@ -152,12 +147,15 @@ public class ElencoCorsiPanel extends Pane {
         addSessionButton.setTextFill(Color.WHITE);
         addSessionButton.setStyle("-fx-background-color: \"#3A6698\";");
 
+        addSessionButton.setPrefWidth(160);
+        addSessionButton.setMinWidth(160);
+        addSessionButton.setMaxWidth(160);
+
         addSessionButton.setOnAction(event -> {
             // TODO addSessionePage
         });
 
-        this.setOnMouseTraverseBlue(addSessionButton);
-        this.setFocusPropretiesBlue(addSessionButton);
+        this.styleButton(addSessionButton, Color.valueOf("#3A6698"));
         return addSessionButton;
     }
 
@@ -165,6 +163,10 @@ public class ElencoCorsiPanel extends Pane {
         Button unsubscribeButton = new Button("x");
         unsubscribeButton.setTextFill(Color.WHITE);
         unsubscribeButton.setStyle("-fx-background-color: \"#da3d26\";");
+
+        unsubscribeButton.setPrefWidth(30);
+        unsubscribeButton.setMinWidth(30);
+        unsubscribeButton.setMaxWidth(30);
 
         unsubscribeButton.setOnAction(event -> {
             if (controller.getUtente() instanceof Studente studente) {
@@ -178,8 +180,7 @@ public class ElencoCorsiPanel extends Pane {
             }
         });
 
-        this.setOnMouseTraverse(unsubscribeButton);
-        this.setFocusPropreties(unsubscribeButton);
+        this.styleButton(unsubscribeButton, Color.valueOf("#da3d26"));
         return unsubscribeButton;
     }
 
@@ -188,7 +189,6 @@ public class ElencoCorsiPanel extends Pane {
         confirmStage.initModality(Modality.APPLICATION_MODAL);
         confirmStage.initStyle(StageStyle.TRANSPARENT);
 
-        // Layout principale
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
@@ -205,8 +205,8 @@ public class ElencoCorsiPanel extends Pane {
         Button yesButton = new Button("Si");
         Button noButton = new Button("No");
 
-        styleConfirmButton(yesButton, Color.valueOf("#3A6698"));
-        styleConfirmButton(noButton, Color.valueOf("#da3d26"));
+        styleButton(yesButton, Color.valueOf("#3A6698"));
+        styleButton(noButton, Color.valueOf("#da3d26"));
 
         HBox buttons = new HBox(15, yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);
@@ -218,7 +218,7 @@ public class ElencoCorsiPanel extends Pane {
         confirmStage.setScene(scene);
 
         yesButton.setOnAction(e -> {
-            onConfirm.run(); // esegue l'azione passata
+            onConfirm.run();
             controller.refreshCorsi(parent);
             confirmStage.close();
         });
@@ -228,8 +228,7 @@ public class ElencoCorsiPanel extends Pane {
         confirmStage.showAndWait();
     }
 
-    // Stile pulsante coerente con il resto della UI
-    private void styleConfirmButton(Button button, Color color) {
+    private void styleButton(Button button, Color color) {
         button.setPrefSize(80, 30);
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
@@ -238,50 +237,5 @@ public class ElencoCorsiPanel extends Pane {
 
         button.setOnMouseEntered(e -> button.setOpacity(0.8));
         button.setOnMouseExited(e -> button.setOpacity(1.0));
-    }
-
-
-    private void setOnMouseTraverseBlue(Button button) {
-        button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: #325A8C; -fx-cursor: hand;");
-                }
-        );
-        button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                }
-        );
-    }
-
-    private void setFocusPropretiesBlue(Button button) {
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: #325A8C; -fx-cursor: hand;");
-            } else {
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
-            }
-        });
-    }
-
-    private void setOnMouseTraverse(Button button) {
-        button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: #ca331d; -fx-cursor: hand;");
-                }
-        );
-        button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#da3d26\";-fx-text-fill: WHITE;");
-                }
-        );
-    }
-
-    private void setFocusPropreties(Button button) {
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: #ca331d; -fx-cursor: hand;");
-            } else {
-                button.setStyle("-fx-background-color: \"#da3d26\";-fx-text-fill: WHITE; -fx-cursor: hand;");
-            }
-        });
     }
 }

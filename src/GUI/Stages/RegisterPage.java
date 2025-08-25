@@ -5,12 +5,14 @@ import Entity.*;
 import GUI.Buttons.*;
 
 import javafx.geometry.*;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -61,16 +63,19 @@ public class RegisterPage extends Stage {
         GridPane gridCredenziali = createGridCredenziali();
         GridPane gridDati = createGridDati();
         HBox topBox = createTopBox();
+        HBox funcBox = createFunctionalityButtonBox();
         HBox bottomBox = createBottomBox();
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region spacer1 = new Region();
+        VBox.setVgrow(spacer1, Priority.ALWAYS);
 
-        root = new VBox(15, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
+        root = new VBox(15, funcBox, spacer1, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
     }
 
     private void setRootAesthetics(){
-        root.setPadding(new Insets(15));
+        root.setPadding(new Insets(20, 50, 50, 50));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -180,7 +185,7 @@ public class RegisterPage extends Stage {
 
     private HBox createTopBox() {
         HBox topBox = new HBox(5);
-        topBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.setAlignment(Pos.TOP_LEFT);
         topBox.setSpacing(10);
 
         Label labelBenvenuto = new Label("Benvenuto!");
@@ -192,15 +197,24 @@ public class RegisterPage extends Stage {
         labelBenvenuto.setFont(robotoFont);
         labelBenvenuto.setAlignment(Pos.CENTER);
 
-        CircleButton closeButton = createCloseButton();
-        CircleButton minimizeButton = createMinimizeButton();
-
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBox.getChildren().addAll(labelBenvenuto, spacer, minimizeButton, closeButton);
+        topBox.getChildren().addAll(labelBenvenuto, spacer);
 
         return topBox;
+    }
+
+    public HBox createFunctionalityButtonBox() {
+        HBox funcBox = new HBox(5);
+        funcBox.setAlignment(Pos.TOP_RIGHT);
+        funcBox.setSpacing(10);
+
+        CircleButton closeButton = createCloseButton();
+        CircleButton minimizeButton = createMinimizeButton();
+
+        funcBox.getChildren().addAll(minimizeButton, closeButton);
+        return funcBox;
     }
 
     private HBox createBottomBox() {
@@ -219,8 +233,9 @@ public class RegisterPage extends Stage {
 
     private Button createConfermaButton() {
         Button confermaButton = new Button("Conferma");
-        confermaButton.setTextFill(Color.WHITE);
-        confermaButton.setStyle("-fx-background-color: #3A6698;");
+
+        confermaButton.setMinHeight(30);
+        confermaButton.setMaxHeight(30);
 
         confermaButton.setOnAction(e -> {{
             if(validConferma()){
@@ -245,8 +260,7 @@ public class RegisterPage extends Stage {
             }
         }
         });
-        this.setOnMouseTraverse(confermaButton);
-        this.setFocusProperties(confermaButton);
+        this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
         return confermaButton;
     }
@@ -318,16 +332,16 @@ public class RegisterPage extends Stage {
 
     private Button createIndietroButton() {
         Button indietroButton = new Button("Indietro");
-        indietroButton.setTextFill(Color.WHITE);
-        indietroButton.setStyle("-fx-background-color: #3A6698;");
+
+        indietroButton.setMinHeight(30);
+        indietroButton.setMaxHeight(30);
 
         indietroButton.setOnAction(e -> {
             controller.openLoginPage();
             this.close();
         });
 
-        this.setFocusProperties(indietroButton);
-        this.setOnMouseTraverse(indietroButton);
+        this.styleButton(indietroButton, Color.valueOf("#3A6698"));
 
         return indietroButton;
     }
@@ -344,39 +358,14 @@ public class RegisterPage extends Stage {
         return minimizeButton;
     }
 
-    private void setOnMouseTraverse(Button button) {
-        button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0, 0, 1, 0)
-                    )));
-                }
-        );
-        button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                }
-        );
-    }
+    private void styleButton(Button button, Color color) {
+        button.setPrefSize(80, 20);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
 
-    private void setFocusProperties(Button button) {
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: WHITE; -fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                button.setBorder(new Border(new BorderStroke(
-                        Color.valueOf("#3A6698"),
-                        BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY,
-                        new BorderWidths(0, 0, 1, 0)
-                )));
-            } else {
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-            }
-
-        });
-
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

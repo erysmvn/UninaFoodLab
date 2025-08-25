@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.util.Objects;
 
@@ -37,37 +38,24 @@ public class AccountPanel extends VBox {
 
     private GridPane creaGrigliaAccount(Utente utente) {
         GridPane grid = new GridPane();
-        grid.setHgap(10);
+        grid.setHgap(20);
         grid.setVgap(50);
 
         ImageView logoView = createLogoView();
         grid.add(logoView, 0, 0, 3, 1);
 
-        Label nomeLabel = setMetadataAestetics(new Label("Nome"));
-        Label cognomeLabel = setMetadataAestetics(new Label("Cognome"));
-        Label emailLabel = setMetadataAestetics(new Label("Email"));
-        Label passwordLabel = setMetadataAestetics(new Label("Password"));
+        Label nomeLabel = setMetadataAestetics(new Label("     Nome: "));
+        Label cognomeLabel = setMetadataAestetics(new Label("     Cognome: "));
+        Label emailLabel = setMetadataAestetics(new Label("     Email: "));
 
         Label nomeValue = setAesteticsInfoLabel(new Label(utente.getNome()));
         Label cognomeValue = setAesteticsInfoLabel(new Label(utente.getCognome()));
         Label emailValue = setAesteticsInfoLabel(new Label(utente.getEmail()));
-        Label passwordValue = setAesteticsInfoLabel( new Label(maskPassword(utente.getPassw()) ) );
 
-        Button buttonPassword = new Button("👁");
-        buttonPassword.setBackground(Background.EMPTY);
-        buttonPassword.setTextFill(Color.valueOf("#3A6698"));
-        buttonPassword.setStyle("-fx-cursor: hand");
-        buttonPassword.setOnAction(e -> {
-            if (passwordValue.getText().contains("*")) {
-                passwordValue.setText(utente.getPassw());
-            } else {
-                passwordValue.setText(maskPassword(utente.getPassw()));
-            }
-        });
 
         int rowIndex = 1;
         if (utente instanceof Studente) {
-            Label matricolaLabel = setMetadataAestetics(new Label("Matricola"));
+            Label matricolaLabel = setMetadataAestetics(new Label("     Matricola: "));
             Label matricolaValue = setAesteticsInfoLabel(new Label(((Studente) utente).getMatricola()));
             grid.add(matricolaLabel, 0, rowIndex);
             grid.add(matricolaValue, 1, rowIndex);
@@ -76,8 +64,7 @@ public class AccountPanel extends VBox {
 
         grid.add(nomeLabel, 0, rowIndex);grid.add(nomeValue, 1, rowIndex++);
         grid.add(cognomeLabel, 0, rowIndex);grid.add(cognomeValue, 1, rowIndex++);
-        grid.add(emailLabel, 0, rowIndex);grid.add(emailValue, 1, rowIndex++);
-        grid.add(passwordLabel, 0, rowIndex);grid.add(passwordValue, 1, rowIndex);grid.add(buttonPassword, 2, rowIndex);
+        grid.add(emailLabel, 0, rowIndex);grid.add(emailValue, 1, rowIndex);
 
         return grid;
     }
@@ -96,13 +83,10 @@ public class AccountPanel extends VBox {
                 getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
                 20
         );
+        label.setFont(Font.font("", FontWeight.BOLD, 20));
         Color labelColor = Color.valueOf("#3A6698");
         label.setFont(robotoFont);
         label.setTextFill(labelColor);
         return label;
-    }
-
-    private String maskPassword(String password) {
-        return "*".repeat(password.length());
     }
 }

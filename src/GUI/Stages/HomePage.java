@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.*;
 import Entity.*;
+import Exception.CorsoExceptions.corsiNotFoundException;
 import GUI.Pane.*;
 import GUI.Buttons.*;
 
@@ -22,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -219,7 +221,8 @@ public class HomePage extends Stage {
 
 
 
-    private void setSearchButtonOnAction(Button searchButton) {
+    private void setSearchButtonOnAction(Button searchButton){
+
         PauseTransition pause = new PauseTransition(Duration.seconds(6));
 
         searchButton.setOnAction(Click -> {
@@ -234,17 +237,25 @@ public class HomePage extends Stage {
                 AnimazioneRicerca.stop();
                 String toSearch = searchField.getText();
 
-                if (!toSearch.isEmpty()){
-                    corsiBox.getChildren().clear();
-                     if (searchField.getPromptText().equals("Cerca per nome corso")) {
-                         corsi = controller.searchCorsiLikeString(toSearch);
-                    }else if(searchField.getPromptText().equals("Cerca per chef")) {
+                try{
+
+                    if (!toSearch.isEmpty()) {
+                        corsiBox.getChildren().clear();
+                        if (searchField.getPromptText().equals("Cerca per nome corso")) {
+                            corsi = controller.searchCorsiLikeString(toSearch);
+                        } else if (searchField.getPromptText().equals("Cerca per chef")) {
                             corsi = controller.searchCorsiByChef(toSearch);
-                    }else{
+                        } else {
                             corsi = controller.searchCorsiByTipologia(toSearch);
+                        }
+                    }else {
+                        this.loadTopCorsi();
                     }
-                     if (corsi != null) {
-                        CorsoPanel tempCorsoPanel;
+
+                    if(corsi == null)
+                        throw new corsiNotFoundException();
+
+                    CorsoPanel tempCorsoPanel;
 
                         for (Corso corso : corsi) {
                             tempCorsoPanel = new CorsoPanel(this.controller);
@@ -252,15 +263,11 @@ public class HomePage extends Stage {
                             corsiBox.getChildren().add(tempCorsoPanel);
                         }
 
-                     }else {
+                }catch (corsiNotFoundException | SQLException CNFE){
                         this.setNotFoundTextField();
-                        }
-                }else{
-                    this.loadTopCorsi();
                 }
 
             });
-
             pause.play();
         });
 

@@ -107,20 +107,22 @@ public class ChefDAO {
     }
 
     public void changeUserPassword(String newPassword, Chef chef) throws changePasswordException,SQLException {
+
         String sql = "UPDATE chef SET passw = md5(?) WHERE idchef = ?";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, newPassword);
-            ps.setInt(2, chef.getIdchef());
-            int rows = ps.executeUpdate();
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ps.setString(1, newPassword);
+        ps.setInt(2, chef.getIdchef());
+        int rows = ps.executeUpdate();
 
             if (rows > 0) {
                 chef.setPassw(newPassword);
             } else {
                 throw new changePasswordException();
             }
-
         }
-    }
+
+
 
 
     // Get methods

@@ -5,6 +5,7 @@ import DAO.Interfaces.CorsoDAOInterface;
 import Entity.*;
 import DB.DBConnection;
 import Entity.Enum.*;
+import Exception.CorsoExceptions.corsiNotFoundException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -29,23 +30,21 @@ public class CorsoDAO implements CorsoDAOInterface {
 
 
     // Methods
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso){
+    //todo mettere nome corretto
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso)throws corsiNotFoundException,SQLException{
         nomeCorso = nomeCorso.toUpperCase();
         String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%'";
         ArrayList<Corso> corsi = new ArrayList<>();
-        try {
 
             Statement tempStmt = dbc.getStatement();
             ResultSet rs = tempStmt.executeQuery(sql);
-            Corso corso;
 
             while (rs.next()) {
                corsi.add(createCorsoByResultSet(rs));
-
             }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+            if(corsi.isEmpty())
+                throw new corsiNotFoundException();
+
         return corsi;
     }
 
@@ -65,32 +64,30 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
-    public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException, SQLException{
         tipologia = tipologia.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
                 "c.datafine, c.costo,c.modcorso,c.difficolta,c.frequenza_settimanale,c.ore_totali, c.numerosessioni "+
                 "from corso c natural join caratterizzato natural join tipologiacorso t where t.nome_tipo ilike ?";
-        try {
+
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + tipologia + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 corsi.add(createCorsoByResultSet(rs));
             }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+
         return corsi;
     }
 
-    public ArrayList<Corso> searchCorsiByChef(String nomeChef){
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException{
         nomeChef = nomeChef.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct  c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
                 " c.datafine, c.costo,c.modcorso,c.difficolta,c.frequenza_settimanale,c.ore_totali, c.numerosessioni" +
                 " from corso c natural join tiene natural join chef ch where ch.nome_chef ilike ? OR ch.cognome ilike ?";
-        try {
+
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + nomeChef + "%");
             stmt.setString(2, "%" + nomeChef + "%");
@@ -99,9 +96,9 @@ public class CorsoDAO implements CorsoDAOInterface {
             while(rs.next()){
                 corsi.add( createCorsoByResultSet(rs));
             }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+            if(corsi.isEmpty())
+                throw new corsiNotFoundException();
+
         return corsi;
     }
 

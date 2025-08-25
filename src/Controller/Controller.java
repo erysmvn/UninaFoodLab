@@ -2,6 +2,7 @@ package Controller;
 
 import Entity.*;
 import DB.DBConnection;
+import Exception.CorsoExceptions.corsiNotFoundException;
 import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
@@ -248,13 +249,13 @@ public class Controller {
         }
     }
 
-    public ArrayList<Corso> searchCorsiByTipologia(String tipologia){
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
         CorsoDAO corsoDAO = getCorsoDAO();
         ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
         return corsi;
     }
 
-    public ArrayList<Corso> searchCorsiByChef(String nomeChef){
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
         CorsoDAO corsoDao = getCorsoDAO();
         ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
 
@@ -308,7 +309,7 @@ public class Controller {
         return corsoDao.getCorsiConPiuStudenti(limit);
     }
 
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) {
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException,SQLException{
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.searchCorsiLikeString(nomeCorso);
     }

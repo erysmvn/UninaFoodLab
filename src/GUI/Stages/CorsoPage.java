@@ -5,25 +5,21 @@ import Entity.*;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 public class CorsoPage extends Stage {
 
@@ -206,28 +202,14 @@ public class CorsoPage extends Stage {
     }
 
     private void styleButton(Button button, Color color) {
-        button.setFocusTraversable(true);
-        button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
+        button.setPrefSize(80, 30);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
 
-        button.setOnMouseEntered(e -> {
-            button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\"; -fx-cursor: hand;");
-            button.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,0))));
-        });
-
-        button.setOnMouseExited(e -> {
-            button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
-            button.setBorder(null);
-        });
-
-        button.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \""+ color +"\"; -fx-cursor: hand;");
-                button.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,0))));
-            } else {
-                button.setStyle("-fx-background-color: \""+ color +"\";-fx-text-fill: WHITE;");
-                button.setBorder(null);
-            }
-        });
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     private void buildInfoBox(VBox infoBox) {

@@ -5,6 +5,7 @@ import Controller.Controller;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -114,7 +115,7 @@ public class AccountCorsiPanel extends BorderPane {
 
     private Button createIscrivitiButton() {
         Button iscrivitiButton = new Button("Iscriviti ad un corso");
-        this.setButtonPropreties(iscrivitiButton);
+        this.styleConfirmButton(iscrivitiButton, Color.valueOf("#3A6698"));
         iscrivitiButton.setOnAction(e -> {
             Stage stage = (Stage) this.getScene().getWindow();
             stage.close();
@@ -125,50 +126,9 @@ public class AccountCorsiPanel extends BorderPane {
 
     private Button createAggiungiButton() {
         Button aggiungiButton = new Button("Aggiungi un nuovo corso");
-        this.setButtonPropreties(aggiungiButton);
+        this.styleConfirmButton(aggiungiButton, Color.valueOf("#3A6698"));
 
         return aggiungiButton;
-    }
-
-    private void setButtonPropreties(Button button) {
-        button.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-        button.setPadding(new Insets(10, 10, 10, 10));
-        this.setOnMouseTraverse(button);
-        this.setFocusPropreties(button);
-    }
-
-    private void setOnMouseTraverse(Button button) {
-        button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0, 0, 1, 0)
-                    )));
-                }
-        );
-        button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                }
-        );
-    }
-
-    private void setFocusPropreties(Button button) {
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\";");
-                button.setBorder(new Border(new BorderStroke(
-                        Color.valueOf("#3A6698"),
-                        BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY,
-                        new BorderWidths(0, 0, 1, 0)
-                )));
-            } else {
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-            }
-        });
     }
 
     private VBox createEmptyCoursesMessage(String message, String iconPath) {
@@ -201,5 +161,16 @@ public class AccountCorsiPanel extends BorderPane {
         }
 
         return box;
+    }
+
+    private void styleConfirmButton(Button button, Color color) {
+        button.setPrefSize(200, 40);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
+
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

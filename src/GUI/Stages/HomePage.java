@@ -293,9 +293,9 @@ public class HomePage extends Stage {
         choiceBox.setAlignment(Pos.CENTER);
 
         Label cercaPerLabel = new Label("Cerca per");
-        cercaPerLabel.setFont(Font.font("System", 17));
+        cercaPerLabel.setFont(Font.font("System", 14));
         cercaPerLabel.setTextFill(Color.web("WHITE"));
-        cercaPerLabel.setPadding(new Insets(3, 8, 3, 8));
+        cercaPerLabel.setPadding(new Insets(6, 10, 5, 10));
         cercaPerLabel.setStyle("-fx-background-color: #3a6698; -fx-background-radius: 7;");
 
         ToggleGroup choiceGroup = new ToggleGroup();

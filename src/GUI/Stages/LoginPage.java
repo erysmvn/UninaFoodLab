@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.*;
 import javafx.scene.image.*;
 
@@ -181,19 +182,17 @@ public class LoginPage extends Stage {
 
     public Button createButtonLogin() {
         Button loginButton = new Button("Login");
-        loginButton.setTextFill(Color.WHITE);
-        loginButton.setStyle("-fx-background-color:  \"#3A6698\" ;");
 
-        loginButton.setPrefWidth(100);
-        loginButton.setPrefHeight(30);
+        loginButton.setMinHeight(30);
+        loginButton.setMaxHeight(30);
 
         loginButton.setOnAction(event -> {
             String email = emailField.getText();
             String password = passwordField.getText();
             tryLogin(email, password);
         });
-        this.setOnMouseTraverse(loginButton);
-        this.setFocusPropreties(loginButton);
+
+        this.styleButton(loginButton, Color.valueOf("#3A6698"));
         return loginButton;
     }
 
@@ -214,55 +213,28 @@ public class LoginPage extends Stage {
 
     public Button createButtonRegister() {
         Button registerButton = new Button("Register");
-        registerButton.setTextFill(Color.WHITE);
-        registerButton.setStyle("-fx-background-color: \"#3A6698\";");
 
-        registerButton.setPrefWidth(100);
-        registerButton.setPrefHeight(30);
+        registerButton.setMinHeight(30);
+        registerButton.setMaxHeight(30);
 
         registerButton.setOnAction(event -> {
             controller.openRegisterPage();
             this.close();
         });
 
-        this.setOnMouseTraverse(registerButton);
-        this.setFocusPropreties(registerButton);
+        this.styleButton(registerButton, Color.valueOf("#3A6698"));
         return registerButton;
     }
 
+    private void styleButton(Button button, Color color) {
+        button.setPrefSize(80, 40);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
 
-    private void setOnMouseTraverse(Button button) {
-        button.setOnMouseEntered(e -> {
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0, 0, 1, 0)
-                    )));
-                }
-        );
-        button.setOnMouseExited(e -> {
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE;");
-                }
-        );
-    }
-
-    private void setFocusPropreties(Button button) {
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                button.setBorder(new Border(new BorderStroke(
-                        Color.valueOf("#3A6698"),
-                        BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY,
-                        new BorderWidths(0, 0, 1, 0)
-                )));
-            } else {
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
-            }
-        });
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
 }

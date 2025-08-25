@@ -380,6 +380,7 @@ public class Controller {
     }
 
 
+
     public void endAll(){
         Platform.exit();
     }

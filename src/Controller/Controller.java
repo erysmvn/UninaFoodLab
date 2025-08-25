@@ -6,7 +6,7 @@ import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
-import Exception.UserExceptions.SupportException.emailClientNotFound;
+import Exception.UserExceptions.SupportException.emailClientNotFoundException;
 import GUI.Pane.AccountCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
@@ -223,7 +223,7 @@ public class Controller {
     }
 
 
-    public boolean checkOldPassword(String oldPassword)throws oldPasswordErrorException {
+    public boolean checkOldPassword(String oldPassword) throws oldPasswordErrorException {
         Boolean result = false;
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
@@ -340,7 +340,7 @@ public class Controller {
 
 
     // Mail
-    public void openEmail(String to, String subject, String body) throws emailClientNotFound {
+    public void openEmail(String to, String subject, String body) throws emailClientNotFoundException {
         try {
             String uriStr = String.format(
                     "mailto:%s?subject=%s&body=%s",
@@ -359,12 +359,12 @@ public class Controller {
             }else if (os.contains("win")) {
                 new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", mailto.toString()).start();
             }else{
-               throw new emailClientNotFound("Email client non trovato. Scrivere a supportfoodlab@uninasupport.it");
+               throw new emailClientNotFoundException("Email client non trovato. Scrivere a supportfoodlab@uninasupport.it");
             }
-        } catch (emailClientNotFound ECN){
+        } catch (emailClientNotFoundException ECN){
             throw ECN;
         }catch (Exception exc){
-            throw new emailClientNotFound("Errore del sistema. Riprovare più tardi");
+            throw new emailClientNotFoundException("Errore del sistema. Riprovare più tardi");
         }
     }
 

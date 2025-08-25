@@ -88,13 +88,6 @@ public class ChangePasswordPage extends Stage {
             )));
         }
 
-
-        private void checkIfNew(){
-            if( txtNuovaPassword.getText().equals(txtVecchiaPassword.getText()))
-                throw new checkIfIsNewPassowrdException();
-
-        }
-
         private VBox createVecchiaPasswordBox() {
             Label lbl = new Label("Vecchia Password *");
             txtVecchiaPassword = new PasswordField();
@@ -177,27 +170,24 @@ public class ChangePasswordPage extends Stage {
                 try{
                     validConferma();
                     String nuovaPassword = txtNuovaPassword.getText();
-                    checkIfNew();
-
-                        controller.changeUserPassword(nuovaPassword);
-                        this.close();
-
-                }catch (oldPasswordErrorException OPEE){
-                txtVecchiaPassword.setStyle("-fx-border-color: red;");
-                lblVecchiaPasswordError.setText("Password errata");
-                }catch (oldPasswordEmpty OPE){
+                    controller.changeUserPassword(nuovaPassword);
+                    this.close();
+                } catch (oldPasswordErrorException OPEE){
+                    txtVecchiaPassword.setStyle("-fx-border-color: red;");
+                    lblVecchiaPasswordError.setText("Password errata");
+                } catch (oldPasswordEmptyException OPE){
                     txtVecchiaPassword.setStyle("-fx-border-color: red;");
                     lblVecchiaPasswordError.setText("Inserire vecchia password");
-                }catch (newPasswordEmpty NPE) {
+                } catch (newPasswordEmptyException NPE) {
                     txtNuovaPassword.setStyle("-fx-border-color: red;");
                     lblNuovaPasswordError.setText("Inserire nuova password");
-                }catch (passwordAndNewPasswordNotEqual PNPNE) {
+                } catch (passwordAndNewPasswordNotEqualException PNPNE) {
                     txtRipetiPassword.setStyle("-fx-border-color: red;");
                     lblRipetiPasswordError.setText("Le password non coincidono");
-                }catch (checkIfIsNewPassowrdException CIINPE){
+                } catch (checkIfIsNewPassowrdException CIINPE){
                     txtNuovaPassword.setStyle("-fx-border-color: red;");
                     lblNuovaPasswordError.setText("La password è gia stata usata");
-                }catch (SQLException sqlException){
+                } catch (SQLException sqlException){
                     lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }
 
@@ -211,23 +201,27 @@ public class ChangePasswordPage extends Stage {
         private void validConferma() throws changePasswordException {
 
                 if (txtVecchiaPassword.getText().trim().isEmpty()) {
-                    throw new oldPasswordEmpty();
+                    throw new oldPasswordEmptyException();
                 } else if (controller.checkOldPassword(txtVecchiaPassword.getText())){
                     txtVecchiaPassword.setStyle(null);
                     lblVecchiaPasswordError.setText("");
                 }
 
+                if(txtNuovaPassword.getText().equals(txtVecchiaPassword.getText())) {
+                    throw new checkIfIsNewPassowrdException();
+                }
+
                 if (txtNuovaPassword.getText().trim().isEmpty()) {
-                    throw new newPasswordEmpty();
+                    throw new newPasswordEmptyException();
                 } else {
                     txtNuovaPassword.setStyle(null);
                     lblNuovaPasswordError.setText("");
                 }
 
                 if (txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().trim().isEmpty()) {
-                    throw new passwordAndNewPasswordNotEqual();
+                    throw new passwordAndNewPasswordNotEqualException();
                 } else if (!txtNuovaPassword.getText().trim().isEmpty() &&  !txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().equals(txtRipetiPassword.getText())){
-                    throw new passwordAndNewPasswordNotEqual();
+                    throw new passwordAndNewPasswordNotEqualException();
                 }else{
                     txtRipetiPassword.setStyle(null);
                     lblRipetiPasswordError.setText("");

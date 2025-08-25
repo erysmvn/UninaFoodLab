@@ -1,7 +1,7 @@
 package GUI.Pane;
 
 import Controller.Controller;
-import Exception.UserExceptions.SupportException.emailClientNotFound;
+import Exception.UserExceptions.SupportException.emailClientNotFoundException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -39,7 +39,7 @@ public class ImpostazioniPanel extends VBox {
                         "Richiesta Supporto",
                         "Ciao,\nho bisogno di assistenza per..."
                 );
-            } catch (emailClientNotFound ex) {
+            } catch (emailClientNotFoundException ex) {
                 showSupportoErrorLabel(ex);
             }
         });
@@ -80,7 +80,7 @@ public class ImpostazioniPanel extends VBox {
         supportoError.setText(" ");
     }
 
-    private void showSupportoErrorLabel(emailClientNotFound ECN){
+    private void showSupportoErrorLabel(emailClientNotFoundException ECN){
         supportoError.setText(ECN.getMessage());
     }
 

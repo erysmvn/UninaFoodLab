@@ -171,11 +171,8 @@ public class HomePage extends Stage {
         loginButton.setOnAction(e -> {
             controller.openLoginPage();
         });
-
         return loginButton;
     }
-
-
 
     private Button createSearchButton(){
         searchButton = new Button("🔍");

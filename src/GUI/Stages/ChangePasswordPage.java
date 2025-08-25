@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
+import Exception.*;
 
 public class ChangePasswordPage extends Stage {
 
@@ -32,6 +33,7 @@ public class ChangePasswordPage extends Stage {
         private Label lblVecchiaPasswordError;
         private Label lblNuovaPasswordError;
         private Label lblRipetiPasswordError;
+        private Label lblErroreInserimentoDB;
 
         public ChangePasswordPage(Controller controller) {
 
@@ -113,6 +115,13 @@ public class ChangePasswordPage extends Stage {
             return new VBox(5, lbl, txtRipetiPassword, lblRipetiPasswordError);
         }
 
+        private Label createErroreInserimentoLabel(){
+            lblErroreInserimentoDB = new Label();
+            lblErroreInserimentoDB.setTextFill(Color.RED);
+
+            return lblErroreInserimentoDB;
+        }
+
         private GridPane createGridDati() {
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -122,6 +131,7 @@ public class ChangePasswordPage extends Stage {
             grid.add(createVecchiaPasswordBox(), 0, 0);
             grid.add(createNuovaPasswordBox(), 0, 1);
             grid.add(createRipetiPasswordBox(), 1, 1);
+            grid.add(createErroreInserimentoLabel(), 0, 2);
 
             return grid;
         }
@@ -146,16 +156,30 @@ public class ChangePasswordPage extends Stage {
             confermaButton.setStyle("-fx-background-color: #3A6698;");
 
             confermaButton.setOnAction(e -> {{
-                if(validConferma()){
+                lblErroreInserimentoDB.setText("");
+                try{
+                    validConferma();
                     String nuovaPassword = txtNuovaPassword.getText();
 
-                    try {
                         controller.changeUserPassword(nuovaPassword);
                         this.close();
-                    } catch (Exception exc) {
-                        exc.printStackTrace();
-                    }
+
+                }catch (oldPasswordErrorException OPEE){
+                txtVecchiaPassword.setStyle("-fx-border-color: red;");
+                lblVecchiaPasswordError.setText("Password errata");
+                }catch (oldPasswordEmpty OPE){
+                    txtVecchiaPassword.setStyle("-fx-border-color: red;");
+                    lblVecchiaPasswordError.setText("Inserire vecchia password");
+                }catch (newPasswordEmpty NPE) {
+                    txtNuovaPassword.setStyle("-fx-border-color: red;");
+                    lblNuovaPasswordError.setText("Inserire nuova password");
+                }catch (passwordAndNewPasswordNotEqual PNPNE){
+                    txtRipetiPassword.setStyle("-fx-border-color: red;");
+                    lblRipetiPasswordError.setText("Le password non coincidono");
+                }catch (SQLException sqlException){
+                    lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }
+
             }
             });
             this.setOnMouseTraverse(confermaButton);
@@ -164,46 +188,31 @@ public class ChangePasswordPage extends Stage {
             return confermaButton;
         }
 
-        private Boolean validConferma() {
-            boolean valid = true;
+        private void validConferma() throws  changePasswordException{
 
-            if (txtVecchiaPassword.getText().trim().isEmpty()) {
-                valid = false;
-                txtVecchiaPassword.setStyle("-fx-border-color: red;");
-                lblVecchiaPasswordError.setText("Inserire vecchia password");
-            } else if (!controller.checkOldPassword(txtVecchiaPassword.getText())) {
-                valid = false;
-                txtVecchiaPassword.setStyle("-fx-border-color: red;");
-                lblVecchiaPasswordError.setText("Password errata");
-            }
-            else {
-                txtVecchiaPassword.setStyle(null);
-                lblVecchiaPasswordError.setText("");
-            }
+                if (txtVecchiaPassword.getText().trim().isEmpty()) {
+                    throw new oldPasswordEmpty();
+                } else if (controller.checkOldPassword(txtVecchiaPassword.getText())){
+                    txtVecchiaPassword.setStyle(null);
+                    lblVecchiaPasswordError.setText("");
+                }
 
-            if (txtNuovaPassword.getText().trim().isEmpty()) {
-                valid = false;
-                txtNuovaPassword.setStyle("-fx-border-color: red;");
-                lblNuovaPasswordError.setText("Inserire nuova password");
-            } else {
-                txtNuovaPassword.setStyle(null);
-                lblNuovaPasswordError.setText("");
-            }
+                if (txtNuovaPassword.getText().trim().isEmpty()) {
+                    throw new newPasswordEmpty();
+                } else {
+                    txtNuovaPassword.setStyle(null);
+                    lblNuovaPasswordError.setText("");
+                }
 
-            if (txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().trim().isEmpty()) {
-                valid = false;
-                txtRipetiPassword.setStyle("-fx-border-color: red;");
-                lblRipetiPasswordError.setText("Le password non coincidono");
-            } else if (!txtNuovaPassword.getText().trim().isEmpty() &&  !txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().equals(txtRipetiPassword.getText())){
-                valid = false;
-                txtRipetiPassword.setStyle("-fx-border-color: red;");
-                lblRipetiPasswordError.setText("Le password non coincidono");
-            }else{
-                txtRipetiPassword.setStyle(null);
-                lblRipetiPasswordError.setText("");
-            }
+                if (txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().trim().isEmpty()) {
+                    throw new passwordAndNewPasswordNotEqual();
+                } else if (!txtNuovaPassword.getText().trim().isEmpty() &&  !txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().equals(txtRipetiPassword.getText())){
+                    throw new passwordAndNewPasswordNotEqual();
+                }else{
+                    txtRipetiPassword.setStyle(null);
+                    lblRipetiPasswordError.setText("");
+                }
 
-            return valid;
         }
 
         private void setOnMouseTraverse(Button button) {

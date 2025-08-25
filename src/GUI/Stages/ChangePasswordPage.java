@@ -38,7 +38,7 @@ public class ChangePasswordPage extends Stage {
             this.setRoot();
             this.setRootAesthetics();
 
-            Scene scene = new Scene(root, 600, 400);
+            Scene scene = new Scene(root, 600, 500);
             scene.setFill(Color.TRANSPARENT);
             scene.setOnKeyPressed(e->{
                 if(e.isControlDown() && e.getCode()== KeyCode.W){
@@ -51,8 +51,8 @@ public class ChangePasswordPage extends Stage {
         }
 
         private void setRoot(){
-            Label lblDati = new Label(" Modifica Password");
-            lblDati.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698; -fx-font-size: 28;");
+            Label labelModificaPassword = new Label(" Modifica Password");
+            labelModificaPassword.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698; -fx-font-size: 28;");
 
             GridPane gridDati = createGridDati();
             HBox bottomBox = createBottomBox();
@@ -64,7 +64,13 @@ public class ChangePasswordPage extends Stage {
             Region spacer1 = new Region();
             VBox.setVgrow(spacer1, Priority.ALWAYS);
 
-            root = new VBox(15, funcBox, spacer1, lblDati, gridDati, spacer, bottomBox);
+            Region spacer2 = new Region();
+            spacer2.setPrefHeight(30);
+            
+            Region spacer3 = new Region();
+            spacer3.setPrefHeight(30);
+
+            root = new VBox(15, funcBox, spacer1, labelModificaPassword,spacer3, gridDati, spacer, bottomBox,spacer2 );
         }
 
         private void setRootAesthetics(){
@@ -81,6 +87,12 @@ public class ChangePasswordPage extends Stage {
             )));
         }
 
+
+        private void checkIfNew(){
+            if( txtNuovaPassword.getText().equals(txtVecchiaPassword.getText()))
+                throw new checkIfIsNewPassowrdException();
+
+        }
 
         private VBox createVecchiaPasswordBox() {
             Label lbl = new Label("Vecchia Password *");
@@ -100,10 +112,11 @@ public class ChangePasswordPage extends Stage {
             txtNuovaPassword = new PasswordField();
             lblNuovaPasswordError = new Label("");
             lblNuovaPasswordError.setTextFill(Color.RED);
-            txtNuovaPassword.setStyle(
-                    "-fx-display-caret: true;" +
-                            "-fx-echo-char: '*';"
-            );
+            lblNuovaPasswordError.setMaxWidth(100);
+            lblNuovaPasswordError.setMinWidth(100);
+            lblNuovaPasswordError.setMaxHeight(60);
+            lblNuovaPasswordError.setMinHeight(60);
+            lblNuovaPasswordError.setWrapText(true);
 
             return new VBox(5, lbl, txtNuovaPassword, lblNuovaPasswordError);
         }
@@ -155,12 +168,15 @@ public class ChangePasswordPage extends Stage {
             Button confermaButton = new Button("Conferma");
             confermaButton.setTextFill(Color.WHITE);
             confermaButton.setStyle("-fx-background-color: #3A6698;");
+            confermaButton.setMaxWidth(100);
+            confermaButton.setMinWidth(100);
 
             confermaButton.setOnAction(e -> {{
                 lblErroreInserimentoDB.setText("");
                 try{
                     validConferma();
                     String nuovaPassword = txtNuovaPassword.getText();
+                    checkIfNew();
 
                         controller.changeUserPassword(nuovaPassword);
                         this.close();
@@ -174,9 +190,12 @@ public class ChangePasswordPage extends Stage {
                 }catch (newPasswordEmpty NPE) {
                     txtNuovaPassword.setStyle("-fx-border-color: red;");
                     lblNuovaPasswordError.setText("Inserire nuova password");
-                }catch (passwordAndNewPasswordNotEqual PNPNE){
+                }catch (passwordAndNewPasswordNotEqual PNPNE) {
                     txtRipetiPassword.setStyle("-fx-border-color: red;");
                     lblRipetiPasswordError.setText("Le password non coincidono");
+                }catch (checkIfIsNewPassowrdException CIINPE){
+                    txtNuovaPassword.setStyle("-fx-border-color: red;");
+                    lblNuovaPasswordError.setText("La password è gia stata usata");
                 }catch (SQLException sqlException){
                     lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }

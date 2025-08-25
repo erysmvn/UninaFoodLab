@@ -147,9 +147,9 @@ public class ElencoCorsiPanel extends Pane {
         addSessionButton.setTextFill(Color.WHITE);
         addSessionButton.setStyle("-fx-background-color: \"#3A6698\";");
 
-        addSessionButton.setPrefWidth(200);
-        addSessionButton.setMinWidth(200);
-        addSessionButton.setMaxWidth(200);
+        addSessionButton.setPrefWidth(160);
+        addSessionButton.setMinWidth(160);
+        addSessionButton.setMaxWidth(160);
 
         addSessionButton.setOnAction(event -> {
             // TODO addSessionePage
@@ -164,7 +164,9 @@ public class ElencoCorsiPanel extends Pane {
         unsubscribeButton.setTextFill(Color.WHITE);
         unsubscribeButton.setStyle("-fx-background-color: \"#da3d26\";");
 
-        unsubscribeButton.prefWidth(40);
+        unsubscribeButton.setPrefWidth(30);
+        unsubscribeButton.setMinWidth(30);
+        unsubscribeButton.setMaxWidth(30);
 
         unsubscribeButton.setOnAction(event -> {
             if (controller.getUtente() instanceof Studente studente) {

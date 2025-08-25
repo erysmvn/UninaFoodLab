@@ -1,6 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -47,20 +48,24 @@ public class ChangePasswordPage extends Stage {
         }
 
         private void setRoot(){
-            Label lblDati = new Label("Modifica Password");
-            lblDati.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;");
+            Label lblDati = new Label(" Modifica Password");
+            lblDati.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698; -fx-font-size: 28;");
 
             GridPane gridDati = createGridDati();
             HBox bottomBox = createBottomBox();
+            HBox funcBox = createFunctionalityButtonBox();
 
             Region spacer = new Region();
             VBox.setVgrow(spacer, Priority.ALWAYS);
 
-            root = new VBox(15, lblDati, gridDati, spacer, bottomBox);
+            Region spacer1 = new Region();
+            VBox.setVgrow(spacer1, Priority.ALWAYS);
+
+            root = new VBox(15, funcBox, spacer1, lblDati, gridDati, spacer, bottomBox);
         }
 
         private void setRootAesthetics(){
-            root.setPadding(new Insets(15));
+            root.setPadding(new Insets(30, 30, 30, 30));
             root.setAlignment(Pos.TOP_LEFT);
             root.setBackground(new Background(
                     new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -199,6 +204,30 @@ public class ChangePasswordPage extends Stage {
 
             return valid;
         }
+
+    public HBox createFunctionalityButtonBox() {
+        HBox funcBox = new HBox(5);
+        funcBox.setAlignment(Pos.TOP_RIGHT);
+        funcBox.setSpacing(10);
+
+        CircleButton closeButton = createCloseButton();
+        CircleButton minimizeButton = createMinimizeButton();
+
+        funcBox.getChildren().addAll(minimizeButton, closeButton);
+        return funcBox;
+    }
+
+    private CircleButton createMinimizeButton() {
+        CircleButton minimizeButton = new CircleButton();
+        minimizeButton.setToMinimizeButtonWithAction(this);
+        return minimizeButton;
+    }
+
+    private CircleButton createCloseButton() {
+        CircleButton minimizeButton = new CircleButton();
+        minimizeButton.setToCloseButtonWithAction(this);
+        return minimizeButton;
+    }
 
     private void styleButton(Button button, Color color) {
         button.setPrefSize(80, 30);

@@ -29,7 +29,7 @@ public class AccountCorsiPanel extends BorderPane {
         this.controller = controller;
 
         corsiBox = new VBox(10);
-        corsiBox.setPadding(new Insets(10, 60, 10, 60));
+        corsiBox.setPadding(new Insets(30, 60, 10, 60));
         corsiBox.setSpacing(20);
 
         ScrollPane scrollPane = new ScrollPane(corsiBox);

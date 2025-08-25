@@ -63,16 +63,19 @@ public class RegisterPage extends Stage {
         GridPane gridCredenziali = createGridCredenziali();
         GridPane gridDati = createGridDati();
         HBox topBox = createTopBox();
+        HBox funcBox = createFunctionalityButtonBox();
         HBox bottomBox = createBottomBox();
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region spacer1 = new Region();
+        VBox.setVgrow(spacer1, Priority.ALWAYS);
 
-        root = new VBox(15, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
+        root = new VBox(15, funcBox, spacer1, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
     }
 
     private void setRootAesthetics(){
-        root.setPadding(new Insets(15));
+        root.setPadding(new Insets(20, 50, 50, 50));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -182,7 +185,7 @@ public class RegisterPage extends Stage {
 
     private HBox createTopBox() {
         HBox topBox = new HBox(5);
-        topBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.setAlignment(Pos.TOP_LEFT);
         topBox.setSpacing(10);
 
         Label labelBenvenuto = new Label("Benvenuto!");
@@ -194,15 +197,24 @@ public class RegisterPage extends Stage {
         labelBenvenuto.setFont(robotoFont);
         labelBenvenuto.setAlignment(Pos.CENTER);
 
-        CircleButton closeButton = createCloseButton();
-        CircleButton minimizeButton = createMinimizeButton();
-
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBox.getChildren().addAll(labelBenvenuto, spacer, minimizeButton, closeButton);
+        topBox.getChildren().addAll(labelBenvenuto, spacer);
 
         return topBox;
+    }
+
+    public HBox createFunctionalityButtonBox() {
+        HBox funcBox = new HBox(5);
+        funcBox.setAlignment(Pos.TOP_RIGHT);
+        funcBox.setSpacing(10);
+
+        CircleButton closeButton = createCloseButton();
+        CircleButton minimizeButton = createMinimizeButton();
+
+        funcBox.getChildren().addAll(minimizeButton, closeButton);
+        return funcBox;
     }
 
     private HBox createBottomBox() {

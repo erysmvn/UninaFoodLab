@@ -18,12 +18,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -33,7 +31,7 @@ public class HomePage extends Stage {
     private BorderPane root;
     private ScrollPane corsiScrollPane;
     private Scene scene;
-    private HBox loginButtons;
+    private HBox homeButtons;
     private HBox corsiBox;
     private Boolean isLoggedIn = false;
     private Boolean isChef = false;
@@ -111,20 +109,6 @@ public class HomePage extends Stage {
     }
 
 
-    private VBox createTopBar() {
-        VBox topBar = new VBox();
-        this.setTopBarAesthetics(topBar);
-
-        BorderPane closeAndMinimizePane = createCloseAndMinimizePane();
-
-        loginButtons = createLoginButtonsBox();
-
-        topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), loginButtons);
-        topBar.setAlignment(Pos.TOP_CENTER);
-
-        return topBar;
-    }
-
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")));
         ImageView logoView = new ImageView(logoImage);
@@ -134,16 +118,21 @@ public class HomePage extends Stage {
         return logoView;
     }
 
-    private HBox createLoginButtonsBox() {
-        HBox buttonsBox = new HBox(20);
-        buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.getChildren().add(
-                createLoginButton()
-        );
+    private VBox createTopBar() {
+        VBox topBar = new VBox();
+        this.setTopBarAesthetics(topBar);
 
-        return buttonsBox;
+        BorderPane closeAndMinimizePane = createCloseAndMinimizePane();
+
+        homeButtons = new HBox(20);
+        homeButtons.setAlignment(Pos.CENTER);
+        homeButtons.getChildren().add(createLoginButton());
+
+        topBar.getChildren().addAll(closeAndMinimizePane, createLogoView(), homeButtons);
+        topBar.setAlignment(Pos.TOP_CENTER);
+
+        return topBar;
     }
-
 
     private Button createLoginButton() {
         Button loginButton = new Button("Login");
@@ -162,14 +151,7 @@ public class HomePage extends Stage {
         );
         loginButton.setFont(robotoFont);
 
-        loginButton.setStyle(
-                "-fx-border-color: #3a6698;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 30px;" +
-                        "-fx-background-color: white;" +
-                        "-fx-text-fill: #3a6698;" +
-                        "-fx-cursor: hand;"
-        );
+        loginButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698; -fx-cursor: hand;");
 
         loginButton.setOnAction(e -> {
             controller.openLoginPage();
@@ -178,6 +160,35 @@ public class HomePage extends Stage {
         return loginButton;
     }
 
+    private Button createHomeButton(){
+
+        homeButton = new Button("Home");
+
+        Button accountButton = new Button();
+        Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/homeLogo.png")));
+
+        ImageView houseView = new ImageView(houseImage);
+        houseView.setFitHeight(30);
+        houseView.setFitWidth(30);
+
+        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-cursor: hand;");
+
+        homeButton.setGraphic(houseView);
+        homeButton.setContentDisplay(ContentDisplay.LEFT);
+        homeButton.setGraphicTextGap(10);
+
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                20
+        );
+        homeButton.setFont(robotoFont);
+        homeButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698; -fx-cursor: hand;");
+
+        homeButton.setOnAction(e -> {
+            controller.openAccountPage(utente);
+        });
+        return homeButton;
+    }
 
 
     private Button createSearchButton(){
@@ -362,6 +373,34 @@ public class HomePage extends Stage {
         return choiceBox;
     }
 
+    private void setNotClickedButtonAesthetic(ToggleButton button){
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(base);
+    }
+
+    private void setClickedButtonAesthetic(ToggleButton button){
+        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(selected);
+    }
+
+    private void setNotClickedButtonAesthetic(Button button){
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(base);
+    }
+
+    private void setClickedButtonAesthetic(Button button){
+        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+
+        button.setStyle(selected);
+    }
+
     private void setSearchFieldProprieties(TextField searchField){
         searchField.setFocusTraversable(true);
         searchField.setOnKeyPressed(e->{
@@ -415,8 +454,6 @@ public class HomePage extends Stage {
         return AnimazionePuntini;
     }
 
-
-
     private void setNotFoundTextField() {
         Text notFound = new Text("Nessun corso trovato");
         this.setTextAesthetics(notFound);
@@ -442,7 +479,7 @@ public class HomePage extends Stage {
         }
     }
 
-private ScrollPane createCorsiContainer() {
+    private ScrollPane createCorsiContainer() {
     HBox corsiHBox = new HBox(20);
     corsiHBox.setAlignment(Pos.CENTER);
     corsiHBox.setPadding(new Insets(20));
@@ -516,72 +553,6 @@ private ScrollPane createCorsiContainer() {
         return center;
     }
 
-    private Button createHomeButton(){
-
-        homeButton = new Button("Home");
-        
-        Button accountButton = new Button();
-        Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/homeLogo.png")));
-
-        ImageView houseView = new ImageView(houseImage);
-        houseView.setFitHeight(30);
-        houseView.setFitWidth(30);
-
-        accountButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-cursor: hand;");
-
-        homeButton.setGraphic(houseView);
-        homeButton.setContentDisplay(ContentDisplay.LEFT);
-        homeButton.setGraphicTextGap(10);
-
-        Font robotoFont = Font.loadFont(
-                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                20
-        );
-        homeButton.setFont(robotoFont);
-        homeButton.setStyle("-fx-border-color: #3a6698; -fx-border-width: 1px; -fx-border-radius: 30px; -fx-background-color: white; -fx-text-fill: #3a6698; -fx-cursor: hand;");
-
-
-        homeButton.setOnAction(e -> {
-            controller.openAccountPage(utente);
-        });
-
-        return homeButton;
-    }
-
-    private void setOnMouseTraverse(Button button){
-        button.setOnMouseEntered(e->{
-                    button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                    button.setBorder(new Border(new BorderStroke(
-                            Color.valueOf("#3A6698"),
-                            BorderStrokeStyle.SOLID,
-                            CornerRadii.EMPTY,
-                            new BorderWidths(0,0,1, 0)
-                    )));
-                }
-        );
-        button.setOnMouseExited(e->{
-                    button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
-                }
-        );
-    }
-    private void setFocusPropreties(Button button){
-        button.setFocusTraversable(true);
-        button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                button.setStyle("-fx-background-color: WHITE;-fx-text-fill: \"#3A6698\"; -fx-cursor: hand;");
-                button.setBorder(new Border(new BorderStroke(
-                        Color.valueOf("#3A6698"),
-                        BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY,
-                        new BorderWidths(0,0,1, 0)
-                )));
-            }else{
-                button.setStyle("-fx-background-color: \"#3A6698\";-fx-text-fill: WHITE; -fx-cursor: hand;");
-            }
-
-        });
-    }
-
     public Boolean isLoggedIn(){
         return isLoggedIn;
     }
@@ -605,54 +576,13 @@ private ScrollPane createCorsiContainer() {
         if (utente instanceof Chef){
             setChef();
         }
-        loginButtons.getChildren().clear();
-        loginButtons.getChildren().add(homeButton);
-    }
-
-    public boolean getIsLoggedIn(){
-        return isLoggedIn;
-    }
-    public void setIsLoggedIn(){
-        this.isLoggedIn = true;
-    }
-    public boolean getIsChef(){
-        return isChef;
-    }
-    public void setIsChef(){
-        this.isChef = true;
+        homeButtons.getChildren().clear();
+        homeButtons.getChildren().add(homeButton);
     }
 
     public void setLogOut() {
-        loginButtons.getChildren().clear();
-        loginButtons.getChildren().add(createLoginButton());
-    }
-
-    private void setNotClickedButtonAesthetic(ToggleButton button){
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(base);
-    }
-
-    private void setClickedButtonAesthetic(ToggleButton button){
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(selected);
-    }
-
-    private void setNotClickedButtonAesthetic(Button button){
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(base);
-    }
-
-    private void setClickedButtonAesthetic(Button button){
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(selected);
+        homeButtons.getChildren().clear();
+        homeButtons.getChildren().add(createLoginButton());
     }
 
 }

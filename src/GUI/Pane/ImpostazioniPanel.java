@@ -49,12 +49,21 @@ public class ImpostazioniPanel extends VBox {
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
+
+        Region spacer1 = new Region();
+        VBox.setVgrow(spacer1, Priority.ALWAYS);
+
+        Region spacer2 = new Region();
+        VBox.setVgrow(spacer2, Priority.ALWAYS);
+
         this.getChildren().addAll(
                 logoView,
                 spacer,
+                spacer1,
                 modificaPassword,
                 supportoButton,
-                logoutButton
+                logoutButton,
+                spacer2
         );
     }
 

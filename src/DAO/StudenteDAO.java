@@ -3,9 +3,11 @@ package DAO;
 import DAO.Interfaces.StudenteDAOInterface;
 
 import Entity.*;
-import Exception.*;
 import Controller.Controller;
 import DB.DBConnection;
+import Exception.UserExceptions.ChangePasswordException.changePasswordException;
+import Exception.UserExceptions.LoginException.emailNotFoundException;
+import Exception.UserExceptions.LoginException.passwordErrataException;
 
 import java.sql.*;
 import java.util.ArrayList;

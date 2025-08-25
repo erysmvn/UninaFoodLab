@@ -3,7 +3,9 @@ package DAO;
 import Controller.Controller;
 import DB.DBConnection;
 import Entity.*;
-import Exception.*;
+import Exception.UserExceptions.ChangePasswordException.changePasswordException;
+import Exception.UserExceptions.LoginException.emailNotFoundException;
+import Exception.UserExceptions.LoginException.passwordErrataException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class ChefDAO {
     }
 
     // Methods
-    public Chef login(String email, String password) throws emailNotFoundException,passwordErrataException,SQLException{
+    public Chef login(String email, String password) throws emailNotFoundException, passwordErrataException,SQLException{
         Chef chef = null;
         email = email.trim();
         String sql = "Select * from chef where email = '" + email + "' AND  passw = md5('" + password + "')";

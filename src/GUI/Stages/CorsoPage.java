@@ -2,8 +2,8 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
-import Exception.*;
 
+import Exception.CorsoExceptions.imageNotFoundException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

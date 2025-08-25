@@ -1,6 +1,8 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import Exception.UserExceptions.LoginException.emailNotFoundException;
+import Exception.UserExceptions.LoginException.passwordErrataException;
 import GUI.Buttons.*;
 
 import javafx.geometry.*;
@@ -16,7 +18,6 @@ import javafx.scene.image.*;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import Exception.*;
 
 public class LoginPage extends Stage {
 

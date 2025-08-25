@@ -1,6 +1,7 @@
 package GUI.Pane;
 
 import Controller.Controller;
+import Exception.UserExceptions.SupportException.emailClientNotFound;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.Objects;
-import Exception.*;
 
 public class ImpostazioniPanel extends VBox {
     Controller controller;

@@ -1,6 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import Exception.UserExceptions.ChangePasswordException.*;
 import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +20,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
-import Exception.*;
+
 public class ChangePasswordPage extends Stage {
 
         private Controller controller;
@@ -207,7 +208,7 @@ public class ChangePasswordPage extends Stage {
             return confermaButton;
         }
 
-        private void validConferma() throws  changePasswordException{
+        private void validConferma() throws changePasswordException {
 
                 if (txtVecchiaPassword.getText().trim().isEmpty()) {
                     throw new oldPasswordEmpty();

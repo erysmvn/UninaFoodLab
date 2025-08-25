@@ -1,14 +1,17 @@
 package Controller;
 
 import Entity.*;
-import Exception.*;
 import DB.DBConnection;
+import Exception.UserExceptions.ChangePasswordException.changePasswordException;
+import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
+import Exception.UserExceptions.LoginException.emailNotFoundException;
+import Exception.UserExceptions.LoginException.passwordErrataException;
+import Exception.UserExceptions.SupportException.emailClientNotFound;
 import GUI.Pane.AccountCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
 
-import java.awt.*;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -220,7 +223,7 @@ public class Controller {
     }
 
 
-    public boolean checkOldPassword(String oldPassword)throws oldPasswordErrorException{
+    public boolean checkOldPassword(String oldPassword)throws oldPasswordErrorException {
         Boolean result = false;
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
@@ -337,7 +340,7 @@ public class Controller {
 
 
     // Mail
-    public void openEmail(String to, String subject, String body) throws emailClientNotFound{
+    public void openEmail(String to, String subject, String body) throws emailClientNotFound {
         try {
             String uriStr = String.format(
                     "mailto:%s?subject=%s&body=%s",

@@ -1,6 +1,4 @@
-package Exception;
-
-import java.sql.SQLException;
+package Exception.UserExceptions.LoginException;
 
 public class emailNotFoundException extends RuntimeException {
     public emailNotFoundException() {

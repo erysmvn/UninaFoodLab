@@ -3,6 +3,7 @@ package DAO;
 import DAO.Interfaces.StudenteDAOInterface;
 
 import Entity.*;
+import Exception.*;
 import Controller.Controller;
 import DB.DBConnection;
 
@@ -25,7 +26,7 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     // Methods
-    public Studente login(String email, String password) throws SQLException {
+    public Studente login(String email, String password) throws emailNotFoundException, passwordErrataException,SQLException {
         Studente studente = null;
         email = email.trim();
         String sql = "Select * from studente where email = '" + email + "' AND passw = md5('" + password + "')";
@@ -40,11 +41,25 @@ public class StudenteDAO implements StudenteDAOInterface {
             );
             studente.setCorsi(getCorsiFromStudente(studente));
         }else{
-            SQLException sqlException = new SQLException();
-            throw sqlException;
+            if (existingEmail(email)) {
+                throw new passwordErrataException();
+            }else{
+                throw new emailNotFoundException();
+            }
         }
 
         return studente;
+    }
+
+    private boolean existingEmail(String email)throws SQLException{
+        String sql = "Select 1 from studente where email = '" + email + "'";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public Studente register(Studente studente) throws SQLException {

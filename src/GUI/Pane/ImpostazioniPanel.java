@@ -4,6 +4,7 @@ import Controller.Controller;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -11,51 +12,64 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.Objects;
+import Exception.*;
 
 public class ImpostazioniPanel extends VBox {
     Controller controller;
+    Label supportoError;
+
     public ImpostazioniPanel(Controller controller) {
         this.controller = controller;
-        this.setSpacing(20);
-        this.setPadding(new Insets(30));
-        this.setAlignment(Pos.CENTER_LEFT);
-        
+
+        setSpacing(30);
+        setPadding(new Insets(40));
+        setAlignment(Pos.TOP_CENTER);
+
         ImageView logoView = createLogoView();
+        setSupportoError();
 
         Button modificaPassword = setAestheticsButton("Modifica Password");
-        modificaPassword.setOnAction(e -> {
-            controller.openModificaPassword();
-        });
-
+        modificaPassword.setOnAction(e -> controller.openModificaPassword());
 
         Button supportoButton = setAestheticsButton("Supporto");
         supportoButton.setOnAction(e -> {
-           // TODO apri scrivi nuova mail su client di sistema alla mail supportfoodlab@uninasupport.it
             try {
                 controller.openEmail(
                         "supportfoodlab@uninasupport.it",
                         "Richiesta Supporto",
                         "Ciao,\nho bisogno di assistenza per..."
                 );
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (emailClientNotFound ex) {
+                showSupportoErrorLabel(ex);
             }
         });
 
         Button logoutButton = setAestheticsButton("Logout");
-        logoutButton.setOnAction(e -> {
-            controller.logOut();
-        });
+        logoutButton.setOnAction(e -> controller.logOut());
 
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-        this.getChildren().addAll(
+        VBox supportoBox = new VBox(2, supportoButton, supportoError);
+        supportoBox.setAlignment(Pos.CENTER);
+
+        VBox.setMargin(modificaPassword, new Insets(10, 0, 0, 0));
+        VBox.setMargin(supportoBox, new Insets(10, 0, 0, 0));
+        VBox.setMargin(logoutButton, new Insets(10, 0, 0, 0));
+
+        getChildren().addAll(
                 logoView,
-                spacer,
                 modificaPassword,
-                supportoButton,
+                supportoBox,
                 logoutButton
         );
+    }
+    private void setSupportoError(){
+        supportoError = new Label();
+        supportoError.setTextFill(Color.RED);
+        supportoError.setFont(Font.font(14));
+        supportoError.setText(" ");
+    }
+
+    private void showSupportoErrorLabel(emailClientNotFound ECN){
+        supportoError.setText(ECN.getMessage());
     }
 
     private ImageView createLogoView() {
@@ -63,7 +77,7 @@ public class ImpostazioniPanel extends VBox {
                 getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")
         ));
         ImageView logoView = new ImageView(logoImage);
-        
+
         logoView.setFitWidth(850);
         logoView.setFitHeight(200);
         logoView.setPreserveRatio(true);
@@ -77,7 +91,7 @@ public class ImpostazioniPanel extends VBox {
                 20
         );
         button.setFont(robotoFont);
-        button.setStyle("-fx-background-color: transparent; -fx-text-fill: #3a6698; -fx-font-size: 30px; -fx-font-weight: bold; -fx-cursor: hand;");
+        button.setStyle("-fx-background-color: transparent; -fx-text-fill: #3a6698; -fx-font-size: 30px; -fx-cursor: hand;");
         this.setFocusPropreties(button);
         this.setOnMouseTraverse(button);
         return button;

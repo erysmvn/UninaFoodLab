@@ -15,6 +15,7 @@ import javafx.scene.image.*;
 
 import java.sql.SQLException;
 import java.util.Objects;
+import Exception.*;
 
 public class LoginPage extends Stage {
 
@@ -201,7 +202,10 @@ public class LoginPage extends Stage {
         try {
             controller.loginMethod(email, password);
             this.close();
-
+        } catch(emailNotFoundException emailExc){
+            emailErrorLabel.setText("Email non trovata");
+        }catch (passwordErrataException passwordExc){
+            passwordErrorLabel.setText("Password non trovata");
         } catch (SQLException sqle) {
             showErrorLoginLabel();
         }
@@ -209,7 +213,7 @@ public class LoginPage extends Stage {
 
     public void showErrorLoginLabel() {
         errorLoginLabel.setTextFill(Color.RED);
-        errorLoginLabel.setText("ACCOUNT INESISTENTE");
+        errorLoginLabel.setText("Errore nel recuperare i dati. Riprovare più tardi");
     }
 
     public Button createButtonRegister() {

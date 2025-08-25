@@ -2,9 +2,8 @@ package DAO;
 
 import Controller.Controller;
 import DB.DBConnection;
-import Entity.Chef;
-import Entity.Corso;
-import Entity.Studente;
+import Entity.*;
+import Exception.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,26 +23,35 @@ public class ChefDAO {
     }
 
     // Methods
-    public Chef login(String email, String password) throws SQLException{
+    public Chef login(String email, String password) throws emailNotFoundException,passwordErrataException,SQLException{
         Chef chef = null;
         email = email.trim();
         String sql = "Select * from chef where email = '" + email + "' AND  passw = md5('" + password + "')";
-        ResultSet rs = stmt.executeQuery(sql);
-        if(rs.next()){
-            chef = new Chef(
-                    rs.getInt("idchef"),
-                    rs.getString("nome_chef"),
-                    rs.getString("cognome"),
-                    rs.getString("email"),
-                    rs.getString("passw")
-            );
-            chef.setCorsi(getCorsiFromChef(chef));
-        }else{
-            SQLException sqlException = new SQLException();
-            throw sqlException;
-        }
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
 
+        if(rs.next()){
+            chef = createChefByRs(rs);
+        }else{
+
+            if (existingEmail(email))
+                throw new passwordErrataException();
+            else
+                throw new emailNotFoundException();
+
+        }
         return chef;
+    }
+
+    private boolean existingEmail(String email) throws SQLException {
+        String sql = "Select 1 from chef where email = '" + email + "'";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public Chef register(Chef chef) throws SQLException{
@@ -116,20 +124,15 @@ public class ChefDAO {
 
 
     // Get methods
+
+    //TODO SI PUÒ RIMUOVERE?? NO USAGES
     public Chef getChefByEmail(String email){
         Chef chef = null;
         String sql = "select * from chef where email = " +  "'" + email + "'";
         try{
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
-                chef = new Chef(
-                        rs.getInt("idchef"),
-                        rs.getString("nome_chef"),
-                        rs.getString("cognome"),
-                        rs.getString("email"),
-                        rs.getString("passw")
-                );
-                chef.setCorsi(this.getCorsiFromChef(chef));
+                chef = createChefByRs(rs);
             }
         }catch(SQLException sqle){
             System.out.println("Errore nel cercare lo chef dall'email");
@@ -140,13 +143,11 @@ public class ChefDAO {
         return chef;
     }
 
+
+    //TODO SI PUÒ RIMUOVERE?? NO USAGES
     public Chef getChefByNomeCorso(String nomeCorso) {
-        String sql = "SELECT chef.* " +
-                "FROM chef " +
-                "JOIN tiene ON chef.idchef = tiene.idchef " +
-                "JOIN corso ON corso.idcorso = tiene.idcorso " +
-                "WHERE corso.nome_corso = ? " +
-                "LIMIT 1";
+        String sql = "SELECT chef.* FROM chef JOIN tiene ON chef.idchef = tiene.idchef " +
+                "JOIN corso ON corso.idcorso = tiene.idcorso WHERE corso.nome_corso = ? LIMIT 1";
 
         try  {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -155,14 +156,7 @@ public class ChefDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Chef chef = new Chef(
-                        rs.getInt("idchef"),
-                        rs.getString("nome_chef"),
-                        rs.getString("cognome"),
-                        rs.getString("email"),
-                        rs.getString("passw")
-                );
-                chef.setCorsi(getCorsiFromChef(chef));
+                Chef chef = createChefByRs(rs);
                 return chef;
             }
         } catch (SQLException e) {
@@ -174,7 +168,7 @@ public class ChefDAO {
     public ArrayList<Corso> getCorsiFromChef(Chef chef){
 
         ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(controller);
+        CorsoDAO corsoDao = controller.getCorsoDAO();
 
         String sql = "SELECT DISTINCT c.nome_corso " +
                 "FROM corso c NATURAL JOIN chef ch NATURAL JOIN tiene " +
@@ -194,6 +188,19 @@ public class ChefDAO {
         }
 
         return corsi;
+    }
+
+    private Chef createChefByRs(ResultSet rs) throws SQLException{
+        Chef chef = new Chef(
+                rs.getInt("idchef"),
+                rs.getString("nome_chef"),
+                rs.getString("cognome"),
+                rs.getString("email"),
+                rs.getString("passw")
+        );
+        chef.setCorsi(getCorsiFromChef(chef));
+
+        return chef;
     }
 
 }

@@ -1,6 +1,7 @@
 package Controller;
 
 import Entity.*;
+import Exception.*;
 import DB.DBConnection;
 import GUI.Pane.AccountCorsiPanel;
 import GUI.Stages.*;
@@ -176,7 +177,7 @@ public class Controller {
 
 
     // User
-    public void loginMethod(String email, String password) throws SQLException{
+    public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
 
         if (email.contains("@studenti.unina.it")) {
             StudenteDAO studenteDao = getStudenteDAO();
@@ -333,7 +334,7 @@ public class Controller {
 
 
     // Mail
-    public void openEmail(String to, String subject, String body) {
+    public void openEmail(String to, String subject, String body) throws emailClientNotFound{
         try {
             String uriStr = String.format(
                     "mailto:%s?subject=%s&body=%s",
@@ -341,36 +342,23 @@ public class Controller {
                     encode(subject),
                     encode(body)
             );
-            URI mailto = new URI(uriStr);
 
+            URI mailto = new URI(uriStr);
             String os = System.getProperty("os.name").toLowerCase();
 
-            if (os.contains("linux")) {
+            if (os.contains("linux")){
                 new ProcessBuilder("xdg-open", mailto.toString()).start();
-                return;
-            }
-
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-                try {
-                    desktop.mail(mailto);
-                    return;
-                } catch (Exception ignored) {
-                    try {
-                        desktop.browse(mailto);
-                        return;
-                    } catch (Exception ignored2) {}
-                }
-            }
-
-            if (os.contains("mac")) {
+            }else if (os.contains("mac")) {
                 new ProcessBuilder("open", mailto.toString()).start();
-            } else if (os.contains("win")) {
+            }else if (os.contains("win")) {
                 new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", mailto.toString()).start();
+            }else{
+               throw new emailClientNotFound("Email client non trovato. Scrivere a supportfoodlab@uninasupport.it");
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (emailClientNotFound ECN){
+            throw ECN;
+        }catch (Exception exc){
+            throw new emailClientNotFound("Errore del sistema. Riprovare più tardi");
         }
     }
 

@@ -106,8 +106,7 @@ public class ChefDAO {
         return count > 0;
     }
 
-    public void changeUserPassword(String newPassword, Chef chef) throws changePasswordException,SQLException {
-
+    public void changeUserPassword(String newPassword, Chef chef) throws changePasswordException, SQLException {
         String sql = "UPDATE chef SET passw = md5(?) WHERE idchef = ?";
         PreparedStatement ps = con.prepareStatement(sql);
 
@@ -115,58 +114,25 @@ public class ChefDAO {
         ps.setInt(2, chef.getIdchef());
         int rows = ps.executeUpdate();
 
-            if (rows > 0) {
-                chef.setPassw(newPassword);
-            } else {
-                throw new changePasswordException();
-            }
+        if (rows > 0) {
+            chef.setPassw(newPassword);
+        } else {
+            throw new changePasswordException();
         }
+    }
 
+    public Chef getChefById(int id) throws SQLException {
+        String sql = "SELECT * FROM chef WHERE idchef = " + id;
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
 
-
-
+        if (rs.next()) {
+            return createChefByRs(rs);
+        } else {
+            return null;
+        }
+    }
     // Get methods
-
-    //TODO SI PUÒ RIMUOVERE?? NO USAGES
-    public Chef getChefByEmail(String email){
-        Chef chef = null;
-        String sql = "select * from chef where email = " +  "'" + email + "'";
-        try{
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                chef = createChefByRs(rs);
-            }
-        }catch(SQLException sqle){
-            System.out.println("Errore nel cercare lo chef dall'email");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return chef;
-    }
-
-
-    //TODO SI PUÒ RIMUOVERE?? NO USAGES
-    public Chef getChefByNomeCorso(String nomeCorso) {
-        String sql = "SELECT chef.* FROM chef JOIN tiene ON chef.idchef = tiene.idchef " +
-                "JOIN corso ON corso.idcorso = tiene.idcorso WHERE corso.nome_corso = ? LIMIT 1";
-
-        try  {
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, nomeCorso);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Chef chef = createChefByRs(rs);
-                return chef;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public ArrayList<Corso> getCorsiFromChef(Chef chef){
 
         ArrayList<Corso> corsi = new ArrayList<>();

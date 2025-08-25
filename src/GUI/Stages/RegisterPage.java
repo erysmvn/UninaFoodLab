@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.UserExceptions.RegisterException.*;
 import GUI.Buttons.*;
 
 import javafx.geometry.*;
@@ -238,13 +239,14 @@ public class RegisterPage extends Stage {
         confermaButton.setMaxHeight(30);
 
         confermaButton.setOnAction(e -> {{
-            if(validConferma()){
+            try {
+//                resetAll();
+                validConferma();
                 String nome = txtNome.getText();
                 String cognome = txtCognome.getText();
                 String email = txtEmail.getText();
                 String matricola = txtMatricola.getText();
                 String password = txtPassword.getText();
-
                 try {
                     if (matricola == null || matricola.trim().isEmpty()) {
                         Chef newChef = new Chef(nome, cognome, email, password);
@@ -253,81 +255,121 @@ public class RegisterPage extends Stage {
                         Studente newStudente = new Studente(matricola, nome, cognome, email, password);
                         controller.registerMethod(newStudente);
                     }
-                this.close();
+                    this.close();
                 } catch (SQLException exc) {
                     exc.printStackTrace();
                 }
+            } catch (nameEmptyException NEE) {
+                txtNome.setStyle("-fx-border-color: red;");
+                lblNomeError.setText("Inserire nome");
+            } catch (matricolaEmptyException MEE) {
+                txtMatricola.setStyle("-fx-border-color: red;");
+                lblMatricolaError.setText("Inserire matricola");
+            } catch (surnameEmptyException SEE) {
+                txtCognome.setStyle("-fx-border-color: red;");
+                lblCognomeError.setText("Inserire cognome");
+            } catch (emailEmptyException EE) {
+                txtEmail.setStyle("-fx-border-color: red;");
+                lblEmailError.setText("Inserire email");
+            } catch (emailNotValidException ENVE) {
+                txtEmail.setStyle("-fx-border-color: red;");
+                lblEmailError.setText("Inserire email valida");
+            } catch (passwordEmptyException PEN) {
+                txtPassword.setStyle("-fx-border-color: red;");
+                lblPasswordError.setText("Inserire password");
+            } catch (repeatPasswordEmptyException RPEE) {
+                txtRipetiPassword.setStyle("-fx-border-color: red;");
+                lblRipetiPasswordError.setText("Inserire nuovamente la password");
+            } catch (repeatPasswordIsNotEqualException RPEE) {
+                txtRipetiPassword.setStyle("-fx-border-color: red;");
+                lblRipetiPasswordError.setText("Le password non coincidono");
+            } catch (registerException RE) {
+                txtNome.setStyle("-fx-border-color: red;");
+                lblNomeError.setText("Inserire nome");
+                txtCognome.setStyle("-fx-border-color: red;");
+                lblCognomeError.setText("Inserire cognome");
+                txtEmail.setStyle("-fx-border-color: red;");
+                lblEmailError.setText("Inserire email");
+                txtPassword.setStyle("-fx-border-color: red;");
+                lblPasswordError.setText("Inserire password");
             }
-        }
-        });
+        }});
         this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
         return confermaButton;
     }
 
-    private Boolean validConferma() {
-        boolean valid = true;
+    private void validConferma() {
+
+        if (txtEmail.getText().trim().isEmpty() && txtPassword.getText().trim().isEmpty() && txtCognome.getText().trim().isEmpty() && txtNome.getText().trim().isEmpty()) {
+            throw new registerException();
+        }
 
         if (txtNome.getText().trim().isEmpty()) {
-            valid = false;
-            txtNome.setStyle("-fx-border-color: red;");
-            lblNomeError.setText("Inserire nome");
+            throw new nameEmptyException();
         } else {
             txtNome.setStyle(null);
             lblNomeError.setText("");
         }
 
         if (txtCognome.getText().trim().isEmpty()) {
-            valid = false;
-            txtCognome.setStyle("-fx-border-color: red;");
-            lblCognomeError.setText("Inserire cognome");
+            throw new surnameEmptyException();
         } else {
             txtCognome.setStyle(null);
             lblCognomeError.setText("");
         }
 
-        if (txtEmail.getText().trim().isEmpty() || !txtEmail.getText().contains("@") || !txtEmail.getText().contains(".") ||
+        if (txtEmail.getText().trim().isEmpty()) {
+            throw new emailEmptyException();
+        } else {
+            txtCognome.setStyle(null);
+            lblCognomeError.setText("");
+        }
+
+        if (!txtEmail.getText().contains("@") || !txtEmail.getText().contains(".") ||
                 txtEmail.getText().lastIndexOf('.') < txtEmail.getText().indexOf('@')) {
-            valid = false;
-            txtEmail.setStyle("-fx-border-color: red;");
-            lblEmailError.setText("Inserire email valida");
+            throw new emailNotValidException();
         } else {
             txtEmail.setStyle(null);
             lblEmailError.setText("");
         }
 
         if (txtEmail.getText().contains("@studenti.unina.it") && txtMatricola.isVisible() && txtMatricola.getText().trim().isEmpty()) {
-            valid = false;
-            txtMatricola.setStyle("-fx-border-color: red;");
-            lblMatricolaError.setText("Inserire matricola");
+            throw new matricolaEmptyException();
         } else {
             txtMatricola.setStyle(null);
             lblMatricolaError.setText("");
         }
 
         if (txtPassword.getText().trim().isEmpty()) {
-            valid = false;
-            txtPassword.setStyle("-fx-border-color: red;");
-            lblPasswordError.setText("Inserire password");
+            throw new passwordEmptyException();
         } else {
             txtPassword.setStyle(null);
             lblPasswordError.setText("");
         }
 
         if (txtRipetiPassword.getText().trim().isEmpty() && !txtPassword.getText().trim().isEmpty()) {
-            valid = false;
-            txtRipetiPassword.setStyle("-fx-border-color: red;");
-            lblRipetiPasswordError.setText("Le password non coincidono");
+            throw new repeatPasswordEmptyException();
         } else if(!txtPassword.getText().trim().isEmpty() &&  !txtRipetiPassword.getText().trim().isEmpty() && !txtPassword.getText().equals(txtRipetiPassword.getText())){
-            valid = false;
-            txtRipetiPassword.setStyle("-fx-border-color: red;");
-            lblRipetiPasswordError.setText("Le password non coincidono");
+            throw new repeatPasswordIsNotEqualException();
         }else{
             txtRipetiPassword.setStyle(null);
             lblRipetiPasswordError.setText("");
         }
+    }
 
-        return valid;
+    private void resetAll(){
+        lblNomeError.setText("");
+        lblCognomeError.setText("");
+        lblEmailError.setText("");
+        lblPasswordError.setText("");
+        lblRipetiPasswordError.setText("");
+
+        txtNome.setStyle(null);
+        txtCognome.setStyle(null);
+        txtEmail.setStyle(null);
+        txtPassword.setStyle(null);
+        txtRipetiPassword.setStyle(null);
     }
 
     private Button createIndietroButton() {

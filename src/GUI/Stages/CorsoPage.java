@@ -2,13 +2,14 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.*;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -21,9 +22,11 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Objects;
+
 
 public class CorsoPage extends Stage {
 
@@ -71,6 +74,7 @@ public class CorsoPage extends Stage {
             clip.setHeight(newBounds.getHeight());
         });
 
+        //TODO fare funzione che fa questo e fa capire a cosa serve NIENTE COMMENTI
         Platform.runLater(() -> clip.requestFocus()); // sposta il focus in modo da non selezionare il primo pulsante automaticamente
 
         Region spacer = new Region();
@@ -85,7 +89,6 @@ public class CorsoPage extends Stage {
 
     public void initPage(Corso corso){
         this.corso = corso;
-
 
         VBox infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_RIGHT);
@@ -123,47 +126,59 @@ public class CorsoPage extends Stage {
         HBox.setHgrow(spacer3, Priority.ALWAYS);
 
         topHbox.getChildren().addAll(spacer1, imgBox, spacer2, infoBox, spacer3);
-        topHbox.setMargin(imgBox, new Insets(20, 0, 0, 0));
+        HBox.setMargin(imgBox, new Insets(20, 0, 0, 0));
         bottomHbox.getChildren().add(descBox);
     }
 
-    private void addImageCorso(String imagePath, VBox imgBox) {
-        ImageView imageView;
-        try {
-            Image image = new Image(imagePath);
-            imageView = new ImageView(image);
+        private void addImageCorso(String imagePath, VBox imgBox) {
+            ImageView imageView;
+            Image image;
+            try {
+                
+                InputStream is = getClass().getResourceAsStream(imagePath);
+                if (is == null) {
+                    throw new imageNotFoundException("/Media/Background/biancoNormale.png");
+                }
 
-            double size = 250;
+                image = new Image(is);
+                imageView = new ImageView(image);
 
-            double imgWidth = image.getWidth();
-            double imgHeight = image.getHeight();
 
-            double x = 0, y = 0, width = imgWidth, height = imgHeight;
-
-            if (imgWidth > imgHeight) {
-                width = imgHeight;
-                x = (imgWidth - imgHeight) / 2;
-            } else if (imgHeight > imgWidth) {
-                height = imgWidth;
-                y = (imgHeight - imgWidth) / 2;
+            }catch (imageNotFoundException IMNF) {
+                imagePath = IMNF.getMessage();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
             }
 
-            imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, width, height));
-            imageView.setFitWidth(size);
-            imageView.setFitHeight(size);
-            imageView.setPreserveRatio(false);
-
-            Rectangle clip = new Rectangle(size, size);
-            clip.setArcWidth(20);
-            clip.setArcHeight(20);
-            imageView.setClip(clip);
-
-        } catch (Exception e) {
-            imageView = new ImageView();
+            setImageShape(imageView,image);
+            imgBox.getChildren().add(imageView);
         }
 
-        imgBox.getChildren().add(imageView);
-    }
+   private void setImageShape(ImageView imageView, Image image) {
+       double size = 250;
+
+       double imgWidth = image.getWidth();
+       double imgHeight = image.getHeight();
+
+       double x = 0, y = 0, width = imgWidth, height = imgHeight;
+       if (imgWidth > imgHeight) {
+           width = imgHeight;
+           x = (imgWidth - imgHeight) / 2;
+       } else if (imgHeight > imgWidth) {
+           height = imgWidth;
+           y = (imgHeight - imgWidth) / 2;
+       }
+                imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, width, height));
+                imageView.setFitWidth(size);
+                imageView.setFitHeight(size);
+                imageView.setPreserveRatio(false);
+
+                Rectangle clip = new Rectangle(size, size);
+                clip.setArcWidth(20);
+                clip.setArcHeight(20);
+                imageView.setClip(clip);
+
+   }
 
     public Corso getCorso() {
         return corso;

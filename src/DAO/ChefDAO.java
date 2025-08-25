@@ -104,7 +104,7 @@ public class ChefDAO {
         return count > 0;
     }
 
-    public void changeUserPassword(String newPassword, Chef chef) {
+    public void changeUserPassword(String newPassword, Chef chef) throws changePasswordException,SQLException {
         String sql = "UPDATE chef SET passw = md5(?) WHERE idchef = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, newPassword);
@@ -112,13 +112,11 @@ public class ChefDAO {
             int rows = ps.executeUpdate();
 
             if (rows > 0) {
-                System.out.println("Password aggiornata correttamente per chef " + chef.getIdchef());
+                chef.setPassw(newPassword);
             } else {
-                throw new RuntimeException("Nessuna riga aggiornata");
+                throw new changePasswordException();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante l'aggiornamento password", e);
+
         }
     }
 

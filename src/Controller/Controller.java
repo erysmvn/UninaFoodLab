@@ -220,7 +220,7 @@ public class Controller {
     }
 
 
-    public Boolean checkOldPassword(String oldPassword){
+    public boolean checkOldPassword(String oldPassword)throws oldPasswordErrorException{
         Boolean result = false;
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
@@ -229,10 +229,13 @@ public class Controller {
             ChefDAO chefDao = getChefDAO();
             result = chefDao.checkOldPassword(oldPassword, chef);
         }
+        if(!result){
+            throw new oldPasswordErrorException();
+        }
         return result;
     }
 
-    public void changeUserPassword(String newPassword) {
+    public void changeUserPassword(String newPassword)throws changePasswordException,SQLException {
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
             studenteDao.changeUserPassword(newPassword, studente);

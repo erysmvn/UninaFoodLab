@@ -48,18 +48,18 @@ public class CorsoPage extends Stage {
         topHbox.setPadding(new Insets(50, 0, 10, 0));
         topHbox.setAlignment(Pos.TOP_CENTER);
         topHbox.setSpacing(40);
-        topHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
+        topHbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         bottomHbox = new HBox(15);
         bottomHbox.setPadding(new Insets(0, 0, 0, 0));
         bottomHbox.setAlignment(Pos.TOP_CENTER);
-        bottomHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
+        bottomHbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         footerVbox = new VBox(15);
         footerVbox.setPadding(new Insets(0, 0, 50, 0));
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
         footerVbox.setSpacing(20);
-        footerVbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
+        footerVbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Rectangle clip = new Rectangle();
         clip.setArcWidth(30);

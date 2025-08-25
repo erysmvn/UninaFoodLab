@@ -156,7 +156,6 @@ public class HomePage extends Stage {
         loginButton.setOnAction(e -> {
             controller.openLoginPage();
         });
-
         return loginButton;
     }
 
@@ -189,8 +188,6 @@ public class HomePage extends Stage {
         });
         return homeButton;
     }
-
-
     private Button createSearchButton(){
         searchButton = new Button("🔍");
         searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE; -fx-cursor: hand;");

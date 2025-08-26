@@ -5,6 +5,7 @@ import Entity.Chef;
 import Entity.Corso;
 import Entity.TipologiaCorso;
 import Entity.Utente;
+import Exception.CorsoExceptions.CreateCorsoException.*;
 import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -114,7 +115,7 @@ public class CreateCorsoPage extends Stage {
     private void createFieldsBox(){
         fieldsBox = new VBox(15);
 
-        fieldsBox.getChildren().addAll(createNomeBox(), createPriceBox(), createTypeBox(), createDifficoltaBox(), createFreqBox());
+        fieldsBox.getChildren().addAll(createNomeBox(), createPriceBox(), createTypeBox(),  createFreqBox(), createDifficoltaBox());
     }
 
     private VBox createNomeBox() {
@@ -282,7 +283,39 @@ public class CreateCorsoPage extends Stage {
         Button confermaButton = new Button();
         confermaButton.setText("Conferma");
         confermaButton.setOnAction(e -> {
-           validate();
+           try {
+               validate();
+           } catch (priceCorsoNotFoundException PCNF) {
+               corsoPrice.setStyle("-fx-border-color: red;");
+               priceError.setText("Inserire il costo del corso");
+           } catch (nameCorsoNotFoundException NCNFE) {
+               corsoName.setStyle("-fx-border-color: red;");
+               nameError.setText("Inserire il nome del corso");
+           } catch (typeCorsoNotFoundException TCCFE) {
+               corsoType.setStyle("-fx-border-color: red;");
+               typeError.setText("Inserire una tipologia del corso");
+           } catch (frequencyCorsoNotFoundException FCCFE) {
+               corsoFrequency.setStyle("-fx-border-color: red;");
+               frequencyError.setText("Inserire una frequenza per il corso");
+           } catch (difficultyCorsoNotFoundException DCCFE) {
+               corsoDifficulty.setStyle("-fx-border-color: red;");
+               difficultyError.setText("Inserire la difficoltà del corso");
+           } catch (createCorsoErrorException CRCE) {
+               corsoPrice.setStyle("-fx-border-color: red;");
+               priceError.setText("Inserire il costo del corso");
+
+               corsoName.setStyle("-fx-border-color: red;");
+               nameError.setText("Inserire il nome del corso");
+
+               corsoType.setStyle("-fx-border-color: red;");
+               typeError.setText("Inserire una tipologia del corso");
+
+               corsoFrequency.setStyle("-fx-border-color: red;");
+               frequencyError.setText("Inserire una frequenza per il corso");
+
+               corsoDifficulty.setStyle("-fx-border-color: red;");
+               difficultyError.setText("Inserire la difficoltà del corso");
+           }
         });
         styleButton(confermaButton, Color.valueOf("#3A6698"));
         return confermaButton;
@@ -306,25 +339,46 @@ public class CreateCorsoPage extends Stage {
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
-    private void validate() {
+    private void validate() throws createCorsoErrorException {
         if (corsoPrice.getText().isEmpty()) {
-            // Exc
+            throw new priceCorsoNotFoundException();
+        } else {
+            corsoPrice.setStyle(null);
+            priceError.setText("");
         }
 
         if (corsoName.getText().isEmpty()) {
-            // Exc
+            throw new nameCorsoNotFoundException();
+        } else {
+            corsoName.setStyle(null);
+            nameError.setText("");
         }
 
         if (corsoType.getValue().equals("Seleziona tipologia")) { // or getSelectionModel().getSelectedItem()
-            // Exc
+            throw new typeCorsoNotFoundException();
+        } else {
+            corsoType.setStyle(null);
+            typeError.setText("");
         }
 
         if (corsoFrequency.getValue().equals("Seleziona frequenza")) {
-            // Exc
+            throw new frequencyCorsoNotFoundException();
+        } else {
+            corsoFrequency.setStyle(null);
+            frequencyError.setText("");
         }
 
         if (corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
-            // Exc
+            throw new difficultyCorsoNotFoundException();
+        } else {
+            corsoDifficulty.setStyle(null);
+            difficultyError.setText("");
+        }
+
+        if (corsoName.getText().isEmpty() && corsoPrice.getText().isEmpty()
+                && corsoType.getValue().equals("Seleziona tipologia")
+                && corsoFrequency.getValue().equals("Seleziona frequenza") && corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
+            throw new createCorsoErrorException();
         }
     }
 }

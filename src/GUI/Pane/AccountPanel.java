@@ -18,8 +18,6 @@ import java.util.Objects;
 
 public class AccountPanel extends VBox {
 
-    private Label passwordValue;
-
     public AccountPanel(Utente utente) {
         this.setPadding(new Insets(20));
         this.setSpacing(15);

@@ -184,51 +184,23 @@ public class RicettaPage extends Stage {
         Text allergeniLabel = new Text("Allergeni: ");
         allergeniLabel.setStyle("-fx-font-weight: bold;");
         Text allergeniValue = new Text(ricetta.getAllergeniRicettaString());
-        allergeniLabel.setFont(Font.font(20));
-        allergeniValue.setFont(Font.font(20));
-        TextFlow allergeniRicetta = new TextFlow(allergeniLabel, allergeniValue);
-
-        allergeniRicetta.setMaxWidth(400);
-        allergeniRicetta.setPrefWidth(400);
-        allergeniRicetta.setLineSpacing(2);
-        infoBox.getChildren().add(allergeniRicetta);
+        CorsoPage.setAndAddFont(infoBox, allergeniLabel, allergeniValue);
 
         Text tempoLabel = new Text("Tempo di preparazione: ");
         tempoLabel.setStyle("-fx-font-weight: bold;");
         Text tempoValue = new Text(String.valueOf(ricetta.getTempoPreparazione()) + " minuti");
-        tempoLabel.setFont(Font.font(20));
-        tempoValue.setFont(Font.font(20));
-        TextFlow tempoRicetta = new TextFlow(tempoLabel, tempoValue);
-
-        tempoRicetta.setMaxWidth(400);
-        tempoRicetta.setPrefWidth(400);
-        tempoRicetta.setLineSpacing(2);
-        infoBox.getChildren().add(tempoRicetta);
+        CorsoPage.setAndAddFont(infoBox, tempoLabel, tempoValue);
 
         Text descrizioneLabel = new Text("Descrizione: ");
         descrizioneLabel.setStyle("-fx-font-weight: bold;");
         Text descrizioneValue = new Text(ricetta.getDescrizione());
-        descrizioneLabel.setFont(Font.font(20));
-        descrizioneValue.setFont(Font.font(20));
-        TextFlow descrizioneRicetta = new TextFlow(descrizioneLabel, descrizioneValue);
-
-        descrizioneRicetta.setMaxWidth(400);
-        descrizioneRicetta.setPrefWidth(400);
-        descrizioneRicetta.setLineSpacing(2);
-        infoBox.getChildren().add(descrizioneRicetta);
+        CorsoPage.setAndAddFont(infoBox, descrizioneLabel, descrizioneValue);
 
         if (ricetta.getAutore() != null) {
             Text autoreLabel = new Text("Autore: ");
             autoreLabel.setStyle("-fx-font-weight: bold;");
             Text autoreValue = new Text(ricetta.getAutore());
-            autoreLabel.setFont(Font.font(20));
-            autoreValue.setFont(Font.font(20));
-            TextFlow autoreRicetta = new TextFlow(autoreLabel, autoreValue);
-
-            autoreRicetta.setMaxWidth(400);
-            autoreRicetta.setPrefWidth(400);
-            autoreRicetta.setLineSpacing(2);
-            infoBox.getChildren().add(autoreRicetta);
+            CorsoPage.setAndAddFont(infoBox, autoreLabel, autoreValue);
         }
     }
 

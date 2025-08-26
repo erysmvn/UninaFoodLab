@@ -8,7 +8,7 @@ import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorExceptio
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 import Exception.UserExceptions.SupportException.emailClientNotFoundException;
-import GUI.Pane.AccountCorsiPanel;
+import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
@@ -130,9 +130,7 @@ public class Controller {
             RicettaPage ricettaPage = new RicettaPage( this);
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
-
             ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
-
             ricettaPage.show();
         }
     }
@@ -174,11 +172,14 @@ public class Controller {
         }
     }
 
-    public void refreshCorsi(AccountCorsiPanel accountCorsiPanel) {
-        accountCorsiPanel.showCorsi();
+    public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
+        elencoCorsiPanel.showCorsi();
     }
 
-
+    public void homepageToFront(){
+        homePage.toFront();
+        homePage.mostraTuttiCorsi();
+    }
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
@@ -222,7 +223,6 @@ public class Controller {
         homePage.setLogOut();
         accountPage.close();
     }
-
 
     public boolean checkOldPassword(String oldPassword) throws oldPasswordErrorException {
         Boolean result = false;
@@ -271,13 +271,29 @@ public class Controller {
         }
     }
 
+    private void removeCorsoPage(Corso corso){
+        CorsoPage toRemove = null;
+            for(CorsoPage cp : corsoPages){
+                if(cp.getCorso().equals(corso))
+                    toRemove = cp;
+
+            }
+
+            if (toRemove!=null){
+                    toRemove.close();
+                    corsoPages.remove(toRemove);
+            }
+
+    }
     public void unsubscribeToCourse(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
             studenteDao.unsubscribeToCourse(studente, corso);
             studente.removeCorso(corso);
+            this.removeCorsoPage(corso);
         }
     }
+
 
     public Boolean alreadySubscribed(Corso corso){
         if (utente instanceof Studente studente) {

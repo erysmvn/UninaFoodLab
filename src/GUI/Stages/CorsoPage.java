@@ -132,9 +132,8 @@ public class CorsoPage extends Stage {
             try {
                 
                 InputStream is = getClass().getResourceAsStream(imagePath);
-                if (is == null) {
+                if (is == null)
                     throw new imageNotFoundException("/Media/Background/biancoNormale.png");
-                }
 
                 image = new Image(is);
                 imageView = new ImageView(image);
@@ -157,6 +156,7 @@ public class CorsoPage extends Stage {
        double imgHeight = image.getHeight();
 
        double x = 0, y = 0, width = imgWidth, height = imgHeight;
+
        if (imgWidth > imgHeight) {
            width = imgHeight;
            x = (imgWidth - imgHeight) / 2;
@@ -245,40 +245,19 @@ public class CorsoPage extends Stage {
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");
         Text chefValue = new Text(corso.getStringOfChefs());
-        chefLabel.setFont(Font.font(20));
-        chefValue.setFont(Font.font(20));
-        TextFlow nomeChef = new TextFlow(chefLabel, chefValue);
-
-        nomeChef.setMaxWidth(400);
-        nomeChef.setPrefWidth(400);
-        nomeChef.setLineSpacing(2);
-        infoBox.getChildren().add(nomeChef);
+        setAndAddFont(infoBox, chefLabel, chefValue);
 
 
         Text modalitaLabel = new Text("Modalità: ");
         modalitaLabel.setStyle("-fx-font-weight: bold;");
         Text modalitaValue = new Text(corso.getModalita_corso().getLabel());
-        modalitaLabel.setFont(Font.font(20));
-        modalitaValue.setFont(Font.font(20));
-        TextFlow modalita = new TextFlow(modalitaLabel, modalitaValue);
-
-        modalita.setMaxWidth(400);
-        modalita.setPrefWidth(400);
-        modalita.setLineSpacing(2);
-        infoBox.getChildren().add(modalita);
+        setAndAddFont(infoBox, modalitaLabel, modalitaValue);
 
 
         Text diffLabel = new Text("Difficoltà: ");
         diffLabel.setStyle("-fx-font-weight: bold;");
         Text diffValue = new Text(corso.getDifficolta().toString());
-        diffLabel.setFont(Font.font(20));
-        diffValue.setFont(Font.font(20));
-        TextFlow difficolta = new TextFlow(diffLabel, diffValue);
-
-        difficolta.setMaxWidth(400);
-        difficolta.setPrefWidth(400);
-        difficolta.setLineSpacing(2);
-        infoBox.getChildren().add(difficolta);
+        setAndAddFont(infoBox, diffLabel, diffValue);
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -287,14 +266,7 @@ public class CorsoPage extends Stage {
         Text periodoValue = new Text(
                 sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine())
         );
-        periodoLabel.setFont(Font.font(20));
-        periodoValue.setFont(Font.font(20));
-        TextFlow date = new TextFlow(periodoLabel, periodoValue);
-
-        date.setMaxWidth(400);
-        date.setPrefWidth(400);
-        date.setLineSpacing(2);
-        infoBox.getChildren().add(date);
+        setAndAddFont(infoBox, periodoLabel, periodoValue);
 
         // Ore totali
         DecimalFormat df = new DecimalFormat("#.##");
@@ -302,14 +274,7 @@ public class CorsoPage extends Stage {
         oreLabel.setStyle("-fx-font-weight: bold;");
         Text oreValue = new Text(
                 df.format(corso.getOreTotali()));
-        oreLabel.setFont(Font.font(20));
-        oreValue.setFont(Font.font(20));
-        TextFlow ore = new TextFlow(oreLabel, oreValue);
-
-        ore.setMaxWidth(400);
-        ore.setPrefWidth(400);
-        ore.setLineSpacing(2);
-        infoBox.getChildren().add(ore);
+        setAndAddFont(infoBox, oreLabel, oreValue);
 
 
         Text freqLabel = new Text("Frequenza: ");
@@ -318,19 +283,16 @@ public class CorsoPage extends Stage {
                 corso.getFrequenzaSettimanale() +
                         (corso.getFrequenzaSettimanale() == 1 ? " lezione a settimana" : " lezioni a settimana")
         );
-        freqLabel.setFont(Font.font(20));
-        freqValue.setFont(Font.font(20));
-        TextFlow frequenza = new TextFlow(freqLabel, freqValue);
-
-        frequenza.setMaxWidth(400);
-        frequenza.setPrefWidth(400);
-        frequenza.setLineSpacing(2);
-        infoBox.getChildren().add(frequenza);
+        setAndAddFont(infoBox, freqLabel, freqValue);
 
         // Costo
         Text costoLabel = new Text("Costo: ");
         costoLabel.setStyle("-fx-font-weight: bold;");
         Text costoValue = new Text(df.format(corso.getCosto()) + " €");
+        setAndAddFont(infoBox, costoLabel, costoValue);
+    }
+
+    static void setAndAddFont(VBox infoBox, Text costoLabel, Text costoValue) {
         costoLabel.setFont(Font.font(20));
         costoValue.setFont(Font.font(20));
         TextFlow costo = new TextFlow(costoLabel, costoValue);
@@ -348,7 +310,7 @@ public class CorsoPage extends Stage {
         ricetteTrattate.setStyle("-fx-font-weight: bold;");
         ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
         descBox.getChildren().add(ricetteTrattate);
-        descBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
+        VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
         for (Ricetta r : corso.getRicetteTrattate()) {
             Label ricettaLabel = new Label("   \u2022 " + r.getNome());

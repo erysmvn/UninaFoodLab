@@ -109,7 +109,6 @@ public class ImpostazioniPanel extends VBox {
         return button;
     }
 
-
     private void setOnMouseTraverse(Button button) {
         button.setOnMouseEntered(e -> {
                     button.setBorder(new Border(new BorderStroke(

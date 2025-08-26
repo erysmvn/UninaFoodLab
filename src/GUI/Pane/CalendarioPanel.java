@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CalendarioPanel extends Pane {
 
@@ -28,12 +29,11 @@ public class CalendarioPanel extends Pane {
         createCalendarView();
         this.disableCalendarFunction();
         this.getChildren().add(calendarView);
-
     }
 
-    private CalendarView createCalendarView(){
+    private void createCalendarView(){
         calendarView = new CalendarView();
-        calendarView.getStylesheets().add(getClass().getResource("/Media/StyleSheets/calendarStyle.css").toExternalForm());
+        calendarView.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Media/StyleSheets/calendarStyle.css")).toExternalForm());
 
         sessioniPresenzaCalendar = new Calendar("Sessioni in presenza");
         sessioniPresenzaCalendar.setReadOnly(true);
@@ -51,8 +51,6 @@ public class CalendarioPanel extends Pane {
         calendarView.prefWidthProperty().bind(this.widthProperty());
         calendarView.prefHeightProperty().bind(this.heightProperty());
 
-
-        return calendarView;
     }
 
 
@@ -92,6 +90,7 @@ public class CalendarioPanel extends Pane {
     private void blockEmptyGridDoubleClick(CalendarView calendarView) {
 
         EventHandler<MouseEvent> filter = e -> {
+
             if (e.getEventType() == MouseEvent.MOUSE_CLICKED
                     && e.getClickCount() > 1) {
 
@@ -118,7 +117,6 @@ public class CalendarioPanel extends Pane {
                 }
 
             }
-
 
         };
 

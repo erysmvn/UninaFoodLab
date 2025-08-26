@@ -168,10 +168,10 @@
             return accountPanel;
         }
 
-        private AccountCorsiPanel createAccountCorsiPanel(Controller controller){
-            AccountCorsiPanel accountCorsiPanel = new AccountCorsiPanel(this.controller);
-            accountCorsiPanel.initPanel(utente);
-            return accountCorsiPanel;
+        private ElencoCorsiPanel createAccountCorsiPanel(Controller controller){
+            ElencoCorsiPanel elencoCorsiPanel = new ElencoCorsiPanel(this.controller);
+            elencoCorsiPanel.initPanel(utente);
+            return elencoCorsiPanel;
         }
 
 

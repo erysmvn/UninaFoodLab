@@ -53,7 +53,6 @@ public class HomePage extends Stage {
         this.setCTRLW();
     }
 
-
     private void setFunctionalitiesHomePage(){
         root = new BorderPane();
         root.setTop(createTopBar());
@@ -82,7 +81,6 @@ public class HomePage extends Stage {
 
     }
 
-
     private void setTopBarAesthetics(VBox topBar){
         topBar.setPadding(new Insets(10));
         topBar.setSpacing(20);
@@ -109,7 +107,6 @@ public class HomePage extends Stage {
         closeAndMinimizePane.setRight(controlButtons);
         return closeAndMinimizePane;
     }
-
 
     private ImageView createLogoView() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoHomePage.png")));
@@ -161,7 +158,7 @@ public class HomePage extends Stage {
         return loginButton;
     }
 
-    private Button createHomeButton(){
+    private void createHomeButton(){
 
         homeButton = new Button("Home");
 
@@ -188,8 +185,9 @@ public class HomePage extends Stage {
         homeButton.setOnAction(e -> {
             controller.openAccountPage(utente);
         });
-        return homeButton;
+
     }
+
     private Button createSearchButton(){
         searchButton = new Button("🔍");
         searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE; -fx-cursor: hand;");
@@ -218,8 +216,6 @@ public class HomePage extends Stage {
                 new BorderWidths(1)
         )));
     }
-
-
 
     private void setSearchButtonOnAction(Button searchButton){
 
@@ -273,7 +269,6 @@ public class HomePage extends Stage {
 
     }
 
-
     private VBox createSearchArea() {
         VBox searchArea = new VBox(5);
 
@@ -303,6 +298,9 @@ public class HomePage extends Stage {
         return searchBar;
     }
 
+    public void mostraTuttiCorsi(){
+        tuttiCorsi.fire();
+    }
     private HBox createChoiceBox() {
         choiceBox = new HBox(2);
         choiceBox.setAlignment(Pos.CENTER);
@@ -556,19 +554,16 @@ public class HomePage extends Stage {
 
         return center;
     }
-
+//TODO avendo utente si può usare instance of invece di avere dei booleani, loggedIn bisogna controllare se utente è null
     public Boolean isLoggedIn(){
         return isLoggedIn;
     }
-
     public Boolean isChef(){
         return isChef;
     }
-
     public void setLoggedIn() {
         isLoggedIn = true;
     }
-
     public void setChef() {
         isChef = true;
     }

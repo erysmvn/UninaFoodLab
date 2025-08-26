@@ -7,6 +7,7 @@ import Entity.TipologiaCorso;
 import Entity.Utente;
 import Exception.CorsoExceptions.CreateCorsoException.*;
 import GUI.Buttons.CircleButton;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -25,6 +26,10 @@ import javafx.stage.StageStyle;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public class CreateCorsoPage extends Stage {
@@ -32,6 +37,7 @@ public class CreateCorsoPage extends Stage {
     private Chef chef;
     private ArrayList<Chef> chefs;
     private ArrayList<TipologiaCorso> tipologie;
+    private File selectedPhotoFile;
 
     VBox root;
     HBox functionalityButtons;
@@ -252,7 +258,9 @@ public class CreateCorsoPage extends Stage {
             if (file != null) {
                 Image image = new Image(file.toURI().toString());
                 imageView.setImage(image);
-                uploadLabel.setVisible(false); // nasconde la label quando c'è l'immagine
+                uploadLabel.setVisible(false);
+
+                selectedPhotoFile = file;
             }
         });
 
@@ -285,12 +293,58 @@ public class CreateCorsoPage extends Stage {
         confermaButton.setOnAction(e -> {
            try {
                validate();
-           } catch (priceCorsoNotFoundException PCNF) {
-               corsoPrice.setStyle("-fx-border-color: red;");
-               priceError.setText("Inserire il costo del corso");
+               ObservableList<String> chefSelezionati = corsoChefsList.getSelectionModel().getSelectedItems();
+               for (String nomeChef : chefSelezionati) {
+                   // prerendi chef by nome e cognome
+               }
+
+               String nomeCorso = corsoName.getText();
+               String nameForPath = nomeCorso.replaceAll("\s+", "");
+
+               try {
+                   if (selectedPhotoFile != null) {
+                       Files.copy(selectedPhotoFile.toPath(), Paths.get("/Media/CoursesImages/" + nameForPath), StandardCopyOption.REPLACE_EXISTING);
+                   }
+               } catch (IOException ioe) {
+                   ioe.printStackTrace();
+               }
+
+               double price = corsoPrice.getTranslateX();
+
+               String frequency = corsoFrequency.getValue();
+               frequency.substring(0, 1);
+               int freq = Integer.parseInt(frequency);
+
+               String tipologiaName = corsoType.getValue();
+               Boolean newTipologia = false;
+               for (TipologiaCorso tipo : tipologie) {
+                   if (tipologiaName == tipo.getNome()) {
+                       newTipologia = false;
+                       break;
+                       // tipologia esistente
+                   } else {
+                       newTipologia = true;
+                       // add su database
+                   }
+               }
+
+               if (newTipologia) {
+                   // add su database
+               } else {
+
+               }
+
+               String difficolta = corsoDifficulty.getValue();
+
+               // controller addCorso (nome, prezzo, frequenza, difficolta)
+               // controller addCaratterizzato tra nuovo corso e tipologia
+
            } catch (nameCorsoNotFoundException NCNFE) {
                corsoName.setStyle("-fx-border-color: red;");
                nameError.setText("Inserire il nome del corso");
+           } catch (priceCorsoNotFoundException PCNF) {
+               corsoPrice.setStyle("-fx-border-color: red;");
+               priceError.setText("Inserire il costo del corso");
            } catch (typeCorsoNotFoundException TCCFE) {
                corsoType.setStyle("-fx-border-color: red;");
                typeError.setText("Inserire una tipologia del corso");
@@ -340,6 +394,12 @@ public class CreateCorsoPage extends Stage {
     }
 
     private void validate() throws createCorsoErrorException {
+        if (corsoName.getText().isEmpty() && corsoPrice.getText().isEmpty()
+                && corsoType.getValue().equals("Seleziona tipologia")
+                && corsoFrequency.getValue().equals("Seleziona frequenza") && corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
+            throw new createCorsoErrorException();
+        }
+
         if (corsoPrice.getText().isEmpty()) {
             throw new priceCorsoNotFoundException();
         } else {
@@ -373,12 +433,6 @@ public class CreateCorsoPage extends Stage {
         } else {
             corsoDifficulty.setStyle(null);
             difficultyError.setText("");
-        }
-
-        if (corsoName.getText().isEmpty() && corsoPrice.getText().isEmpty()
-                && corsoType.getValue().equals("Seleziona tipologia")
-                && corsoFrequency.getValue().equals("Seleziona frequenza") && corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
-            throw new createCorsoErrorException();
         }
     }
 }

@@ -91,7 +91,7 @@ public class RicettaPage extends Stage {
 
         this.buildInfoBox(infoBox);
 
-        controller.getIngredientiRicetta(ricetta);
+       // controller.getIngredientiRicetta(ricetta);
 
         Button closeButton = createCloseButton();
         footerVbox.getChildren().add(closeButton);
@@ -176,7 +176,6 @@ public class RicettaPage extends Stage {
         nomeRicetta.setMaxWidth(800);
         nomeRicetta.setWrapText(true);
         infoBox.getChildren().add(nomeRicetta);
-
 
         controller.getIngredientiRicetta(ricetta);
         controller.getAllergeniRicetta(ricetta);

@@ -71,7 +71,7 @@ public class CorsoPage extends Stage {
         });
 
         //TODO fare funzione che fa questo e fa capire a cosa serve NIENTE COMMENTI
-        Platform.runLater(() -> clip.requestFocus()); // sposta il focus in modo da non selezionare il primo pulsante automaticamente
+        Platform.runLater(clip::requestFocus); // sposta il focus in modo da non selezionare il primo pulsante automaticamente
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
@@ -210,7 +210,6 @@ public class CorsoPage extends Stage {
 
     private Button createCloseButton() {
         Button closeButton = new Button("Chiudi");
-        closeButton.setPrefSize(100, 30);
         styleButton(closeButton, Color.valueOf("#da3d26"));
         closeButton.setOnAction(e -> this.close());
         return closeButton;

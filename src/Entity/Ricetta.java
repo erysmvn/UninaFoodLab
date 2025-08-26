@@ -11,12 +11,6 @@ public class Ricetta {
     private ArrayList<Ingrediente> ingredienti;
     private ArrayList<String> allergeniRicetta;
 
-    public Ricetta(String nome, String descrizione, int tempoPreparazione, String autore) {
-        this.nome = nome;
-        this.descrizione = descrizione;
-        this.tempoPreparazione = tempoPreparazione;
-        this.autore = autore;
-    }
 
     public Ricetta(int id, String nome, String descrizione, int tempoPreparazione, String autore) {
         this.idricetta = id;

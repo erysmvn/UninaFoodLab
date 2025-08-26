@@ -30,6 +30,7 @@ public class Controller {
 
     private ArrayList<CorsoPage> corsoPages = new ArrayList<>();
     private ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
+    private ArrayList<SessionePage> sessionePages = new ArrayList<>();
 
     public Controller(){
         dbc = new DBConnection();
@@ -101,7 +102,6 @@ public class Controller {
             CorsoPage corsoPage = new CorsoPage( this);
             corsoPage.initPage(corso);
             corsoPages.add(corsoPage);
-
             corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
 
             corsoPage.show();
@@ -116,7 +116,32 @@ public class Controller {
         }
         return null;
     }
+    /*
+    TODO DA COMPLETARE
+    private SessionePage isSessionePageAlreadyOpened(Sessione s){
+        for(SessionePage sp : sessionePages){
+            if(sp.getSessione().getIdSessione() == s.getIdSessione()){
+                return s;
+            }
+        }
+        return null;
+    }
+*/
 
+
+    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
+        CorsoDAO corsoDAO = getCorsoDAO();
+        Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
+        return corso.getChefs();
+    }
+
+    public void openSessionePage(Sessione sessione){
+        SessionePage sessionePage = new SessionePage(this);
+        sessionePage.initPage(sessione);
+        sessionePages.add(sessionePage);
+        sessionePage.show();
+
+    }
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
 
@@ -143,6 +168,7 @@ public class Controller {
         }
         return null;
     }
+
 
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
@@ -317,7 +343,7 @@ public class Controller {
 
     public void getChefs(Corso corso) {
         CorsoDAO corsoDao = new CorsoDAO(this);
-        corsoDao.getChefs(corso);
+        corsoDao.setChefs(corso);
     }
 
     public ArrayList<Corso> getMostFollowedCourses(int limit) {

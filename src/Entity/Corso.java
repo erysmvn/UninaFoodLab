@@ -105,14 +105,12 @@ public class Corso {
     public ArrayList<Ricetta> getRicetteTrattate() {
         return ricetteTrattate;
     }
-
     public ArrayList<Sessione> getSessioni() {
         return sessioni;
     }
     public void setSessioni(ArrayList<Sessione> sessioni) {
         this.sessioni = sessioni;
     }
-
     public void addChef(Chef chef) {
         chefs.add(chef);
     }

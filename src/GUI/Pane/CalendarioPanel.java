@@ -73,12 +73,13 @@ public class CalendarioPanel extends Pane {
 
         calendarView.setEntryDetailsCallback(click -> {
 
-                    if (click.getEntry() != null && click.getEntry().getUserObject() instanceof Corso corso) {
+                    if (click.getEntry() != null && click.getEntry().getUserObject() instanceof Sessione sessione) {
                         if (calendarView.getSelectedPageView() instanceof YearPage) {
                             calendarView.showMonthPage();
                             calendarView.setDate(click.getEntry().getStartDate());
                         } else {
-                            controller.openCorsoPage(corso);
+                            //controller.openCorsoPage(corso);
+                            controller.openSessionePage(sessione);
                         }
                     }
                     return null;
@@ -134,8 +135,10 @@ public class CalendarioPanel extends Pane {
         for (Corso corso : corsi) {
             sessioniDeiCorsi.add(corso.getSessioni());
         }
-        addAllEvents();
+
         setFirstSessionDay();
+        addAllEvents();
+
     }
 
     private void addAllEvents() {
@@ -151,13 +154,13 @@ public class CalendarioPanel extends Pane {
                     titolo = corso.getNome() + "\nLezione in presenza\n" + sp.getLuogo() + "\nclick for info";
                     entry = new Entry<>(titolo);
                     entry.setInterval(start, end);
-                    entry.setUserObject(corso);
+                    entry.setUserObject(sp);
                     sessioniPresenzaCalendar.addEntry(entry);
                 } else if (s instanceof SessioneOnline so) {
                     titolo = corso.getNome() + "\nLezione online\n" + so.getLinkIncontro() + "\nclick for info";
                     entry = new Entry<>(titolo);
                     entry.setInterval(start, end);
-                    entry.setUserObject(corso);
+                    entry.setUserObject(so);
                     sessioniOnlineCalendar.addEntry(entry);
                 }
 

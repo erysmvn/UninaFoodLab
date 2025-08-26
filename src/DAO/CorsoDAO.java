@@ -8,9 +8,6 @@ import Entity.Enum.*;
 import Exception.CorsoExceptions.corsiNotFoundException;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CorsoDAO implements CorsoDAOInterface {
@@ -102,38 +99,6 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
-    private String buildPath(String nomeCorso){
-        nomeCorso = nomeCorso.replaceAll("\\s+", "");
-        String path = "/Media/CoursesImages/" +nomeCorso+".png";
-        return path;
-    }
-
-    private Sessione createSessioneByResultSet(ResultSet rs) throws SQLException {
-        Sessione sessione = null;
-        String modalita = rs.getString("modalita");
-
-        LocalDate data = rs.getDate("data").toLocalDate();
-        LocalTime ora = rs.getTime("ora").toLocalTime();
-        LocalDateTime orario = LocalDateTime.of(data, ora);
-
-        if (modalita.equals("Presenza")) {
-            sessione = new SessionePresenza(
-                    rs.getString("luogo"),
-                    rs.getFloat("durata"),
-                    orario
-            );
-        }else{
-            sessione = new SessioneOnline(
-                    rs.getString("link_incontro"),
-                    rs.getFloat("durata"),
-                    orario
-            );
-        }
-
-
-        return sessione;
-    }
-
 
     private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {
         Corso corso = new Corso(
@@ -154,6 +119,32 @@ public class CorsoDAO implements CorsoDAOInterface {
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
         corso.setSessioni(this.getSessioniCorso(rs.getString("nome_corso")));
 
+        setChefs(corso);
+
+        return  corso;
+    }
+
+
+    public Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException{
+
+        Corso corso = new Corso(
+                rs.getInt("idcorso"),
+                rs.getString("nome_corso"),
+                rs.getInt("numerosessioni"),
+                rs.getFloat("ore_totali"),
+                rs.getInt("frequenza_settimanale"),
+                rs.getDate("datainizio"),
+                rs.getDate("datafine"),
+                rs.getFloat("costo"),
+                ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                Difficolta.valueOf(rs.getString("difficolta") ),
+                rs.getString("desc_corso")
+        );
+
+        String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
+        corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
+        setChefs(corso);
+
         return  corso;
     }
 
@@ -168,7 +159,6 @@ public class CorsoDAO implements CorsoDAOInterface {
             exc.printStackTrace();
         }
     }
-
 
     // Get methods
     public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
@@ -196,18 +186,8 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     private ArrayList<Sessione> getSessioniCorso(String nomeCorso)throws SQLException{
-        ArrayList<Sessione> sessioni = new ArrayList<>();
-
-        String sql = "SELECT * FROM corso NATURAL JOIN tiene NATURAL JOIN sessione WHERE nome_corso = ?";
-        PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1, nomeCorso);
-        ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                sessioni.add(createSessioneByResultSet(rs));
-            }
-
-        return sessioni;
+        SessioneDAO sessioneDAO = new SessioneDAO(controller);
+        return sessioneDAO.getSessioniByNomeCorso(nomeCorso);
     }
 
     @Override
@@ -260,7 +240,24 @@ public class CorsoDAO implements CorsoDAOInterface {
         }
     }
 
-    public void getChefs(Corso corso){
+    public Corso getCorsoByIdCorso(int idcorso){
+        String sql = "SELECT * FROM corso WHERE idcorso = ?";
+
+      try {
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setInt(1, idcorso);
+        ResultSet rs = stmt.executeQuery();
+        if(rs.next())
+            return createCorsoByResultSet(rs);
+
+      }catch (SQLException sqle){
+          sqle.printStackTrace();
+      }
+        return null;
+    }
+
+
+    public void setChefs(Corso corso){
         corso.allocaArrayChefs();
         Chef chef = null;
         String sql = "SELECT DISTINCT idchef, nome_chef, cognome, email, passw " +

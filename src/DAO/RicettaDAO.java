@@ -5,11 +5,10 @@ import DB.DBConnection;
 import Entity.Chef;
 import Entity.Ingrediente;
 import Entity.Ricetta;
+import Entity.Sessione;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,9 +27,7 @@ public class RicettaDAO {
         this.controller = controller;
     }
 
-
     // Methods
-
 
     // Get Methods
     public void getIngredienti(Ricetta ricetta){
@@ -59,6 +56,32 @@ public class RicettaDAO {
         }
     }
 
+
+    public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{
+        ArrayList<Ricetta> ricette = new ArrayList<>();
+        String sql = "select * from ricetta natural join tratta natural join sessione s where idsessione = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, idsessione);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            ricette.add(createRicettaByResulSet(rs));
+        }
+        return ricette;
+    }
+
+    private Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException {
+        Ricetta ricetta =  new Ricetta(
+                rs.getInt("idricetta"),
+                rs.getString("nome_ricetta"),
+                rs.getString("descrizione_ricetta"),
+                rs.getInt("tempo_di_preparazione"),
+                rs.getString("autore")
+        );
+        getIngredienti(ricetta);
+        getAllergeniRicetta(ricetta);
+        return ricetta;
+    }
+
     public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) {
         ricetta.allocaArrayIngredienti();
         String sql = "SELECT quantità, unità " +
@@ -81,7 +104,7 @@ public class RicettaDAO {
         return toReturn;
     }
 
-    public void getAllergeniRicetta(Ricetta ricetta) {
+    public void getAllergeniRicetta(Ricetta ricetta){
         ricetta.allocaArrayAllergeniRicetta();
         String sql = "SELECT DISTINCT allergeni " +
                 "FROM ingrediente NATURAL JOIN forma NATURAL JOIN ricetta " +

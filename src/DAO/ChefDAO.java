@@ -171,4 +171,12 @@ public class ChefDAO {
         return chef;
     }
 
+    public ArrayList<Chef> getChefsByRs(ResultSet rs) throws SQLException{
+        ArrayList<Chef> chefs = new ArrayList<>();
+        while(rs.next()){
+            chefs.add(createChefByRs(rs));
+        }
+        return chefs;
+    }
+
 }

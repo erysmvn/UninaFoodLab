@@ -7,6 +7,7 @@ import Entity.TipologiaCorso;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -31,14 +32,18 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
     public ArrayList<TipologiaCorso> getAll() {
         ArrayList<TipologiaCorso> lista = new ArrayList<>();
         String sql = "SELECT * FROM TipologiaCorso";
-        rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            TipologiaCorso tipologiaCorso = new TipologiaCorso(
-                    rs.getInt("idtipologiacorso"),
-                    rs.getString("Nome_tipo"),
-                    rs.getString("descrizione")
-            );
-            lista.add(tipologiaCorso);
+        try {
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                TipologiaCorso tipologiaCorso = new TipologiaCorso(
+                        rs.getInt("idtipologiacorso"),
+                        rs.getString("Nome_tipo"),
+                        rs.getString("descrizione")
+                );
+                lista.add(tipologiaCorso);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
         return lista;
     }

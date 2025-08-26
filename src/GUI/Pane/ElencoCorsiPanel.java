@@ -126,6 +126,9 @@ public class ElencoCorsiPanel extends BorderPane {
     private Button createAggiungiButton() {
         Button aggiungiButton = new Button("Aggiungi un nuovo corso");
         this.styleConfirmButton(aggiungiButton, Color.valueOf("#3A6698"));
+        aggiungiButton.setOnAction(e -> {
+            controller.openCreateCorsoPage(utente);
+        });
 
         return aggiungiButton;
     }

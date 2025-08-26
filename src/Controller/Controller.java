@@ -23,6 +23,7 @@ public class Controller {
     private AccountPage accountPage;
     private RegisterPage registerPage;
     private ChangePasswordPage modificaPasswordPage;
+    private CreateCorsoPage createCorsoPage;
 
     private DBConnection dbc;
 
@@ -163,6 +164,16 @@ public class Controller {
         }
     }
 
+    public void openCreateCorsoPage(Utente utente) {
+        if(createCorsoPage == null || !createCorsoPage.isShowing()) {
+            createCorsoPage = new CreateCorsoPage(this);
+            createCorsoPage.show();
+            createCorsoPage.getChef(utente);
+        } else {
+            createCorsoPage.toFront();
+        }
+    }
+
     private CorsoPage isCorsoPageAlreadyOpened(Corso c){
         for(CorsoPage cp : corsoPages){
             if(cp.getCorso().getIdCorso() == c.getIdCorso()){
@@ -299,6 +310,11 @@ public class Controller {
         } else {
             return false;
         }
+    }
+
+    public ArrayList<Chef> getAllChefs() {
+        ChefDAO chefDao = getChefDAO();
+        return chefDao.getAll();
     }
 
 

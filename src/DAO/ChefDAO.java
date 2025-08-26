@@ -33,7 +33,7 @@ public class ChefDAO {
         ResultSet rs = pstmt.executeQuery();
 
         if(rs.next()){
-            chef = createChefByRs(rs);
+            chef = createChefByRsForSetCorsi(rs);
         }else{
 
             if (existingEmail(email))
@@ -127,7 +127,7 @@ public class ChefDAO {
         ResultSet rs = pstmt.executeQuery();
 
         if (rs.next()) {
-            return createChefByRs(rs);
+            return createChefByRsForSetCorsi(rs);
         } else {
             return null;
         }
@@ -158,7 +158,34 @@ public class ChefDAO {
         return corsi;
     }
 
+    public ArrayList<Chef> getAll() {
+        ArrayList<Chef> chefs = new ArrayList<>();
+        String sql = "SELECT * FROM chef";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Chef chef = createChefByRs(rs);
+                chefs.add(chef);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return chefs;
+    }
+
     private Chef createChefByRs(ResultSet rs) throws SQLException{
+        Chef chef = new Chef(
+                rs.getInt("idchef"),
+                rs.getString("nome_chef"),
+                rs.getString("cognome"),
+                rs.getString("email"),
+                rs.getString("passw")
+        );
+
+        return chef;
+    }
+
+    private Chef createChefByRsForSetCorsi(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
                 rs.getString("nome_chef"),

@@ -1,17 +1,16 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import Entity.Chef;
 import Entity.Corso;
 import Entity.TipologiaCorso;
+import Entity.Utente;
 import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -29,7 +28,8 @@ import java.util.ArrayList;
 
 public class CreateCorsoPage extends Stage {
     private Controller controller;
-    private Corso corso;
+    private Chef chef;
+    private ArrayList<Chef> chefs;
     private ArrayList<TipologiaCorso> tipologie;
 
     VBox root;
@@ -42,15 +42,19 @@ public class CreateCorsoPage extends Stage {
     TextField corsoName;
     TextField corsoPrice;
 
-    ChoiceBox<String> corsoType;
     ChoiceBox<String> corsoDifficulty;
     ChoiceBox<String> corsoFrequency;
+
+    ComboBox<String> corsoType;
+
+    ListView<String>  corsoChefsList;
 
     Label nameError;
     Label priceError;
     Label typeError;
     Label difficultyError;
     Label frequencyError;
+    Label chefsError;
 
 
     public CreateCorsoPage(Controller controller) {
@@ -70,8 +74,17 @@ public class CreateCorsoPage extends Stage {
         this.setScene(scene);
     }
 
+    public void getChef(Utente utente){
+        if (utente instanceof Chef) {
+            this.chef = (Chef) utente;
+        } else {
+            // TODO exception
+        }
+    }
+
     private void setRootStyle(){
-        root.setPadding(new Insets(20, 50, 50, 50));
+        root.setPadding(new Insets(20, 20, 20, 20));
+        root.setSpacing(40);
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -116,10 +129,24 @@ public class CreateCorsoPage extends Stage {
     private VBox createPriceBox() {
         Label priceLabel = new Label("Costo: *");
         corsoPrice = new TextField();
-        corsoPrice.setPromptText("Nome corso");
+        corsoPrice.setPromptText("Costo corso");
+        corsoPrice.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*(\\.\\d{0,2})?")) {
+                return change;
+            }
+            return null;
+        }));
+
+        Label euroLabel = new Label("€");
+        euroLabel.setStyle("-fx-font-weight: bold; -fx-padding: 0 0 0 5;");
+
+        HBox priceField = new HBox(corsoPrice, euroLabel);
+        priceField.setSpacing(5);
+
         priceError = new Label("");
         priceError.setTextFill(Color.RED);
-        return new VBox(5, priceLabel, corsoPrice, priceError);
+        return new VBox(5, priceLabel, priceField, priceError);
     }
 
     private VBox createDifficoltaBox() {
@@ -134,7 +161,7 @@ public class CreateCorsoPage extends Stage {
 
     private VBox createTypeBox() {
         Label typeLabel = new Label("Tipologia: *");
-        corsoType = new ChoiceBox<>();
+        corsoType = new ComboBox<>();
         corsoType.getItems().add("Seleziona tipologia");
         corsoType.setValue("Seleziona tipologia");
         tipologie = controller.getAllTipologie();
@@ -142,16 +169,42 @@ public class CreateCorsoPage extends Stage {
             corsoType.getItems().add(t.getNome());
         }
         corsoType.getItems().add("Nuova tipologia");
+        corsoType.setOnAction(e -> {
+            if ("Nuova tipologia".equals(corsoType.getValue())) {
+                corsoType.setEditable(true);
+                corsoType.getEditor().clear();
+                corsoType.getEditor().requestFocus();
+            } else {
+                corsoType.setEditable(false);
+            }
+        });
+
         typeError = new Label("");
         typeError.setTextFill(Color.RED);
         return new VBox(5, typeLabel, corsoType, typeError);
+    }
+
+    private VBox createChefsBox() {
+        Label chefsLabel = new Label("Chefs: ");
+        ArrayList<Chef> chefs = controller.getAllChefs();
+        corsoChefsList = new ListView<>();
+        for (Chef chef : chefs) {
+            corsoChefsList.getItems().add(chef.getNome() + " " + chef.getCognome());
+        }
+        corsoChefsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        chefsError = new Label("");
+        chefsError.setTextFill(Color.RED);
+
+        return new VBox(5, chefsLabel, corsoChefsList, chefsError);
     }
 
     private VBox createFreqBox() {
         Label frequencyLabel = new Label("Frequenza settimanale: *");
         corsoFrequency = new ChoiceBox<>();
         corsoFrequency.getItems().addAll("Seleziona frequenza",
-                "1 a settimana", "2 a settimana", "3 a settimana", "4 a settimana", "5 a settimana", "6 a settimana", "7 a settimana");
+                "1 sessione a settimana", "2 sessioni a settimana", "3 sessioni a settimana", "4 sessioni a settimana", "5 sessioni a settimana",
+                "6 sessioni a settimana", "7 sessioni a settimana");
         corsoFrequency.setValue("Seleziona frequenza");
         frequencyError = new Label("");
         frequencyError.setTextFill(Color.RED);
@@ -160,7 +213,7 @@ public class CreateCorsoPage extends Stage {
 
     private void createUploadPhotoBox() {
         uploadPhotoBox = new VBox(15);
-        uploadPhotoBox.getChildren().add(createUploadPhotoButtonBox());
+        uploadPhotoBox.getChildren().addAll(createUploadPhotoButtonBox(), createChefsBox());
     }
 
     private VBox createUploadPhotoButtonBox() {
@@ -172,8 +225,22 @@ public class CreateCorsoPage extends Stage {
         imageView.setFitHeight(200);
         imageView.setPreserveRatio(true);
 
-        Button uploadButton = new Button("Carica Foto");
-        uploadButton.setOnAction(e -> {
+        StackPane photoPane = new StackPane();
+        photoPane.setPrefSize(200, 200);
+        photoPane.setStyle(
+                "-fx-border-color: gray; " +
+                        "-fx-border-width: 2; " +
+                        "-fx-border-radius: 20; " +
+                        "-fx-background-color: #f0f0f0; " +
+                        "-fx-background-radius: 20;"
+        );
+        photoPane.getChildren().add(imageView);
+
+        Label uploadLabel = new Label("Clicca per caricare foto");
+        uploadLabel.setStyle("-fx-text-fill: #666;");
+        photoPane.getChildren().add(uploadLabel);
+
+        photoPane.setOnMouseClicked(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Seleziona un'immagine");
             fileChooser.getExtensionFilters().addAll(
@@ -184,10 +251,11 @@ public class CreateCorsoPage extends Stage {
             if (file != null) {
                 Image image = new Image(file.toURI().toString());
                 imageView.setImage(image);
+                uploadLabel.setVisible(false); // nasconde la label quando c'è l'immagine
             }
         });
 
-        photobox.getChildren().addAll(uploadButton, imageView);
+        photobox.getChildren().add(photoPane);
         return photobox;
     }
 
@@ -214,7 +282,7 @@ public class CreateCorsoPage extends Stage {
         Button confermaButton = new Button();
         confermaButton.setText("Conferma");
         confermaButton.setOnAction(e -> {
-           // TODO add nel DB
+           validate();
         });
         styleButton(confermaButton, Color.valueOf("#3A6698"));
         return confermaButton;
@@ -236,5 +304,27 @@ public class CreateCorsoPage extends Stage {
 
         button.setOnMouseEntered(e -> button.setOpacity(0.8));
         button.setOnMouseExited(e -> button.setOpacity(1.0));
+    }
+
+    private void validate() {
+        if (corsoPrice.getText().isEmpty()) {
+            // Exc
+        }
+
+        if (corsoName.getText().isEmpty()) {
+            // Exc
+        }
+
+        if (corsoType.getValue().equals("Seleziona tipologia")) { // or getSelectionModel().getSelectedItem()
+            // Exc
+        }
+
+        if (corsoFrequency.getValue().equals("Seleziona frequenza")) {
+            // Exc
+        }
+
+        if (corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
+            // Exc
+        }
     }
 }

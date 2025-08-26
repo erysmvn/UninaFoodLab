@@ -10,5 +10,5 @@ public interface TipologiaCorsoDAOInterface {
     // Methods
 
     // Get methods
-    public ArrayList<TipologiaCorso> getAll() throws SQLException;
+    public ArrayList<TipologiaCorso> getAll();
 }

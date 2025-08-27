@@ -97,8 +97,9 @@ public class ConfermaPartecipazionePage extends Stage {
                     dropArea.setText("File caricato: " + file.getName());
                     //todo solo con il controller
                     FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
-                    foglioAdesioneDAO.insertFoglioDiAdesione(file.toPath().toString(),sessionePresenza);
+                    foglioAdesioneDAO.insertFoglioDiAdesione(destDir+file.getName(),sessionePresenza);
                     sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, file.toPath().toString()));
+                    controller.changeSessionePageButton(sessionePresenza);
                     showSuccessDialog();
                     errorLabel.setText("");
                     success = true;
@@ -125,9 +126,10 @@ public class ConfermaPartecipazionePage extends Stage {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File PDF", "*.pdf"));
             File file = fileChooser.showOpenDialog(this);
 
-            if (file != null)
+            if (file != null) {
                 setUploadButtonToConfirmButton(file);
-
+                dropArea.setText("File caricato: " + file.getName());
+            }
 
         });
     }
@@ -141,16 +143,20 @@ public class ConfermaPartecipazionePage extends Stage {
                                 destDir.resolve(file.getName()),
                                 StandardCopyOption.REPLACE_EXISTING
                         );
+                       dropArea.setText("File caricato: " + file.getName());
+
                        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
-                       foglioAdesioneDAO.insertFoglioDiAdesione(file.toPath().toString(),sessionePresenza);
+                       foglioAdesioneDAO.insertFoglioDiAdesione(destDir+file.getName(),sessionePresenza);
                        sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, file.toPath().toString()));
-                        dropArea.setText("File caricato: " + file.getName());
-                        showSuccessDialog();
-                        errorLabel.setText("");
-                        this.close();
+                       controller.changeSessionePageButton(sessionePresenza);
+                       showSuccessDialog();
+                       errorLabel.setText("");
+                       this.close();
+
                    }catch (Exception ex) {
                        ex.printStackTrace();
                         errorLabel.setText("Caricamento fallito");
+                        e.consume();
                    }
         });
     }

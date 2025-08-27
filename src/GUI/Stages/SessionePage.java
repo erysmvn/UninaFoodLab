@@ -206,4 +206,13 @@ public class SessionePage extends Stage {
         button.setOnMouseEntered(e -> button.setOpacity(0.8));
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
+
+    public Sessione getSessione() {
+        return sessione;
+    }
+    public void changeUploadButton(){
+        int first = 0;
+        footerVbox.getChildren().remove(first);
+        footerVbox.getChildren().addFirst(createPartecipaButton());
+    }
 }

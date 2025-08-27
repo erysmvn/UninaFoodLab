@@ -76,6 +76,10 @@ public class Controller {
         return new StudenteDAO(this);
     }
 
+    public RicettaDAO getRicettaDAO(){
+        return new RicettaDAO(this);
+    }
+
 
     // Pages
     public void openLoginPage(){
@@ -149,6 +153,15 @@ public class Controller {
         sessionePages.add(sessionePage);
         sessionePage.show();
 
+    }
+    public void changeSessionePageButton(SessionePresenza sessionePresenza){
+        if(sessionePresenza != null) {
+            for (SessionePage sessionePage : sessionePages) {
+                if (sessionePage.getSessione().equals(sessionePresenza)) {
+                    sessionePage.changeUploadButton();
+                }
+            }
+        }
     }
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);

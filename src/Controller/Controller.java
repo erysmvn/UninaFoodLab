@@ -2,6 +2,7 @@ package Controller;
 
 import Entity.*;
 import DB.DBConnection;
+import Exception.CorsoExceptions.CreateCorsoException.createCorsoErrorException;
 import Exception.CorsoExceptions.corsiNotFoundException;
 import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
@@ -166,9 +167,10 @@ public class Controller {
 
     public void openCreateCorsoPage(Utente utente) {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
-            createCorsoPage = new CreateCorsoPage(this);
-            createCorsoPage.show();
-            createCorsoPage.getChef(utente);
+            if (getUtente() instanceof Chef chef) {
+                createCorsoPage = new CreateCorsoPage(this, chef);
+                createCorsoPage.show();
+            }
         } else {
             createCorsoPage.toFront();
         }
@@ -317,6 +319,11 @@ public class Controller {
         return chefDao.getAll();
     }
 
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
+        ChefDAO chefDao = getChefDAO();
+        return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
+    }
+
 
 
     // Corso
@@ -350,6 +357,29 @@ public class Controller {
         return corsoDao.getAllCourses();
     }
 
+    public void createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
+        if (newCorso != null) {
+            addChefsToCorso(newCorso.getIdCorso(), chefs);
+            addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
+        } else {
+            throw new createCorsoErrorException();
+        }
+    }
+
+    public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        for (Chef chef : chefs) {
+            corsoDao.addChefToCorso(idCorso, chef);
+        }
+    }
+
+    public void addToCaratterizzato(int idcorso, int idtipologia) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        corsoDao.addToCaratterizzato(idcorso, idtipologia);
+    }
+
 
 
     // Ricetta
@@ -375,6 +405,16 @@ public class Controller {
     public ArrayList<TipologiaCorso> getAllTipologie() {
         TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
         return tipologiaDao.getAll();
+    }
+
+    public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
+        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
+        return tipologiaDao.addNewTipologiaCorso(nomeTipo);
+    }
+
+    public TipologiaCorso getTipologiaByName(String nomeTipo) {
+        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
+        return tipologiaDao.getTipologiaByName(nomeTipo);
     }
 
 

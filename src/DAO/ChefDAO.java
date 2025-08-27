@@ -173,6 +173,24 @@ public class ChefDAO {
         return chefs;
     }
 
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
+        String sql = "SELECT * FROM chef WHERE nome_chef = ? AND cognome = ? AND email = ?;";
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, nome);
+            pstmt.setString(2, cognome);
+            pstmt.setString(3, email);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createChefByRs(rs);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return null;
+    }
+
     private Chef createChefByRs(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),

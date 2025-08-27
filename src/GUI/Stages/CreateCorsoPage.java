@@ -2,16 +2,16 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.Chef;
-import Entity.Corso;
 import Entity.TipologiaCorso;
 import Entity.Utente;
 import Exception.CorsoExceptions.CreateCorsoException.*;
+import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,14 +20,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 public class CreateCorsoPage extends Stage {
     private Controller controller;
     private Chef chef;
-    private ArrayList<Chef> chefs;
     private ArrayList<TipologiaCorso> tipologie;
     private File selectedPhotoFile;
 
@@ -49,22 +50,32 @@ public class CreateCorsoPage extends Stage {
     TextField corsoName;
     TextField corsoPrice;
 
+    TextField nameChef;
+    TextField surnameChef;
+    TextField emailChef;
+
     ChoiceBox<String> corsoDifficulty;
     ChoiceBox<String> corsoFrequency;
 
     ComboBox<String> corsoType;
 
-    ListView<String>  corsoChefsList;
+    ArrayList<Chef> chefAggiunti;
 
     Label nameError;
     Label priceError;
     Label typeError;
     Label difficultyError;
     Label frequencyError;
-    Label chefsError;
+
+    Label nameChefError;
+    Label surnameChefError;
+    Label emailChefError;
 
 
-    public CreateCorsoPage(Controller controller) {
+    public CreateCorsoPage(Controller controller, Chef chef) {
+        this.chef = chef;
+        chefAggiunti = new ArrayList<>();
+        chefAggiunti.add(this.chef);
         this.controller = controller;
         root = new VBox(15);
         setRootStyle();
@@ -79,14 +90,6 @@ public class CreateCorsoPage extends Stage {
 
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
-    }
-
-    public void getChef(Utente utente){
-        if (utente instanceof Chef) {
-            this.chef = (Chef) utente;
-        } else {
-            // TODO exception
-        }
     }
 
     private void setRootStyle(){
@@ -171,18 +174,16 @@ public class CreateCorsoPage extends Stage {
         corsoType = new ComboBox<>();
         corsoType.getItems().add("Seleziona tipologia");
         corsoType.setValue("Seleziona tipologia");
+        corsoType.getItems().add("Nuova tipologia");
         tipologie = controller.getAllTipologie();
         for (TipologiaCorso t : tipologie) {
             corsoType.getItems().add(t.getNome());
         }
-        corsoType.getItems().add("Nuova tipologia");
         corsoType.setOnAction(e -> {
             if ("Nuova tipologia".equals(corsoType.getValue())) {
                 corsoType.setEditable(true);
-                corsoType.getEditor().clear();
+                corsoType.getEditor().setText("");
                 corsoType.getEditor().requestFocus();
-            } else {
-                corsoType.setEditable(false);
             }
         });
 
@@ -192,18 +193,131 @@ public class CreateCorsoPage extends Stage {
     }
 
     private VBox createChefsBox() {
-        Label chefsLabel = new Label("Chefs: ");
-        ArrayList<Chef> chefs = controller.getAllChefs();
-        corsoChefsList = new ListView<>();
-        for (Chef chef : chefs) {
-            corsoChefsList.getItems().add(chef.getNome() + " " + chef.getCognome());
-        }
-        corsoChefsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        Label chefsCount = new Label("");
+        Button addChefButton = new Button();
+        addChefButton.setText("Aggiungi altro chef");
+        styleButton(addChefButton, Color.valueOf("#3A6698"));
+        addChefButton.setMinWidth(200);
+        addChefButton.setMaxWidth(200);
+        addChefButton.setMaxHeight(100);
+        addChefButton.setOnAction(e -> {
+            addChefToCourse("Aggiungi altro chef", () -> {
+                validateChef();
+                updateChefsCount(chefsCount);
+                // TODO add chef to arraylist
+                // per ogni chef inserito si controlla se questo esiste gia, se non esiste aggiungi al DB
+                // passo l'arraylist e faccio insert into tiene di ogni chef nell'arraylist per nuovo corso
+            });
+        });
 
-        chefsError = new Label("");
-        chefsError.setTextFill(Color.RED);
+        return new VBox(5, chefsCount, addChefButton);
+    }
 
-        return new VBox(5, chefsLabel, corsoChefsList, chefsError);
+    private void updateChefsCount(Label chefsCount) {
+        chefsCount.setText("Chef inseriti: " + chefAggiunti.size());
+    }
+
+    private void addChefToCourse(String message, Runnable onConfirm) {
+        Stage addChefToCourseStage = new Stage();
+        addChefToCourseStage.initModality(Modality.APPLICATION_MODAL);
+        addChefToCourseStage.initStyle(StageStyle.TRANSPARENT);
+
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
+        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(15), new BorderWidths(2))));
+
+        Label label = new Label(message);
+        label.setFont(Font.font("System", FontWeight.BOLD, 18));
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setWrapText(true);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setMaxWidth(300);
+
+        Button yesButton = new Button("Conferma");
+        Button noButton = new Button("Annulla");
+
+        styleButton(yesButton, Color.valueOf("#3A6698"));
+        styleButton(noButton, Color.valueOf("#da3d26"));
+
+        HBox buttons = new HBox(15, yesButton, noButton);
+        buttons.setAlignment(Pos.CENTER);
+
+        Label error = new Label("");
+
+        root.getChildren().addAll(label, addChefNomeBox(), addChefCognomeBox(), addChefEmailBox(), error, buttons);
+
+        Scene scene = new Scene(root, 800, 600);
+        scene.setFill(Color.TRANSPARENT);
+        addChefToCourseStage.setScene(scene);
+
+        yesButton.setOnAction(e -> {
+            try {
+                onConfirm.run();
+                Chef newChef = controller.getChefDaAggiungereToNuovoCorso(nameChef.getText(), surnameChef.getText(), emailChef.getText());
+                if (newChef != null) {
+                    chefAggiunti.add(newChef);
+                    addChefToCourseStage.close();
+                    for (Chef chef : chefAggiunti) {
+                        System.out.println(chef.getEmail());
+                    }
+                } else {
+                    error.setText("Lo chef deve essere registrato \n alla piattaforma");
+                    error.setTextFill(Color.RED);
+                }
+            } catch (chefNameNotFoundException CNNFE) {
+                nameChef.setStyle("-fx-border-color: red;");
+                nameChefError.setText("Inserire nome chef");
+            } catch (chefSurnameNotFoundException CSNFE) {
+                surnameChef.setStyle("-fx-border-color: red;");
+                surnameChefError.setText("Inserire cognome chef");
+            } catch (chefEmailNotFoundException CENFE) {
+                emailChef.setStyle("-fx-border-color: red;");
+                emailChefError.setText("Inserire email chef");
+            } catch (chefEmailNotValidException CENVE) {
+                emailChef.setStyle("-fx-border-color: red;");
+                emailChefError.setText("Inserire email valida");
+            } catch (addChefToNewCorsoException ACTNCE) {
+                nameChef.setStyle("-fx-border-color: red;");
+                nameChefError.setText("Inserire nome chef");
+                surnameChef.setStyle("-fx-border-color: red;");
+                surnameChefError.setText("Inserire cognome chef");
+                emailChef.setStyle("-fx-border-color: red;");
+                emailChefError.setText("Inserire email chef");
+            }
+        });
+
+        noButton.setOnAction(e -> addChefToCourseStage.close());
+
+        addChefToCourseStage.showAndWait();
+    }
+
+    private VBox addChefNomeBox() {
+        Label nameChefLabel = new Label("Nome chef: *");
+        nameChef = new TextField();
+        nameChef.setPromptText("Nome chef");
+        nameChefError = new Label("");
+        nameChefError.setTextFill(Color.RED);
+        return new VBox(5, nameChefLabel, nameChef, nameChefError);
+    }
+
+    private VBox addChefCognomeBox() {
+        Label surnameChefLabel = new Label("Cognome chef: *");
+        surnameChef = new TextField();
+        surnameChef.setPromptText("Cognome chef");
+        surnameChefError = new Label("");
+        surnameChefError.setTextFill(Color.RED);
+        return new VBox(5, surnameChefLabel, surnameChef, surnameChefError);
+    }
+
+    private VBox addChefEmailBox() {
+        Label emailChefLabel = new Label("Email chef: *");
+        emailChef = new TextField();
+        emailChef.setPromptText("Email chef");
+        emailChefError = new Label("");
+        emailChefError.setTextFill(Color.RED);
+        return new VBox(5, emailChefLabel, emailChef, emailChefError);
     }
 
     private VBox createFreqBox() {
@@ -292,27 +406,30 @@ public class CreateCorsoPage extends Stage {
         confermaButton.setText("Conferma");
         confermaButton.setOnAction(e -> {
            try {
-               validate();
-               ObservableList<String> chefSelezionati = corsoChefsList.getSelectionModel().getSelectedItems();
-               for (String nomeChef : chefSelezionati) {
-                   // prerendi chef by nome e cognome
-               }
+               validateCorso();
 
                String nomeCorso = corsoName.getText();
                String nameForPath = nomeCorso.replaceAll("\s+", "");
 
+               Path destDir = Paths.get("src/Media/CoursesImages");
+
                try {
                    if (selectedPhotoFile != null) {
-                       Files.copy(selectedPhotoFile.toPath(), Paths.get("/Media/CoursesImages/" + nameForPath), StandardCopyOption.REPLACE_EXISTING);
+                       Files.copy(selectedPhotoFile.toPath(),
+                               destDir.resolve(nameForPath + ".png"),
+                               StandardCopyOption.REPLACE_EXISTING);
                    }
                } catch (IOException ioe) {
                    ioe.printStackTrace();
                }
 
-               double price = corsoPrice.getTranslateX();
+               double price = 0.0;
+               if (!corsoPrice.getText().isEmpty()) {
+                   price = Double.parseDouble(corsoPrice.getText());
+               }
 
                String frequency = corsoFrequency.getValue();
-               frequency.substring(0, 1);
+               frequency = frequency.substring(0, 1);
                int freq = Integer.parseInt(frequency);
 
                String tipologiaName = corsoType.getValue();
@@ -328,16 +445,35 @@ public class CreateCorsoPage extends Stage {
                    }
                }
 
+               TipologiaCorso tp;
+
                if (newTipologia) {
                    // add su database
+                   tp = controller.addNewTipologiaCorso(tipologiaName);
                } else {
-
+                    tp = controller.getTipologiaByName(tipologiaName);
                }
 
                String difficolta = corsoDifficulty.getValue();
 
                // controller addCorso (nome, prezzo, frequenza, difficolta)
+               try {
+                   controller.createNewCorso(nomeCorso, price, freq, difficolta, tp, chefAggiunti);
+               } catch (createCorsoErrorException CCEE) {
+                   CCEE.printStackTrace();
+               }
                // controller addCaratterizzato tra nuovo corso e tipologia
+
+               System.out.println(nomeCorso);
+               System.out.println(price);
+               System.out.println(frequency);
+               System.out.println(tipologiaName);
+               System.out.println(newTipologia);
+               System.out.println(tp.getNome());
+               System.out.println(difficolta);
+               System.out.println(selectedPhotoFile.getPath());
+               System.out.println(selectedPhotoFile);
+               System.out.println(nameForPath);
 
            } catch (nameCorsoNotFoundException NCNFE) {
                corsoName.setStyle("-fx-border-color: red;");
@@ -393,7 +529,7 @@ public class CreateCorsoPage extends Stage {
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
-    private void validate() throws createCorsoErrorException {
+    private void validateCorso() throws createCorsoErrorException {
         if (corsoName.getText().isEmpty() && corsoPrice.getText().isEmpty()
                 && corsoType.getValue().equals("Seleziona tipologia")
                 && corsoFrequency.getValue().equals("Seleziona frequenza") && corsoDifficulty.getValue().equals("Seleziona difficoltà")) {
@@ -433,6 +569,38 @@ public class CreateCorsoPage extends Stage {
         } else {
             corsoDifficulty.setStyle(null);
             difficultyError.setText("");
+        }
+    }
+
+    private void validateChef() throws addChefToNewCorsoException {
+        if (nameChef.getText().isEmpty()
+                && surnameChef.getText().isEmpty()
+                && emailChef.getText().isEmpty()) {
+            throw new addChefToNewCorsoException();
+        }
+
+        if (nameChef.getText().isEmpty()) {
+            throw new chefNameNotFoundException();
+        } else {
+            nameChef.setStyle(null);
+            nameChefError.setText("");
+        }
+
+        if (surnameChef.getText().isEmpty()) {
+            throw new chefSurnameNotFoundException();
+        } else {
+            surnameChef.setStyle(null);
+            surnameChefError.setText("");
+        }
+
+        if (emailChef.getText().isEmpty()) {
+            throw new chefEmailNotFoundException();
+        } else if (!emailChef.getText().contains("@") || !emailChef.getText().contains(".") ||
+                emailChef.getText().lastIndexOf('.') < emailChef.getText().indexOf('@')) {
+            throw new chefEmailNotValidException();
+        } else {
+            emailChef.setStyle(null);
+            emailChefError.setText("");
         }
     }
 }

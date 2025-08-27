@@ -40,6 +40,14 @@ public class Corso {
         this.desc_corso = desc_corso;
     }
 
+    public Corso(int id, String nome, float costo, int frequenzaSettimanale, Difficolta difficolta) {
+        this.idcorso = id;
+        this.nome = nome;
+        this.frequenzaSettimanale = frequenzaSettimanale;
+        this.costo = costo;
+        this.difficolta = difficolta;
+    }
+
     public void setImagePath(String imagePath){
         this.imagePath = imagePath;
     }

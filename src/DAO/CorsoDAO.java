@@ -6,7 +6,12 @@ import Entity.*;
 import DB.DBConnection;
 import Entity.Enum.*;
 import Exception.CorsoExceptions.corsiNotFoundException;
+
+import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CorsoDAO implements CorsoDAOInterface {
@@ -55,10 +60,9 @@ public class CorsoDAO implements CorsoDAOInterface {
             while (rs.next()) {
                 corsi.add(createCorsoByResultSet(rs));
             }
-        }catch (SQLException e){
-
+        } catch (SQLException e){
+            e.printStackTrace();
         }
-
         return corsi;
     }
 
@@ -75,7 +79,6 @@ public class CorsoDAO implements CorsoDAOInterface {
             while (rs.next()) {
                 corsi.add(createCorsoByResultSet(rs));
             }
-
         return corsi;
     }
 
@@ -100,6 +103,90 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
+    private String buildPath(String nomeCorso){
+        nomeCorso = nomeCorso.replaceAll("\\s+", "");
+        String path = "/Media/CoursesImages/" +nomeCorso+".png";
+        return path;
+    }
+
+    public Corso createNewCorso(String nome, double price, int frequenza, String difficolta) {
+        String sql = "INSERT INTO corso (nome_corso, costo, frequenza_settimanale, difficolta) " +
+                "VALUES (?, ?, ?, ?::difficolta) RETURNING idcorso";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, nome);
+            pstmt.setBigDecimal(2, BigDecimal.valueOf(price));
+            pstmt.setInt(3, frequenza);
+            pstmt.setString(4, difficolta);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("idcorso");
+                    System.out.println("idcorso: " + id);
+                    return new Corso(id, nome, (float) price, frequenza, Difficolta.valueOf(difficolta));
+                } else {
+                    throw new SQLException("Creating corso failed, no ID obtained.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addChefToCorso(int idCorso, Chef chef) {
+        String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?,?)";
+
+        System.out.println(idCorso);
+        System.out.println(chef.getIdchef());
+
+
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, idCorso);
+            pstmt.setInt(2, chef.getIdchef());
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted == 0) {
+                Exception exc  = new Exception("No row inserted");
+                throw exc;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addToCaratterizzato(int idcorso, int idtipologia) {
+        String sql = "INSERT INTO caratterizzato (idcorso, idtipologiacorso) VALUES (?,?)";
+
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, idcorso);
+            pstmt.setInt(2, idtipologia);
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted == 0) {
+                Exception exc  = new Exception("No row inserted");
+                throw exc;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(Corso corso) {
+        String sql = "DELETE FROM Corso WHERE idcorso = '" + corso.getIdCorso() + "'";
+
+        try  {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+    }
 
     private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {
         Corso corso = new Corso(
@@ -111,7 +198,7 @@ public class CorsoDAO implements CorsoDAOInterface {
                 rs.getDate("datainizio"),
                 rs.getDate("datafine"),
                 rs.getFloat("costo"),
-                ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                ModalitaCorso.fromString( rs.getString("modcorso") ),
                 Difficolta.valueOf(rs.getString("difficolta") ),
                 rs.getString("desc_corso")
         );
@@ -137,7 +224,7 @@ public class CorsoDAO implements CorsoDAOInterface {
                 rs.getDate("datainizio"),
                 rs.getDate("datafine"),
                 rs.getFloat("costo"),
-                ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                ModalitaCorso.fromString( rs.getString("modcorso") ),
                 Difficolta.valueOf(rs.getString("difficolta") ),
                 rs.getString("desc_corso")
         );
@@ -147,18 +234,6 @@ public class CorsoDAO implements CorsoDAOInterface {
         setChefs(corso);
 
         return  corso;
-    }
-
-    public void delete(Corso corso) {
-        String sql = "DELETE FROM Corso WHERE idcorso = '" + corso.getIdCorso() + "'";
-
-        try  {
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
     }
 
     // Get methods

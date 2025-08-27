@@ -2,6 +2,7 @@ package Controller;
 
 import Entity.*;
 import DB.DBConnection;
+import Exception.CorsoExceptions.CreateCorsoException.createCorsoErrorException;
 import Exception.CorsoExceptions.corsiNotFoundException;
 import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
@@ -24,6 +25,8 @@ public class Controller {
     private AccountPage accountPage;
     private RegisterPage registerPage;
     private ChangePasswordPage modificaPasswordPage;
+    private CreateCorsoPage createCorsoPage;
+
     private DBConnection dbc;
 
     private Utente utente;
@@ -150,6 +153,7 @@ public class Controller {
         sessionePage.show();
 
     }
+
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
 
@@ -206,14 +210,68 @@ public class Controller {
         }
     }
 
+    public void openCorsoPage(Corso corso){
+        CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
+
+        if(existingPage != null){
+            if(existingPage.isShowing()){
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            CorsoPage corsoPage = new CorsoPage( this);
+            corsoPage.initPage(corso);
+            corsoPages.add(corsoPage);
+
+            corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
+
+            corsoPage.show();
+        }
+    }
+
+    public void openCreateCorsoPage(Utente utente) {
+        if(createCorsoPage == null || !createCorsoPage.isShowing()) {
+            if (getUtente() instanceof Chef chef) {
+                createCorsoPage = new CreateCorsoPage(this, chef);
+                createCorsoPage.show();
+            }
+        } else {
+            createCorsoPage.toFront();
+        }
+    }
+
+    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
+        for(CorsoPage cp : corsoPages){
+            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
+                return cp;
+            }
+        }
+        return null;
+    }
+
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();
+    }
+
+    private void removeCorsoPage(Corso corso){
+        CorsoPage toRemove = null;
+        for(CorsoPage cp : corsoPages){
+            if(cp.getCorso().equals(corso))
+                toRemove = cp;
+        }
+        if (toRemove!=null){
+            toRemove.close();
+            corsoPages.remove(toRemove);
+        }
     }
 
     public void homepageToFront(){
         homePage.toFront();
         homePage.mostraTuttiCorsi();
     }
+
+
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
@@ -292,9 +350,7 @@ public class Controller {
     public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
         CorsoDAO corsoDao = getCorsoDAO();
         ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
-
         return corsi;
-
     }
 
     public void subscribeToCourse(Corso corso){
@@ -305,20 +361,6 @@ public class Controller {
         }
     }
 
-    private void removeCorsoPage(Corso corso){
-        CorsoPage toRemove = null;
-            for(CorsoPage cp : corsoPages){
-                if(cp.getCorso().equals(corso))
-                    toRemove = cp;
-
-            }
-
-            if (toRemove!=null){
-                    toRemove.close();
-                    corsoPages.remove(toRemove);
-            }
-
-    }
     public void unsubscribeToCourse(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
@@ -327,7 +369,6 @@ public class Controller {
             this.removeCorsoPage(corso);
         }
     }
-
 
     public Boolean alreadySubscribed(Corso corso){
         if (utente instanceof Studente studente) {
@@ -338,10 +379,17 @@ public class Controller {
         }
     }
 
-    public ArrayList<Corso> getAllCourses(){
-        CorsoDAO corsoDao = getCorsoDAO();
-        return corsoDao.getAllCourses();
+    public ArrayList<Chef> getAllChefs() {
+        ChefDAO chefDao = getChefDAO();
+        return chefDao.getAll();
     }
+
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
+        ChefDAO chefDao = getChefDAO();
+        return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
+    }
+
+
 
     // Corso
     public void getRicetteTrattate(Corso corso) {
@@ -369,6 +417,36 @@ public class Controller {
 //        corsoDao.delete(corso);
     }
 
+    public ArrayList<Corso> getAllCourses(){
+        CorsoDAO corsoDao = getCorsoDAO();
+        return corsoDao.getAllCourses();
+    }
+
+    public void createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
+        if (newCorso != null) {
+            addChefsToCorso(newCorso.getIdCorso(), chefs);
+            System.out.println(newCorso.getIdCorso());
+            addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
+        } else {
+            throw new createCorsoErrorException();
+        }
+    }
+
+    public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        for (Chef chef : chefs) {
+            System.out.println(chef.getIdchef());
+            corsoDao.addChefToCorso(idCorso, chef);
+        }
+    }
+
+    public void addToCaratterizzato(int idcorso, int idtipologia) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        corsoDao.addToCaratterizzato(idcorso, idtipologia);
+    }
+
 
 
     // Ricetta
@@ -388,6 +466,23 @@ public class Controller {
         ricettaDao.getAllergeniRicetta(Ricetta);
     }
 
+
+
+    // TipologiaCorso
+    public ArrayList<TipologiaCorso> getAllTipologie() {
+        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
+        return tipologiaDao.getAll();
+    }
+
+    public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
+        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
+        return tipologiaDao.addNewTipologiaCorso(nomeTipo);
+    }
+
+    public TipologiaCorso getTipologiaByName(String nomeTipo) {
+        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
+        return tipologiaDao.getTipologiaByName(nomeTipo);
+    }
 
 
     // Mail
@@ -425,7 +520,7 @@ public class Controller {
     }
 
 
-
+    // Exit
     public void endAll(){
         Platform.exit();
     }

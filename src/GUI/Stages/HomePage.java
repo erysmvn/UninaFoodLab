@@ -164,8 +164,8 @@ public class HomePage extends Stage {
 
         Button accountButton = new Button();
         Image houseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/homeLogo.png")));
-
         ImageView houseView = new ImageView(houseImage);
+
         houseView.setFitHeight(30);
         houseView.setFitWidth(30);
 
@@ -232,7 +232,6 @@ public class HomePage extends Stage {
             pause.setOnFinished(pauseEnded -> {
                 AnimazioneRicerca.stop();
                 String toSearch = searchField.getText();
-
                 try{
 
                     if (!toSearch.isEmpty()) {

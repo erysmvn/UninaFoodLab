@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 public class CorsoAccountPanel extends Pane {
 
@@ -99,8 +100,8 @@ public class CorsoAccountPanel extends Pane {
         controller.getChefs(corso);
         Label chefsLabel = createChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
-
         Button addSessionButton = createAddSessionButton();
+
 
         VBox imagineBox  = new VBox(imageView);
         imagineBox.setAlignment(Pos.CENTER);
@@ -176,15 +177,17 @@ public class CorsoAccountPanel extends Pane {
             if (controller.getUtente() instanceof Studente studente) {
                 showConfirmPanel("Sei sicuro di voler annullare l'iscrizione al corso?", () -> {
                     controller.unsubscribeToCourse(corso);
+
                 });
             } else if (controller.getUtente() instanceof Chef chef) {
                 showConfirmPanel("Sei sicuro di voler eliminare il corso?", () -> {
                     controller.deleteCorso(corso);
+
                 });
             }
         });
-
         this.styleButton(unsubscribeButton, Color.valueOf("#da3d26"));
+
         return unsubscribeButton;
     }
 

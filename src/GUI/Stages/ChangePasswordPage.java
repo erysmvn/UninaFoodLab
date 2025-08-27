@@ -93,10 +93,6 @@ public class ChangePasswordPage extends Stage {
             txtVecchiaPassword = new PasswordField();
             lblVecchiaPasswordError = new Label("");
             lblVecchiaPasswordError.setTextFill(Color.RED);
-            txtVecchiaPassword.setStyle(
-                    "-fx-display-caret: true;" +
-                            "-fx-echo-char: '*';"
-            );
 
             return new VBox(5, lbl, txtVecchiaPassword, lblVecchiaPasswordError);
         }
@@ -184,9 +180,12 @@ public class ChangePasswordPage extends Stage {
                 } catch (passwordAndNewPasswordNotEqualException PNPNE) {
                     txtRipetiPassword.setStyle("-fx-border-color: red;");
                     lblRipetiPasswordError.setText("Le password non coincidono");
-                } catch (checkIfIsNewPassowrdException CIINPE){
+                } catch (checkIfIsNewPassowrdException CIINPE) {
                     txtNuovaPassword.setStyle("-fx-border-color: red;");
                     lblNuovaPasswordError.setText("La password è gia stata usata");
+                }catch (passwordTroppoCortaException PTCE){
+                    txtNuovaPassword.setStyle("-fx-border-color: red;");
+                    lblNuovaPasswordError.setText("La password è troppo corta");
                 } catch (SQLException sqlException){
                     lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }
@@ -213,7 +212,9 @@ public class ChangePasswordPage extends Stage {
 
                 if (txtNuovaPassword.getText().trim().isEmpty()) {
                     throw new newPasswordEmptyException();
-                } else {
+                } else if(txtNuovaPassword.getText().length() < 7){
+                    throw new passwordTroppoCortaException();
+                }else {
                     txtNuovaPassword.setStyle(null);
                     lblNuovaPasswordError.setText("");
                 }

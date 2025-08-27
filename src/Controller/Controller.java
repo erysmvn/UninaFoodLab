@@ -8,6 +8,7 @@ import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorExceptio
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 import Exception.UserExceptions.SupportException.emailClientNotFoundException;
+import GUI.Pane.CalendarioPanel;
 import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
@@ -23,7 +24,6 @@ public class Controller {
     private AccountPage accountPage;
     private RegisterPage registerPage;
     private ChangePasswordPage modificaPasswordPage;
-
     private DBConnection dbc;
 
     private Utente utente;
@@ -31,6 +31,7 @@ public class Controller {
     private ArrayList<CorsoPage> corsoPages = new ArrayList<>();
     private ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
     private ArrayList<SessionePage> sessionePages = new ArrayList<>();
+    private ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
 
     public Controller(){
         dbc = new DBConnection();
@@ -127,6 +128,13 @@ public class Controller {
         return null;
     }
 */
+
+    public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
+        ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
+        confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
+        confermaPartecipazionePage.show();
+    }
+
 
 
     public ArrayList<Chef> getChefsByIdCorso(int idcorso){

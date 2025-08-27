@@ -32,7 +32,7 @@ public class ElencoCorsiPanel extends BorderPane {
         corsiBox.setPadding(new Insets(30, 60, 10, 60));
         corsiBox.setSpacing(20);
 
-        ScrollPane scrollPane = new ScrollPane(corsiBox);
+        scrollPane = new ScrollPane(corsiBox);
         scrollPane.setPadding(new Insets(10));
         scrollPane.setBackground(null);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
@@ -49,7 +49,6 @@ public class ElencoCorsiPanel extends BorderPane {
     public void initPanel(Utente utente){
         this.utente = utente;
         showCorsi();
-
         bottomBar = createBottomBar(utente);
         this.setBottom(bottomBar);
         BorderPane.setMargin(bottomBar, new Insets(10));

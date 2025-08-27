@@ -76,7 +76,7 @@
 
         private Button createCalendarButton(){
 
-            Button calendarButton = new Button("Calendario");
+            calendarButton = new Button("Calendario");
             setNotCLickedAesthetics(calendarButton);
             setFocusPropreties(calendarButton);
             setOnMouseTraverse(calendarButton, calendarioPanel);
@@ -84,6 +84,11 @@
             return calendarButton;
         }
 
+        public void refreshCalendario(){
+            calendarioPanel = new CalendarioPanel(controller);
+            calendarioPanel.initCalendario(utente);
+            initButton(calendarButton,calendarioPanel);
+        }
 
         private void initButton(Button button, Pane panel) {
             setFocusPropreties(button);
@@ -244,11 +249,12 @@
             });
         }
 
-        private void showOnlyPanel(Pane panelToShow) {
+        private void showOnlyPanel(Pane panelToShow){
             Pane[] allPanels = {accountPanel, accountCorsiPanel, impostazioniPanel, calendarioPanel};
 
             for (Pane panel : allPanels) {
-                if (panel == panelToShow) {
+
+                if (panel == panelToShow){
                     panel.setVisible(true);
                     panel.setManaged(true);
                 } else {
@@ -256,6 +262,14 @@
                     panel.setManaged(false);
                 }
             }
+
         }
 
+
+        public CalendarioPanel getCalendarioPanel(){
+            return calendarioPanel;
+        }
+        public void setCalendarioPanel(CalendarioPanel calendarioPanel){
+            this.calendarioPanel = calendarioPanel;
+        }
     }

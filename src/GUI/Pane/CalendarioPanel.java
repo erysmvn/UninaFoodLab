@@ -168,6 +168,8 @@ public class CalendarioPanel extends Pane {
         }
     }
 
+
+
     private void setFirstSessionDay() {
         LocalDateTime firstDate = null;
         for (ArrayList<Sessione> lista : sessioniDeiCorsi) {
@@ -181,4 +183,7 @@ public class CalendarioPanel extends Pane {
             calendarView.setDate(firstDate.toLocalDate());
         }
     }
+
+
+
 }

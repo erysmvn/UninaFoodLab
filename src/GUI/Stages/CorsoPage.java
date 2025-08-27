@@ -192,13 +192,13 @@ public class CorsoPage extends Stage {
             } else {
                 controller.subscribeToCourse(corso);
                 setIscrittoCorso(subscribeButton);
+                
             }
         });
 
         if (controller.alreadySubscribed(corso)) {
             setIscrittoCorso(subscribeButton);
         }
-
         return subscribeButton;
     }
 

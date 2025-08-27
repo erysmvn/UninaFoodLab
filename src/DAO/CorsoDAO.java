@@ -6,7 +6,6 @@ import Entity.*;
 import DB.DBConnection;
 import Entity.Enum.*;
 import Exception.CorsoExceptions.corsiNotFoundException;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -28,19 +27,21 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     // Methods
     //todo mettere nome corretto
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso)throws corsiNotFoundException,SQLException{
-        nomeCorso = nomeCorso.toUpperCase();
-        String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE '%" + nomeCorso + "%'";
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException, SQLException {
         ArrayList<Corso> corsi = new ArrayList<>();
+        String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE ?";
 
-            Statement tempStmt = dbc.getStatement();
-            ResultSet rs = tempStmt.executeQuery(sql);
-
-            while (rs.next()) {
-               corsi.add(createCorsoByResultSet(rs));
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nomeCorso.toUpperCase() + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    corsi.add(createCorsoByResultSet(rs));
+                }
             }
-            if(corsi.isEmpty())
-                throw new corsiNotFoundException();
+        }
+
+        if (corsi.isEmpty())
+            throw new corsiNotFoundException();
 
         return corsi;
     }

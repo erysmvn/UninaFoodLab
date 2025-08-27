@@ -3,10 +3,7 @@ package DAO;
 import Controller.Controller;
 import DAO.Interfaces.SessioneDAOInterface;
 import DB.DBConnection;
-import Entity.Corso;
-import Entity.Sessione;
-import Entity.SessioneOnline;
-import Entity.SessionePresenza;
+import Entity.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,6 +46,7 @@ public class SessioneDAO implements SessioneDAOInterface {
                     orario,
                     corso
             );
+            ((SessionePresenza)sessione).setFogliAdesione(getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
         }else{
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),
@@ -59,12 +57,17 @@ public class SessioneDAO implements SessioneDAOInterface {
                     corso
             );
         }
-        System.out.println(rs.getInt("idsessione"));
+
         sessione.setRicette(ricettaDAO.getRicetteByIdSessione(rs.getInt("idsessione")));
 
         return sessione;
     }
 
+    private ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
+            //todo tramite il controller
+            FoglioAdesioneDAO faDAO = new FoglioAdesioneDAO(controller);
+            return faDAO.getFogliAdesioneByIdSessione(idsessione);
+    }
 
     @Override
     public ArrayList<Sessione> getSessioniByNomeCorso(String nomeCorso) throws SQLException {

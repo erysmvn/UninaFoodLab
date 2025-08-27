@@ -10,8 +10,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
@@ -20,6 +23,7 @@ import javafx.stage.StageStyle;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SessionePage extends Stage {
     private Controller controller;
@@ -29,6 +33,7 @@ public class SessionePage extends Stage {
     private VBox infoBox;
     private HBox topHbox;
     private VBox footerVbox;
+    Label confermarePartecipazioneLabel;
 
     public SessionePage(Controller controller) {
         this.controller = controller;
@@ -50,23 +55,11 @@ public class SessionePage extends Stage {
         infoBox.setAlignment(Pos.TOP_LEFT);
         infoBox.setPadding(new Insets(0,0,0,30));
 
-        footerVbox = new VBox(15);
+        footerVbox = new VBox(10);
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
         footerVbox.setSpacing(20);
         footerVbox.setPadding(new Insets(0, 0, 50, 0));
         footerVbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-/*
-        Rectangle clip = new Rectangle();
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        root.setClip(clip);
-        root.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            clip.setWidth(newBounds.getWidth());
-            clip.setHeight(newBounds.getHeight());
-        });
-
-        Platform.runLater(clip::requestFocus);
-*/
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
@@ -91,40 +84,42 @@ public class SessionePage extends Stage {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        // Data
+
         Label titoloLabel = new Label(corso.getNome() +" - "+ sessione.getData().format(dateFormatter));
         titoloLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
         topHbox.getChildren().add(titoloLabel);
 
-        // Orario
+
         Text orarioMeta = new Text("Orario: ");
         orarioMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
         Text orarioVal = new Text(sessione.getOra().format(timeFormatter));
         orarioVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(orarioMeta, orarioVal));
 
-// Durata
         Text durataMeta = new Text("Durata: ");
         durataMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
         Text durataVal = new Text(sessione.getDurata() + " ore");
         durataVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(durataMeta, durataVal));
 
-// Difficoltà
         Text diffMeta = new Text("Difficoltà: ");
         diffMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
         Text diffVal = new Text(corso.getDifficolta().toString());
         diffVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(diffMeta, diffVal));
 
-// Modalità e info
+        confermarePartecipazioneLabel = new Label("**Per confermare la partecipazione caricare foglio di adesione");
+        confermarePartecipazioneLabel.setStyle("-fx-text-fill: red;-fx-font-size: 15");
+        confermarePartecipazioneLabel.setVisible(false);
+
         if (sessione instanceof SessionePresenza sp) {
             Text luogoMeta = new Text("Luogo: ");
             luogoMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
             Text luogoVal = new Text(sp.getLuogo());
             luogoVal.setFont(Font.font(18));
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
+            footerVbox.getChildren().add(createPartecipaButton());
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -134,22 +129,21 @@ public class SessionePage extends Stage {
             infoBox.getChildren().add(new TextFlow(linkMeta, linkVal));
         }
 
-
         for(Chef ch: chefs){
             Label chefLabel = new Label("Chef: " + ch.getNome()+" "+ ch.getCognome());
             chefLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
             infoBox.getChildren().add(chefLabel);
        }
 
+        infoBox.getChildren().add(confermarePartecipazioneLabel);
         Region spacer = new Region();
         spacer.setPrefHeight(15);
-        // Ricette trattate
+
         Label ricetteLabel = new Label("Ricette trattate:");
         ricetteLabel.setFont(Font.font("System", FontWeight.BOLD, 24));
         infoBox.getChildren().addAll(spacer,ricetteLabel);
 
         for (Ricetta r : sessione.getRicette()) {
-
             Label rLabel = new Label("\u2022 " + r.getNome());
             rLabel.setFont(Font.font(17));
             rLabel.setTextFill(Color.valueOf("#000000"));
@@ -158,12 +152,50 @@ public class SessionePage extends Stage {
             infoBox.getChildren().add(rLabel);
         }
 
-        // Pulsante chiudi
         Button closeButton = new Button("Chiudi");
-        closeButton.setPrefSize(100, 30);
+        closeButton.setPrefSize(120, 30);
         styleButton(closeButton, Color.valueOf("#da3d26"));
         closeButton.setOnAction(e -> this.close());
         footerVbox.getChildren().add(closeButton);
+    }
+
+    private Button createPartecipaButton(){
+
+        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/uploadIcon.png")));
+        ImageView uploadView = new ImageView(uploadImage);
+
+        uploadView.setFitHeight(20);
+        uploadView.setFitWidth(20);
+
+        Button partecipaButton = new Button("Partecipa");
+        partecipaButton.setGraphic(uploadView);
+        partecipaButton.setContentDisplay(ContentDisplay.LEFT);
+
+        styleButton(partecipaButton, Color.valueOf("#3a6698"));
+
+        partecipaButton.setPrefWidth(120);
+        partecipaButton.setMinWidth(120);
+        partecipaButton.setMaxWidth(120);
+
+        partecipaButton.setPrefHeight(30);
+        partecipaButton.setMinHeight(30);
+        partecipaButton.setMaxHeight(30);
+
+        if(checkIfAlreadyAdded()){
+            partecipaButton.setDisable(true);
+            partecipaButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+        }else{
+            confermarePartecipazioneLabel.setVisible(true);
+            partecipaButton.setOnAction(event -> {
+                controller.openConfermaPartecipazionePage((SessionePresenza) sessione);
+            });
+        }
+        return partecipaButton;
+    }
+
+    private boolean checkIfAlreadyAdded(){
+        String matricola = ((Studente)(controller.getUtente())).getMatricola();
+         return  ((SessionePresenza)sessione).checkIfAlreadyAdded(matricola);
     }
 
     private void styleButton(Button button, Color color) {
@@ -171,7 +203,6 @@ public class SessionePage extends Stage {
         button.setTextFill(Color.WHITE);
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
         button.setCursor(Cursor.HAND);
-
         button.setOnMouseEntered(e -> button.setOpacity(0.8));
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }

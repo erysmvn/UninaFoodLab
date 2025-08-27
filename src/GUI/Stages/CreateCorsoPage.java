@@ -142,7 +142,7 @@ public class CreateCorsoPage extends Stage {
         corsoPrice.setPromptText("Costo corso");
         corsoPrice.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
             String newText = change.getControlNewText();
-            if (newText.matches("\\d*(\\.\\d{0,2})?")) {
+            if (newText.matches("\\d{0,3}(\\.\\d{0,2})?")) {
                 return change;
             }
             return null;
@@ -463,17 +463,6 @@ public class CreateCorsoPage extends Stage {
                    CCEE.printStackTrace();
                }
                // controller addCaratterizzato tra nuovo corso e tipologia
-
-               System.out.println(nomeCorso);
-               System.out.println(price);
-               System.out.println(frequency);
-               System.out.println(tipologiaName);
-               System.out.println(newTipologia);
-               System.out.println(tp.getNome());
-               System.out.println(difficolta);
-               System.out.println(selectedPhotoFile.getPath());
-               System.out.println(selectedPhotoFile);
-               System.out.println(nameForPath);
 
            } catch (nameCorsoNotFoundException NCNFE) {
                corsoName.setStyle("-fx-border-color: red;");

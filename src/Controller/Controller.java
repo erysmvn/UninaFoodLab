@@ -362,6 +362,7 @@ public class Controller {
         Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
             addChefsToCorso(newCorso.getIdCorso(), chefs);
+            System.out.println(newCorso.getIdCorso());
             addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
         } else {
             throw new createCorsoErrorException();
@@ -371,6 +372,7 @@ public class Controller {
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {
+            System.out.println(chef.getIdchef());
             corsoDao.addChefToCorso(idCorso, chef);
         }
     }

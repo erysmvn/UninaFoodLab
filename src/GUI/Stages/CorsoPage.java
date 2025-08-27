@@ -250,7 +250,12 @@ public class CorsoPage extends Stage {
 
         Text modalitaLabel = new Text("Modalità: ");
         modalitaLabel.setStyle("-fx-font-weight: bold;");
-        Text modalitaValue = new Text(corso.getModalita_corso().getLabel());
+        Text modalitaValue = new Text();
+        if (corso.getModalita_corso() != null) { // perche da online di default ??
+            modalitaValue.setText(corso.getModalita_corso().getLabel());
+        } else {
+            modalitaValue.setText("Da definire");
+        }
         setAndAddFont(infoBox, modalitaLabel, modalitaValue);
 
 
@@ -263,17 +268,24 @@ public class CorsoPage extends Stage {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Text periodoLabel = new Text("Periodo: ");
         periodoLabel.setStyle("-fx-font-weight: bold;");
-        Text periodoValue = new Text(
-                sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine())
-        );
+        Text periodoValue = new Text();
+        if (corso.getDataInizio() != null && corso.getDataFine() != null) {
+            periodoValue.setText(sdf.format(corso.getDataInizio()) + " - " + sdf.format(corso.getDataFine()));
+        } else {
+            periodoValue.setText("Da definire");
+        }
         setAndAddFont(infoBox, periodoLabel, periodoValue);
 
         // Ore totali
         DecimalFormat df = new DecimalFormat("#.##");
         Text oreLabel = new Text("Ore totali: ");
         oreLabel.setStyle("-fx-font-weight: bold;");
-        Text oreValue = new Text(
-                df.format(corso.getOreTotali()));
+        Text oreValue = new Text();
+        if (corso.getOreTotali() > 0) {
+            oreValue.setText(df.format(corso.getOreTotali()));
+        } else {
+            oreValue.setText("Da definire");
+        }
         setAndAddFont(infoBox, oreLabel, oreValue);
 
 

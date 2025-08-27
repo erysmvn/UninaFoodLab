@@ -77,7 +77,6 @@ public class CorsoDAO implements CorsoDAOInterface {
             while (rs.next()) {
                 corsi.add(createCorsoByResultSet(rs));
             }
-
         return corsi;
     }
 
@@ -109,33 +108,25 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     public Corso createNewCorso(String nome, double price, int frequenza, String difficolta) {
-        String sql = "INSERT INTO corso (nome_corso, costo, frequenza_settimanale, difficolta) VALUES (?, ?, ?, ?::difficolta)";
+        String sql = "INSERT INTO corso (nome_corso, costo, frequenza_settimanale, difficolta) " +
+                "VALUES (?, ?, ?, ?::difficolta) RETURNING idcorso";
 
-        try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, nome);
             pstmt.setBigDecimal(2, BigDecimal.valueOf(price));
             pstmt.setInt(3, frequenza);
             pstmt.setString(4, difficolta);
 
-
-            int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted == 0) {
-                Exception exc  = new Exception("No row inserted");
-                throw exc;
-            }
-
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("idcorso");
+                    System.out.println("idcorso: " + id);
                     return new Corso(id, nome, (float) price, frequenza, Difficolta.valueOf(difficolta));
                 } else {
-                    throw new SQLException("Creating chef failed, no ID obtained.");
+                    throw new SQLException("Creating corso failed, no ID obtained.");
                 }
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -143,6 +134,10 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     public void addChefToCorso(int idCorso, Chef chef) {
         String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?,?)";
+
+        System.out.println(idCorso);
+        System.out.println(chef.getIdchef());
+
 
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);

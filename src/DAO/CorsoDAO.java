@@ -220,7 +220,7 @@ public class CorsoDAO implements CorsoDAOInterface {
                 rs.getDate("datainizio"),
                 rs.getDate("datafine"),
                 rs.getFloat("costo"),
-                ModalitaCorso.getFromString( rs.getString("modcorso") ),
+                ModalitaCorso.fromString( rs.getString("modcorso") ),
                 Difficolta.valueOf(rs.getString("difficolta") ),
                 rs.getString("desc_corso")
         );

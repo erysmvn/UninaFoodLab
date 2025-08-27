@@ -25,31 +25,42 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
 
     // Methods
     public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
-        String sql = "INSERT INTO tipologiacorso (nome_tipo) VALUES (?)";
+        String checkSql = "SELECT COUNT(*) FROM tipologiaCorso WHERE nome_tipo = '" + nomeTipo + "'";
         try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, nomeTipo);
+            ResultSet rs = stmt.executeQuery(checkSql);
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                if (count == 0) {
+                    String sql = "INSERT INTO tipologiacorso (nome_tipo) VALUES (?)";
+                    try {
+                        PreparedStatement pstmt = con.prepareStatement(sql);
+                        pstmt.setString(1, nomeTipo);
 
-            int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted == 0) {
-                Exception exc  = new Exception("No row inserted");
-                throw exc;
-            }
-
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
-                    TipologiaCorso tp = new TipologiaCorso(id, nomeTipo);
-                    return tp;
+                        int rowsInserted = pstmt.executeUpdate();
+                        if (rowsInserted == 0) {
+                            Exception exc  = new Exception("No row inserted");
+                            throw exc;
+                        }
+                        try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                int id = generatedKeys.getInt(1);
+                                TipologiaCorso tp = new TipologiaCorso(id, nomeTipo);
+                                return tp;
+                            } else {
+                                throw new SQLException("Creating tipologiaCorso failed, no ID obtained.");
+                            }
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
                 } else {
-                    throw new SQLException("Creating tipologiaCorso failed, no ID obtained.");
+                    return getTipologiaByName(nomeTipo);
                 }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
         return null;
     }

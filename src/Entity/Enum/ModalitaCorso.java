@@ -11,17 +11,22 @@ public enum ModalitaCorso {
         this.label = label;
     }
 
-    public static ModalitaCorso getFromString(String label) {
-        if (label == "Online e in presenza") {
-            return OnlineEInPresenza;
-        } else if(label == "Presenza") {
-            return Presenza;
-        }else{
-            return Online;
+    public static ModalitaCorso fromString(String label) {
+        if (label == null) return null;
+        String cleanLabel = label.trim().toLowerCase();
+        switch (cleanLabel) {
+            case "online":
+                return Online;
+            case "online e in presenza":
+                return OnlineEInPresenza;
+            case "presenza":
+                return Presenza;
+            default:
+                return null;
         }
     }
 
-    public String getLabel(){
+    public String getLabel() {
         return label;
     }
 }

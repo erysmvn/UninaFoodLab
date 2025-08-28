@@ -214,5 +214,6 @@ public class SessionePage extends Stage {
         int first = 0;
         footerVbox.getChildren().remove(first);
         footerVbox.getChildren().addFirst(createPartecipaButton());
+        confermarePartecipazioneLabel.setVisible(false);
     }
 }

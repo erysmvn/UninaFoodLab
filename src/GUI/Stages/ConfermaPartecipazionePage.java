@@ -2,8 +2,9 @@ package GUI.Stages;
 
 import Controller.Controller;
 import DAO.FoglioAdesioneDAO;
-import DAO.SessioneDAO;
 import Entity.SessionePresenza;
+import Entity.Utente;
+import Exception.UserExceptions.namingFileException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -21,10 +22,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+
+import Exception.FoglioAdesioneException;
 
 public class ConfermaPartecipazionePage extends Stage {
 
@@ -54,7 +60,6 @@ public class ConfermaPartecipazionePage extends Stage {
         setErrorLabel();
 
         root.getChildren().addAll(dropArea, uploadButton, errorLabel, createCloseButton());
-
         Scene scene = new Scene(root, 550, 400);
         scene.setFill(Color.TRANSPARENT);
         this.initStyle(StageStyle.TRANSPARENT);
@@ -72,50 +77,61 @@ public class ConfermaPartecipazionePage extends Stage {
         setDropAreaFunctionalities();
     }
 
+
+    private void checkNamingFile(String nomeFile)throws namingFileException{
+            Utente utente = controller.getUtente();
+            String dataItaliana = sessionePresenza.getData().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            String namingRight = utente.getNome() +"_"+ utente.getCognome()+"_"+dataItaliana+".pdf";
+
+            if(!nomeFile.equals(namingRight))
+                throw new namingFileException();
+
+    }
+
+    private void addFolgioAdesione(String filePath)throws SQLException {
+        //todo solo con il controller
+        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
+        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
+        sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, filePath));
+    }
+
+    private void addFileToServer(File file)throws Exception{
+        Path destDir = Paths.get("src/Media/FogliDiAdesione/");
+        Files.copy(file.toPath(),
+                destDir.resolve(file.getName()),
+                StandardCopyOption.REPLACE_EXISTING
+        );
+
+    }
+
     private void setDropAreaFunctionalities(){
         dropArea.setOnDragOver((DragEvent event) -> {
             if (event.getGestureSource() != dropArea && event.getDragboard().hasFiles())
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-
             event.consume();
         });
 
 
         dropArea.setOnDragDropped((DragEvent event) -> {
             Dragboard db = event.getDragboard();
-            boolean success = false;
             if (db.hasFiles()) {
                 File file = db.getFiles().getFirst();
                 try {
-                    Path destDir = Paths.get("src/Media/FogliDiAdesione/");
-
-                    Files.copy(file.toPath(),
-                            destDir.resolve(file.getName()),
-                            StandardCopyOption.REPLACE_EXISTING
-                    );
-
-                    dropArea.setText("File caricato: " + file.getName());
-                    //todo solo con il controller
-                    FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
-                    foglioAdesioneDAO.insertFoglioDiAdesione(destDir+file.getName(),sessionePresenza);
-                    sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, file.toPath().toString()));
-                    controller.changeSessionePageButton(sessionePresenza);
-                    showSuccessDialog();
+                    checkNamingFile(file.getName());
+                    setUploadButtonToConfirmButton(file);
                     errorLabel.setText("");
-                    success = true;
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    errorLabel.setText("Caricamento fallito");
+                } catch (namingFileException NFE){
+                    errorLabel.setText("Il nome file deve essere Nome_Cognome_DD-MM-YYYY");
+                }catch (Exception FAE ){
+                    errorLabel.setText("Caricamento fallito. Riprovare più tardi");
                 }
             }
-            event.setDropCompleted(success);
             event.consume();
         });
     }
 
     private void setUploadButton(){
-        uploadButton = new Button("Carica file");
+        uploadButton = new Button("Scegli file");
         styleButton(uploadButton, Color.valueOf("#3A6698"));
         setUploadButtonOnAction();
     }
@@ -125,39 +141,32 @@ public class ConfermaPartecipazionePage extends Stage {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File PDF", "*.pdf"));
             File file = fileChooser.showOpenDialog(this);
-
-            if (file != null) {
-                setUploadButtonToConfirmButton(file);
-                dropArea.setText("File caricato: " + file.getName());
+            try{
+                if (file != null) {
+                    checkNamingFile(file.getName());
+                    setUploadButtonToConfirmButton(file);
+                }
+            }catch (namingFileException NFE){
+                errorLabel.setText("Il nome file deve essere Nome_Cognome_DD-MM-YYYY");
             }
-
         });
     }
 
     private void setUploadButtonToConfirmButton(File file){
         uploadButton.setText("Carica");
+        dropArea.setText("File caricato: " + file.getName());
+
         uploadButton.setOnAction(e -> {
                     Path destDir = Paths.get("src/Media/FogliDiAdesione/");
-                   try {
-                        Files.copy(file.toPath(),
-                                destDir.resolve(file.getName()),
-                                StandardCopyOption.REPLACE_EXISTING
-                        );
-                       dropArea.setText("File caricato: " + file.getName());
+                       try{
+                           addFolgioAdesione(destDir+file.getName());
+                           addFileToServer(file);
+                           errorLabel.setText("");
+                           showSuccessDialog();
+                       }catch (Exception FileAdesiineExc ){
+                           errorLabel.setText("Caricamento fallito. Riprovare più tardi");
+                       }
 
-                       FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
-                       foglioAdesioneDAO.insertFoglioDiAdesione(destDir+file.getName(),sessionePresenza);
-                       sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, file.toPath().toString()));
-                       controller.changeSessionePageButton(sessionePresenza);
-                       showSuccessDialog();
-                       errorLabel.setText("");
-                       this.close();
-
-                   }catch (Exception ex) {
-                       ex.printStackTrace();
-                        errorLabel.setText("Caricamento fallito");
-                        e.consume();
-                   }
         });
     }
 
@@ -186,7 +195,20 @@ public class ConfermaPartecipazionePage extends Stage {
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
+
     private void showSuccessDialog() {
+        Stage dialog = createSuccessDialog();
+        dialog.show();
+
+        javafx.application.Platform.runLater(this::close);
+        controller.changeSessionePageButton(sessionePresenza);
+        new Thread(() -> {
+            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            javafx.application.Platform.runLater(dialog::close);
+        }).start();
+    }
+
+    private Stage createSuccessDialog() {
         Stage dialog = new Stage();
         dialog.initStyle(StageStyle.TRANSPARENT);
 
@@ -201,14 +223,7 @@ public class ConfermaPartecipazionePage extends Stage {
         scene.setFill(Color.TRANSPARENT);
 
         dialog.setScene(scene);
-        dialog.show();
-
-        javafx.application.Platform.runLater(this::close);
-
-        new Thread(() -> {
-            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
-            javafx.application.Platform.runLater(dialog::close);
-        }).start();
+        return dialog;
     }
 
     public void setSessionePresenza(SessionePresenza sessionePresenza) {

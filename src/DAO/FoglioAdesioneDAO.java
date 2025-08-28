@@ -6,7 +6,7 @@ import DB.DBConnection;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Studente;
-
+import Exception.FoglioAdesioneException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,21 +63,21 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
             return  null;
     }
 
-    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs)throws SQLException {
+    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs)throws SQLException{
 
         return new FoglioAdesione(
                 rs.getInt("idsessione"),
                 rs.getString("matricola"),
                 rs.getString("documento")
         );
+
     }
 
 
     @Override
-    public void insertFoglioDiAdesione(String pathFile, SessionePresenza sessionePresenza){
+    public void insertFoglioDiAdesione(String pathFile, SessionePresenza sessionePresenza) throws SQLException {
         String sql = "INSERT INTO conferma_partecipazione (idsessione, matricola, documento) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, sessionePresenza.getIdSessione());
             pstmt.setString(2, ((Studente)(controller.getUtente())).getMatricola());
             pstmt.setString(3, pathFile);
@@ -88,11 +88,6 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
                 System.out.println("Nessuna riga inserita...");
 
 
-        } catch (Exception e) {
-            // TODO usa eccezioni personalizzate
-            e.printStackTrace();
-            System.out.println("Inserimento foglio adesione non andato a buon fine");
         }
-    }
 
 }

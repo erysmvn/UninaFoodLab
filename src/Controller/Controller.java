@@ -222,25 +222,6 @@ public class Controller {
         }
     }
 
-    public void openCorsoPage(Corso corso){
-        CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
-
-        if(existingPage != null){
-            if(existingPage.isShowing()){
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
-        } else {
-            CorsoPage corsoPage = new CorsoPage( this);
-            corsoPage.initPage(corso);
-            corsoPages.add(corsoPage);
-
-            corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
-
-            corsoPage.show();
-        }
-    }
 
     public void openCreateCorsoPage(Utente utente) {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
@@ -253,14 +234,7 @@ public class Controller {
         }
     }
 
-    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
-        for(CorsoPage cp : corsoPages){
-            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
-                return cp;
-            }
-        }
-        return null;
-    }
+
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();

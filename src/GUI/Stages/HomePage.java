@@ -44,6 +44,8 @@ public class HomePage extends Stage {
     private Button searchButton;
     private Button tuttiCorsi;
     private Button homeButton;
+
+    private boolean mostraTuttiCorsiClicked  = false;
     private Utente utente = null;
 
     public HomePage(Controller controller) {
@@ -224,6 +226,7 @@ public class HomePage extends Stage {
         searchButton.setOnAction(Click -> {
 
             setNotClickedButtonAesthetic(tuttiCorsi);
+            mostraTuttiCorsiClicked = false;
 
             corsiBox.getChildren().clear();
 
@@ -259,6 +262,7 @@ public class HomePage extends Stage {
                         }
 
                 }catch (corsiNotFoundException | SQLException CNFE){
+                        corsiBox.getChildren().clear();
                         this.setNotFoundTextField();
                 }
 
@@ -300,6 +304,8 @@ public class HomePage extends Stage {
     public void mostraTuttiCorsi(){
         tuttiCorsi.fire();
     }
+
+
     private HBox createChoiceBox() {
         choiceBox = new HBox(2);
         choiceBox.setAlignment(Pos.CENTER);
@@ -323,13 +329,12 @@ public class HomePage extends Stage {
 
         tuttiCorsi = new Button("Mostra tutti");;
 
-
         tuttiCorsi.setOnAction(event -> {
             
-            if(tuttiCorsi.getStyle().equals("-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                    "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;")) {
-
+            if(!mostraTuttiCorsiClicked){
                 setClickedButtonAesthetic(tuttiCorsi);
+                mostraTuttiCorsiClicked = true;
+                corsiBox.getChildren().clear();
                 ArrayList<Corso> corsi = controller.getAllCourses();
                 if (corsi != null) {
                     CorsoPanel tempCorsoPanel;
@@ -338,6 +343,8 @@ public class HomePage extends Stage {
                         tempCorsoPanel.setCorso(corso);
                         corsiBox.getChildren().add(tempCorsoPanel);
                     }
+                }else{
+                    setNotFoundTextField();
                 }
             }
 

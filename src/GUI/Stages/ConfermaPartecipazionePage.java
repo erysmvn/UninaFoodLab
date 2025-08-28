@@ -1,6 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import Entity.Corso;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Utente;
@@ -36,7 +37,7 @@ public class ConfermaPartecipazionePage extends Stage {
     private Label dropArea;
     private Label errorLabel;
     private SessionePresenza sessionePresenza;
-
+    private String nomeCorsoNoSpace;
     public ConfermaPartecipazionePage(Controller controller) {
         this.controller = controller;
         VBox root = new VBox(10);
@@ -96,7 +97,7 @@ public class ConfermaPartecipazionePage extends Stage {
     private void addFileToServer(File file)throws Exception{
         Path destDir = Paths.get("src/Media/FogliDiAdesione/");
         Files.copy(file.toPath(),
-                destDir.resolve(file.getName()),
+                destDir.resolve(nomeCorsoNoSpace+file.getName()),
                 StandardCopyOption.REPLACE_EXISTING
         );
 
@@ -157,15 +158,17 @@ public class ConfermaPartecipazionePage extends Stage {
         uploadButton.setOnAction(e -> {
                     Path destDir = Paths.get("src/Media/FogliDiAdesione/");
                        try{
-                           addFolgioAdesione(destDir+file.getName());
+                           Corso corso = controller.getCorsoDAO().getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
+                           nomeCorsoNoSpace = corso.getNome().replaceAll(" ","_");
+
+                           addFolgioAdesione(destDir+file.getName()+nomeCorsoNoSpace);
                            addFileToServer(file);
 
                            errorLabel.setText("");
                            showSuccessDialog();
-                       }catch (Exception FileAdesiineExc ){
+                       }catch (Exception FileAdesioneExc ){
                            errorLabel.setText("Caricamento fallito. Riprovare più tardi");
                        }
-
         });
     }
 

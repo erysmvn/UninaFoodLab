@@ -201,7 +201,7 @@ public class CreateCorsoPage extends Stage {
         addChefButton.setMaxWidth(200);
         addChefButton.setMaxHeight(100);
         addChefButton.setOnAction(e -> {
-            addChefToCourse("Aggiungi altro chef", () -> {
+            addChefToCourse( () -> {
                 validateChef();
                 updateChefsCount(chefsCount);
                 // TODO add chef to arraylist
@@ -217,23 +217,19 @@ public class CreateCorsoPage extends Stage {
         chefsCount.setText("Chef inseriti: " + chefAggiunti.size());
     }
 
-    private void addChefToCourse(String message, Runnable onConfirm) {
+    private void addChefToCourse( Runnable onConfirm) {
         Stage addChefToCourseStage = new Stage();
+
         addChefToCourseStage.initModality(Modality.APPLICATION_MODAL);
         addChefToCourseStage.initStyle(StageStyle.TRANSPARENT);
 
-        VBox root = new VBox(20);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
-        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(15), new BorderWidths(2))));
-
-        Label label = new Label(message);
-        label.setFont(Font.font("System", FontWeight.BOLD, 18));
-        label.setTextFill(Color.valueOf("#2F3A42"));
-        label.setWrapText(true);
-        label.setTextAlignment(TextAlignment.CENTER);
-        label.setMaxWidth(300);
+        Label titolo = new Label("Inserire credenziali");
+        titolo.setStyle("-fx-font-weight: bold; -fx-padding: 10;" +
+                "-fx-font-size: 30;" +
+                "-fx-text-fill: #3a6698;" +
+                "-fx-background-color: transparent;" +
+                "-fx-font-family: System;");
+        titolo.setAlignment(Pos.TOP_CENTER);
 
         Button yesButton = new Button("Conferma");
         Button noButton = new Button("Annulla");
@@ -241,14 +237,43 @@ public class CreateCorsoPage extends Stage {
         styleButton(yesButton, Color.valueOf("#3A6698"));
         styleButton(noButton, Color.valueOf("#da3d26"));
 
-        HBox buttons = new HBox(15, yesButton, noButton);
+        VBox buttons = new VBox(20,yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);
-
         Label error = new Label("");
 
-        root.getChildren().addAll(label, addChefNomeBox(), addChefCognomeBox(), addChefEmailBox(), error, buttons);
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(50));
+        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
+        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
 
-        Scene scene = new Scene(root, 500, 725);
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        spacer2.setPrefHeight(20);
+        root.getChildren().addAll(
+                titolo,
+                spacer,
+                addChefNomeBox(),
+                addChefCognomeBox(),
+                addChefEmailBox(),
+                error,
+                spacer2,
+                buttons
+        );
+
+
+/*
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        VBox.setVgrow(spacer2, Priority.ALWAYS);
+        Region spacer3 = new Region();
+        spacer3.setPrefHeight(20);
+  */
+
+
+        Scene scene = new Scene(root, 500, 600);
         scene.setFill(Color.TRANSPARENT);
         addChefToCourseStage.setScene(scene);
 
@@ -297,27 +322,45 @@ public class CreateCorsoPage extends Stage {
         Label nameChefLabel = new Label("Nome chef: *");
         nameChef = new TextField();
         nameChef.setPromptText("Nome chef");
+        nameChef.setMaxWidth(330);
+
         nameChefError = new Label("");
         nameChefError.setTextFill(Color.RED);
-        return new VBox(5, nameChefLabel, nameChef, nameChefError);
+
+        VBox nameChefBox = new VBox(5, nameChefLabel, nameChef, nameChefError);
+        nameChefBox.setAlignment(Pos.TOP_LEFT); // allinea i figli a sinistra
+        nameChefBox.setMaxWidth(330);           // limita la larghezza
+        return nameChefBox;
     }
 
     private VBox addChefCognomeBox() {
         Label surnameChefLabel = new Label("Cognome chef: *");
         surnameChef = new TextField();
         surnameChef.setPromptText("Cognome chef");
+        surnameChef.setMaxWidth(330);
+
         surnameChefError = new Label("");
         surnameChefError.setTextFill(Color.RED);
-        return new VBox(5, surnameChefLabel, surnameChef, surnameChefError);
+
+        VBox surnameBox = new VBox(5, surnameChefLabel, surnameChef, surnameChefError);
+        surnameBox.setAlignment(Pos.TOP_LEFT);
+        surnameBox.setMaxWidth(330);
+        return surnameBox;
     }
 
     private VBox addChefEmailBox() {
         Label emailChefLabel = new Label("Email chef: *");
         emailChef = new TextField();
         emailChef.setPromptText("Email chef");
+        emailChef.setMaxWidth(330);
+
         emailChefError = new Label("");
         emailChefError.setTextFill(Color.RED);
-        return new VBox(5, emailChefLabel, emailChef, emailChefError);
+
+        VBox emailBox = new VBox(5, emailChefLabel, emailChef, emailChefError);
+        emailBox.setAlignment(Pos.TOP_LEFT);
+        emailBox.setMaxWidth(330);
+        return emailBox;
     }
 
     private VBox createFreqBox() {
@@ -360,6 +403,10 @@ public class CreateCorsoPage extends Stage {
         Label uploadLabel = new Label("Clicca per caricare foto");
         uploadLabel.setStyle("-fx-text-fill: #666;");
         photoPane.getChildren().add(uploadLabel);
+        photoPane.setStyle("-fx-background-color: transparent;" +
+                "-fx-border-width: 1;" +
+                "-fx-border-color: #3a6698;" +
+                "-fx-border-radius: 30");
 
         photoPane.setOnMouseClicked(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -508,7 +555,7 @@ public class CreateCorsoPage extends Stage {
     }
 
     private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 20);
+        button.setPrefSize(100, 20);
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));

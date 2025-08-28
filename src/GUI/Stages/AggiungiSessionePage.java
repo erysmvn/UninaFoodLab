@@ -89,30 +89,6 @@ public class AggiungiSessionePage extends Stage {
         return dateBox;
     }
 
-    private HBox createTopBox(){
-        HBox topBox = new HBox(5);
-        topBox.setAlignment(Pos.TOP_RIGHT);
-        topBox.setSpacing(10);
-        Label titolo = new Label("Nuova Sessione !");
-
-        Font robotoFont = Font.loadFont(
-                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                40
-        );
-
-        titolo.setFont(robotoFont);
-        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;");
-
-        Region spacer = new Region();
-        Region spacer1 =  new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-
-        CircleButton closeButton = createCloseButton();
-        CircleButton minimizeButton = createMinimizeButton();
-        topBox.getChildren().addAll(spacer,titolo,spacer1,minimizeButton, closeButton);
-        return topBox;
-    }
 
     private void setSceneAesthetics(){
         scene = new Scene(root, 850, 650);
@@ -133,7 +109,7 @@ public class AggiungiSessionePage extends Stage {
         Region spacer = new Region();
         spacer.setPrefHeight(40);
 
-        root.getChildren().addAll(createTopBox(),createLinkOrLuogoBox(),spacer,createDateBox(),createOrarioBox());
+        root.getChildren().addAll(createTopBox(),createLinkOrLuogoBox(),spacer,createDateBox(),createOrarioBox(),createRicettaBox());
     }
 
     private void setRootAesthetics(){
@@ -232,6 +208,32 @@ public class AggiungiSessionePage extends Stage {
         this.sessione = sessione;
     }
 
+
+    private HBox createTopBox(){
+        HBox topBox = new HBox(5);
+        topBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.setSpacing(10);
+        Label titolo = new Label("Nuova Sessione !");
+
+        Font robotoFont = Font.loadFont(
+                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
+                40
+        );
+
+        titolo.setFont(robotoFont);
+        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;");
+
+        Region spacer = new Region();
+        Region spacer1 =  new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+
+        CircleButton closeButton = createCloseButton();
+        CircleButton minimizeButton = createMinimizeButton();
+        topBox.getChildren().addAll(spacer,titolo,spacer1,minimizeButton, closeButton);
+        return topBox;
+    }
+
     private CircleButton createMinimizeButton() {
         CircleButton minimizeButton = new CircleButton();
         minimizeButton.setToMinimizeButtonWithAction(this);
@@ -243,6 +245,23 @@ public class AggiungiSessionePage extends Stage {
         minimizeButton.setToCloseButtonWithAction(this);
         return minimizeButton;
     }
+    private VBox createRicettaBox() {
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.TOP_LEFT);
+
+        Button aggiungiRicettaBtn = new Button("Aggiungi ricetta");
+        container.getChildren().add(aggiungiRicettaBtn);
+        aggiungiRicettaBtn.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
+        aggiungiRicettaBtn.setOnMouseEntered(e->aggiungiRicettaBtn.setOpacity(0.8));
+        aggiungiRicettaBtn.setOnMouseExited(e->aggiungiRicettaBtn.setOpacity(1.0));
+        aggiungiRicettaBtn.setOnAction(e -> {
+            controller.openAggiungiRicettaPage();
+        });
+
+        return container;
+    }
+
+
     private void setNotClickedButtonAesthetic(ToggleButton button){
         String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
                 "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";

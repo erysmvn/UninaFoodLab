@@ -521,4 +521,9 @@ public boolean isStudent(){
     public void closeAll(){
         Platform.exit();
     }
+
+    public void openAggiungiRicettaPage(){
+        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage();
+        aggiungiRicettaPage.show();
+    }
 }

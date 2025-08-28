@@ -119,7 +119,8 @@ public class SessionePage extends Stage {
             Text luogoVal = new Text(sp.getLuogo());
             luogoVal.setFont(Font.font(18));
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
-            footerVbox.getChildren().add(createPartecipaButton());
+           if(controller.isStudent())
+                footerVbox.getChildren().add(createPartecipaButton());
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -197,6 +198,8 @@ public class SessionePage extends Stage {
         String matricola = ((Studente)(controller.getUtente())).getMatricola();
          return  ((SessionePresenza)sessione).checkIfAlreadyAdded(matricola);
     }
+
+
 
     private void styleButton(Button button, Color color) {
         button.setFont(Font.font("System", FontWeight.BOLD, 14));

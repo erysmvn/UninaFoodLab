@@ -248,7 +248,7 @@ public class CreateCorsoPage extends Stage {
 
         root.getChildren().addAll(label, addChefNomeBox(), addChefCognomeBox(), addChefEmailBox(), error, buttons);
 
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 500, 725);
         scene.setFill(Color.TRANSPARENT);
         addChefToCourseStage.setScene(scene);
 

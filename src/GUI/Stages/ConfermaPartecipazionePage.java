@@ -214,7 +214,7 @@ public class ConfermaPartecipazionePage extends Stage {
 
         Label label = new Label("Inserito con successo !");
         label.setTextFill(Color.WHITE);
-        label.setStyle("-fx-background-color: rgba(0, 128, 0, 0.8); -fx-padding: 20px; -fx-background-radius: 10;");
+        label.setStyle("-fx-background-color: rgba(0,128,0,0.73); -fx-padding: 20px; -fx-background-radius: 10;");
         label.setFont(Font.font("System", FontWeight.BOLD, 16));
 
         StackPane pane = new StackPane(label);

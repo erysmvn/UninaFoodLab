@@ -234,7 +234,12 @@ public class Controller {
         }
     }
 
-
+public boolean isChef(){
+        return utente instanceof Chef;
+}
+public boolean isStudent(){
+    return utente instanceof Studente;
+}
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();

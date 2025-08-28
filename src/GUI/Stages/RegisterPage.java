@@ -77,7 +77,7 @@ public class RegisterPage extends Stage {
     }
 
     private void setRootAesthetics(){
-        root.setPadding(new Insets(20, 50, 50, 50));
+        root.setPadding(new Insets(20, 20, 50, 50));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)

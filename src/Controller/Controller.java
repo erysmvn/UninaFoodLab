@@ -382,7 +382,11 @@ public boolean isStudent(){
         return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
     }
 
-
+    public void openAggiungiSessionePage(Corso corso){
+        AggiungiSessionePage aggiungiSessionePage = new AggiungiSessionePage(this);
+        aggiungiSessionePage.initPage(corso);
+        aggiungiSessionePage.show();
+    }
 
     // Corso
     public void getRicetteTrattate(Corso corso) {

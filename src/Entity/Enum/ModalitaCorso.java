@@ -26,6 +26,8 @@ public enum ModalitaCorso {
         }
     }
 
+
+
     public String getLabel() {
         return label;
     }

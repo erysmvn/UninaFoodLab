@@ -158,6 +158,7 @@ public class CorsoAccountPanel extends Pane {
 
         addSessionButton.setOnAction(event -> {
             // TODO addSessionePage
+            controller.openAggiungiSessionePage(corso);
         });
 
         this.styleButton(addSessionButton, Color.valueOf("#3A6698"));

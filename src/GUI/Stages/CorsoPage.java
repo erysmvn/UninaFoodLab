@@ -30,7 +30,7 @@ public class CorsoPage extends Stage {
     private HBox topHbox;
     private HBox bottomHbox;
     private VBox footerVbox;
-
+    private Rectangle clip;
     private Controller controller;
     private Corso corso;
 
@@ -61,7 +61,7 @@ public class CorsoPage extends Stage {
         footerVbox.setSpacing(20);
         footerVbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        Rectangle clip = new Rectangle();
+        clip = new Rectangle();
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         vbox.setClip(clip);
@@ -70,8 +70,7 @@ public class CorsoPage extends Stage {
             clip.setHeight(newBounds.getHeight());
         });
 
-        //TODO fare funzione che fa questo e fa capire a cosa serve NIENTE COMMENTI
-        Platform.runLater(clip::requestFocus); // sposta il focus in modo da non selezionare il primo pulsante automaticamente
+        moveFocusToNotShowBottonClicked();
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
@@ -81,6 +80,11 @@ public class CorsoPage extends Stage {
         Scene scene = new Scene(vbox, 900, 750);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
+    }
+
+    private void moveFocusToNotShowBottonClicked(){
+        Platform.runLater(clip::requestFocus);
+
     }
 
     public void initPage(Corso corso){
@@ -238,8 +242,7 @@ public class CorsoPage extends Stage {
         nomeCorsoFlow.setTextAlignment(TextAlignment.LEFT);
         infoBox.getChildren().add(nomeCorsoFlow);
 
-
-        controller.getChefs(corso); // TODO potrebbe essere una buona idea rivedere come funziona sto coso
+        controller.setChefs(corso);
 
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");

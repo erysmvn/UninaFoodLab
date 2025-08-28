@@ -1,21 +1,19 @@
 package DAO;
 
 import Controller.Controller;
+import DAO.Interfaces.RicettaDAOInterface;
 import DB.DBConnection;
-import Entity.Chef;
 import Entity.Ingrediente;
 import Entity.Ricetta;
-import Entity.Sessione;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RicettaDAO {
+public class RicettaDAO implements RicettaDAOInterface {
     DBConnection dbc;
     Statement stmt;
-    ResultSet rs;
     Connection con;
     Controller controller;
 
@@ -28,8 +26,22 @@ public class RicettaDAO {
     }
 
     // Methods
+    @Override
+    public Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException {
+        Ricetta ricetta =  new Ricetta(
+                rs.getInt("idricetta"),
+                rs.getString("nome_ricetta"),
+                rs.getString("descrizione_ricetta"),
+                rs.getInt("tempo_di_preparazione"),
+                rs.getString("autore")
+        );
+        getIngredienti(ricetta);
+        getAllergeniRicetta(ricetta);
+        return ricetta;
+    }
 
     // Get Methods
+    @Override
     public void getIngredienti(Ricetta ricetta){
         ricetta.allocaArrayIngredienti();
         Ingrediente ingrediente = null;
@@ -55,8 +67,7 @@ public class RicettaDAO {
             exc.printStackTrace();
         }
     }
-
-
+    @Override
     public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{
         ArrayList<Ricetta> ricette = new ArrayList<>();
         String sql = "select * from ricetta natural join tratta natural join sessione s where idsessione = ?";
@@ -68,20 +79,7 @@ public class RicettaDAO {
         }
         return ricette;
     }
-
-    private Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException {
-        Ricetta ricetta =  new Ricetta(
-                rs.getInt("idricetta"),
-                rs.getString("nome_ricetta"),
-                rs.getString("descrizione_ricetta"),
-                rs.getInt("tempo_di_preparazione"),
-                rs.getString("autore")
-        );
-        getIngredienti(ricetta);
-        getAllergeniRicetta(ricetta);
-        return ricetta;
-    }
-
+    @Override
     public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) {
         ricetta.allocaArrayIngredienti();
         String sql = "SELECT quantità, unità " +
@@ -103,7 +101,7 @@ public class RicettaDAO {
         }
         return toReturn;
     }
-
+    @Override
     public void getAllergeniRicetta(Ricetta ricetta){
         ricetta.allocaArrayAllergeniRicetta();
         String sql = "SELECT DISTINCT allergeni " +
@@ -134,4 +132,6 @@ public class RicettaDAO {
             }
         }
     }
+
+
 }

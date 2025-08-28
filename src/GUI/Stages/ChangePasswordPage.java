@@ -154,54 +154,92 @@ public class ChangePasswordPage extends Stage {
             return bottomBox;
         }
 
-        private Button createConfermaButton() {
+    private Button createConfermaButton() {
             Button confermaButton = new Button("Conferma");
             confermaButton.setTextFill(Color.WHITE);
             confermaButton.setStyle("-fx-background-color: #3A6698;");
             confermaButton.setMaxWidth(100);
             confermaButton.setMinWidth(100);
 
-            confermaButton.setOnAction(e -> {{
+            confermaButton.setOnAction(e -> {
                 lblErroreInserimentoDB.setText("");
-                try{
+
+                try {
                     validConferma();
                     String nuovaPassword = txtNuovaPassword.getText();
                     controller.changeUserPassword(nuovaPassword);
                     this.close();
-                } catch (oldPasswordErrorException OPEE){
+
+                } catch (oldPasswordErrorException OPEE) {
                     txtVecchiaPassword.setStyle("-fx-border-color: red;");
                     lblVecchiaPasswordError.setText("Password errata");
-                } catch (oldPasswordEmptyException OPE){
+
+
+                    txtNuovaPassword.setStyle(null);
+                    txtRipetiPassword.setStyle(null);
+                    lblNuovaPasswordError.setText("");
+                    lblRipetiPasswordError.setText("");
+
+                } catch (oldPasswordEmptyException OPE) {
                     txtVecchiaPassword.setStyle("-fx-border-color: red;");
                     lblVecchiaPasswordError.setText("Inserire vecchia password");
+
+                    txtNuovaPassword.setStyle(null);
+                    txtRipetiPassword.setStyle(null);
+                    lblNuovaPasswordError.setText("");
+                    lblRipetiPasswordError.setText("");
+
                 } catch (newPasswordEmptyException NPE) {
                     txtNuovaPassword.setStyle("-fx-border-color: red;");
                     lblNuovaPasswordError.setText("Inserire nuova password");
+
+                    txtVecchiaPassword.setStyle(null);
+                    txtRipetiPassword.setStyle(null);
+                    lblVecchiaPasswordError.setText("");
+                    lblRipetiPasswordError.setText("");
+
+                } catch (passwordTroppoCortaException PTCE) {
+                    txtNuovaPassword.setStyle("-fx-border-color: red;");
+                    lblNuovaPasswordError.setText("La password è troppo corta");
+
+                    txtVecchiaPassword.setStyle(null);
+                    txtRipetiPassword.setStyle(null);
+                    lblVecchiaPasswordError.setText("");
+                    lblRipetiPasswordError.setText("");
+
+                } catch (checkIfIsNewPassowrdException CIINPE) {
+                    txtNuovaPassword.setStyle("-fx-border-color: red;");
+                    lblNuovaPasswordError.setText("La password è già stata usata");
+
+                    txtVecchiaPassword.setStyle(null);
+                    txtRipetiPassword.setStyle(null);
+                    lblVecchiaPasswordError.setText("");
+                    lblRipetiPasswordError.setText("");
+
                 } catch (passwordAndNewPasswordNotEqualException PNPNE) {
                     txtRipetiPassword.setStyle("-fx-border-color: red;");
                     lblRipetiPasswordError.setText("Le password non coincidono");
-                } catch (checkIfIsNewPassowrdException CIINPE) {
-                    txtNuovaPassword.setStyle("-fx-border-color: red;");
-                    lblNuovaPasswordError.setText("La password è gia stata usata");
-                }catch (passwordTroppoCortaException PTCE){
-                    txtNuovaPassword.setStyle("-fx-border-color: red;");
-                    lblNuovaPasswordError.setText("La password è troppo corta");
-                } catch (SQLException sqlException){
+
+                    txtVecchiaPassword.setStyle(null);
+                    txtNuovaPassword.setStyle(null);
+                    lblVecchiaPasswordError.setText("");
+                    lblNuovaPasswordError.setText("");
+
+                } catch (SQLException sqlException) {
                     lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }
-
-            }
             });
             this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
             return confermaButton;
         }
 
-        private void validConferma() throws changePasswordException {
+    private void validConferma() throws changePasswordException {
 
                 if (txtVecchiaPassword.getText().trim().isEmpty()) {
                     throw new oldPasswordEmptyException();
-                } else if (controller.checkOldPassword(txtVecchiaPassword.getText())){
+                } else {
+                    controller.checkOldPassword(txtVecchiaPassword.getText());
                     txtVecchiaPassword.setStyle(null);
                     lblVecchiaPasswordError.setText("");
                 }
@@ -221,13 +259,12 @@ public class ChangePasswordPage extends Stage {
 
                 if (txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().trim().isEmpty()) {
                     throw new passwordAndNewPasswordNotEqualException();
-                } else if (!txtNuovaPassword.getText().trim().isEmpty() &&  !txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().equals(txtRipetiPassword.getText())){
+                } else if (!txtNuovaPassword.getText().trim().isEmpty() && !txtRipetiPassword.getText().trim().isEmpty() && !txtNuovaPassword.getText().equals(txtRipetiPassword.getText())){
                     throw new passwordAndNewPasswordNotEqualException();
                 }else{
                     txtRipetiPassword.setStyle(null);
                     lblRipetiPasswordError.setText("");
                 }
-
         }
 
     public HBox createFunctionalityButtonBox() {

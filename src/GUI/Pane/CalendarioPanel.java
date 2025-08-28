@@ -132,9 +132,12 @@ public class CalendarioPanel extends Pane {
     public void initCalendario(Utente utente) {
         corsi = utente.getCorsi();
         sessioniDeiCorsi = new ArrayList<>();
-        for (Corso corso : corsi) {
-            sessioniDeiCorsi.add(corso.getSessioni());
-        }
+        if(corsi == null)
+                return;
+
+            for (Corso corso : corsi) {
+                sessioniDeiCorsi.add(corso.getSessioni());
+            }
 
         setFirstSessionDay();
         addAllEvents();

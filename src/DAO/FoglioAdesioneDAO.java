@@ -6,7 +6,7 @@ import DB.DBConnection;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Studente;
-import Exception.FoglioAdesioneException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
         con = dbc.getConnection();
     }
 
-
+    @Override
     public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
 
         ArrayList<FoglioAdesione> fogli = new ArrayList<>();
@@ -47,7 +47,8 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
         return fogli;
     }
 
-    public FoglioAdesione getFoglioAdesioneBySessioneNPath(SessionePresenza sessionePresenza, String path){
+    @Override
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza){
         String sql = "select * from conferma_partecipazione where idsessione = ? and matricola = ? and documento = ?  ";
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);
@@ -62,17 +63,6 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
         }
             return  null;
     }
-
-    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs)throws SQLException{
-
-        return new FoglioAdesione(
-                rs.getInt("idsessione"),
-                rs.getString("matricola"),
-                rs.getString("documento")
-        );
-
-    }
-
 
     @Override
     public void insertFoglioDiAdesione(String pathFile, SessionePresenza sessionePresenza) throws SQLException {
@@ -90,4 +80,13 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
 
         }
 
+    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs)throws SQLException{
+
+        return new FoglioAdesione(
+                rs.getInt("idsessione"),
+                rs.getString("matricola"),
+                rs.getString("documento")
+        );
+
+    }
 }

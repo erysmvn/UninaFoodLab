@@ -328,8 +328,8 @@ public class CreateCorsoPage extends Stage {
         nameChefError.setTextFill(Color.RED);
 
         VBox nameChefBox = new VBox(5, nameChefLabel, nameChef, nameChefError);
-        nameChefBox.setAlignment(Pos.TOP_LEFT); // allinea i figli a sinistra
-        nameChefBox.setMaxWidth(330);           // limita la larghezza
+        nameChefBox.setAlignment(Pos.TOP_LEFT);
+        nameChefBox.setMaxWidth(330);
         return nameChefBox;
     }
 
@@ -586,7 +586,7 @@ public class CreateCorsoPage extends Stage {
             nameError.setText("");
         }
 
-        if (corsoType.getValue().equals("Seleziona tipologia")) { // or getSelectionModel().getSelectedItem()
+        if (corsoType.getValue().equals("Seleziona tipologia")) {
             throw new typeCorsoNotFoundException();
         } else {
             corsoType.setStyle(null);

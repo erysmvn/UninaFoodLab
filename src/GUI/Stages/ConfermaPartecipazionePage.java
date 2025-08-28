@@ -1,7 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
-import DAO.FoglioAdesioneDAO;
+import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Utente;
 import Exception.UserExceptions.namingFileException;
@@ -22,15 +22,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-
-import Exception.FoglioAdesioneException;
 
 public class ConfermaPartecipazionePage extends Stage {
 
@@ -53,6 +50,7 @@ public class ConfermaPartecipazionePage extends Stage {
                 new CornerRadii(30),
                 new BorderWidths(2)
         )));
+
         root.setAlignment(Pos.CENTER);
 
         setUploadButton();
@@ -62,6 +60,7 @@ public class ConfermaPartecipazionePage extends Stage {
         root.getChildren().addAll(dropArea, uploadButton, errorLabel, createCloseButton());
         Scene scene = new Scene(root, 550, 400);
         scene.setFill(Color.TRANSPARENT);
+
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
     }
@@ -89,10 +88,9 @@ public class ConfermaPartecipazionePage extends Stage {
     }
 
     private void addFolgioAdesione(String filePath)throws SQLException {
-        //todo solo con il controller
-        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(controller);
-        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
-        sessionePresenza.getFogliAdesione().add(foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(sessionePresenza, filePath));
+        controller.insertFoglioAdesione(filePath, sessionePresenza);
+        FoglioAdesione foglio = controller.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+        sessionePresenza.getFogliAdesione().add(foglio);
     }
 
     private void addFileToServer(File file)throws Exception{
@@ -161,6 +159,7 @@ public class ConfermaPartecipazionePage extends Stage {
                        try{
                            addFolgioAdesione(destDir+file.getName());
                            addFileToServer(file);
+
                            errorLabel.setText("");
                            showSuccessDialog();
                        }catch (Exception FileAdesiineExc ){

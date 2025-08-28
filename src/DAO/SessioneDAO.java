@@ -63,12 +63,6 @@ public class SessioneDAO implements SessioneDAOInterface {
         return sessione;
     }
 
-    private ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
-            //todo tramite il controller
-            FoglioAdesioneDAO faDAO = new FoglioAdesioneDAO(controller);
-            return faDAO.getFogliAdesioneByIdSessione(idsessione);
-    }
-
     @Override
     public ArrayList<Sessione> getSessioniByNomeCorso(String nomeCorso) throws SQLException {
 
@@ -84,5 +78,11 @@ public class SessioneDAO implements SessioneDAOInterface {
 
         return sessioni;
 
+    }
+
+    private ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
+        //todo tramite il controller
+        FoglioAdesioneDAO faDAO = new FoglioAdesioneDAO(controller);
+        return faDAO.getFogliAdesioneByIdSessione(idsessione);
     }
 }

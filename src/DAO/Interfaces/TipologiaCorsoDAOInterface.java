@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public interface TipologiaCorsoDAOInterface {
     // Methods
-    public TipologiaCorso addNewTipologiaCorso(String nomeTipo);
+    TipologiaCorso addNewTipologiaCorso(String nomeTipo);
 
     // Get methods
-    public ArrayList<TipologiaCorso> getAll();
-    public TipologiaCorso getTipologiaByName(String nomeTipo);
+    ArrayList<TipologiaCorso> getAll();
+    TipologiaCorso getTipologiaByName(String nomeTipo);
 }

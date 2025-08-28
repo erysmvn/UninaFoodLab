@@ -97,7 +97,7 @@ public class CorsoAccountPanel extends Pane {
 
         ImageView imageView = createImage(corso.getImagePath());
         Label titoloLabel = createTitolo(corso.getNome());
-        controller.getChefs(corso);
+        controller.setChefs(corso);
         Label chefsLabel = createChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
         Button addSessionButton = createAddSessionButton();

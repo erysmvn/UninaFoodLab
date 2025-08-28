@@ -24,6 +24,7 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
     }
 
     // Methods
+    @Override
     public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
         String checkSql = "SELECT COUNT(*) FROM tipologiaCorso WHERE nome_tipo = '" + nomeTipo + "'";
         try {
@@ -65,8 +66,8 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
         return null;
     }
 
-
     // Get Methods
+    @Override
     public TipologiaCorso getTipologiaByName(String nomeTipo) {
         String sql = "SELECT * FROM tipologiacorso WHERE nome_tipo = ?";
 
@@ -85,6 +86,7 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
         return null;
     }
 
+    @Override
     public ArrayList<TipologiaCorso> getAll() {
         ArrayList<TipologiaCorso> lista = new ArrayList<>();
         String sql = "SELECT * FROM TipologiaCorso";

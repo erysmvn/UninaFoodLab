@@ -1,10 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
-import DAO.ChefDAO;
-import DAO.CorsoDAO;
 import Entity.*;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;

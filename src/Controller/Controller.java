@@ -262,7 +262,15 @@ public boolean isStudent(){
         homePage.mostraTuttiCorsi();
     }
 
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
+         FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
+         return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+    }
 
+    public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza)throws SQLException{
+        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
+        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
+    }
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
@@ -285,12 +293,14 @@ public boolean isStudent(){
         if (utente instanceof Chef chef) {
             ChefDAO chefDao = getChefDAO();
             Chef ch = chefDao.register(chef);
+
             if(ch != null){
                 this.utente = ch;
             }
         } else if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
             Studente st = studenteDao.register(studente);
+
             if(st != null){
                 this.utente = st;
             }
@@ -307,19 +317,16 @@ public boolean isStudent(){
         accountPage.close();
     }
 
-    public boolean checkOldPassword(String oldPassword) throws oldPasswordErrorException {
-        Boolean result = false;
+    public void checkOldPassword(String oldPassword) throws oldPasswordErrorException {
+
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
-            result = studenteDao.checkOldPassword(oldPassword, studente);
+            studenteDao.checkOldPassword(oldPassword, studente);
         } else if (utente instanceof Chef chef) {
             ChefDAO chefDao = getChefDAO();
-            result = chefDao.checkOldPassword(oldPassword, chef);
+            chefDao.checkOldPassword(oldPassword, chef);
         }
-        if(!result){
-            throw new oldPasswordErrorException();
-        }
-        return result;
+
     }
 
     public void changeUserPassword(String newPassword)throws changePasswordException,SQLException {
@@ -370,11 +377,6 @@ public boolean isStudent(){
         }
     }
 
-    public ArrayList<Chef> getAllChefs() {
-        ChefDAO chefDao = getChefDAO();
-        return chefDao.getAll();
-    }
-
     public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
         ChefDAO chefDao = getChefDAO();
         return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
@@ -388,7 +390,7 @@ public boolean isStudent(){
         corsoDao.getRicetteTrattate(corso);
     }
 
-    public void getChefs(Corso corso) {
+    public void setChefs(Corso corso) {
         CorsoDAO corsoDao = new CorsoDAO(this);
         corsoDao.setChefs(corso);
     }
@@ -512,7 +514,7 @@ public boolean isStudent(){
 
 
     // Exit
-    public void endAll(){
+    public void closeAll(){
         Platform.exit();
     }
 }

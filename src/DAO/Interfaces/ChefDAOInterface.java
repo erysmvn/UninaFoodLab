@@ -1,19 +1,21 @@
 package DAO.Interfaces;
 
 import Entity.Chef;
+import Entity.Corso;
+import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ChefDAOInterface {
     // Methods
-    public Chef login(String email, String password) throws SQLException;
-    public Chef register(Chef chef) throws SQLException;
-    public void addChefToCorso(int idCorso, Chef chef);
+    Chef login(String email, String password) throws SQLException;
+    Chef register(Chef chef) throws SQLException;
+    void checkOldPassword(String oldPassword, Chef chef)throws changePasswordException;
+    void changeUserPassword(String newPassword, Chef chef) throws changePasswordException, SQLException;
 
     // Get methods
-    public Chef getChefByEmail(String email);
-    public Chef getChefByNomeCorso(String nomeCorso);
-    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email);
-    public ArrayList<Chef> getAll() throws SQLException;
+    Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email);
+    ArrayList<Corso> getCorsiFromChef(Chef chef);
+
 }

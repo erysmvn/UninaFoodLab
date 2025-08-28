@@ -1,16 +1,18 @@
 package DAO;
 
 import Controller.Controller;
+import DAO.Interfaces.ChefDAOInterface;
 import DB.DBConnection;
 import Entity.*;
 import Exception.UserExceptions.ChangePasswordException.changePasswordException;
+import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class ChefDAO {
+public class ChefDAO implements ChefDAOInterface {
     DBConnection dbc;
     Statement stmt;
     Connection con;
@@ -25,11 +27,15 @@ public class ChefDAO {
     }
 
     // Methods
+    @Override
     public Chef login(String email, String password) throws emailNotFoundException, passwordErrataException,SQLException{
-        Chef chef = null;
+        Chef chef;
         email = email.trim();
-        String sql = "Select * from chef where email = '" + email + "' AND  passw = md5('" + password + "')";
+
+        String sql = "Select * from chef where email = ? AND  passw = md5(?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, email);
+        pstmt.setString(2, password);
         ResultSet rs = pstmt.executeQuery();
 
         if(rs.next()){
@@ -45,22 +51,11 @@ public class ChefDAO {
         return chef;
     }
 
-    private boolean existingEmail(String email) throws SQLException {
-        String sql = "Select 1 from chef where email = '" + email + "'";
-        PreparedStatement pstmt = con.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
-        if(rs.next()){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
+    @Override
     public Chef register(Chef chef) throws SQLException{
         String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
 
-        try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
+            PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, chef.getNome());
             pstmt.setString(2, chef.getCognome());
@@ -68,44 +63,40 @@ public class ChefDAO {
             pstmt.setString(4, chef.getPassw());
 
             int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted == 0) {
-                Exception exc  = new Exception("No row inserted");
-                throw exc;
-            }
 
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
+            if (rowsInserted == 0)
+                throw new SQLException();
+
+
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+
+                if (generatedKeys.next()){
+                    int id = generatedKeys.getInt("idchef");
                     chef.setIdchef(id);
                 } else {
-                    throw new SQLException("Creating chef failed, no ID obtained.");
+                    throw new SQLException();
                 }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
 
         return chef;
     }
 
-    public Boolean checkOldPassword(String oldPassword, Chef chef) {
-        int count = 0;
-        try {
-            String sql = "SELECT COUNT(*) FROM chef WHERE passw = md5('" + oldPassword + "') AND idchef = '" + chef.getIdchef() + "'";
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                count = rs.getInt(1);
+    @Override
+    public void checkOldPassword(String oldPassword, Chef chef) throws changePasswordException {
+        String sql = "SELECT 1 FROM chef WHERE passw = md5(?) AND idchef = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, oldPassword);
+            ps.setInt(2, chef.getIdchef());
+
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                throw new oldPasswordErrorException();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore", e);
+            throw new oldPasswordErrorException();
         }
-        return count > 0;
     }
 
+    @Override
     public void changeUserPassword(String newPassword, Chef chef) throws changePasswordException, SQLException {
         String sql = "UPDATE chef SET passw = md5(?) WHERE idchef = ?";
         PreparedStatement ps = con.prepareStatement(sql);
@@ -121,18 +112,8 @@ public class ChefDAO {
         }
     }
 
-    public Chef getChefById(int id) throws SQLException {
-        String sql = "SELECT * FROM chef WHERE idchef = " + id;
-        PreparedStatement pstmt = con.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
-
-        if (rs.next()) {
-            return createChefByRsForSetCorsi(rs);
-        } else {
-            return null;
-        }
-    }
     // Get methods
+    @Override
     public ArrayList<Corso> getCorsiFromChef(Chef chef){
 
         ArrayList<Corso> corsi = new ArrayList<>();
@@ -158,21 +139,7 @@ public class ChefDAO {
         return corsi;
     }
 
-    public ArrayList<Chef> getAll() {
-        ArrayList<Chef> chefs = new ArrayList<>();
-        String sql = "SELECT * FROM chef";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                Chef chef = createChefByRs(rs);
-                chefs.add(chef);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-        return chefs;
-    }
-
+    @Override
     public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
         String sql = "SELECT * FROM chef WHERE nome_chef = ? AND cognome = ? AND email = ?;";
         try {
@@ -191,6 +158,17 @@ public class ChefDAO {
         return null;
     }
 
+
+    private boolean existingEmail(String email) throws SQLException {
+        String sql = "Select 1 from chef where email = '" + email + "'";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            return true;
+        }else {
+            return false;
+        }
+    }
     private Chef createChefByRs(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
@@ -202,7 +180,6 @@ public class ChefDAO {
 
         return chef;
     }
-
     private Chef createChefByRsForSetCorsi(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
@@ -216,12 +193,6 @@ public class ChefDAO {
         return chef;
     }
 
-    public ArrayList<Chef> getChefsByRs(ResultSet rs) throws SQLException{
-        ArrayList<Chef> chefs = new ArrayList<>();
-        while(rs.next()){
-            chefs.add(createChefByRs(rs));
-        }
-        return chefs;
-    }
+
 
 }

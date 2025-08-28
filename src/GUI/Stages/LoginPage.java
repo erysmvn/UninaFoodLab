@@ -3,6 +3,8 @@ package GUI.Stages;
 import Controller.Controller;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
+import Exception.UserExceptions.RegisterException.emailEmptyException;
+import Exception.UserExceptions.RegisterException.passwordEmptyException;
 import GUI.Buttons.*;
 
 import javafx.geometry.*;
@@ -147,6 +149,8 @@ public class LoginPage extends Stage {
         return emailBox;
     }
 
+
+
     private ImageView createLogo() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoLoginPage.png")));
         ImageView logoView = new ImageView(logoImage);
@@ -161,25 +165,43 @@ public class LoginPage extends Stage {
 
     public void tryLogin(String email, String password) {
 
-        if (email.isEmpty() && password.isEmpty()) {
-            emailErrorLabel.setText("Inserire Email");
-            passwordErrorLabel.setText("Inserire Password");
-            errorLoginLabel.setText("");
-        } else if (email.isEmpty() && !password.isEmpty()) {
-            emailErrorLabel.setText("Inserire Email");
-            passwordErrorLabel.setText("");
-            errorLoginLabel.setText("");
+        try {
 
-        } else if (!email.isEmpty() && password.isEmpty()) {
-            passwordErrorLabel.setText("Inserire Password");
-            emailErrorLabel.setText("");
-            errorLoginLabel.setText("");
-        } else {
+            if (email.isEmpty() && password.isEmpty())
+                throw new emailEmptyException();
+
+            if (email.isEmpty())
+                throw new emailEmptyException();
+
+            if (password.isEmpty())
+                throw new passwordEmptyException();
+
             emailErrorLabel.setText("");
             passwordErrorLabel.setText("");
             errorLoginLabel.setText("");
             doLogin(emailField.getText(), passwordField.getText());
+
+        } catch (emailEmptyException eee) {
+            emailErrorLabel.setText("Inserire Email");
+
+            if(password.isEmpty())
+                passwordErrorLabel.setText("Inserire Password");
+            else
+                passwordErrorLabel.setText("");
+
+            errorLoginLabel.setText("");
+
+        } catch (passwordEmptyException pee) {
+            passwordErrorLabel.setText("Inserire Password");
+
+            if(email.isEmpty())
+               emailErrorLabel.setText("Inserire Email");
+            else
+               emailErrorLabel.setText("");
+
+            errorLoginLabel.setText("");
         }
+
     }
 
     public Button createButtonLogin() {
@@ -211,12 +233,12 @@ public class LoginPage extends Stage {
         }
     }
 
-    public void showErrorLoginLabel() {
+    public void showErrorLoginLabel(){
         errorLoginLabel.setTextFill(Color.RED);
         errorLoginLabel.setText("Errore nel recuperare i dati. Riprovare più tardi");
     }
 
-    public Button createButtonRegister() {
+    public Button createButtonRegister(){
         Button registerButton = new Button("Register");
 
         registerButton.setMinHeight(30);

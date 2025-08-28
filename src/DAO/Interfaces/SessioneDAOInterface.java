@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface SessioneDAOInterface {
 
-    public ArrayList<Sessione> getSessioniByNomeCorso(String nomeCorso)throws SQLException;
+    ArrayList<Sessione> getSessioniByNomeCorso(String nomeCorso)throws SQLException;
 
-    public Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;
+    Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;
 }

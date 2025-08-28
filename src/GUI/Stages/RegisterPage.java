@@ -36,6 +36,7 @@ public class RegisterPage extends Stage {
     private Label lblMatricolaError;
     private Label lblPasswordError;
     private Label lblRipetiPasswordError;
+    private Label inserimentoErratoLabel;
 
     public RegisterPage(Controller controller) {
 
@@ -226,8 +227,15 @@ public class RegisterPage extends Stage {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+
+
+        inserimentoErratoLabel = new Label("Errore inserimento dati. Riprovare più tardi.");
+        inserimentoErratoLabel.setTextFill(Color.RED);
+        inserimentoErratoLabel.setVisible(false);
         bottomBox.setAlignment(Pos.BOTTOM_CENTER);
-        bottomBox.getChildren().addAll(indietroButton, spacer, confermaButton);
+        bottomBox.getChildren().addAll(indietroButton, spacer,inserimentoErratoLabel, spacer2,confermaButton);
 
         return bottomBox;
     }
@@ -241,6 +249,7 @@ public class RegisterPage extends Stage {
         confermaButton.setOnAction(e -> {{
             try {
 //                resetAll();
+                inserimentoErratoLabel.setVisible(false);
                 validConferma();
                 String nome = txtNome.getText();
                 String cognome = txtCognome.getText();
@@ -257,7 +266,7 @@ public class RegisterPage extends Stage {
                     }
                     this.close();
                 } catch (SQLException exc) {
-                    exc.printStackTrace();
+                    inserimentoErratoLabel.setVisible(true);
                 }
             } catch (nameEmptyException NEE) {
                 txtNome.setStyle("-fx-border-color: red;");
@@ -294,8 +303,8 @@ public class RegisterPage extends Stage {
                 lblPasswordError.setText("Inserire password");
             }
         }});
-        this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
+        this.styleButton(confermaButton, Color.valueOf("#3A6698"));
         return confermaButton;
     }
 
@@ -401,7 +410,7 @@ public class RegisterPage extends Stage {
     }
 
     private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 20);
+        button.setPrefSize(100, 20);
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));

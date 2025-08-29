@@ -46,6 +46,8 @@ public class Corso {
         this.frequenzaSettimanale = frequenzaSettimanale;
         this.costo = costo;
         this.difficolta = difficolta;
+        String nameForPath = nome.replaceAll("\s+", "");
+        this.imagePath = "src/Media/CoursesImages/" + nameForPath + ".png";
     }
 
     public void setImagePath(String imagePath){
@@ -87,26 +89,22 @@ public class Corso {
     public void addRicetta(Ricetta ricetta) {
         ricetteTrattate.add(ricetta);
     }
-    public void stampaRicette() {
-        for (Ricetta ricetta: ricetteTrattate) {
-            System.out.println(ricetta.getNome());
-        }
-    }
+
     public void allocaArrayRicette() {
         this.ricetteTrattate = new ArrayList<Ricetta>();
     }
-    public void stampaChefs() {
-        for (Chef chef: chefs) {
-            System.out.println(chef.getNome() + "" + chef.getCognome());
-        }
-    }
+
     public String getStringOfChefs() {
         String toReturn = "";
         for (Chef chef: chefs) {
             toReturn += chef.getNome() + " " + chef.getCognome() + ", ";
         }
+        if (toReturn == "") {
+            return "";
+        }
         return toReturn.substring(0, toReturn.length() - 2);
     }
+
     public ArrayList<Chef> getChefs() {
         return chefs;
     }

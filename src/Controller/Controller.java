@@ -9,7 +9,6 @@ import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorExceptio
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 import Exception.UserExceptions.SupportException.emailClientNotFoundException;
-import GUI.Pane.CalendarioPanel;
 import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
@@ -203,7 +202,7 @@ public class Controller {
         }
     }
 
-    public void openCreateCorsoPage(Utente utente) {
+    public void openCreateCorsoPage() {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
             if (getUtente() instanceof Chef chef) {
                 createCorsoPage = new CreateCorsoPage(this, chef);
@@ -394,7 +393,7 @@ public boolean isStudent(){
 
     public void deleteCorso(Corso corso) {
         CorsoDAO corsoDao = getCorsoDAO();
-//        corsoDao.delete(corso);
+        corsoDao.delete(corso);
     }
 
     public ArrayList<Corso> getAllCourses(){
@@ -402,7 +401,7 @@ public boolean isStudent(){
         return corsoDao.getAllCourses();
     }
 
-    public void createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
+    public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
@@ -411,6 +410,7 @@ public boolean isStudent(){
         } else {
             throw new createCorsoErrorException();
         }
+        return newCorso;
     }
 
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
@@ -452,14 +452,9 @@ public boolean isStudent(){
         return tipologiaDao.getAll();
     }
 
-    public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
+    public TipologiaCorso getOrAddTipologiaCorso(String nomeTipo) {
         TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
         return tipologiaDao.addNewTipologiaCorso(nomeTipo);
-    }
-
-    public TipologiaCorso getTipologiaByName(String nomeTipo) {
-        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
-        return tipologiaDao.getTipologiaByName(nomeTipo);
     }
 
 

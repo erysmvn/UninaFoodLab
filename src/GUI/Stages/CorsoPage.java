@@ -23,6 +23,7 @@ import javafx.stage.StageStyle;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class CorsoPage extends Stage {
 
@@ -195,8 +196,9 @@ public class CorsoPage extends Stage {
                 this.close();
             } else {
                 controller.subscribeToCourse(corso);
+                ArrayList<Corso> corsi = controller.getUtente().getCorsi();
+                corsi.add(corso);
                 setIscrittoCorso(subscribeButton);
-                
             }
         });
 
@@ -326,19 +328,26 @@ public class CorsoPage extends Stage {
         descBox.getChildren().add(ricetteTrattate);
         VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
-        for (Ricetta r : corso.getRicetteTrattate()) {
-            Label ricettaLabel = new Label("   \u2022 " + r.getNome());
-            ricettaLabel.setFont(Font.font(17));;
-            ricettaLabel.setTextFill(Color.valueOf("#000000"));
-            ricettaLabel.setAlignment(Pos.CENTER_LEFT);
-            ricettaLabel.setStyle("-fx-cursor: hand;");
+        if (corso.getRicetteTrattate().size() > 0) {
+            for (Ricetta r : corso.getRicetteTrattate()) {
+                Label ricettaLabel = new Label("   \u2022 " + r.getNome());
+                ricettaLabel.setFont(Font.font(17));;
+                ricettaLabel.setTextFill(Color.valueOf("#000000"));
+                ricettaLabel.setAlignment(Pos.CENTER_LEFT);
+                ricettaLabel.setStyle("-fx-cursor: hand;");
 
-            // Evento click sulla label
-            ricettaLabel.setOnMouseClicked(event -> {
-                controller.openRicettaPage(r);
-            });
+                ricettaLabel.setOnMouseClicked(event -> {
+                    controller.openRicettaPage(r);
+                });
 
-            descBox.getChildren().add(ricettaLabel);
+                descBox.getChildren().add(ricettaLabel);
+            }
+        } else {
+            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
+            noRicetteTrattate.setFont(Font.font(28));
+            noRicetteTrattate.setTextFill(Color.valueOf("#000000"));
+            noRicetteTrattate.setAlignment(Pos.CENTER);
+            descBox.getChildren().add(noRicetteTrattate);
         }
     }
 }

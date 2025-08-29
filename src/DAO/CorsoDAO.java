@@ -235,7 +235,7 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         Corso corso = null;
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            pstmt.setString(1, corso.getNome());
+            pstmt.setString(1, Title);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     corso = createCorsoByResultSet(rs);

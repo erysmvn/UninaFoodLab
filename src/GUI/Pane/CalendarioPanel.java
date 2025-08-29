@@ -149,24 +149,26 @@ public class CalendarioPanel extends Pane {
         int i = 0;
         for (ArrayList<Sessione> listaSessioni : sessioniDeiCorsi) {
             Corso corso = corsi.get(i++);
-            for (Sessione s : listaSessioni) {
-                LocalDateTime start = s.getOra();
-                LocalDateTime end = start.plusMinutes((long) (s.getDurata() * 60));
-                String titolo;
-                if (s instanceof SessionePresenza sp) {
-                    titolo = corso.getNome() + "\nLezione in presenza\n" + sp.getLuogo() + "\nclick for info";
-                    entry = new Entry<>(titolo);
-                    entry.setInterval(start, end);
-                    entry.setUserObject(sp);
-                    sessioniPresenzaCalendar.addEntry(entry);
-                } else if (s instanceof SessioneOnline so) {
-                    titolo = corso.getNome() + "\nLezione online\n" + so.getLinkIncontro() + "\nclick for info";
-                    entry = new Entry<>(titolo);
-                    entry.setInterval(start, end);
-                    entry.setUserObject(so);
-                    sessioniOnlineCalendar.addEntry(entry);
-                }
+            if (listaSessioni != null) {
+                for (Sessione s : listaSessioni) {
+                    LocalDateTime start = s.getOra();
+                    LocalDateTime end = start.plusMinutes((long) (s.getDurata() * 60));
+                    String titolo;
+                    if (s instanceof SessionePresenza sp) {
+                        titolo = corso.getNome() + "\nLezione in presenza\n" + sp.getLuogo() + "\nclick for info";
+                        entry = new Entry<>(titolo);
+                        entry.setInterval(start, end);
+                        entry.setUserObject(sp);
+                        sessioniPresenzaCalendar.addEntry(entry);
+                    } else if (s instanceof SessioneOnline so) {
+                        titolo = corso.getNome() + "\nLezione online\n" + so.getLinkIncontro() + "\nclick for info";
+                        entry = new Entry<>(titolo);
+                        entry.setInterval(start, end);
+                        entry.setUserObject(so);
+                        sessioniOnlineCalendar.addEntry(entry);
+                    }
 
+                }
             }
         }
     }
@@ -176,14 +178,16 @@ public class CalendarioPanel extends Pane {
     private void setFirstSessionDay() {
         LocalDateTime firstDate = null;
         for (ArrayList<Sessione> lista : sessioniDeiCorsi) {
-            for (Sessione s : lista) {
-                if (firstDate == null || s.getOra().isBefore(firstDate)) {
-                    firstDate = s.getOra();
+            if (lista != null) {
+                for (Sessione s : lista) {
+                    if (firstDate == null || s.getOra().isBefore(firstDate)) {
+                        firstDate = s.getOra();
+                    }
                 }
             }
-        }
-        if (firstDate != null) {
-            calendarView.setDate(firstDate.toLocalDate());
+            if (firstDate != null) {
+                calendarView.setDate(firstDate.toLocalDate());
+            }
         }
     }
 

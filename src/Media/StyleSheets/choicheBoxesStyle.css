@@ -1,0 +1,90 @@
+/* TEXTFIELD - stile macOS minimal */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;       /* angoli leggermente arrotondati */
+    -fx-background-radius: 6;
+    -fx-padding: 4 8 4 8;       /* interno sottile */
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-text-fill: #333333;
+    -fx-min-height: 24px;
+    -fx-cursor: text;
+}
+
+.text-field:hover {
+    -fx-border-color: #a0a0a0;
+    -fx-background-color: #fafafa;
+}
+
+.text-field:focused {
+    -fx-border-color: #007aff; /* blu macOS */
+    -fx-background-color: #ffffff;
+}
+
+/* CHOICEBOX - stile minimal */
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-cursor: hand;
+    -fx-min-height: 24px;
+}
+
+.choice-box:hover {
+    -fx-border-color: #a0a0a0;
+    -fx-background-color: #fafafa;
+}
+
+.choice-box:focused {
+    -fx-border-color: #007aff;
+}
+
+/* COMBOBOX - stile minimal */
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-cursor: hand;
+    -fx-min-height: 24px;
+}
+
+.combo-box:hover {
+    -fx-border-color: #a0a0a0;
+    -fx-background-color: #fafafa;
+}
+
+.combo-box:focused {
+    -fx-border-color: #007aff;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 4 8;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-text-fill: #333333;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #000000;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}

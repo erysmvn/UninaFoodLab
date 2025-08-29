@@ -116,18 +116,19 @@ public class Controller {
         }
     }
 
+    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
+        for(CorsoPage cp : corsoPages){
+            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
+                return cp;
+            }
+        }
+        return null;
+    }
+
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
         ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
         confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
         confermaPartecipazionePage.show();
-    }
-
-
-
-    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
-        CorsoDAO corsoDAO = getCorsoDAO();
-        Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
-        return corso.getChefs();
     }
 
     public void openSessionePage(Sessione sessione){
@@ -246,23 +247,20 @@ public boolean isStudent(){
          return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
     }
 
-    public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza)throws SQLException{
+    public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
         FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
         foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
-
         if (email.contains("@studenti.unina.it")) {
             StudenteDAO studenteDao = getStudenteDAO();
             utente = studenteDao.login(email, password);
-
         } else {
             ChefDAO chefDao = getChefDAO();
             utente = chefDao.login(email, password);
         }
-
         homePage.setUtente(utente);
         this.corsoPages.clear();
     }
@@ -356,6 +354,12 @@ public boolean isStudent(){
         }
     }
 
+    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
+        CorsoDAO corsoDAO = getCorsoDAO();
+        Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
+        return corso.getChefs();
+    }
+
     public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
         ChefDAO chefDao = getChefDAO();
         return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
@@ -403,7 +407,6 @@ public boolean isStudent(){
         Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
             addChefsToCorso(newCorso.getIdCorso(), chefs);
-            System.out.println(newCorso.getIdCorso());
             addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
         } else {
             throw new createCorsoErrorException();
@@ -413,7 +416,6 @@ public boolean isStudent(){
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {
-            System.out.println(chef.getIdchef());
             corsoDao.addChefToCorso(idCorso, chef);
         }
     }

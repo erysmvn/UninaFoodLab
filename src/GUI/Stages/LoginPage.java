@@ -4,6 +4,7 @@ import Controller.Controller;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 import Exception.UserExceptions.RegisterException.emailEmptyException;
+import Exception.UserExceptions.RegisterException.emailNotValidException;
 import Exception.UserExceptions.RegisterException.passwordEmptyException;
 import GUI.Buttons.*;
 
@@ -172,6 +173,9 @@ public class LoginPage extends Stage {
 
             if (email.isEmpty())
                 throw new emailEmptyException();
+            else if (!email.contains("@") || !email.contains(".") || email.lastIndexOf('.') < email.indexOf('@')) {
+                throw new emailNotValidException();
+            }
 
             if (password.isEmpty())
                 throw new passwordEmptyException();
@@ -191,6 +195,8 @@ public class LoginPage extends Stage {
 
             errorLoginLabel.setText("");
 
+        } catch (emailNotValidException eee) {
+            emailErrorLabel.setText("Email non valida");
         } catch (passwordEmptyException pee) {
             passwordErrorLabel.setText("Inserire Password");
 
@@ -225,9 +231,11 @@ public class LoginPage extends Stage {
             controller.loginMethod(email, password);
             this.close();
         } catch(emailNotFoundException emailExc){
-            emailErrorLabel.setText("Email non trovata");
-        }catch (passwordErrataException passwordExc){
-            passwordErrorLabel.setText("Password non trovata");
+            emailErrorLabel.setText("Email errata");
+            // TODO la password non deve essere controllata se non trova la mail
+            // TODO campo mail non deve essere controllata se non corretto
+        } catch (passwordErrataException passwordExc){
+            passwordErrorLabel.setText("Password errata");
         } catch (SQLException sqle) {
             showErrorLoginLabel();
         }

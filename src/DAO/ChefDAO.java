@@ -141,7 +141,7 @@ public class ChefDAO implements ChefDAOInterface {
 
     @Override
     public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
-        String sql = "SELECT * FROM chef WHERE nome_chef = ? AND cognome = ? AND email = ?;";
+        String sql = "SELECT * FROM chef WHERE UPPER(nome_chef) = UPPER(?) AND UPPER(cognome) = UPPER(?) AND UPPER(email) = UPPER(?);";
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, nome);

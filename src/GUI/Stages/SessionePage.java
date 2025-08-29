@@ -15,9 +15,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.awt.*;
+import java.net.URI;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -30,6 +34,7 @@ public class SessionePage extends Stage {
     private VBox infoBox;
     private HBox topHbox;
     private VBox footerVbox;
+
     Label confermarePartecipazioneLabel;
 
     public SessionePage(Controller controller) {
@@ -72,7 +77,6 @@ public class SessionePage extends Stage {
         this.sessione = sessione;
 
         Corso corso = sessione.getCorso();
-        ArrayList<Chef> chefs = corso.getChefs();
 
         topHbox.getChildren().clear();
         infoBox.getChildren().clear();
@@ -94,9 +98,18 @@ public class SessionePage extends Stage {
         orarioVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(orarioMeta, orarioVal));
 
+
+        DecimalFormat df = new DecimalFormat("#.##");
+
         Text durataMeta = new Text("Durata: ");
         durataMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
-        Text durataVal = new Text(sessione.getDurata() + " ore");
+        Text durataVal = new Text();
+        if (sessione.getDurata() >= 2) {
+            durataVal.setText(df.format(sessione.getDurata()) + " ore");
+        } else {
+            durataVal.setText(df.format(sessione.getDurata()) + " ora");
+        }
+
         durataVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(durataMeta, durataVal));
 
@@ -124,14 +137,35 @@ public class SessionePage extends Stage {
             Hyperlink linkVal = new Hyperlink(so.getLinkIncontro());
             linkVal.setFont(Font.font(18));
             linkVal.setTextFill(Color.BLUE);
+
+            linkVal.setOnAction(e -> {
+                try {
+                    String rawUrl = so.getLinkIncontro();
+                    if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+                        rawUrl = "https://" + rawUrl;
+                    }
+                    URI uri = new URI(rawUrl);
+                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        Desktop.getDesktop().browse(uri);
+                    } else {
+                        Runtime.getRuntime().exec(new String[]{"open", uri.toString()});
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
             infoBox.getChildren().add(new TextFlow(linkMeta, linkVal));
         }
 
-        for(Chef ch: chefs){
-            Label chefLabel = new Label("Chef: " + ch.getNome()+" "+ ch.getCognome());
-            chefLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
-            infoBox.getChildren().add(chefLabel);
-       }
+        controller.setChefs(corso);
+
+        Text chefLabel = new Text("Chef: ");
+        chefLabel.setStyle("-fx-font-weight: bold;");
+        chefLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
+        Text chefValue = new Text(corso.getStringOfChefs());
+        chefValue.setFont(Font.font("System", 18));
+        infoBox.getChildren().add(new TextFlow(chefLabel, chefValue));
 
         infoBox.getChildren().add(confermarePartecipazioneLabel);
         Region spacer = new Region();

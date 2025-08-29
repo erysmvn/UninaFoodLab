@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -42,6 +43,7 @@ public class CreateCorsoPage extends Stage {
 
     VBox root;
     HBox functionalityButtons;
+    HBox titleBox;
     HBox container;
     VBox fieldsBox;
     VBox uploadPhotoBox;
@@ -88,13 +90,17 @@ public class CreateCorsoPage extends Stage {
             }
         });
 
+        scene.getStylesheets().add(
+                getClass().getResource("/Media/StyleSheets/choicheBoxesStyle.css").toExternalForm()
+        );
+
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
     }
 
     private void setRootStyle(){
         root.setPadding(new Insets(20, 20, 20, 20));
-        root.setSpacing(40);
+        root.setSpacing(20);
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -107,24 +113,55 @@ public class CreateCorsoPage extends Stage {
         )));
 
         createFunctionalityButtonsBox();
+        createTitleBox();
         createContainerBox();
         createConfermaButtonsBox();
-        root.getChildren().addAll(functionalityButtons, container, confermaButtonBox);
+
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+
+        Region bottomSpacer = new Region();
+        VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
+
+        root.getChildren().addAll(functionalityButtons, titleBox, container, spacer, confermaButtonBox, bottomSpacer);
+    }
+
+    private void createTitleBox() {
+        titleBox = new HBox();
+        titleBox.setAlignment(Pos.TOP_CENTER);
+        Label title = new Label("Aggiungi un nuovo corso !");
+        title.setTextAlignment(TextAlignment.CENTER);
+        title.setStyle(
+                "-fx-font-weight: bold;" +
+                        "-fx-font-size: 28;" +
+                        "-fx-text-fill: #3A6698;"
+        );
+
+        titleBox.getChildren().add(title);
     }
 
     private void createContainerBox() {
         container = new HBox(15);
         container.setAlignment(Pos.CENTER);
-        container.setSpacing(10);
+        container.setSpacing(0);
         createFieldsBox();
         createUploadPhotoBox();
-        container.getChildren().addAll(fieldsBox, uploadPhotoBox);
+
+        Region leftSpacer = new Region();
+        Region middleSpacer = new Region();
+        Region rightSpacer = new Region();
+
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+        HBox.setHgrow(middleSpacer, Priority.ALWAYS);
+        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+
+        container.getChildren().addAll(leftSpacer, fieldsBox, middleSpacer, uploadPhotoBox, rightSpacer);
     }
 
     private void createFieldsBox(){
         fieldsBox = new VBox(15);
 
-        fieldsBox.getChildren().addAll(createNomeBox(), createPriceBox(), createTypeBox(),  createFreqBox(), createDifficoltaBox());
+        fieldsBox.getChildren().addAll(createNomeBox(), createPriceBox(), createFreqBox(), createTypeBox(), createDifficoltaBox());
     }
 
     private VBox createNomeBox() {
@@ -204,9 +241,6 @@ public class CreateCorsoPage extends Stage {
             addChefToCourse( () -> {
                 validateChef();
                 updateChefsCount(chefsCount);
-                // TODO add chef to arraylist
-                // per ogni chef inserito si controlla se questo esiste gia, se non esiste aggiungi al DB
-                // passo l'arraylist e faccio insert into tiene di ogni chef nell'arraylist per nuovo corso
             });
         });
 
@@ -262,17 +296,6 @@ public class CreateCorsoPage extends Stage {
                 buttons
         );
 
-
-/*
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-        Region spacer2 = new Region();
-        VBox.setVgrow(spacer2, Priority.ALWAYS);
-        Region spacer3 = new Region();
-        spacer3.setPrefHeight(20);
-  */
-
-
         Scene scene = new Scene(root, 500, 600);
         scene.setFill(Color.TRANSPARENT);
         addChefToCourseStage.setScene(scene);
@@ -284,9 +307,6 @@ public class CreateCorsoPage extends Stage {
                 if (newChef != null) {
                     chefAggiunti.add(newChef);
                     addChefToCourseStage.close();
-                    for (Chef chef : chefAggiunti) {
-                        System.out.println(chef.getEmail());
-                    }
                 } else {
                     error.setText("Lo chef deve essere registrato \n alla piattaforma");
                     error.setTextFill(Color.RED);
@@ -377,7 +397,13 @@ public class CreateCorsoPage extends Stage {
 
     private void createUploadPhotoBox() {
         uploadPhotoBox = new VBox(15);
-        uploadPhotoBox.getChildren().addAll(createUploadPhotoButtonBox(), createChefsBox());
+
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        VBox.setVgrow(spacer2, Priority.ALWAYS);
+
+        uploadPhotoBox.getChildren().addAll(createUploadPhotoButtonBox(), spacer, spacer2, createChefsBox());
     }
 
     private VBox createUploadPhotoButtonBox() {
@@ -550,7 +576,7 @@ public class CreateCorsoPage extends Stage {
     private void createConfermaButtonsBox() {
         confermaButtonBox = new VBox(15);
         confermaButtonBox.setAlignment(Pos.BOTTOM_CENTER);
-        confermaButtonBox.setSpacing(5);
+        confermaButtonBox.setSpacing(20);
         confermaButtonBox.getChildren().add(createConfermaButton());
     }
 

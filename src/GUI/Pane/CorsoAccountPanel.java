@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class CorsoAccountPanel extends Pane {
@@ -178,12 +179,10 @@ public class CorsoAccountPanel extends Pane {
             if (controller.getUtente() instanceof Studente studente) {
                 showConfirmPanel("Sei sicuro di voler annullare l'iscrizione al corso?", () -> {
                     controller.unsubscribeToCourse(corso);
-
                 });
             } else if (controller.getUtente() instanceof Chef chef) {
                 showConfirmPanel("Sei sicuro di voler eliminare il corso?", () -> {
                     controller.deleteCorso(corso);
-
                 });
             }
         });
@@ -227,7 +226,11 @@ public class CorsoAccountPanel extends Pane {
 
         yesButton.setOnAction(e -> {
             onConfirm.run();
+
+            ArrayList<Corso> corsi = controller.getUtente().getCorsi();
+            corsi.remove(corso);
             controller.refreshCorsi(parent);
+
             confirmStage.close();
         });
 

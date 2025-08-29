@@ -2,10 +2,12 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.Chef;
+import Entity.Corso;
 import Entity.TipologiaCorso;
 import Exception.CorsoExceptions.CreateCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
+import GUI.Pane.ElencoCorsiPanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -502,34 +504,19 @@ public class CreateCorsoPage extends Stage {
                frequency = frequency.substring(0, 1);
                int freq = Integer.parseInt(frequency);
 
-               String tipologiaName = corsoType.getValue();
-               Boolean newTipologia = false;
-               for (TipologiaCorso tipo : tipologie) {
-                   if (tipologiaName == tipo.getNome()) {
-                       newTipologia = false;
-                       break;
-                   } else {
-                       newTipologia = true;
-                   }
-               }
-
-               TipologiaCorso tp;
-
-               if (newTipologia) {
-                   tp = controller.addNewTipologiaCorso(tipologiaName);
-               } else {
-                    tp = controller.getTipologiaByName(tipologiaName);
-               }
+               TipologiaCorso tp = controller.getOrAddTipologiaCorso(corsoType.getValue());
 
                String difficolta = corsoDifficulty.getValue();
 
-               // controller addCorso (nome, prezzo, frequenza, difficolta)
                try {
-                   controller.createNewCorso(nomeCorso, price, freq, difficolta, tp, chefAggiunti);
+                   Corso newCorso = controller.createNewCorso(nomeCorso, price, freq, difficolta, tp, chefAggiunti);
+                   controller.getUtente().getCorsi().add(newCorso);
                } catch (createCorsoErrorException CCEE) {
                    CCEE.printStackTrace();
                }
-               // controller addCaratterizzato tra nuovo corso e tipologia
+
+
+               this.close();
 
            } catch (nameCorsoNotFoundException NCNFE) {
                corsoName.setStyle("-fx-border-color: red;");

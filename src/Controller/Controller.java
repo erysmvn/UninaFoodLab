@@ -14,6 +14,7 @@ import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
+import javafx.scene.layout.VBox;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class Controller {
     private RegisterPage registerPage;
     private ChangePasswordPage modificaPasswordPage;
     private CreateCorsoPage createCorsoPage;
-
+    private AggiungiSessionePage aggiungiSessionePage;
     private DBConnection dbc;
 
     private Utente utente;
@@ -35,7 +36,7 @@ public class Controller {
     private ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
     private ArrayList<SessionePage> sessionePages = new ArrayList<>();
     private ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
-
+    private ArrayList<AggiungiRicettaPage> aggiungiRicettaPages = new ArrayList<>();
     public Controller(){
         dbc = new DBConnection();
         dbc.DBConnect();
@@ -118,9 +119,8 @@ public class Controller {
 
     private CorsoPage isCorsoPageAlreadyOpened(Corso c){
         for(CorsoPage cp : corsoPages){
-            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
+            if(cp.getCorso().getIdCorso() == c.getIdCorso())
                 return cp;
-            }
         }
         return null;
     }
@@ -142,6 +142,10 @@ public class Controller {
         confermaPartecipazionePage.show();
     }
 
+    public ArrayList<Ingrediente> getAllIngredientes()throws SQLException{
+        IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
+        return ingredienteDAO.getAllIngredientes();
+    }
 
 
     public ArrayList<Chef> getChefsByIdCorso(int idcorso){
@@ -383,7 +387,10 @@ public boolean isStudent(){
     }
 
     public void openAggiungiSessionePage(Corso corso){
-        AggiungiSessionePage aggiungiSessionePage = new AggiungiSessionePage(this);
+        if(aggiungiSessionePage != null)
+                aggiungiSessionePage.close();
+
+        aggiungiSessionePage = new AggiungiSessionePage(this);
         aggiungiSessionePage.initPage(corso);
         aggiungiSessionePage.show();
     }
@@ -522,8 +529,13 @@ public boolean isStudent(){
         Platform.exit();
     }
 
+    public void updateRicetteAggiunte(Ricetta ricetta) {
+        aggiungiSessionePage.updateRicetteAggiunte(ricetta);
+    }
+
     public void openAggiungiRicettaPage(){
-        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage();
+        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this);
+        aggiungiRicettaPages.add(aggiungiRicettaPage);
         aggiungiRicettaPage.show();
     }
 }

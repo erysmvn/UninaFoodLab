@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class RicettaDAO implements RicettaDAOInterface {
     DBConnection dbc;
-    Statement stmt;
+
     Connection con;
     Controller controller;
 
@@ -21,7 +21,6 @@ public class RicettaDAO implements RicettaDAOInterface {
     public RicettaDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
-        stmt = dbc.getStatement();
         this.controller = controller;
     }
 
@@ -42,18 +41,23 @@ public class RicettaDAO implements RicettaDAOInterface {
 
     // Get Methods
     @Override
-    public void getIngredienti(Ricetta ricetta){
+    public void getIngredienti(Ricetta ricetta) {
         ricetta.allocaArrayIngredienti();
         Ingrediente ingrediente = null;
-        String sql = "SELECT DISTINCT idIngrediente, nome_ingrediente, allergeni, categoria " +
-                "FROM ingrediente NATURAL JOIN forma NATURAL JOIN ricetta " +
-                "WHERE idricetta = " + "'" +ricetta.getIdRicetta()+"'";
 
-        try  {
-            try (ResultSet rs = stmt.executeQuery(sql)) {
+        String sql = "SELECT DISTINCT idIngrediente, nome_ingrediente, allergeni, categoria " +
+                "FROM ingrediente " +
+                "NATURAL JOIN forma " +
+                "NATURAL JOIN ricetta " +
+                "WHERE idricetta = ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, ricetta.getIdRicetta());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     ingrediente = new Ingrediente(
-                            rs.getInt("idingrediente"),
+                            rs.getInt("idIngrediente"),
                             rs.getString("nome_ingrediente"),
                             rs.getString("allergeni"),
                             rs.getString("categoria")
@@ -67,6 +71,7 @@ public class RicettaDAO implements RicettaDAOInterface {
             exc.printStackTrace();
         }
     }
+
     @Override
     public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{
         ArrayList<Ricetta> ricette = new ArrayList<>();
@@ -79,19 +84,24 @@ public class RicettaDAO implements RicettaDAOInterface {
         }
         return ricette;
     }
+
     @Override
     public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) {
-        ricetta.allocaArrayIngredienti();
         String sql = "SELECT quantità, unità " +
-                "FROM forma NATURAL JOIN ricetta NATURAL JOIN ingrediente " +
-                "WHERE idricetta = " + "'" +ricetta.getIdRicetta()+"' AND idingrediente = " + "'" +ingrediente.getIdIngrediente()+"'";
+                "FROM forma " +
+                "NATURAL JOIN ricetta " +
+                "NATURAL JOIN ingrediente " +
+                "WHERE idricetta = ? AND idingrediente = ?";
+
         String toReturn = "";
-        try  {
-            try (ResultSet rs = stmt.executeQuery(sql)) {
-                while (rs.next()) {
-                    toReturn += rs.getString("quantità");
-                    toReturn += " ";
-                    toReturn += rs.getString("unità");
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, ricetta.getIdRicetta());
+            pstmt.setInt(2, ingrediente.getIdIngrediente());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    toReturn = rs.getString("quantità") + " " + rs.getString("unità");
                 }
             }
         } catch (SQLException e) {
@@ -99,23 +109,33 @@ public class RicettaDAO implements RicettaDAOInterface {
         } catch (Exception exc) {
             exc.printStackTrace();
         }
+
         return toReturn;
     }
+
     @Override
-    public void getAllergeniRicetta(Ricetta ricetta){
+    public void getAllergeniRicetta(Ricetta ricetta) {
         ricetta.allocaArrayAllergeniRicetta();
         String sql = "SELECT DISTINCT allergeni " +
-                "FROM ingrediente NATURAL JOIN forma NATURAL JOIN ricetta " +
-                "WHERE idricetta = " + "'" +ricetta.getIdRicetta()+"'";
+                "FROM ingrediente " +
+                "NATURAL JOIN forma " +
+                "NATURAL JOIN ricetta " +
+                "WHERE idricetta = ?";
+
         Set<String> allergeniSet = new HashSet<>();
-        try  {
-            try (ResultSet rs = stmt.executeQuery(sql)) {
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, ricetta.getIdRicetta());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     String allergeniStr = rs.getString("allergeni");
                     if (allergeniStr != null && !allergeniStr.isEmpty()) {
                         String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
                         for (String allergene : allergeniArray) {
-                            allergeniSet.add(allergene);
+                            if (!"Nessuno".equalsIgnoreCase(allergene)) {
+                                allergeniSet.add(allergene);
+                            }
                         }
                     }
                 }
@@ -127,11 +147,7 @@ public class RicettaDAO implements RicettaDAOInterface {
         }
 
         for (String allergene : allergeniSet) {
-            if (!"Nessuno".equals(allergene)) {
-                ricetta.addAllergeniRicetta(allergene);
-            }
+            ricetta.addAllergeniRicetta(allergene);
         }
     }
-
-
 }

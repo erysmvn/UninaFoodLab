@@ -48,6 +48,11 @@ public class AggiungiRicettaPage extends Stage {
 
         Scene scene = new Scene(root, 500, 700);
         scene.setFill(Color.TRANSPARENT);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
+        );
+
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
     }

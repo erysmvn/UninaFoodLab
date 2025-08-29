@@ -14,8 +14,7 @@ import java.util.ArrayList;
 
 public class CorsoDAO implements CorsoDAOInterface {
     DBConnection dbc;
-    Statement stmt;
-    ResultSet rs;
+
     Connection con;
     Controller controller;
 
@@ -23,12 +22,10 @@ public class CorsoDAO implements CorsoDAOInterface {
     public CorsoDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
-        stmt = dbc.getStatement();
         this.controller = controller;
     }
 
     // Methods
-
     @Override
     public Corso createNewCorso(String nome, double price, int frequenza, String difficolta) {
         String sql = "INSERT INTO corso (nome_corso, costo, frequenza_settimanale, difficolta) " +
@@ -43,7 +40,6 @@ public class CorsoDAO implements CorsoDAOInterface {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     int id = rs.getInt("idcorso");
-                    System.out.println("idcorso: " + id);
                     return new Corso(id, nome, (float) price, frequenza, Difficolta.valueOf(difficolta));
                 } else {
                     throw new SQLException("Creating corso failed, no ID obtained.");
@@ -58,10 +54,6 @@ public class CorsoDAO implements CorsoDAOInterface {
     @Override
     public void addChefToCorso(int idCorso, Chef chef) {
         String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?,?)";
-
-        System.out.println(idCorso);
-        System.out.println(chef.getIdchef());
-
 
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);
@@ -101,12 +93,13 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     @Override
     public void delete(Corso corso) {
-        String sql = "DELETE FROM Corso WHERE idcorso = '" + corso.getIdCorso() + "'";
+        String sql = "DELETE FROM Corso WHERE idcorso = ?";
 
-        try  {
-            stmt.executeUpdate(sql);
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, corso.getIdCorso());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -238,44 +231,50 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     @Override
     public Corso getCorsoByTitle(String Title) {
-
-        String sql = "SELECT * FROM corso WHERE nome_corso = " + "'" +Title+ "'";
+        String sql = "SELECT * FROM corso WHERE nome_corso = ?";
 
         Corso corso = null;
-        try {
-            rs = stmt.executeQuery(sql);
-
-            if (rs.next()) {
-                corso = createCorsoByResultSet(rs);
-            }else{
-                System.out.println("Corso non trovato");
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, corso.getNome());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    corso = createCorsoByResultSet(rs);
+                } else {
+                    System.out.println("Corso non trovato");
+                }
             }
-        }catch (SQLException sqle){
+        } catch (SQLException sqle) {
             System.out.println("Errore nel cercare il corso");
-            System.out.println(sqle.getMessage());
-        }catch (Exception e){
+            sqle.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return corso;
     }
 
     @Override
-    public void getRicetteTrattate(Corso corso){
+    public void getRicetteTrattate(Corso corso) {
         corso.allocaArrayRicette();
         Ricetta ricetta = null;
-        String sql = "SELECT DISTINCT idricetta, nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
-                "FROM corso NATURAL JOIN sessione NATURAL JOIN tratta NATURAL JOIN ricetta " +
-                "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
 
-        try  {
-            try (ResultSet rs = stmt.executeQuery(sql)) {
+        String sql = "SELECT DISTINCT idricetta, nome_ricetta, descrizione_ricetta, tempo_Di_Preparazione, autore " +
+                "FROM corso " +
+                "NATURAL JOIN sessione " +
+                "NATURAL JOIN tratta " +
+                "NATURAL JOIN ricetta " +
+                "WHERE idcorso = ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, corso.getIdCorso());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     ricetta = new Ricetta(
                             rs.getInt("idricetta"),
                             rs.getString("nome_ricetta"),
-                    rs.getString("descrizione_ricetta"),
-                    rs.getInt("tempo_Di_Preparazione"),
-                    rs.getString("autore")
+                            rs.getString("descrizione_ricetta"),
+                            rs.getInt("tempo_Di_Preparazione"),
+                            rs.getString("autore")
                     );
                     corso.addRicetta(ricetta);
                 }
@@ -305,15 +304,20 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public void setChefs(Corso corso){
+    public void setChefs(Corso corso) {
         corso.allocaArrayChefs();
         Chef chef = null;
-        String sql = "SELECT DISTINCT idchef, nome_chef, cognome, email, passw " +
-                "FROM chef NATURAL JOIN tiene NATURAL JOIN corso " +
-                "WHERE idcorso = " + "'" +corso.getIdCorso()+"'";
 
-        try  {
-            try (ResultSet rs = stmt.executeQuery(sql)) {
+        String sql = "SELECT DISTINCT idchef, nome_chef, cognome, email, passw " +
+                "FROM chef " +
+                "NATURAL JOIN tiene " +
+                "NATURAL JOIN corso " +
+                "WHERE idcorso = ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, corso.getIdCorso());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     chef = new Chef(
                             rs.getInt("idchef"),

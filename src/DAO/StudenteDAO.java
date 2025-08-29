@@ -15,8 +15,7 @@ import java.util.ArrayList;
 
 public class StudenteDAO implements StudenteDAOInterface {
     DBConnection dbc;
-    Statement stmt;
-    ResultSet rs;
+
     Connection con;
     Controller controller;
 
@@ -24,30 +23,41 @@ public class StudenteDAO implements StudenteDAOInterface {
     public StudenteDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         con = dbc.getConnection();
-        stmt = dbc.getStatement();
         this.controller = controller;
     }
+
     // Methods
     @Override
-    public Studente login(String email, String password) throws emailNotFoundException, passwordErrataException,SQLException {
+    public Studente login(String email, String password)
+            throws emailNotFoundException, passwordErrataException, SQLException {
+
         Studente studente = null;
         email = email.trim();
-        String sql = "Select * from studente where email = '" + email + "' AND passw = md5('" + password + "')";
-        rs = stmt.executeQuery(sql);
-        if(rs.next()){
-            studente = new Studente(
-                    rs.getString("matricola"),
-                    rs.getString("nome_stud"),
-                    rs.getString("cognome"),
-                    rs.getString("email"),
-                    rs.getString("passw")
-            );
-            studente.setCorsi(getCorsiFromStudente(studente));
-        }else{
-            if (existingEmail(email)) {
-                throw new passwordErrataException();
-            }else{
-                throw new emailNotFoundException();
+
+        String sql = "SELECT * FROM studente WHERE email = ? AND passw = md5(?)";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    studente = new Studente(
+                            rs.getString("matricola"),
+                            rs.getString("nome_stud"),
+                            rs.getString("cognome"),
+                            rs.getString("email"),
+                            rs.getString("passw")
+                    );
+                    studente.setCorsi(getCorsiFromStudente(studente));
+                } else {
+                    // Se l'email esiste ma la password è sbagliata
+                    if (existingEmail(email)) {
+                        throw new passwordErrataException();
+                    } else {
+                        throw new emailNotFoundException();
+                    }
+                }
             }
         }
 

@@ -52,6 +52,10 @@ public class RegisterPage extends Stage {
             }
         });
 
+        scene.getStylesheets().add(
+                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
+        );
+
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
     }

@@ -3,7 +3,6 @@ package GUI.Stages;
 import Controller.Controller;
 import Entity.Chef;
 import Entity.TipologiaCorso;
-import Entity.Utente;
 import Exception.CorsoExceptions.CreateCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
@@ -11,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,7 +18,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -91,7 +88,7 @@ public class CreateCorsoPage extends Stage {
         });
 
         scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/choicheBoxesStyle.css").toExternalForm()
+                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
         );
 
         this.initStyle(StageStyle.TRANSPARENT);
@@ -186,7 +183,7 @@ public class CreateCorsoPage extends Stage {
         }));
 
         Label euroLabel = new Label("€");
-        euroLabel.setStyle("-fx-font-weight: bold; -fx-padding: 0 0 0 5;");
+        euroLabel.setStyle("-fx-font-weight: bold; -fx-padding: 4 0 0 5;");
 
         HBox priceField = new HBox(corsoPrice, euroLabel);
         priceField.setSpacing(5);
@@ -511,17 +508,14 @@ public class CreateCorsoPage extends Stage {
                    if (tipologiaName == tipo.getNome()) {
                        newTipologia = false;
                        break;
-                       // tipologia esistente
                    } else {
                        newTipologia = true;
-                       // add su database
                    }
                }
 
                TipologiaCorso tp;
 
                if (newTipologia) {
-                   // add su database
                    tp = controller.addNewTipologiaCorso(tipologiaName);
                } else {
                     tp = controller.getTipologiaByName(tipologiaName);
@@ -543,12 +537,12 @@ public class CreateCorsoPage extends Stage {
            } catch (priceCorsoNotFoundException PCNF) {
                corsoPrice.setStyle("-fx-border-color: red;");
                priceError.setText("Inserire il costo del corso");
-           } catch (typeCorsoNotFoundException TCCFE) {
-               corsoType.setStyle("-fx-border-color: red;");
-               typeError.setText("Inserire una tipologia del corso");
            } catch (frequencyCorsoNotFoundException FCCFE) {
                corsoFrequency.setStyle("-fx-border-color: red;");
                frequencyError.setText("Inserire una frequenza per il corso");
+           } catch (typeCorsoNotFoundException TCCFE) {
+               corsoType.setStyle("-fx-border-color: red;");
+               typeError.setText("Inserire una tipologia del corso");
            } catch (difficultyCorsoNotFoundException DCCFE) {
                corsoDifficulty.setStyle("-fx-border-color: red;");
                difficultyError.setText("Inserire la difficoltà del corso");

@@ -51,6 +51,10 @@ public class LoginPage extends Stage {
             }
         });
 
+        scene.getStylesheets().add(
+                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
+        );
+
         this.initStyle(StageStyle.TRANSPARENT);
         this.mostraInserireEmail();
         this.setScene(scene);
@@ -187,23 +191,37 @@ public class LoginPage extends Stage {
 
         } catch (emailEmptyException eee) {
             emailErrorLabel.setText("Inserire Email");
+            emailField.setStyle("-fx-border-color: red;");
 
-            if(password.isEmpty())
+            if(password.isEmpty()) {
                 passwordErrorLabel.setText("Inserire Password");
-            else
+                passwordField.setStyle("-fx-border-color: red;");
+            } else {
                 passwordErrorLabel.setText("");
+                passwordField.setStyle("");
+            }
 
             errorLoginLabel.setText("");
 
         } catch (emailNotValidException eee) {
             emailErrorLabel.setText("Email non valida");
+            emailField.setStyle("-fx-border-color: red;");
+
+            passwordErrorLabel.setText("");
+            passwordField.setStyle("");
+
+            errorLoginLabel.setText("");
         } catch (passwordEmptyException pee) {
             passwordErrorLabel.setText("Inserire Password");
+            passwordField.setStyle("-fx-border-color: red;");
 
-            if(email.isEmpty())
+            if(email.isEmpty()) {
                emailErrorLabel.setText("Inserire Email");
-            else
+               emailField.setStyle("-fx-border-color: red;");
+            } else {
                emailErrorLabel.setText("");
+               emailField.setStyle("");
+            }
 
             errorLoginLabel.setText("");
         }
@@ -231,11 +249,12 @@ public class LoginPage extends Stage {
             controller.loginMethod(email, password);
             this.close();
         } catch(emailNotFoundException emailExc){
-            emailErrorLabel.setText("Email errata");
-            // TODO la password non deve essere controllata se non trova la mail
-            // TODO campo mail non deve essere controllata se non corretto
+            emailField.setStyle("");
+            passwordField.setStyle("");
+            errorLoginLabel.setText("ACCOUNT INESISTENTE");
         } catch (passwordErrataException passwordExc){
             passwordErrorLabel.setText("Password errata");
+            passwordField.setStyle("-fx-border-color: red;");
         } catch (SQLException sqle) {
             showErrorLoginLabel();
         }

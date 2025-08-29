@@ -6,10 +6,7 @@ import Exception.CorsoExceptions.corsiNotFoundException;
 import GUI.Pane.*;
 import GUI.Buttons.*;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -59,7 +56,6 @@ public class HomePage extends Stage {
         root = new BorderPane();
         root.setTop(createTopBar());
         root.setCenter(createCenterContent());
-
     }
 
     private void setCTRLW(){
@@ -80,7 +76,6 @@ public class HomePage extends Stage {
 
         scene = new Scene(root, 800, 600);
         this.setScene(scene);
-
     }
 
     private void setTopBarAesthetics(VBox topBar){
@@ -259,6 +254,7 @@ public class HomePage extends Stage {
                             tempCorsoPanel = new CorsoPanel(this.controller);
                             tempCorsoPanel.setCorso(corso);
                             corsiBox.getChildren().add(tempCorsoPanel);
+                            addHoverAnimation(tempCorsoPanel);
                         }
 
                 }catch (corsiNotFoundException | SQLException CNFE){
@@ -269,7 +265,6 @@ public class HomePage extends Stage {
             });
             pause.play();
         });
-
     }
 
     private VBox createSearchArea() {
@@ -342,6 +337,7 @@ public class HomePage extends Stage {
                         tempCorsoPanel = new CorsoPanel(this.controller);
                         tempCorsoPanel.setCorso(corso);
                         corsiBox.getChildren().add(tempCorsoPanel);
+                        addHoverAnimation(tempCorsoPanel);
                     }
                 }else{
                     setNotFoundTextField();
@@ -484,6 +480,7 @@ public class HomePage extends Stage {
             tempCorsoPanel = new CorsoPanel(this.controller);
             tempCorsoPanel.setCorso(corso);
             corsiBox.getChildren().add(tempCorsoPanel);
+            addHoverAnimation(tempCorsoPanel);
         }
     }
 
@@ -499,6 +496,7 @@ public class HomePage extends Stage {
         CorsoPanel tempCorsoPanel = new CorsoPanel(controller);
         tempCorsoPanel.setCorso(c);
         corsiHBox.getChildren().add(tempCorsoPanel);
+        addHoverAnimation(tempCorsoPanel);
     }
 
     corsiScrollPane = new ScrollPane(corsiHBox);
@@ -560,6 +558,20 @@ public class HomePage extends Stage {
 
         return center;
     }
+
+    private void addHoverAnimation(Region node) {
+        ScaleTransition stEnlarge = new ScaleTransition(Duration.millis(200), node);
+        stEnlarge.setToX(1.05);
+        stEnlarge.setToY(1.05);
+
+        ScaleTransition stShrink = new ScaleTransition(Duration.millis(200), node);
+        stShrink.setToX(1.0);
+        stShrink.setToY(1.0);
+
+        node.setOnMouseEntered(e -> stEnlarge.playFromStart());
+        node.setOnMouseExited(e -> stShrink.playFromStart());
+    }
+
 //TODO avendo utente si può usare instance of invece di avere dei booleani, loggedIn bisogna controllare se utente è null
     public Boolean isLoggedIn(){
         return isLoggedIn;

@@ -13,16 +13,15 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class ChefDAO implements ChefDAOInterface {
-    DBConnection dbc;
-    Statement stmt;
-    Connection con;
     Controller controller;
+
+    DBConnection dbc;
+    Connection con;
 
     // Constructors
     public ChefDAO(Controller controller) {
         this.dbc = controller.getDBConnection();
         this.con = dbc.getConnection();
-        this.stmt = dbc.getStatement();
         this.controller = controller;
     }
 

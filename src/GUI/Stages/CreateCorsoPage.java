@@ -74,7 +74,8 @@ public class CreateCorsoPage extends Stage {
     public CreateCorsoPage(Controller controller, Chef chef) {
         this.chef = chef;
         chefAggiunti = new ArrayList<>();
-        chefAggiunti.add(this.chef);
+        chefAggiunti.add(this.chef); //TODO CON IL CONTROLLER (CONTROLLER HA L'UTENTE LOGGATO
+
         this.controller = controller;
         root = new VBox(15);
         setRootStyle();
@@ -220,7 +221,6 @@ public class CreateCorsoPage extends Stage {
                 corsoType.getEditor().requestFocus();
             }
         });
-
         typeError = new Label("");
         typeError.setTextFill(Color.RED);
         return new VBox(5, typeLabel, corsoType, typeError);

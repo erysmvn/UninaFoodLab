@@ -1,0 +1,49 @@
+package DAO;
+
+import Controller.Controller;
+import DAO.Interfaces.IngredienteDAOInterface;
+import DB.DBConnection;
+import Entity.Ingrediente;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class IngredienteDAO implements IngredienteDAOInterface {
+
+    Controller controller;
+    DBConnection dbc;
+    Connection con;
+
+    public IngredienteDAO(Controller controller){
+        this.controller = controller;
+        this.dbc = controller.getDBConnection();
+        this.con = dbc.getConnection();
+    }
+
+    @Override
+    public ArrayList<Ingrediente> getAllIngredientes()throws SQLException {
+        ArrayList<Ingrediente> ingredienti = new ArrayList<>();
+        String sql = "SELECT * FROM Ingrediente";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            ingredienti.add(createIngredienteByResultSet(rs));
+        }
+        return  ingredienti;
+    }
+
+    private Ingrediente createIngredienteByResultSet(ResultSet rs) throws SQLException {
+        return new Ingrediente(
+                rs.getInt("idingrediente"),
+                rs.getString("nome_ingrediente"),
+                rs.getString("allergeni"),
+                rs.getString("categoria")
+        );
+    }
+
+}
+

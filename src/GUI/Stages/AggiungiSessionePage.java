@@ -3,10 +3,11 @@ package GUI.Stages;
 import Controller.Controller;
 import DB.DBConnection;
 import Entity.Corso;
+import Entity.Ricetta;
 import Entity.Sessione;
-import Entity.SessionePresenza;
 import GUI.Buttons.CircleButton;
 import com.calendarfx.view.TimeField;
+import com.sun.javafx.scene.layout.region.Margins;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,12 +16,19 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import com.calendarfx.view.TimeField;
+
 import java.sql.Connection;
-import java.util.Calendar;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import Exception.OrarioMassimoOttoOreException;
+import Exception.*;
+import javafx.util.converter.LocalTimeStringConverter;
 
 public class AggiungiSessionePage extends Stage {
     private Controller controller;
@@ -28,8 +36,27 @@ public class AggiungiSessionePage extends Stage {
     private Connection con;
     private VBox root;
     private Scene scene;
+    private Label numeroRicette;
+
     private Corso corso;
     private Sessione sessione;
+    private ArrayList<Ricetta> ricette;
+
+    private DatePicker dateInizio;
+    private DatePicker dateFine;
+    private TextField linkOrLuogoField;
+
+
+    private TextField oraInizioField;
+    private TextField minutiInizioField;
+    private TextField oraFineField;
+    private TextField minutiFineField;
+
+    private Label erroreOrarioInizio;
+    private Label erroreOrarioFine;
+    private Label erroreDataSessione;
+
+    private Label errorLinkOrLuogoLabel;
 
     public AggiungiSessionePage(Controller controller) {
         this.controller = controller;
@@ -39,62 +66,89 @@ public class AggiungiSessionePage extends Stage {
         this.setSceneAesthetics();
     }
 
-    public void initPage(Corso corso){
+    public void initPage(Corso corso) {
         this.corso = corso;
+        ricette = new ArrayList<>();
         this.setRootFunctionalities();
     }
 
-
-    private HBox createOrarioBox(){
+    private HBox createOrarioBox() {
         HBox orarioBox = new HBox(50);
         orarioBox.setAlignment(Pos.CENTER_LEFT);
 
+
         VBox orarioInizioBox = new VBox(5);
         Label metaOrarioInizio = new Label("Orario Inizio *");
-        Label erroreOrarioInizio = new Label();
+        erroreOrarioInizio = new Label();
         erroreOrarioInizio.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
-        TimeField orarioInizio = new TimeField();
-        orarioInizioBox.getChildren().addAll(metaOrarioInizio, orarioInizio, erroreOrarioInizio);
+
+        HBox inizioFields = new HBox(5);
+        oraInizioField = new TextField();
+        oraInizioField.setPrefWidth(40);
+        minutiInizioField = new TextField();
+        minutiInizioField.setPrefWidth(40);
+
+        setTwoDigitNumericField(oraInizioField, 23);
+        setTwoDigitNumericField(minutiInizioField, 59);
+
+        inizioFields.getChildren().addAll(oraInizioField, new Label(":"), minutiInizioField);
+        orarioInizioBox.getChildren().addAll(metaOrarioInizio, inizioFields, erroreOrarioInizio);
 
         VBox orarioFineBox = new VBox(5);
         Label metaOrarioFine = new Label("Orario Fine *");
-        Label erroreOrarioFine = new Label();
+        erroreOrarioFine = new Label();
         erroreOrarioFine.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
-        TimeField orarioFine = new TimeField();
-        orarioFineBox.getChildren().addAll(metaOrarioFine, orarioFine, erroreOrarioFine);
+
+        HBox fineFields = new HBox(5);
+        oraFineField = new TextField();
+        oraFineField.setPrefWidth(40);
+        minutiFineField = new TextField();
+        minutiFineField.setPrefWidth(40);
+
+        setTwoDigitNumericField(oraFineField, 23);
+        setTwoDigitNumericField(minutiFineField, 59);
+
+        fineFields.getChildren().addAll(oraFineField, new Label(":"), minutiFineField);
+        orarioFineBox.getChildren().addAll(metaOrarioFine, fineFields, erroreOrarioFine);
 
         orarioBox.getChildren().addAll(orarioInizioBox, orarioFineBox);
         return orarioBox;
     }
 
-    private HBox createDateBox(){
+    private void setTwoDigitNumericField(TextField field, int maxValue) {
+        field.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.matches("\\d{0,2}")) {
+                field.setText(oldText);
+                return;
+            }
+            if (!newText.isEmpty()) {
+                int value = Integer.parseInt(newText);
+                if (value > maxValue) {
+                    field.setText(oldText);
+                }
+            }
+        });
+    }
+
+    private HBox createDateBox() {
         HBox dateBox = new HBox(30);
-        VBox dataInizioBox = new VBox(5);
-        Label erroreDataInizio = new Label();
+        VBox dataSessioneBox = new VBox(5);
+        erroreDataSessione = new Label();
         Label metaDataInizio = new Label("Data Inizio *");
-        erroreDataInizio.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
-        DatePicker dateInizio = new DatePicker();
+        erroreDataSessione.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
+        dateInizio = new DatePicker();
+        dataSessioneBox.getChildren().addAll(metaDataInizio, dateInizio, erroreDataSessione);
 
-        dataInizioBox.getChildren().addAll(metaDataInizio,dateInizio,erroreDataInizio);
-
-        VBox dataFineBox = new VBox(5);
-        Label erroreDataFine = new Label();
-        Label metaDataFine = new Label("Data Fine *");
-        erroreDataFine.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
-        DatePicker dateFine = new DatePicker();
-        dataFineBox.getChildren().addAll(metaDataFine,dateFine,erroreDataFine);
-
-        dateBox.getChildren().addAll(dataInizioBox,dataFineBox);
+        dateBox.getChildren().add(dataSessioneBox);
         dateBox.setAlignment(Pos.CENTER_LEFT);
         return dateBox;
     }
 
-
-    private void setSceneAesthetics(){
+    private void setSceneAesthetics() {
         scene = new Scene(root, 850, 650);
         scene.setFill(Color.TRANSPARENT);
-        scene.setOnKeyPressed(e->{
-            if(e.isControlDown() && e.getCode() == KeyCode.W){
+        scene.setOnKeyPressed(e -> {
+            if (e.isControlDown() && e.getCode() == KeyCode.W) {
                 this.close();
             }
         });
@@ -104,17 +158,25 @@ public class AggiungiSessionePage extends Stage {
 
     }
 
-    private void setRootFunctionalities(){
+    private void setRootFunctionalities() {
 
         Region spacer = new Region();
         spacer.setPrefHeight(40);
 
-        root.getChildren().addAll(createTopBox(),createLinkOrLuogoBox(),spacer,createDateBox(),createOrarioBox(),createRicettaBox());
+        root.getChildren().addAll(
+                createTopBox(),
+                createLinkOrLuogoBox(),
+                spacer,
+                createDateBox(),
+                createOrarioBox(),
+                createRicettaBox(),
+                createConfermaButton()
+        );
     }
 
-    private void setRootAesthetics(){
+    private void setRootAesthetics() {
         root = new VBox(15);
-        root.setPadding(new Insets(35, 20, 50, 50));
+        root.setPadding(new Insets(35, 20, 20, 20));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -127,38 +189,124 @@ public class AggiungiSessionePage extends Stage {
         )));
     }
 
-    private VBox createLinkOrLuogoBox(){
+    private VBox createLinkOrLuogoBox() {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER_LEFT);
-        TextField linkOrLuogoField = new TextField();
+
+        linkOrLuogoField = new TextField();
         linkOrLuogoField.setPrefWidth(200);
         linkOrLuogoField.setMaxWidth(200);
-        Label errorLinkOrLuogoLabel = new Label();
+
+        errorLinkOrLuogoLabel = new Label();
+        errorLinkOrLuogoLabel.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
         Label metaLinkOrLuogo = new Label();
 
-       /*
-        if(sessione instanceof SessionePresenza){
-            metaLinkOrLuogo.setText("Luogo *");
-            linkOrLuogoField.setPromptText("Inserisci luogo");
-        }else{
-            metaLinkOrLuogo.setText("Luogo *");
-            linkOrLuogoField.setPromptText("Inserisci luogo");
-        }
-        */
-        if(corso.getModalita_corso().getLabel().equals("Online")){
+        if (corso.getModalita_corso() == null
+                || corso.getModalita_corso().getLabel().equalsIgnoreCase("Online e in presenza")) {
+            box.getChildren().addAll(createChooseSessioneBox(metaLinkOrLuogo, linkOrLuogoField));
+        } else if (corso.getModalita_corso().getLabel().equalsIgnoreCase("online")) {
             metaLinkOrLuogo.setText("Link *");
             linkOrLuogoField.setPromptText("Inserisci Link");
-        }else if(corso.getModalita_corso().getLabel().equalsIgnoreCase("presenza")){
+        } else if (corso.getModalita_corso().getLabel().equalsIgnoreCase("presenza")) {
             metaLinkOrLuogo.setText("Luogo *");
             linkOrLuogoField.setPromptText("Inserisci luogo");
-        }else{
-            box.getChildren().addAll(createChooseSessioneBox(metaLinkOrLuogo,linkOrLuogoField));
         }
         Region spacer = new Region();
         spacer.setPrefHeight(25);
-        box.getChildren().addAll(spacer,metaLinkOrLuogo,linkOrLuogoField);
+        box.getChildren().addAll(spacer, metaLinkOrLuogo, linkOrLuogoField,errorLinkOrLuogoLabel);
         return box;
     }
+
+    private LocalTime getLocalTimeFromFields(TextField hourField, TextField minuteField) {
+        String hour = hourField.getText();
+        String minute = minuteField.getText();
+        String timeString = hour + ":" + minute;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTimeStringConverter converter = new LocalTimeStringConverter(formatter, null);
+        return converter.fromString(timeString);
+    }
+
+    private void validConferma() throws Exception {
+
+        erroreOrarioInizio.setText("");
+        erroreOrarioFine.setText("");
+        erroreDataSessione.setText("");
+        errorLinkOrLuogoLabel.setText("");
+
+
+        LocalTime inizio = getLocalTimeFromFields(oraInizioField,minutiInizioField);
+        LocalTime fine = getLocalTimeFromFields(oraFineField,minutiFineField);
+        LocalDate dataSessione = dateInizio.getValue();
+
+        if (inizio == null)
+            throw new OrarioInizioEmptyException();
+
+        if (fine == null)
+            throw new OrarioFineEmptyException();
+
+
+        if (dataSessione == null)
+            throw new DataSessioneEmptyException();
+
+        if (dataSessione.isBefore(LocalDate.now()))
+            throw new DataNelPassatoException();
+
+        if (fine.isBefore(inizio))
+            throw new OrarioNonValidoExceptio();
+
+        Duration durata = Duration.between(inizio, fine);
+        if (durata.toHours() > 8)
+            throw new OrarioMassimoOttoOreException();
+
+        if(durata.toHours() < 1)
+            throw new SessioneAlmenoUnOraException();
+
+        if (linkOrLuogoField.getText() == null || linkOrLuogoField.getText().trim().isEmpty())
+            throw new LinkOrLuogoEmptyException();
+
+    }
+
+    private Button createConfermaButton() {
+        Button confirmButton = new Button("Conferma");
+        confirmButton.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
+        confirmButton.setOnMouseEntered(e -> confirmButton.setOpacity(0.8));
+        confirmButton.setOnMouseExited(e -> confirmButton.setOpacity(1.0));
+
+        confirmButton.setOnAction(e -> {
+            erroreOrarioInizio.setText("");
+            erroreOrarioFine.setText("");
+            erroreDataSessione.setText("");
+            errorLinkOrLuogoLabel.setText("");
+
+            try {
+                validConferma();
+                //todo
+            } catch (OrarioInizioEmptyException ex) {
+                erroreOrarioInizio.setText("Inserire ora di inizio");
+            } catch (OrarioFineEmptyException ex) {
+                erroreOrarioFine.setText("Inserire ora di fine");
+            } catch (DataSessioneEmptyException ex) {
+                erroreDataSessione.setText("Inserire data sessione");
+            } catch (DataNelPassatoException ex) {
+                erroreDataSessione.setText("Data nel passato non ammessa");
+            } catch (OrarioNonValidoExceptio ex) {
+                erroreOrarioFine.setText("Orario fine < inizio");
+            } catch (OrarioMassimoOttoOreException ex) {
+                erroreOrarioFine.setText("Durata > 8 ore");
+            } catch (LinkOrLuogoEmptyException ex) {
+                errorLinkOrLuogoLabel.setText("Campo obbligatorio");
+            } catch (SessioneAlmenoUnOraException SAOE) {
+                erroreOrarioFine.setText("Durata minima 1 ora");
+            } catch (Exception ex) {
+                System.err.println("Errore inatteso: " + ex.getMessage());
+            }
+        });
+
+        confirmButton.setAlignment(Pos.CENTER);
+
+        return confirmButton;
+    }
+
 
     private HBox createChooseSessioneBox(Label metaLinkOrLuogo, TextField linkOrLuogoField) {
         HBox box = new HBox(10);
@@ -196,20 +344,19 @@ public class AggiungiSessionePage extends Stage {
             }
         });
 
-        box.getChildren().addAll(presenzaBtn,onlineBtn);
+        box.getChildren().addAll(presenzaBtn, onlineBtn);
         return box;
     }
 
-
-    public void setCorso(Corso corso){
+    public void setCorso(Corso corso) {
         this.corso = corso;
     }
-    public void setSessione(Sessione sessione){
+
+    public void setSessione(Sessione sessione) {
         this.sessione = sessione;
     }
 
-
-    private HBox createTopBox(){
+    private HBox createTopBox() {
         HBox topBox = new HBox(5);
         topBox.setAlignment(Pos.TOP_RIGHT);
         topBox.setSpacing(10);
@@ -224,13 +371,13 @@ public class AggiungiSessionePage extends Stage {
         titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;");
 
         Region spacer = new Region();
-        Region spacer1 =  new Region();
+        Region spacer1 = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox.setHgrow(spacer1, Priority.ALWAYS);
 
         CircleButton closeButton = createCloseButton();
         CircleButton minimizeButton = createMinimizeButton();
-        topBox.getChildren().addAll(spacer,titolo,spacer1,minimizeButton, closeButton);
+        topBox.getChildren().addAll(spacer, titolo, spacer1, minimizeButton, closeButton);
         return topBox;
     }
 
@@ -245,15 +392,22 @@ public class AggiungiSessionePage extends Stage {
         minimizeButton.setToCloseButtonWithAction(this);
         return minimizeButton;
     }
-    private VBox createRicettaBox() {
-        VBox container = new VBox(10);
-        container.setAlignment(Pos.TOP_LEFT);
 
+    public void updateRicetteAggiunte(Ricetta ricetta) {
+        ricette.add(ricetta);
+        numeroRicette.setText("Ricette inserite: " + ricette.size());
+    }
+
+    private VBox createRicettaBox() {
+        VBox container = new VBox(5);
+        container.setAlignment(Pos.TOP_LEFT);
+        numeroRicette = new Label("Ricette aggiunte: " + ricette.size());
+        numeroRicette.setStyle("-fx-text-fill: lightgray;");
         Button aggiungiRicettaBtn = new Button("Aggiungi ricetta");
-        container.getChildren().add(aggiungiRicettaBtn);
+        container.getChildren().addAll(numeroRicette, aggiungiRicettaBtn);
         aggiungiRicettaBtn.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
-        aggiungiRicettaBtn.setOnMouseEntered(e->aggiungiRicettaBtn.setOpacity(0.8));
-        aggiungiRicettaBtn.setOnMouseExited(e->aggiungiRicettaBtn.setOpacity(1.0));
+        aggiungiRicettaBtn.setOnMouseEntered(e -> aggiungiRicettaBtn.setOpacity(0.8));
+        aggiungiRicettaBtn.setOnMouseExited(e -> aggiungiRicettaBtn.setOpacity(1.0));
         aggiungiRicettaBtn.setOnAction(e -> {
             controller.openAggiungiRicettaPage();
         });
@@ -261,19 +415,24 @@ public class AggiungiSessionePage extends Stage {
         return container;
     }
 
-
-    private void setNotClickedButtonAesthetic(ToggleButton button){
+    private void setNotClickedButtonAesthetic(ToggleButton button) {
         String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
                 "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
 
         button.setStyle(base);
     }
 
-    private void setClickedButtonAesthetic(ToggleButton button){
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+    private void setClickedButtonAesthetic(ToggleButton button) {
+        String selected = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
                 "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
 
         button.setStyle(selected);
     }
 
+
+    public static class DataNelPassatoException extends Exception {
+        public DataNelPassatoException() {
+            super("La data non può essere nel passato");
+        }
+    }
 }

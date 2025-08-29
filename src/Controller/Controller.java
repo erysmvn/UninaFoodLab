@@ -116,26 +116,6 @@ public class Controller {
         }
     }
 
-    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
-        for(CorsoPage cp : corsoPages){
-            if(cp.getCorso().getIdCorso() == c.getIdCorso()){
-                return cp;
-            }
-        }
-        return null;
-    }
-    /*
-    TODO DA COMPLETARE
-    private SessionePage isSessionePageAlreadyOpened(Sessione s){
-        for(SessionePage sp : sessionePages){
-            if(sp.getSessione().getIdSessione() == s.getIdSessione()){
-                return s;
-            }
-        }
-        return null;
-    }
-*/
-
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
         ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
         confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
@@ -221,7 +201,6 @@ public class Controller {
             modificaPasswordPage.toFront();
         }
     }
-
 
     public void openCreateCorsoPage(Utente utente) {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {

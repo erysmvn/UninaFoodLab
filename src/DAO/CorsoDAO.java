@@ -230,12 +230,12 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public Corso getCorsoByTitle(String Title) {
+    public Corso getCorsoByTitle(String Title){
         String sql = "SELECT * FROM corso WHERE nome_corso = ?";
 
         Corso corso = null;
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            pstmt.setString(1, corso.getNome());
+            pstmt.setString(1, Title);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     corso = createCorsoByResultSet(rs);

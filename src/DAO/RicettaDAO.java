@@ -24,6 +24,27 @@ public class RicettaDAO implements RicettaDAOInterface {
         this.controller = controller;
     }
 
+    public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException{
+
+        String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, Unità, Quantità) " +
+                "SELECT r.idRicetta, i.idIngrediente, ?::unità_ingrediente, ? " +
+                "FROM Ricetta r, Ingrediente i " +
+                "WHERE r.nome_ricetta = ? AND i.nome_ingrediente = ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            for (Ingrediente ingrediente : ricetta.getIngredienti()) {
+                pstmt.setString(1, ingrediente.getUnita().getDbValue());
+                pstmt.setDouble(2, ingrediente.getQuantita());
+                pstmt.setString(3, ricetta.getNome());
+                pstmt.setString(4, ingrediente.getNome());
+
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        }
+    }
+
+
     // Methods
     @Override
     public Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException {

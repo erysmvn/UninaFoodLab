@@ -135,6 +135,15 @@ public class Controller {
         IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
         return ingredienteDAO.getAllIngredientes();
     }
+
+    public void insertRicettaToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException {
+        //TODO CON IL CONTROLLER
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
+        sessioneDAO.insertSessione(sessione);
+        for(Ricetta ricetta : ricette)
+            sessioneDAO.insertRicettaToSessione(ricetta,sessione);
+    }
+
     public void openSessionePage(Sessione sessione){
         SessionePage sessionePage = new SessionePage(this);
         sessionePage.initPage(sessione);
@@ -518,5 +527,15 @@ public boolean isStudent(){
         AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this);
         aggiungiRicettaPages.add(aggiungiRicettaPage);
         aggiungiRicettaPage.show();
+    }
+
+    public void insertIngredienti(ArrayList<Ingrediente> ingredienti)throws SQLException{
+        IngredienteDAO ingredienteDao = new IngredienteDAO(this);
+        ingredienteDao.insertIngredienti(ingredienti);
+    }
+
+    public void inserisciIngredientiToRicetta(Ricetta ricetta)throws SQLException {
+        RicettaDAO ricettaDAO = new RicettaDAO(this);
+        ricettaDAO.inserisciIngredientiToRicetta(ricetta);
     }
 }

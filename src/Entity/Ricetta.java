@@ -20,7 +20,20 @@ public class Ricetta {
         this.autore = autore;
     }
 
+    public Ricetta() {
+        ingredienti = new ArrayList<>();
+    }
 
+
+    public void setNomeRicetta(String nomeRicetta) {
+        this.nome = nomeRicetta;
+    }
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+    public void setTempoPreparazione(int tempoPreparazione) {
+        this.tempoPreparazione = tempoPreparazione;
+    }
     public String getNome(){
         return nome;
     }
@@ -76,5 +89,10 @@ public class Ricetta {
             toreturn = "Nessuno";
         }
         return toreturn;
+    }
+
+
+    public void setIngredienti(ArrayList<Ingrediente> ingredienti) {
+        this.ingredienti = ingredienti;
     }
 }

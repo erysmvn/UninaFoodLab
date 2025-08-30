@@ -1,10 +1,9 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import DAO.SessioneDAO;
 import DB.DBConnection;
-import Entity.Corso;
-import Entity.Ricetta;
-import Entity.Sessione;
+import Entity.*;
 import GUI.Buttons.CircleButton;
 import com.calendarfx.view.TimeField;
 import com.sun.javafx.scene.layout.region.Margins;
@@ -20,8 +19,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import Exception.OrarioMassimoOttoOreException;
 import Exception.*;
 import javafx.util.converter.LocalTimeStringConverter;
+
+import static java.time.Duration.between;
 
 public class AggiungiSessionePage extends Stage {
     private Controller controller;
@@ -43,9 +46,7 @@ public class AggiungiSessionePage extends Stage {
     private ArrayList<Ricetta> ricette;
 
     private DatePicker dateInizio;
-    private DatePicker dateFine;
     private TextField linkOrLuogoField;
-
 
     private TextField oraInizioField;
     private TextField minutiInizioField;
@@ -84,8 +85,12 @@ public class AggiungiSessionePage extends Stage {
 
         HBox inizioFields = new HBox(5);
         oraInizioField = new TextField();
+        oraInizioField.setText("12");
+
         oraInizioField.setPrefWidth(40);
         minutiInizioField = new TextField();
+        minutiInizioField.setText("00");
+
         minutiInizioField.setPrefWidth(40);
 
         setTwoDigitNumericField(oraInizioField, 23);
@@ -101,10 +106,11 @@ public class AggiungiSessionePage extends Stage {
 
         HBox fineFields = new HBox(5);
         oraFineField = new TextField();
+        oraFineField.setText("12");
         oraFineField.setPrefWidth(40);
         minutiFineField = new TextField();
         minutiFineField.setPrefWidth(40);
-
+        minutiFineField.setText("00");
         setTwoDigitNumericField(oraFineField, 23);
         setTwoDigitNumericField(minutiFineField, 59);
 
@@ -189,6 +195,8 @@ public class AggiungiSessionePage extends Stage {
         )));
     }
 
+
+
     private VBox createLinkOrLuogoBox() {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER_LEFT);
@@ -220,6 +228,10 @@ public class AggiungiSessionePage extends Stage {
     private LocalTime getLocalTimeFromFields(TextField hourField, TextField minuteField) {
         String hour = hourField.getText();
         String minute = minuteField.getText();
+        if(hour.isEmpty() || minute.isEmpty()){
+            hour =  "12";
+            minute = "00";
+        }
         String timeString = hour + ":" + minute;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTimeStringConverter converter = new LocalTimeStringConverter(formatter, null);
@@ -254,7 +266,7 @@ public class AggiungiSessionePage extends Stage {
         if (fine.isBefore(inizio))
             throw new OrarioNonValidoExceptio();
 
-        Duration durata = Duration.between(inizio, fine);
+        Duration durata = between(inizio, fine);
         if (durata.toHours() > 8)
             throw new OrarioMassimoOttoOreException();
 
@@ -264,6 +276,43 @@ public class AggiungiSessionePage extends Stage {
         if (linkOrLuogoField.getText() == null || linkOrLuogoField.getText().trim().isEmpty())
             throw new LinkOrLuogoEmptyException();
 
+        if(ricette.isEmpty())
+            throw new AlmenoUnaRicettaException();
+
+
+    }
+
+    private void createSessione() throws SQLException {
+        LocalTime inizio = getLocalTimeFromFields(oraInizioField, minutiInizioField);
+        LocalTime fine = getLocalTimeFromFields(oraFineField, minutiFineField);
+        LocalDate dataSessione = dateInizio.getValue();
+        String linkOrLuogo = linkOrLuogoField.getText().trim();
+
+        LocalDateTime OraInizio = LocalDateTime.of(dataSessione, inizio);
+
+        float durata = Duration.between(inizio, fine).toHours();
+        String prompt = linkOrLuogoField.getPromptText().toLowerCase();
+        if (prompt.contains("link")) {
+            sessione = new SessioneOnline(
+                    dataSessione,
+                    linkOrLuogo,
+                    durata,
+                    OraInizio,
+                    corso
+            );
+
+        } else if (prompt.contains("luogo")) {
+            sessione = new SessionePresenza(
+                    dataSessione,
+                    linkOrLuogo,
+                    durata,
+                    OraInizio,
+                    corso
+            );
+        }
+
+        //todo metodo controller che inserisce la sessione e poi serve l'id così costruiamo la sessione con l'id
+        this.setSessione(sessione);
     }
 
     private Button createConfermaButton() {
@@ -280,7 +329,9 @@ public class AggiungiSessionePage extends Stage {
 
             try {
                 validConferma();
-                //todo
+                createSessione();
+                controller.insertRicettaToSessione(ricette,sessione);
+                this.close();
             } catch (OrarioInizioEmptyException ex) {
                 erroreOrarioInizio.setText("Inserire ora di inizio");
             } catch (OrarioFineEmptyException ex) {
@@ -297,7 +348,12 @@ public class AggiungiSessionePage extends Stage {
                 errorLinkOrLuogoLabel.setText("Campo obbligatorio");
             } catch (SessioneAlmenoUnOraException SAOE) {
                 erroreOrarioFine.setText("Durata minima 1 ora");
-            } catch (Exception ex) {
+            } catch (AlmenoUnaRicettaException ARE) {
+                erroreOrarioFine.setText("La sessione deve trattare almeno una ricetta");
+            } catch (SQLException sql ) {
+                erroreOrarioFine.setText("Errore inserimento dati. Riprovare più tardi");
+                sql.printStackTrace();
+            }catch (Exception ex) {
                 System.err.println("Errore inatteso: " + ex.getMessage());
             }
         });

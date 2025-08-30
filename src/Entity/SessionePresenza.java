@@ -18,6 +18,14 @@ public class SessionePresenza extends Sessione {
         this.corso = corso;
     }
 
+    public SessionePresenza(LocalDate data, String luogo, float durata, LocalDateTime ora, Corso corso) {
+        this.data = data;
+        this.luogo = luogo;
+        this.durata = durata;
+        this.orario = ora;
+        this.corso = corso;
+    }
+
     public ArrayList<FoglioAdesione> getFogliAdesione() {
         return fogliAdesione;
     }

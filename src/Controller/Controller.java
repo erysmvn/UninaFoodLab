@@ -136,11 +136,12 @@ public class Controller {
     }
 
     public void insertRicettaToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException {
-        //TODO CON IL CONTROLLER
         SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.insertSessione(sessione);
-        for(Ricetta ricetta : ricette)
+        for(Ricetta ricetta : ricette){
+            inserisciIngredientiToRicetta(ricetta);
             sessioneDAO.insertRicettaToSessione(ricetta,sessione);
+        }
     }
 
     public void openSessionePage(Sessione sessione){

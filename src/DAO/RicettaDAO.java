@@ -24,23 +24,33 @@ public class RicettaDAO implements RicettaDAOInterface {
         this.controller = controller;
     }
 
-    public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException{
+    public void insertRicetta(Ricetta ricetta) throws SQLException {
+        String sql = "INSERT INTO RICETTA(nome_ricetta, descrizione_ricetta,tempo_di_preparazione,autore) VALUES (?,?,?,?)";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1,ricetta.getNome());
+        ps.setString(2,ricetta.getDescrizione());
+        ps.setInt(3,ricetta.getTempoPreparazione());
+        ps.setString(4,ricetta.getAutore());
+        ps.executeUpdate();
+    }
 
-        String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, Unità, Quantità) " +
-                "SELECT r.idRicetta, i.idIngrediente, ?::unità_ingrediente, ? " +
-                "FROM Ricetta r, Ingrediente i " +
-                "WHERE r.nome_ricetta = ? AND i.nome_ingrediente = ?";
+    public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
+        this.insertRicetta(ricetta);
+        String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, \"unità\", Quantità) " +
+                "SELECT r.idRicetta, i.idIngrediente, ?::\"unità_ingrediente\", ? " +
+                "FROM Ricetta r " +
+                "JOIN Ingrediente i ON i.nome_ingrediente = ? " +
+                "WHERE r.nome_ricetta = ?";
 
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             for (Ingrediente ingrediente : ricetta.getIngredienti()) {
                 pstmt.setString(1, ingrediente.getUnita().getDbValue());
-                pstmt.setDouble(2, ingrediente.getQuantita());
-                pstmt.setString(3, ricetta.getNome());
-                pstmt.setString(4, ingrediente.getNome());
+                pstmt.setInt(2, ingrediente.getQuantita());
+                pstmt.setString(3, ingrediente.getNome());
+                pstmt.setString(4, ricetta.getNome());
 
-                pstmt.addBatch();
+                pstmt.executeUpdate();
             }
-            pstmt.executeBatch();
         }
     }
 

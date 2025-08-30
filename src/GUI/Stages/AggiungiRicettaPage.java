@@ -393,10 +393,6 @@ public class AggiungiRicettaPage extends Stage {
 
 FATTO -> INSERT INGREDIENTE
 AL METODO DEVO PASSARGLI RICETTA E INGREDIENTE
-FARE QUESTA QUEY -> SQL = INSERT INTO FORMA (idRicetta,IdIngrediente,Unità,Quntità)
-                            SELECT r.idRicetta, i.idIngrediente, ingrediente.getUnita(), ingrediente.getQuantità()
-                            FROM ricetta, Ingrediente i
-                            WHERE nome_ricetta = ricetta.getNome() AND nome_ingrediente = ingrediente.getNome()
 
 BEGIN;
 INSERT INTO ricetta (nome_ricetta, descrizione_ricetta, tempo_di_preparazione, autore) values ('Pollo in Umido', 'no decription', 20, null);

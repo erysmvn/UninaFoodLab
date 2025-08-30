@@ -30,7 +30,9 @@ public abstract class Sessione {
     public int getIdSessione() {
         return idsessione;
     }
-
+    public void setIdsessione(int idsessione){
+        this.idsessione = idsessione;
+    }
 
     public LocalDate getData() {
         return data;

@@ -55,31 +55,24 @@ public class CorsoDAO implements CorsoDAOInterface {
     @Override
     public void addChefToCorso(int idCorso, Chef chef) {
         String checksql = "SELECT COUNT(*) FROM tiene WHERE idcorso = ? AND idchef = ?";
-        String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?,?)";
+        String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?, ?)";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(checksql);
+        try (PreparedStatement ps = con.prepareStatement(checksql)) {
             ps.setInt(1, idCorso);
             ps.setInt(2, chef.getIdchef());
+
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-                    if (count == 0) {
-                        try {
-                            PreparedStatement pstmt = con.prepareStatement(sql);
-                            pstmt.setInt(1, idCorso);
-                            pstmt.setInt(2, chef.getIdchef());
-                            int rowsInserted = pstmt.executeUpdate();
-                            if (rowsInserted == 0) {
-                                Exception exc  = new Exception("No row inserted");
-                                throw exc;
-                            }
-                        } catch (SQLException sqle) {
-                            sqle.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+                        pstmt.setInt(1, idCorso);
+                        pstmt.setInt(2, chef.getIdchef());
+                        int rowsInserted = pstmt.executeUpdate();
+                        if (rowsInserted == 0) {
+                            System.err.println("⚠️ Nessuna riga inserita in tiene");
                         }
                     }
+                } else {
+                    System.out.println("Chef già presente per questo corso → skip");
                 }
             }
         } catch (SQLException e) {

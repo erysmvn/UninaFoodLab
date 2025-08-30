@@ -479,6 +479,7 @@ public class Controller {
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {
+            System.out.println(chef.getIdchef());
             corsoDao.addChefToCorso(idCorso, chef);
         }
     }

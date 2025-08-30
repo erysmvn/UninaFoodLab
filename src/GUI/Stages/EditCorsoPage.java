@@ -518,6 +518,7 @@ public class EditCorsoPage extends Stage {
             try {
                 validate();
                 // TODO ancora non aggiorna per qualche motivo (addChefToCorso)
+                // TODO CONTROLLARE L'ARRAY LIST UNA VOLTA PASSATO
                 controller.updateCorso(corso);
                 System.out.println(nomeField.getText());
                 System.out.println(difficoltaBox.getValue());

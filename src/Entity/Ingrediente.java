@@ -1,10 +1,15 @@
 package Entity;
 
+import Entity.Enum.UnitaIngrediente;
+import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
+
 public class Ingrediente {
     private int idIngrediente;
     private String nome;
     private String allergeni;
     private String categoria;
+    private int quantita;
+    private UnitaIngrediente unita;
 
     public Ingrediente(int id, String nome, String allergeni, String categoria) {
         this.idIngrediente = id;
@@ -13,10 +18,12 @@ public class Ingrediente {
         this.categoria = categoria;
     }
 
-    public Ingrediente(String nome, String allergeni, String categoria) {
+    public Ingrediente(String nome, String allergeni, String categoria,int quantita, UnitaIngrediente unita) {
         this.nome = nome;
         this.allergeni = allergeni;
         this.categoria = categoria;
+        this.quantita = quantita;
+        this.unita = unita;
     }
 
     public int getIdIngrediente() {
@@ -33,5 +40,12 @@ public class Ingrediente {
 
     public String getCategoria() {
         return categoria;
+    }
+
+    public int getQuantita() {
+        return quantita;
+    }
+    public UnitaIngrediente getUnita() {
+        return unita;
     }
 }

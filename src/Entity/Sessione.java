@@ -1,6 +1,7 @@
 package Entity;
 
 import DAO.ChefDAO;
+import Entity.Enum.ModalitaSessione;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public abstract class Sessione {
     public int getIdSessione() {
         return idsessione;
     }
+
 
     public LocalDate getData() {
         return data;

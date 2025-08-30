@@ -16,8 +16,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.util.ArrayList;
+import Exception.*;
+
 
 public class AggiungiRicettaPage extends Stage {
 
@@ -25,6 +26,14 @@ public class AggiungiRicettaPage extends Stage {
     private Ricetta ricetta;
 
     private VBox ingredientiBox;
+    private TextField nomeRicettaField;
+    private TextField tempoField;
+    private Label erroreNomeRicettaLabel;
+    private Label erroreTempoLabel;
+    private Label erroreInserimentoIngredientiLabel;
+    private ArrayList<VBox> ingredientiBoxList;
+    private TextField descrizioneField;
+
 
     public AggiungiRicettaPage(Controller controller) {
         this.controller = controller;
@@ -68,10 +77,28 @@ public class AggiungiRicettaPage extends Stage {
         VBox box = new VBox(10);
         box.setStyle("-fx-background-color: transparent");
 
+        VBox nomeRicetta = new VBox(5);
+        nomeRicettaField = new TextField();
+        nomeRicettaField.setPromptText("Inserisci nome ricetta");
+        erroreNomeRicettaLabel = new Label();
+        erroreNomeRicettaLabel.setTextFill(Color.RED);
+        nomeRicetta.getChildren().addAll(nomeRicettaField,erroreNomeRicettaLabel);
+
+        VBox tempoDiPreparazione = new VBox(5);
+        tempoField = new TextField();
+        tempoField.setPromptText("Inserisci tempo di  preparazione");
+        erroreTempoLabel = new Label();
+        erroreTempoLabel.setTextFill(Color.RED);
+        tempoDiPreparazione.getChildren().addAll(tempoField,erroreTempoLabel);
+
+
+        descrizioneField = new TextField();
+        descrizioneField.setPromptText("Inserisci descrizione");
+
         box.getChildren().addAll(
-                createCampoConLabel("Nome *", "Inserisci nome ricetta"),
-                createCampoConLabel("Tempo di preparazione *", "Inserisci tempo"),
-                createCampoConLabel("Descrizione", "Inserisci descrizione")
+                nomeRicetta,
+                tempoDiPreparazione,
+                descrizioneField
         );
         return box;
     }
@@ -81,11 +108,7 @@ public class AggiungiRicettaPage extends Stage {
         Label label = new Label(labelText);
         TextField field = new TextField();
         field.setPromptText(prompt);
-
-        Label erroreLabel = new Label();
-        erroreLabel.setTextFill(Color.RED);
-
-        box.getChildren().addAll(label, field, erroreLabel);
+        box.getChildren().addAll(label, field);
         return box;
     }
 
@@ -109,13 +132,15 @@ public class AggiungiRicettaPage extends Stage {
                         "-fx-border-radius: 7;" +
                         "-fx-padding: 5 10 5 10;"
         );
-
+        ingredientiBoxList = new ArrayList<>();
         aggiungiIngredienteBtn.setOnAction(e -> {
             VBox singoloIngredienteBox = createIngredienteBox();
             ingredientiBox.getChildren().add(singoloIngredienteBox);
+            ingredientiBoxList.add(singoloIngredienteBox);
         });
-
-        container.getChildren().addAll(aggiungiIngredienteBtn, scroll);
+        erroreInserimentoIngredientiLabel = new Label();
+        erroreInserimentoIngredientiLabel.setTextFill(Color.RED);
+        container.getChildren().addAll(aggiungiIngredienteBtn, erroreInserimentoIngredientiLabel,scroll);
         return container;
     }
 
@@ -134,10 +159,20 @@ public class AggiungiRicettaPage extends Stage {
                 ingredienteCombo.getItems().add(ing.getNome());
             }
             enableIngredienteSearch(ingredienteCombo, ingredientiEsistenti);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignora) {}
 
+
+        TextField nuovoIngredienteField = new TextField();
+        nuovoIngredienteField.setPromptText("Nome nuovo ingrediente");
+        nuovoIngredienteField.setVisible(false);
+
+        ingredienteCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if ("Nuovo Ingrediente".equals(newVal)) {
+                nuovoIngredienteField.setVisible(true);
+            } else {
+                nuovoIngredienteField.setVisible(false);
+            }
+        });
 
         HBox sottoBox = new HBox(10);
         TextField allergeniField = new TextField();
@@ -161,9 +196,42 @@ public class AggiungiRicettaPage extends Stage {
         unitaBox.getSelectionModel().selectFirst();
         quantitaBox.getChildren().addAll(quantitaField, unitaBox);
 
-        box.getChildren().addAll(ingredienteCombo, sottoBox, quantitaBox);
+
+        box.getChildren().addAll(ingredienteCombo, nuovoIngredienteField, sottoBox, quantitaBox);
         return box;
     }
+
+    private Ricetta createRicetta() throws Exception {
+        Ricetta ricetta = new Ricetta();
+
+        String nome = nomeRicettaField.getText();
+        String tempoDiPreparazione = tempoField.getText();
+        String descrizione = descrizioneField.getText();
+        if(nome.isEmpty())
+            throw new NomeRicettaEmptyException();
+        if(tempoDiPreparazione.isEmpty())
+            throw new TempoDiPreparazioneEmptyException();
+
+        ricetta.setNomeRicetta(nome);
+        ricetta.setTempoPreparazione(Integer.parseInt(tempoDiPreparazione));
+
+        if(descrizione.isEmpty())
+            ricetta.setDescrizione("no description");
+
+        ArrayList<Ingrediente> ingredienti = new ArrayList<>();
+        for (VBox ingBox : ingredientiBoxList) {
+            ingredienti.add(getIngredienteFromBox(ingBox));
+        }
+
+        controller.insertIngredienti(ingredienti);
+
+        if(ingredienti.isEmpty())
+            throw new AlmenoUnIngredienteException();
+
+        ricetta.setIngredienti(ingredienti);
+        return ricetta;
+    }
+
 
     private void enableIngredienteSearch(ComboBox<String> combo, ArrayList<Ingrediente> ingredienti) {
         ObservableList<String> originalItems = FXCollections.observableArrayList();
@@ -184,7 +252,6 @@ public class AggiungiRicettaPage extends Stage {
                     filtered.add(nome);
                 }
             }
-
             combo.setItems(filtered);
             combo.show();
         });
@@ -250,11 +317,106 @@ public class AggiungiRicettaPage extends Stage {
 
         annullaBtn.setOnAction(e -> this.close());
         aggiungiBtn.setOnAction(event -> {
-            controller.updateRicetteAggiunte(ricetta);
-            this.close();
+            try {
+                erroreTempoLabel.setText("");
+                erroreNomeRicettaLabel.setText("");
+                erroreInserimentoIngredientiLabel.setText("");
+                ricetta = createRicetta();
+                controller.updateRicetteAggiunte(ricetta);
+                this.close();
+            } catch (NomeIngredienteEmptyException NIEE) {
+                erroreInserimentoIngredientiLabel.setText("Inserire nome ingrediente");
+            }catch (QuantitaEmptyException QEE){
+                erroreInserimentoIngredientiLabel.setText("Inserire quantità");
+            }catch (NomeRicettaEmptyException NIEE){
+                erroreNomeRicettaLabel.setText("Inserire nome ricetta");
+            } catch (TempoDiPreparazioneEmptyException TPEE) {
+                erroreTempoLabel.setText("Inserire tempo preparazione");
+            } catch (AlmenoUnIngredienteException AIE) {
+                erroreInserimentoIngredientiLabel.setText("Inserire almeno ingrediente");
+            } catch (CategoriaEmptyException CEE) {
+                erroreInserimentoIngredientiLabel.setText("Inserire categoria ingrediente");
+            }catch (Exception e) {
+                erroreInserimentoIngredientiLabel.setText("Errore nell'inserimento dati. Riprovare più tardi");
+                e.printStackTrace();
+            }
         });
 
         buttonBox.getChildren().addAll(aggiungiBtn, annullaBtn);
         return buttonBox;
     }
+
+
+    private Ingrediente getIngredienteFromBox(VBox box) {
+        @SuppressWarnings("unchecked")
+        ComboBox<String> ingredienteCombo = (ComboBox<String>) box.getChildren().get(0);
+        TextField nuovoIngredienteField = (TextField) box.getChildren().get(1);
+
+        HBox sottoBox = (HBox) box.getChildren().get(2);
+        TextField allergeniField = (TextField) sottoBox.getChildren().get(0);
+        TextField categoriaField = (TextField) sottoBox.getChildren().get(1);
+
+        HBox quantitaBox = (HBox) box.getChildren().get(3);
+        TextField quantitaField = (TextField) quantitaBox.getChildren().get(0);
+        @SuppressWarnings("unchecked")
+        ComboBox<UnitaIngrediente> unitaBox = (ComboBox<UnitaIngrediente>) quantitaBox.getChildren().get(1);
+
+        // Nome ingrediente (esistente o nuovo)
+        String nome = ingredienteCombo.getValue();
+        if ("Nuovo Ingrediente".equals(nome)) {
+            String typed = (nuovoIngredienteField != null && nuovoIngredienteField.isVisible())
+                    ? nuovoIngredienteField.getText()
+                    : ingredienteCombo.getEditor().getText();
+            nome = typed;
+        }
+        if (nome == null || nome.trim().isEmpty()) throw new NomeIngredienteEmptyException();
+
+        String allergeni = allergeniField.getText();
+        if (allergeni == null || allergeni.isBlank()) allergeni = "Nessuno";
+
+        String categoria = categoriaField.getText();
+        if (categoria == null || categoria.isBlank()) throw new CategoriaEmptyException();
+
+        String qText = quantitaField.getText();
+        if (qText == null || qText.isBlank()) throw new QuantitaEmptyException();
+        final int quantita;
+        try { quantita = Integer.parseInt(qText.trim()); }
+        catch (NumberFormatException ex) { throw new QuantitaEmptyException(); }
+
+        UnitaIngrediente unita = unitaBox.getValue();
+        if (unita == null) unita = UnitaIngrediente.Quantita;
+
+        return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim(), quantita, unita);
+    }
+
+/*
+
+FATTO -> INSERT INGREDIENTE
+AL METODO DEVO PASSARGLI RICETTA E INGREDIENTE
+FARE QUESTA QUEY -> SQL = INSERT INTO FORMA (idRicetta,IdIngrediente,Unità,Quntità)
+                            SELECT r.idRicetta, i.idIngrediente, ingrediente.getUnita(), ingrediente.getQuantità()
+                            FROM ricetta, Ingrediente i
+                            WHERE nome_ricetta = ricetta.getNome() AND nome_ingrediente = ingrediente.getNome()
+
+BEGIN;
+INSERT INTO ricetta (nome_ricetta, descrizione_ricetta, tempo_di_preparazione, autore) values ('Pollo in Umido', 'no decription', 20, null);
+INSERT INTO FORMA (idRicetta, idIngrediente, Unità, Quantità)
+SELECT r.idRicetta, i.idIngrediente, 'Grammi (gr)', 150
+FROM RICETTA r, INGREDIENTE i
+WHERE r.Nome_ricetta = 'Pollo in Umido' AND i.Nome_ingrediente = 'Pollo';
+END;
+
+DOPO FARE QUESTA->
+METODO TRANSACTION PER INSERIRE A SESSIONE
+METODO INSERT RICETTATOSESSIONE()
+INSERT INTO Tratta (idricetta, idsessione) VALUES (
+(SELECT idricetta FROM ricetta WHERE nome_ricetta = 'Di pinto scicchitano'),
+(SELECT idsessione FROM sessione NATURAL JOIN corso WHERE nome_corso = 'Primi di mare' AND data = '2026-06-06')
+
+);
+
+ */
+
+
+
 }

@@ -1,15 +1,19 @@
 package Entity.Enum;
 
 public enum UnitaIngrediente {
-    Grammi("gr"),
-    Chili("kg"),
-    Millilitri("ml"),
-    Litri("l"),
-    Quantita("qta");
+    Grammi("Grammi (gr)"),
+    Chili("Chili (kg)"),
+    Millilitri("Millilitri (ml)"),
+    Litri("Litri (l)"),
+    Quantita("Quantità (qta)");
 
-    private final String label;
+    private final String dbValue;
 
-    UnitaIngrediente(String label) {
-        this.label = label;
+    UnitaIngrediente(String dbValue) {
+        this.dbValue = dbValue;
+    }
+
+    public String getDbValue() {
+        return dbValue;
     }
 }

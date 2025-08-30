@@ -23,6 +23,30 @@ public class IngredienteDAO implements IngredienteDAOInterface {
         this.con = dbc.getConnection();
     }
 
+    private boolean checkIfAlredyExists(Ingrediente ingrediente)throws SQLException{
+        String sql = "select 1 from Ingrediente where nome_ingrediente = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1,ingrediente.getNome());
+        ResultSet rs = pstmt.executeQuery();
+        return rs.next();
+    }
+
+    @Override
+    public void insertIngredienti(ArrayList<Ingrediente> ingredienti) throws SQLException {
+        String sql = "INSERT INTO Ingrediente (nome_ingrediente, allergeni, categoria) VALUES (?, ?, ?)";
+
+        PreparedStatement pstmt = con.prepareStatement(sql);
+            for (Ingrediente ing : ingredienti) {
+                if (!this.checkIfAlredyExists(ing)){
+                    pstmt.setString(1, ing.getNome());
+                    pstmt.setString(2, ing.getAllergeni());
+                    pstmt.setString(3, ing.getCategoria());
+                    pstmt.executeUpdate();
+                }
+            }
+    }
+
+
     @Override
     public ArrayList<Ingrediente> getAllIngredientes()throws SQLException {
         ArrayList<Ingrediente> ingredienti = new ArrayList<>();

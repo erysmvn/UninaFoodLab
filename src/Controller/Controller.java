@@ -451,6 +451,11 @@ public class Controller {
         return corsoDao.getAllCourses();
     }
 
+    public Corso getCorsoByNome(String nome){
+        CorsoDAO corsoDao = getCorsoDAO();
+        return corsoDao.getCorsoByNome(nome);
+    }
+
     public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);

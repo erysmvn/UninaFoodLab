@@ -303,6 +303,22 @@ public class CorsoDAO implements CorsoDAOInterface {
         return null;
     }
 
+    public Corso getCorsoByNome(String nome){
+        String sql = "SELECT * FROM corso WHERE nome_corso = ?";
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, nome);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next())
+                return createCorsoByResultSet(rs);
+
+        }catch (SQLException sqle){
+            sqle.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public void setChefs(Corso corso) {
         corso.allocaArrayChefs();

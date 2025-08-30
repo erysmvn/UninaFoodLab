@@ -521,6 +521,9 @@ public class CreateCorsoPage extends Stage {
            } catch (nameCorsoNotFoundException NCNFE) {
                corsoName.setStyle("-fx-border-color: red;");
                nameError.setText("Inserire il nome del corso");
+           } catch (nameAlreadyTakenException NANE) {
+               corsoName.setStyle("-fx-border-color: red;");
+               nameError.setText("Corso già esistente");
            } catch (priceCorsoNotFoundException PCNF) {
                corsoPrice.setStyle("-fx-border-color: red;");
                priceError.setText("Inserire il costo del corso");
@@ -588,6 +591,13 @@ public class CreateCorsoPage extends Stage {
 
         if (corsoName.getText().isEmpty()) {
             throw new nameCorsoNotFoundException();
+        } else {
+            corsoName.setStyle(null);
+            nameError.setText("");
+        }
+
+        if (controller.getCorsoByNome(corsoName.getText()) != null) {
+            throw new nameAlreadyTakenException();
         } else {
             corsoName.setStyle(null);
             nameError.setText("");

@@ -3,6 +3,10 @@ package GUI.Stages;
 import Controller.Controller;
 import Entity.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
+import Exception.CorsoExceptions.CreateCorsoException.createCorsoErrorException;
+import Exception.CorsoExceptions.CreateCorsoException.nameAlreadyTakenException;
+import Exception.CorsoExceptions.CreateCorsoException.nameCorsoNotFoundException;
+import Exception.CorsoExceptions.CreateCorsoException.priceCorsoNotFoundException;
 import Exception.CorsoExceptions.imageNotFoundException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -37,6 +41,9 @@ public class EditCorsoPage extends Stage {
     private ComboBox<String> difficoltaBox;
     private Spinner<Integer> freqSettimanaleSpinner;
     private TextField costoField;
+
+    private Label nameError;
+    private Label priceError;
 
     ArrayList<Chef> chefDelCorso;
 
@@ -193,7 +200,9 @@ public class EditCorsoPage extends Stage {
         nomeField.setFont(Font.font(40));
         nomeField.setId("nomeCorsoField");
         nomeField.setPrefWidth(400);
-        infoBox.getChildren().add(nomeField);
+        nameError = new Label("");
+        nameError.setTextFill(Color.RED);
+        infoBox.getChildren().addAll(nomeField, nameError);
 
         difficoltaBox = new ComboBox<>();
         difficoltaBox.getItems().addAll("Base", "Intermedio", "Avanzato");
@@ -231,7 +240,9 @@ public class EditCorsoPage extends Stage {
             }
             return null;
         }));
-        infoBox.getChildren().add(labeledField("Costo:", costoField));
+        priceError = new Label("");
+        priceError.setTextFill(Color.RED);
+        infoBox.getChildren().addAll(labeledField("Costo:", costoField), priceError);
     }
 
     private VBox createChefsBox() {
@@ -464,6 +475,29 @@ public class EditCorsoPage extends Stage {
         }
     }
 
+    private void validate() throws createCorsoErrorException {
+        if (nomeField.getText().isEmpty()) {
+            throw new nameCorsoNotFoundException();
+        } else {
+            nomeField.setStyle(null);
+            nameError.setText("");
+        }
+
+        if (controller.getCorsoByNome(nomeField.getText()) != null && controller.getCorsoByNome(nomeField.getText()) != this.corso) {
+            throw new nameAlreadyTakenException();
+        } else {
+            nomeField.setStyle(null);
+            nameError.setText("");
+        }
+
+        if (costoField.getText().isEmpty()) {
+            throw new priceCorsoNotFoundException();
+        } else {
+            costoField.setStyle(null);
+            priceError.setText("");
+        }
+    }
+
     private HBox labeledField(String label, javafx.scene.Node field) {
         Label l = new Label(label);
         l.setFont(Font.font(16));
@@ -476,14 +510,31 @@ public class EditCorsoPage extends Stage {
         Button saveButton = new Button("Salva");
         styleButton(saveButton, Color.valueOf("#3a6698"));
         saveButton.setOnAction(event -> {
-//            corso.setNome(nomeField.getText());
-//            corso.setDifficolta(Difficolta.valueOf(difficoltaBox.getValue()));
-//            corso.setOreTotali(oreTotaliSpinner.getValue());
-//            corso.setFrequenzaSettimanale(freqSettimanaleSpinner.getValue());
-//            corso.setCosto(Double.parseDouble(costoField.getText()));
-//            // TODO: aggiungere gestione Chef, Modalità e Date
-//            controller.updateCorso(corso);
-//            this.close();
+            try {
+                validate();
+//                controller.updateCorso(nomeField.getText(), difficoltaBox.getValue(), freqSettimanaleSpinner.getValue(), costoField.getText(), chefDelCorso)
+                System.out.println(nomeField.getText());
+                System.out.println(difficoltaBox.getValue());
+                System.out.println(freqSettimanaleSpinner.getValue());
+                System.out.println(costoField.getText());
+
+                for (Chef chef : chefDelCorso) {
+                    System.out.println("\n CHEFS:");
+                    System.out.println(chef.getNome() + " " + chef.getCognome());
+                }
+
+                this.close();
+
+            } catch (nameCorsoNotFoundException NCNFE) {
+                nomeField.setStyle("-fx-border-color: red;");
+                nameError.setText("Inserire nome corso");
+            } catch (nameAlreadyTakenException NATE) {
+                nomeField.setStyle("-fx-border-color: red;");
+                nameError.setText("Corso già esistente");
+            } catch (priceCorsoNotFoundException PRCEFNFE) {
+                costoField.setStyle("-fx-border-color: red;");
+                priceError.setText("Inserire costo corso");
+            }
         });
         return saveButton;
     }

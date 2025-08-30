@@ -50,48 +50,65 @@ public class Corso {
         this.imagePath = "src/Media/CoursesImages/" + nameForPath + ".png";
     }
 
-    public void setImagePath(String imagePath){
-        this.imagePath = imagePath;
+    public void allocaArrayChefs() {
+        this.chefs = new ArrayList<Chef>();
     }
-    public String getNome(){
-        return nome;
-    }
-    public String getImagePath() {
-        return imagePath;
-    }
-    public ModalitaCorso getModalita_corso() {
-        return  modalitaCorso;
-    }
-    public Difficolta getDifficolta() {
-        return difficolta;
-    }
-    public Date getDataInizio() {
-        return dataInizio;
-    }
-    public Date getDataFine() {
-        return dataFine;
-    }
-    public float getCosto() {
-        return costo;
-    }
-    public float getOreTotali() {
-        return oreTotali;
-    }
-    public int getFrequenzaSettimanale(){
-        return frequenzaSettimanale;
-    }
-    public String getDesc_corso() {
-        return desc_corso;
-    }
-    public int getIdCorso() {
-        return idcorso;
-    }
-    public void addRicetta(Ricetta ricetta) {
-        ricetteTrattate.add(ricetta);
+
+    public void addChef(Chef chef) {
+        chefs.add(chef);
     }
 
     public void allocaArrayRicette() {
         this.ricetteTrattate = new ArrayList<Ricetta>();
+    }
+
+    public void addRicetta(Ricetta ricetta) {
+        ricetteTrattate.add(ricetta);
+    }
+
+    // Getter
+    public String getNome(){
+        return nome;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public ModalitaCorso getModalita_corso() {
+        return  modalitaCorso;
+    }
+
+    public Difficolta getDifficolta() {
+        return difficolta;
+    }
+
+    public Date getDataInizio() {
+        return dataInizio;
+    }
+
+    public Date getDataFine() {
+        return dataFine;
+    }
+
+    public float getCosto() {
+        return costo;
+    }
+
+    public float getOreTotali() {
+        return oreTotali;
+    }
+
+    public int getFrequenzaSettimanale(){
+        return frequenzaSettimanale;
+    }
+
+    public String getDesc_corso() {
+        return desc_corso;
+    }
+
+    public int getIdCorso() {
+        return idcorso;
     }
 
     public String getStringOfChefs() {
@@ -108,19 +125,42 @@ public class Corso {
     public ArrayList<Chef> getChefs() {
         return chefs;
     }
+
     public ArrayList<Ricetta> getRicetteTrattate() {
         return ricetteTrattate;
     }
+
     public ArrayList<Sessione> getSessioni() {
         return sessioni;
     }
+
+    // Setter
     public void setSessioni(ArrayList<Sessione> sessioni) {
         this.sessioni = sessioni;
     }
-    public void addChef(Chef chef) {
-        chefs.add(chef);
+
+    public void setImagePath(String imagePath){
+        this.imagePath = imagePath;
     }
-    public void allocaArrayChefs() {
-        this.chefs = new ArrayList<Chef>();
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
+
+    public void setDifficolta(Difficolta difficolta) {
+        this.difficolta = difficolta;
+    }
+
+    public void setFrequenzaSettimanale(int frequenzaSettimanale) {
+        this.frequenzaSettimanale = frequenzaSettimanale;
+    }
+
+    public void setCosto (float costo) {
+        this.costo = costo;
+    }
+
+    public void setChefs(ArrayList<Chef> chefs) {
+        this.chefs = chefs;
+    }
+
 }

@@ -468,6 +468,14 @@ public class Controller {
         return newCorso;
     }
 
+    public void updateCorso(Corso corso) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        corsoDao.update(corso);
+        Chef myChef = (Chef) utente;
+        corsoDao.prepareChefs(corso.getIdCorso(), myChef.getIdchef());
+        addChefsToCorso(corso.getIdCorso(), corso.getChefs());
+    }
+
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {

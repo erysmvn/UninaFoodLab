@@ -15,6 +15,8 @@ public interface CorsoDAOInterface {
     void addChefToCorso(int idCorso, Chef chef);
     void delete(Corso corso);
     void setChefs(Corso corso);
+    void update(Corso corso);
+    void prepareChefs(int idCorso, int idChef);
 
     // Get methods
     Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException;

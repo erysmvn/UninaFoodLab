@@ -8,6 +8,7 @@ import Entity.Enum.*;
 import Exception.CorsoExceptions.corsiNotFoundException;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.*;
 
 import java.util.ArrayList;
@@ -53,20 +54,35 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     @Override
     public void addChefToCorso(int idCorso, Chef chef) {
+        String checksql = "SELECT COUNT(*) FROM tiene WHERE idcorso = ? AND idchef = ?";
         String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?,?)";
 
         try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, idCorso);
-            pstmt.setInt(2, chef.getIdchef());
-            int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted == 0) {
-                Exception exc  = new Exception("No row inserted");
-                throw exc;
+            PreparedStatement ps = con.prepareStatement(checksql);
+            ps.setInt(1, idCorso);
+            ps.setInt(2, chef.getIdchef());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    if (count == 0) {
+                        try {
+                            PreparedStatement pstmt = con.prepareStatement(sql);
+                            pstmt.setInt(1, idCorso);
+                            pstmt.setInt(2, chef.getIdchef());
+                            int rowsInserted = pstmt.executeUpdate();
+                            if (rowsInserted == 0) {
+                                Exception exc  = new Exception("No row inserted");
+                                throw exc;
+                            }
+                        } catch (SQLException sqle) {
+                            sqle.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -98,6 +114,43 @@ public class CorsoDAO implements CorsoDAOInterface {
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setInt(1, corso.getIdCorso());
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(Corso corso) {
+        String sql = "UPDATE corso " +
+                "SET nome_corso = ?, costo = ?, difficolta = ?::difficolta, frequenza_settimanale = ? " +
+                "WHERE idcorso = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, corso.getNome());
+            ps.setBigDecimal(2, BigDecimal.valueOf(corso.getCosto()));
+            ps.setString(3, corso.getDifficolta().name());
+            ps.setInt(4, corso.getFrequenzaSettimanale());
+            ps.setInt(5, corso.getIdCorso());
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                System.err.println("Nessuna riga aggiornata! Controlla l'idcorso.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void prepareChefs(int idCorso, int idChef) {
+        String sql = "DELETE FROM tiene WHERE idcorso = ? AND idchef <> ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idCorso);
+            ps.setInt(2, idChef);
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                System.err.println("Nessuna riga eliminata! Controlla l'idcorso.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

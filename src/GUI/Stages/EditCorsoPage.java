@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Entity.Enum.Difficolta;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.createCorsoErrorException;
 import Exception.CorsoExceptions.CreateCorsoException.nameAlreadyTakenException;
@@ -54,6 +55,8 @@ public class EditCorsoPage extends Stage {
     Label nameChefError;
     Label surnameChefError;
     Label emailChefError;
+
+    VBox listaChef;
 
 
     public EditCorsoPage(Controller controller){
@@ -209,6 +212,7 @@ public class EditCorsoPage extends Stage {
         difficoltaBox.setValue(corso.getDifficolta().toString());
         infoBox.getChildren().add(labeledField("Difficoltà:", difficoltaBox));
 
+        // TODO invece di get frequenza, calcolare la freq massima delle sessioni (algoritmo in doc bdd)
         freqSettimanaleSpinner = new Spinner<>(corso.getFrequenzaSettimanale(), 7, corso.getFrequenzaSettimanale(), 1);
         Label freqLabelValue = new Label();
         freqLabelValue.setFont(Font.font(14));
@@ -253,7 +257,7 @@ public class EditCorsoPage extends Stage {
 
         HBox titoloBox = new HBox(15);
 
-        VBox listaChef = new VBox(5);
+        listaChef = new VBox(5);
 
         Button addChefButton = new Button("Aggiungi altro chef");
         styleButton(addChefButton, Color.valueOf("#3A6698"));
@@ -264,7 +268,7 @@ public class EditCorsoPage extends Stage {
         addChefButton.setOnAction(e -> {
             addChefToCourse(() -> {
                 validateChef();
-                aggiornaListaChef(listaChef);
+                aggiornaListaChef();
             });
         });
 
@@ -274,12 +278,12 @@ public class EditCorsoPage extends Stage {
         titoloBox.getChildren().addAll(titolo, spacer1, addChefButton);
         chefsBox.getChildren().addAll(titoloBox, listaChef);
 
-        aggiornaListaChef(listaChef);
+        aggiornaListaChef();
 
         return chefsBox;
     }
 
-    private void aggiornaListaChef(VBox listaChef) {
+    private void aggiornaListaChef() {
         listaChef.getChildren().clear();
         Chef myChef = (Chef) controller.getUtente();
         for (Chef chef : chefDelCorso) {
@@ -295,7 +299,7 @@ public class EditCorsoPage extends Stage {
 
                 removeLabel.setOnMouseClicked(e -> {
                     chefDelCorso.remove(chef);
-                    aggiornaListaChef(listaChef);
+                    aggiornaListaChef();
                 });
 
                 riga.getChildren().addAll(nome, removeLabel);
@@ -366,6 +370,7 @@ public class EditCorsoPage extends Stage {
                 Chef newChef = controller.getChefDaAggiungereToNuovoCorso(nameChef.getText(), surnameChef.getText(), emailChef.getText());
                 if (newChef != null) {
                     chefDelCorso.add(newChef);
+                    aggiornaListaChef();
                     addChefToCourseStage.close();
                 } else {
                     error.setText("Lo chef deve essere registrato \n alla piattaforma");
@@ -512,16 +517,31 @@ public class EditCorsoPage extends Stage {
         saveButton.setOnAction(event -> {
             try {
                 validate();
-//                controller.updateCorso(nomeField.getText(), difficoltaBox.getValue(), freqSettimanaleSpinner.getValue(), costoField.getText(), chefDelCorso)
+                // TODO ancora non aggiorna per qualche motivo (addChefToCorso)
+                controller.updateCorso(corso);
                 System.out.println(nomeField.getText());
                 System.out.println(difficoltaBox.getValue());
                 System.out.println(freqSettimanaleSpinner.getValue());
                 System.out.println(costoField.getText());
 
+                System.out.println("\n CHEFS:");
                 for (Chef chef : chefDelCorso) {
-                    System.out.println("\n CHEFS:");
                     System.out.println(chef.getNome() + " " + chef.getCognome());
                 }
+
+                corso.setNome(nomeField.getText());
+
+                float costo = Float.parseFloat(costoField.getText());
+                corso.setCosto(costo);
+                corso.setDifficolta(Difficolta.valueOf(difficoltaBox.getValue()));
+                corso.setFrequenzaSettimanale(freqSettimanaleSpinner.getValue());
+                corso.setChefs(chefDelCorso);
+
+                System.out.println(corso.getNome());
+                System.out.println(corso.getDifficolta());
+                System.out.println(corso.getFrequenzaSettimanale());
+                System.out.println(corso.getCosto());
+                System.out.println(corso.getChefs());
 
                 this.close();
 

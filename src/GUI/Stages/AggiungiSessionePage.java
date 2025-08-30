@@ -1,12 +1,8 @@
 package GUI.Stages;
 
 import Controller.Controller;
-import DAO.SessioneDAO;
-import DB.DBConnection;
 import Entity.*;
 import GUI.Buttons.CircleButton;
-import com.calendarfx.view.TimeField;
-import com.sun.javafx.scene.layout.region.Margins;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,11 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -35,8 +29,6 @@ import static java.time.Duration.between;
 
 public class AggiungiSessionePage extends Stage {
     private Controller controller;
-    private DBConnection dbc;
-    private Connection con;
     private VBox root;
     private Scene scene;
     private Label numeroRicette;
@@ -61,8 +53,7 @@ public class AggiungiSessionePage extends Stage {
 
     public AggiungiSessionePage(Controller controller) {
         this.controller = controller;
-        this.dbc = controller.getDBConnection();
-        con = dbc.getConnection();
+
         this.setRootAesthetics();
         this.setSceneAesthetics();
     }
@@ -158,6 +149,10 @@ public class AggiungiSessionePage extends Stage {
                 this.close();
             }
         });
+
+        scene.getStylesheets().add(
+                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
+        );
 
         this.initStyle(StageStyle.TRANSPARENT);
         this.setScene(scene);
@@ -416,14 +411,7 @@ public class AggiungiSessionePage extends Stage {
         HBox topBox = new HBox(5);
         topBox.setAlignment(Pos.TOP_RIGHT);
         topBox.setSpacing(10);
-        Label titolo = new Label("Nuova Sessione !");
-
-        Font robotoFont = Font.loadFont(
-                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                40
-        );
-
-        titolo.setFont(robotoFont);
+        Label titolo = new Label("  Nuova Sessione !");
         titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;");
 
         Region spacer = new Region();

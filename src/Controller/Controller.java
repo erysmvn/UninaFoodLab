@@ -27,6 +27,8 @@ public class Controller {
     private ChangePasswordPage modificaPasswordPage;
     private CreateCorsoPage createCorsoPage;
     private AggiungiSessionePage aggiungiSessionePage;
+    private EditCorsoPage editCorsoPage;
+
     private DBConnection dbc;
 
     private Utente utente;
@@ -36,6 +38,9 @@ public class Controller {
     private ArrayList<SessionePage> sessionePages = new ArrayList<>();
     private ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
     private ArrayList<AggiungiRicettaPage> aggiungiRicettaPages = new ArrayList<>();
+    private ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
+
+
     public Controller(){
         dbc = new DBConnection();
         dbc.DBConnect();
@@ -47,6 +52,12 @@ public class Controller {
 
     public Utente getUtente(){
         return utente;
+    }
+    public boolean isChef(){
+        return utente instanceof Chef;
+    }
+    public boolean isStudent(){
+        return utente instanceof Studente;
     }
 
 
@@ -120,6 +131,33 @@ public class Controller {
         for(CorsoPage cp : corsoPages){
             if(cp.getCorso().getIdCorso() == c.getIdCorso())
                 return cp;
+        }
+        return null;
+    }
+
+    public void openEditCorsoPage(Corso corso){
+        EditCorsoPage existingPage = isEditCorsoPageAlreadyOpened(corso);
+
+        if(existingPage != null){
+            if(existingPage.isShowing()){
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            EditCorsoPage editCorsoPage = new EditCorsoPage( this);
+            editCorsoPage.initPage(corso);
+            editCorsoPages.add(editCorsoPage);
+            editCorsoPage.setOnCloseRequest(e -> corsoPages.remove(editCorsoPage));
+
+            editCorsoPage.show();
+        }
+    }
+
+    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
+        for(EditCorsoPage edcp : editCorsoPages){
+            if(edcp.getCorso().getIdCorso() == c.getIdCorso())
+                return edcp;
         }
         return null;
     }
@@ -227,13 +265,6 @@ public class Controller {
         }
     }
 
-public boolean isChef(){
-        return utente instanceof Chef;
-}
-public boolean isStudent(){
-    return utente instanceof Studente;
-}
-
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();
     }
@@ -264,6 +295,8 @@ public boolean isStudent(){
         FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
         foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
+
+
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{

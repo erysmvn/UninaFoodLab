@@ -99,3 +99,89 @@
     -fx-padding: 2 6 2 6;
     -fx-font-size: 13px;
 }
+
+/* DATEPICKER - stile macOS minimal */
+.date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-cursor: hand;
+    -fx-min-height: 28px;
+}
+
+.date-picker:hover {
+    -fx-border-color: #a0a0a0;
+    -fx-background-color: #fafafa;
+}
+
+.date-picker:focused {
+    -fx-border-color: #007aff; /* blu macOS */
+    -fx-background-color: #ffffff;
+}
+
+/* TextField interno al DatePicker */
+.date-picker .text-field {
+    -fx-background-color: transparent; /* uniforme */
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-text-fill: #333333;
+    -fx-cursor: text;
+}
+
+/* Bottone calendario */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6 0 6;
+    -fx-cursor: hand;
+    -fx-background-radius: 0 6 6 0; /* raccordo angoli */
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Calendario popup */
+.date-picker .cell {
+    -fx-padding: 4;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-text-fill: #333333;
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #000000;
+}
+
+.date-picker .cell:focused,
+.date-picker .selected {
+    -fx-background-color: #007aff; /* blu macOS */
+    -fx-text-fill: #ffffff;
+}
+
+/* Mese/Anno header nel popup */
+.date-picker .month-year-pane {
+    -fx-background-color: #fafafa;
+    -fx-padding: 4;
+    -fx-font-weight: 500;
+}
+
+.date-picker .month-year-pane .label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 13px;
+}
+
+#nomeCorsoField {
+    -fx-font-size: 50px; /* più grande del font attuale */
+    -fx-pref-height: 80px; /* aumenta l'altezza del campo */
+    -fx-padding: 10px; /* padding interno */
+}

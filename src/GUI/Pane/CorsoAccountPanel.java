@@ -102,6 +102,7 @@ public class CorsoAccountPanel extends Pane {
         Label chefsLabel = createChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
         Button addSessionButton = createAddSessionButton();
+        Button updateButton = createUpdateButton();
 
 
         VBox imagineBox  = new VBox(imageView);
@@ -119,7 +120,7 @@ public class CorsoAccountPanel extends Pane {
 
         content.getChildren().clear();
         if (controller.getUtente() instanceof Chef) {
-            content.getChildren().addAll(imagineBox, infoBox, addSessionButton, buttonBox);
+            content.getChildren().addAll(imagineBox, infoBox, addSessionButton, updateButton, buttonBox);
         } else {
             content.getChildren().addAll(imagineBox, infoBox, buttonBox);
         }
@@ -158,7 +159,6 @@ public class CorsoAccountPanel extends Pane {
         addSessionButton.setMaxWidth(160);
 
         addSessionButton.setOnAction(event -> {
-            // TODO addSessionePage
             controller.openAggiungiSessionePage(corso);
         });
 
@@ -189,6 +189,29 @@ public class CorsoAccountPanel extends Pane {
         this.styleButton(unsubscribeButton, Color.valueOf("#da3d26"));
 
         return unsubscribeButton;
+    }
+
+    private Button createUpdateButton() {
+        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/Media/Icons/editIcon.png")));
+        icon.setFitWidth(16);
+        icon.setFitHeight(16);
+        icon.setPreserveRatio(true);
+
+        Button updateButton = new Button();
+        updateButton.setGraphic(icon);
+        updateButton.setStyle("-fx-background-color: #3A6698;");
+
+        updateButton.setPrefWidth(30);
+        updateButton.setMinWidth(30);
+        updateButton.setMaxWidth(30);
+
+        updateButton.setOnAction(event -> {
+            controller.openEditCorsoPage(corso);
+        });
+
+        this.styleButton(updateButton, Color.valueOf("#3A6698"));
+
+        return updateButton;
     }
 
     private void showConfirmPanel(String message, Runnable onConfirm) {

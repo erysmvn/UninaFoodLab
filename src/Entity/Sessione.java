@@ -45,4 +45,16 @@ public abstract class Sessione {
     public float getDurata() {
         return durata;
     }
+
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public void setOra(LocalDateTime orario) {
+        this.orario = orario;
+    }
+
+    public void setDurata(float durata) {
+        this.durata = durata;
+    }
 }

@@ -283,9 +283,6 @@ public class EditCorsoPage extends Stage {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-//        scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
-//        scrollPane.getViewport().setStyle("-fx-background: white; -fx-background-color: white;");
-
         scrollPane.setPrefHeight(150);
         scrollPane.setMaxHeight(150);
 

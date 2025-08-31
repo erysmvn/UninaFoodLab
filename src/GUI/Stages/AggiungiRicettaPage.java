@@ -154,7 +154,7 @@ public class AggiungiRicettaPage extends Stage {
         ingredienteCombo.getItems().add("Nuovo Ingrediente");
 
         try {
-            ArrayList<Ingrediente> ingredientiEsistenti = controller.getAllIngredientes();
+            ArrayList<Ingrediente> ingredientiEsistenti = controller.getAllIngredienti();
             for (Ingrediente ing : ingredientiEsistenti) {
                 ingredienteCombo.getItems().add(ing.getNome());
             }

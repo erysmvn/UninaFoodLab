@@ -16,4 +16,6 @@ public interface SessioneDAOInterface {
 
     Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;
 
+    void update(Sessione sessione)throws SQLException;
+
 }

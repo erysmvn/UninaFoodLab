@@ -13,7 +13,6 @@ import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
-import javafx.scene.layout.VBox;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -28,6 +27,7 @@ public class Controller {
     private CreateCorsoPage createCorsoPage;
     private AggiungiSessionePage aggiungiSessionePage;
     private EditCorsoPage editCorsoPage;
+    private EditSessionePage editSessionePage;
 
     private ElencoCorsiPanel elencoCorsiPanel;
 
@@ -41,6 +41,7 @@ public class Controller {
     private ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
     private ArrayList<AggiungiRicettaPage> aggiungiRicettaPages = new ArrayList<>();
     private ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
+    private ArrayList<EditSessionePage> editSessionePages = new ArrayList<>();
 
 
     public Controller(){
@@ -164,24 +165,37 @@ public class Controller {
         return null;
     }
 
+    public void openEditSessionePage(Sessione s){
+        EditSessionePage existingPage = isEditSessionePageAlreadyOpened(s);
+
+        if(existingPage != null){
+            if(existingPage.isShowing()){
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            EditSessionePage editSessionePage = new EditSessionePage( this);
+            editSessionePage.initPage(s);
+            editSessionePages.add(editSessionePage);
+            editSessionePage.setOnCloseRequest(e -> editSessionePages.remove(editSessionePage));
+
+            editSessionePage.show();
+        }
+    }
+
+    private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
+        for(EditSessionePage esp : editSessionePages){
+            if(esp.getSessione().getIdSessione() == s.getIdSessione())
+                return esp;
+        }
+        return null;
+    }
+
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
         ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
         confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
         confermaPartecipazionePage.show();
-    }
-
-    public ArrayList<Ingrediente> getAllIngredientes()throws SQLException{
-        IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
-        return ingredienteDAO.getAllIngredientes();
-    }
-
-    public void insertRicettaToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException {
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
-        sessioneDAO.insertSessione(sessione);
-        for(Ricetta ricetta : ricette){
-            inserisciIngredientiToRicetta(ricetta);
-            sessioneDAO.insertRicettaToSessione(ricetta,sessione);
-        }
     }
 
     public void openSessionePage(Sessione sessione){
@@ -200,6 +214,7 @@ public class Controller {
             }
         }
     }
+
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
 
@@ -293,16 +308,6 @@ public class Controller {
     public void homepageToFront(){
         homePage.toFront();
         homePage.mostraTuttiCorsi();
-    }
-
-    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
-         FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
-         return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
-    }
-
-    public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
-        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
-        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
 
 
@@ -499,8 +504,38 @@ public class Controller {
     }
 
 
+    // Sessione
+    public void insertRicettaToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException {
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
+        sessioneDAO.insertSessione(sessione);
+        for(Ricetta ricetta : ricette){
+            inserisciIngredientiToRicetta(ricetta);
+            sessioneDAO.insertRicettaToSessione(ricetta,sessione);
+        }
+    }
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
+        FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
+        return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+    }
+
+    public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
+        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
+        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
+    }
+
+    public void updateSessione(Sessione s) {
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
+        sessioneDAO.update(s);
+    }
+
+
 
     // Ricetta
+    public ArrayList<Ingrediente> getAllIngredienti()throws SQLException{
+        IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
+        return ingredienteDAO.getAllIngredientes();
+    }
+
     public void getIngredientiRicetta(Ricetta Ricetta) {
         RicettaDAO ricettaDao = new RicettaDAO(this);
         ricettaDao.getIngredienti(Ricetta);

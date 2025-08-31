@@ -120,4 +120,16 @@ public class SessioneDAO implements SessioneDAOInterface {
         FoglioAdesioneDAO faDAO = new FoglioAdesioneDAO(controller);
         return faDAO.getFogliAdesioneByIdSessione(idsessione);
     }
+
+    public void update(Sessione sessione) {
+        if (sessione instanceof SessionePresenza sp) {
+            String sql = "UPDATE sessione " +
+                    "SET data = ?, ora = ?, durata = ?, luogo = ?" +
+                    "WHERE idsessione = ?";
+        } else if (sessione instanceof SessioneOnline so) {
+            String sql = "UPDATE sessione " +
+                    "SET data = ?, ora = ?, durata = ?, link_incontro = ?" +
+                    "WHERE idsessione = ?";
+        }
+    }
 }

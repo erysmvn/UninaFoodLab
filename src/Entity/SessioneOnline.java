@@ -31,4 +31,8 @@ public class SessioneOnline extends Sessione{
     public String getLinkIncontro() {
         return linkIncontro;
     }
+
+    public void setLinkIncontro(String linkIncontro) {
+        this.linkIncontro = linkIncontro;
+    }
 }

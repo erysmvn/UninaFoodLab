@@ -8,7 +8,6 @@ import Entity.Enum.*;
 import Exception.CorsoExceptions.corsiNotFoundException;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.*;
 
 import java.util.ArrayList;
@@ -402,6 +401,23 @@ public class CorsoDAO implements CorsoDAOInterface {
     private ArrayList<Sessione> getSessioniCorso(int idcorso)throws SQLException{
         SessioneDAO sessioneDAO = new SessioneDAO(controller);
         return sessioneDAO.getSessioniByIdCorso(idcorso);
+    }
+
+    @Override
+    public ArrayList<Corso> getCorsiByModalita(String modalita){
+        String sql = "SELECT * FROM corso WHERE modcorso = '"+modalita+"'";
+        ArrayList<Corso> corsi = new ArrayList<>();
+        try {
+          PreparedStatement pstmt = con.prepareStatement(sql);
+          ResultSet rs = pstmt.executeQuery();
+          while (rs.next()) {
+              corsi.add(createCorsoByResultSet(rs));
+          }
+        }catch (SQLException sqle){
+            return null;
+        }
+
+        return corsi;
     }
 
     private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {

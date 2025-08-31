@@ -30,4 +30,5 @@ public interface CorsoDAOInterface {
     ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException;
     Corso getCorsoByNome(String nome) throws corsiNotFoundException, SQLException;
 
+    ArrayList<Corso> getCorsiByModalita(String modalita);
 }

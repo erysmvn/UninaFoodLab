@@ -276,6 +276,10 @@ public class Controller {
         accountPage.show();
 
     }
+    public ArrayList<Corso> getCorsiByModalita(String modalita) {
+        CorsoDAO corsoDAO = new CorsoDAO(this);
+        return corsoDAO.getCorsiByModalita(modalita);
+    }
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();

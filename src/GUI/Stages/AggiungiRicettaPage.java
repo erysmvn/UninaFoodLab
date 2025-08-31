@@ -60,7 +60,7 @@ public class AggiungiRicettaPage extends Stage {
                 createActionButtons()
         );
 
-        Scene scene = new Scene(root, 650, 700);
+        Scene scene = new Scene(root, 450, 700);
 
         scene.setFill(Color.TRANSPARENT);
 
@@ -77,28 +77,43 @@ public class AggiungiRicettaPage extends Stage {
         VBox box = new VBox(10);
         box.setStyle("-fx-background-color: transparent");
 
-        VBox nomeRicetta = new VBox(5);
+        VBox nomeRicettaBox = new VBox(5);
+        Label metaNomeRicetta = new Label("Nome *");
         nomeRicettaField = new TextField();
         nomeRicettaField.setPromptText("Inserisci nome ricetta");
+        nomeRicettaField.setMaxWidth(300);
+        nomeRicettaField.setMinWidth(300);
         erroreNomeRicettaLabel = new Label();
         erroreNomeRicettaLabel.setTextFill(Color.RED);
-        nomeRicetta.getChildren().addAll(nomeRicettaField,erroreNomeRicettaLabel);
+        nomeRicettaBox.getChildren().addAll(metaNomeRicetta,nomeRicettaField,erroreNomeRicettaLabel);
 
-        VBox tempoDiPreparazione = new VBox(5);
+        VBox tempoDiPreparazioneBox = new VBox(5);
+        Label metaTempo = new Label("Tempo di preparazione *");
         tempoField = new TextField();
-        tempoField.setPromptText("Inserisci tempo di  preparazione");
+        tempoField.setPromptText("Inserisci tempo di  preparazione (min)");
+        tempoField.setMaxWidth(150);
+        tempoField.setMinWidth(150);
+        tempoField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d{0,3}?")) return change;
+            return null;
+        }));
         erroreTempoLabel = new Label();
         erroreTempoLabel.setTextFill(Color.RED);
-        tempoDiPreparazione.getChildren().addAll(tempoField,erroreTempoLabel);
+        tempoDiPreparazioneBox.getChildren().addAll(metaTempo,tempoField,erroreTempoLabel);
 
-
+        VBox descrizioneBox = new VBox(5);
         descrizioneField = new TextField();
         descrizioneField.setPromptText("Inserisci descrizione");
-
+        Label metaDescrizione = new Label("Descrizione");
+        descrizioneField.setAlignment(Pos.TOP_LEFT);
+        descrizioneField.setPrefHeight(150);
+        descrizioneField.setMinHeight(150);
+        descrizioneBox.getChildren().addAll(metaDescrizione,descrizioneField);
         box.getChildren().addAll(
-                nomeRicetta,
-                tempoDiPreparazione,
-                descrizioneField
+                nomeRicettaBox,
+                tempoDiPreparazioneBox,
+                descrizioneBox
         );
         return box;
     }
@@ -148,7 +163,7 @@ public class AggiungiRicettaPage extends Stage {
         VBox box = new VBox(5);
         box.setStyle("-fx-border-color: #3a6698; -fx-border-radius: 5; -fx-padding: 5;");
 
-
+        // Campo nome ingrediente
         ComboBox<String> ingredienteCombo = new ComboBox<>();
         ingredienteCombo.setPromptText("Seleziona ingrediente");
         ingredienteCombo.getItems().add("Nuovo Ingrediente");
@@ -160,7 +175,6 @@ public class AggiungiRicettaPage extends Stage {
             }
             enableIngredienteSearch(ingredienteCombo, ingredientiEsistenti);
         } catch (Exception ignora) {}
-
 
         TextField nuovoIngredienteField = new TextField();
         nuovoIngredienteField.setPromptText("Nome nuovo ingrediente");
@@ -174,6 +188,27 @@ public class AggiungiRicettaPage extends Stage {
             }
         });
 
+        // Bottone rimuovi accanto al campo nome
+        Button removeButton = new Button("x");
+        removeButton.setStyle(
+                "-fx-background-color: #da3d26; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-border-radius: 3;" +
+                        "-fx-padding: 0 5 0 5;"
+        );
+
+        HBox nomeBox = new HBox(5);
+        nomeBox.getChildren().addAll(ingredienteCombo, nuovoIngredienteField, removeButton);
+        HBox.setHgrow(ingredienteCombo, Priority.ALWAYS);
+        HBox.setHgrow(nuovoIngredienteField, Priority.ALWAYS);
+
+        removeButton.setOnAction(e -> {
+            ingredientiBox.getChildren().remove(box);
+            ingredientiBoxList.remove(box);
+        });
+
+        // Campo allergeni e categoria
         HBox sottoBox = new HBox(10);
         TextField allergeniField = new TextField();
         allergeniField.setPromptText("Allergeni");
@@ -181,6 +216,7 @@ public class AggiungiRicettaPage extends Stage {
         categoriaField.setPromptText("Categoria");
         sottoBox.getChildren().addAll(allergeniField, categoriaField);
 
+        // Quantità e unità
         HBox quantitaBox = new HBox(10);
         TextField quantitaField = new TextField();
         quantitaField.setTextFormatter(new TextFormatter<>(change -> {
@@ -196,8 +232,7 @@ public class AggiungiRicettaPage extends Stage {
         unitaBox.getSelectionModel().selectFirst();
         quantitaBox.getChildren().addAll(quantitaField, unitaBox);
 
-
-        box.getChildren().addAll(ingredienteCombo, nuovoIngredienteField, sottoBox, quantitaBox);
+        box.getChildren().addAll(nomeBox, sottoBox, quantitaBox);
         return box;
     }
 
@@ -268,12 +303,7 @@ public class AggiungiRicettaPage extends Stage {
         topBox.setAlignment(Pos.TOP_RIGHT);
 
         Label titolo = new Label("Nuova Ricetta !");
-        Font robotoFont = Font.loadFont(
-                getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                25
-        );
-        titolo.setFont(robotoFont);
-        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;");
+        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-font-size: 25;");
 
         Region spacer1 = new Region();
         HBox.setHgrow(spacer1, Priority.ALWAYS);
@@ -338,7 +368,6 @@ public class AggiungiRicettaPage extends Stage {
                 erroreInserimentoIngredientiLabel.setText("Inserire categoria ingrediente");
             }catch (Exception e) {
                 erroreInserimentoIngredientiLabel.setText("Errore nell'inserimento dati. Riprovare più tardi");
-                e.printStackTrace();
             }
         });
 
@@ -358,16 +387,15 @@ public class AggiungiRicettaPage extends Stage {
 
         HBox quantitaBox = (HBox) box.getChildren().get(3);
         TextField quantitaField = (TextField) quantitaBox.getChildren().get(0);
+
         @SuppressWarnings("unchecked")
         ComboBox<UnitaIngrediente> unitaBox = (ComboBox<UnitaIngrediente>) quantitaBox.getChildren().get(1);
 
-        // Nome ingrediente (esistente o nuovo)
         String nome = ingredienteCombo.getValue();
         if ("Nuovo Ingrediente".equals(nome)) {
-            String typed = (nuovoIngredienteField != null && nuovoIngredienteField.isVisible())
+             nome = (nuovoIngredienteField != null && nuovoIngredienteField.isVisible())
                     ? nuovoIngredienteField.getText()
                     : ingredienteCombo.getEditor().getText();
-            nome = typed;
         }
         if (nome == null || nome.trim().isEmpty()) throw new NomeIngredienteEmptyException();
 
@@ -388,31 +416,6 @@ public class AggiungiRicettaPage extends Stage {
 
         return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim(), quantita, unita);
     }
-
-/*
-
-FATTO -> INSERT INGREDIENTE
-AL METODO DEVO PASSARGLI RICETTA E INGREDIENTE
-
-BEGIN;
-INSERT INTO ricetta (nome_ricetta, descrizione_ricetta, tempo_di_preparazione, autore) values ('Pollo in Umido', 'no decription', 20, null);
-INSERT INTO FORMA (idRicetta, idIngrediente, Unità, Quantità)
-SELECT r.idRicetta, i.idIngrediente, 'Grammi (gr)', 150
-FROM RICETTA r, INGREDIENTE i
-WHERE r.Nome_ricetta = 'Pollo in Umido' AND i.Nome_ingrediente = 'Pollo';
-END;
-
-DOPO FARE QUESTA->
-METODO TRANSACTION PER INSERIRE A SESSIONE
-METODO INSERT RICETTATOSESSIONE()
-INSERT INTO Tratta (idricetta, idsessione) VALUES (
-(SELECT idricetta FROM ricetta WHERE nome_ricetta = 'Di pinto scicchitano'),
-(SELECT idsessione FROM sessione NATURAL JOIN corso WHERE nome_corso = 'Primi di mare' AND data = '2026-06-06')
-
-);
-
- */
-
 
 
 }

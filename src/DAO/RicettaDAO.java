@@ -35,6 +35,7 @@ public class RicettaDAO implements RicettaDAOInterface {
     }
 
     public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
+
         this.insertRicetta(ricetta);
         String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, \"unità\", Quantità) " +
                 "SELECT r.idRicetta, i.idIngrediente, ?::\"unità_ingrediente\", ? " +
@@ -48,7 +49,6 @@ public class RicettaDAO implements RicettaDAOInterface {
                 pstmt.setInt(2, ingrediente.getQuantita());
                 pstmt.setString(3, ingrediente.getNome());
                 pstmt.setString(4, ricetta.getNome());
-
                 pstmt.executeUpdate();
             }
         }

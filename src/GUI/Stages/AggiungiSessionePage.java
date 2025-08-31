@@ -29,6 +29,7 @@ import static java.time.Duration.between;
 
 public class AggiungiSessionePage extends Stage {
     private Controller controller;
+
     private VBox root;
     private Scene scene;
     private Label numeroRicette;
@@ -48,9 +49,9 @@ public class AggiungiSessionePage extends Stage {
     private Label erroreOrarioInizio;
     private Label erroreOrarioFine;
     private Label erroreDataSessione;
-
     private Label errorLinkOrLuogoLabel;
-
+    private Label errorInserimentoDatiLabel;
+    private Label errorAlmenoUnaRicettaLabel;
     public AggiungiSessionePage(Controller controller) {
         this.controller = controller;
 
@@ -142,7 +143,7 @@ public class AggiungiSessionePage extends Stage {
     }
 
     private void setSceneAesthetics() {
-        scene = new Scene(root, 850, 650);
+        scene = new Scene(root, 450, 700);
         scene.setFill(Color.TRANSPARENT);
         scene.setOnKeyPressed(e -> {
             if (e.isControlDown() && e.getCode() == KeyCode.W) {
@@ -161,23 +162,21 @@ public class AggiungiSessionePage extends Stage {
 
     private void setRootFunctionalities() {
 
-        Region spacer = new Region();
-        spacer.setPrefHeight(40);
-
+        root.setAlignment(Pos.CENTER);
+        root.setSpacing(30);
         root.getChildren().addAll(
                 createTopBox(),
                 createLinkOrLuogoBox(),
-                spacer,
                 createDateBox(),
                 createOrarioBox(),
                 createRicettaBox(),
-                createConfermaButton()
+                createBottomBox()
         );
     }
 
     private void setRootAesthetics() {
         root = new VBox(15);
-        root.setPadding(new Insets(35, 20, 20, 20));
+        root.setPadding(new Insets(35, 20, 10, 20));
         root.setAlignment(Pos.TOP_LEFT);
         root.setBackground(new Background(
                 new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
@@ -193,8 +192,10 @@ public class AggiungiSessionePage extends Stage {
 
 
     private VBox createLinkOrLuogoBox() {
+        VBox linkOrLuogoBox = new VBox(20);
+        linkOrLuogoBox.setAlignment(Pos.CENTER_LEFT);
+
         VBox box = new VBox(5);
-        box.setAlignment(Pos.CENTER_LEFT);
 
         linkOrLuogoField = new TextField();
         linkOrLuogoField.setPrefWidth(200);
@@ -204,25 +205,20 @@ public class AggiungiSessionePage extends Stage {
         errorLinkOrLuogoLabel.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
         Label metaLinkOrLuogo = new Label();
 
-        if (corso.getModalita_corso() == null
-                || corso.getModalita_corso().getLabel().equalsIgnoreCase("Online e in presenza")) {
-            box.getChildren().addAll(createChooseSessioneBox(metaLinkOrLuogo, linkOrLuogoField));
-        } else if (corso.getModalita_corso().getLabel().equalsIgnoreCase("online")) {
-            metaLinkOrLuogo.setText("Link *");
-            linkOrLuogoField.setPromptText("Inserisci Link");
-        } else if (corso.getModalita_corso().getLabel().equalsIgnoreCase("presenza")) {
-            metaLinkOrLuogo.setText("Luogo *");
-            linkOrLuogoField.setPromptText("Inserisci luogo");
-        }
-        Region spacer = new Region();
-        spacer.setPrefHeight(25);
-        box.getChildren().addAll(spacer, metaLinkOrLuogo, linkOrLuogoField,errorLinkOrLuogoLabel);
-        return box;
+        box.getChildren().addAll(metaLinkOrLuogo, linkOrLuogoField);
+
+        linkOrLuogoBox.getChildren().addAll(
+                createChooseSessioneBox(metaLinkOrLuogo,linkOrLuogoField),
+                box,
+                errorLinkOrLuogoLabel);
+
+        return linkOrLuogoBox;
     }
 
     private LocalTime getLocalTimeFromFields(TextField hourField, TextField minuteField) {
         String hour = hourField.getText();
         String minute = minuteField.getText();
+
         if(hour.isEmpty() || minute.isEmpty()){
             hour =  "12";
             minute = "00";
@@ -306,8 +302,29 @@ public class AggiungiSessionePage extends Stage {
             );
         }
 
-        //todo metodo controller che inserisce la sessione e poi serve l'id così costruiamo la sessione con l'id
         this.setSessione(sessione);
+    }
+
+    private VBox createBottomBox(){
+        VBox bottomBox = new VBox(5);
+        errorInserimentoDatiLabel = new Label();
+        errorInserimentoDatiLabel.setStyle("-fx-text-fill: red");
+        bottomBox.getChildren().addAll(errorInserimentoDatiLabel,createConfermaButton(),createAnnulaButton());
+        bottomBox.setAlignment(Pos.BOTTOM_CENTER);
+        return  bottomBox;
+    }
+
+    private Button createAnnulaButton(){
+        Button annulaButton = new Button("Annula");
+        annulaButton.setPrefSize(80, 30);
+
+        annulaButton.setStyle("-fx-background-color: #da3d26;-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1;");
+        annulaButton.setOnMouseEntered(e -> annulaButton.setOpacity(0.8));
+        annulaButton.setOnMouseExited(e -> annulaButton.setOpacity(1.0));
+
+        annulaButton.setOnAction(e -> this.close());
+
+        return annulaButton;
     }
 
     private Button createConfermaButton() {
@@ -344,10 +361,9 @@ public class AggiungiSessionePage extends Stage {
             } catch (SessioneAlmenoUnOraException SAOE) {
                 erroreOrarioFine.setText("Durata minima 1 ora");
             } catch (AlmenoUnaRicettaException ARE) {
-                erroreOrarioFine.setText("La sessione deve trattare almeno una ricetta");
+                errorAlmenoUnaRicettaLabel.setText("La sessione deve trattare almeno una ricetta");
             } catch (SQLException sql ) {
-                erroreOrarioFine.setText("Errore inserimento dati. Riprovare più tardi");
-                sql.printStackTrace();
+                errorInserimentoDatiLabel.setText("Errore inserimento dati. Riprovare più tardi");
             }catch (Exception ex) {
                 System.err.println("Errore inatteso: " + ex.getMessage());
             }
@@ -360,7 +376,7 @@ public class AggiungiSessionePage extends Stage {
 
 
     private HBox createChooseSessioneBox(Label metaLinkOrLuogo, TextField linkOrLuogoField) {
-        HBox box = new HBox(10);
+        HBox box = new HBox(20);
         box.setAlignment(Pos.CENTER_LEFT);
 
         ToggleGroup group = new ToggleGroup();
@@ -409,19 +425,20 @@ public class AggiungiSessionePage extends Stage {
 
     private HBox createTopBox() {
         HBox topBox = new HBox(5);
-        topBox.setAlignment(Pos.TOP_RIGHT);
+
         topBox.setSpacing(10);
-        Label titolo = new Label("  Nuova Sessione !");
-        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;");
+
+        Label titolo = new Label("Nuova Sessione !");
+
+        titolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;-fx-alignment: CENTER;-fx-background-color: transparent;-fx-font-size: 30");
+
 
         Region spacer = new Region();
-        Region spacer1 = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
 
         CircleButton closeButton = createCloseButton();
         CircleButton minimizeButton = createMinimizeButton();
-        topBox.getChildren().addAll(spacer, titolo, spacer1, minimizeButton, closeButton);
+        topBox.getChildren().addAll(titolo, spacer, minimizeButton, closeButton);
         return topBox;
     }
 
@@ -443,20 +460,29 @@ public class AggiungiSessionePage extends Stage {
     }
 
     private VBox createRicettaBox() {
-        VBox container = new VBox(5);
-        container.setAlignment(Pos.TOP_LEFT);
+        VBox ricettaBox = new VBox(5);
+        ricettaBox.setAlignment(Pos.TOP_LEFT);
+
         numeroRicette = new Label("Ricette aggiunte: " + ricette.size());
         numeroRicette.setStyle("-fx-text-fill: lightgray;");
+
+        errorAlmenoUnaRicettaLabel = new Label();
+        errorAlmenoUnaRicettaLabel.setStyle("-fx-text-fill: red;");
+
+
         Button aggiungiRicettaBtn = new Button("Aggiungi ricetta");
-        container.getChildren().addAll(numeroRicette, aggiungiRicettaBtn);
+        ricettaBox.getChildren().addAll(numeroRicette, aggiungiRicettaBtn,errorAlmenoUnaRicettaLabel);
+
         aggiungiRicettaBtn.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
+
         aggiungiRicettaBtn.setOnMouseEntered(e -> aggiungiRicettaBtn.setOpacity(0.8));
         aggiungiRicettaBtn.setOnMouseExited(e -> aggiungiRicettaBtn.setOpacity(1.0));
+
         aggiungiRicettaBtn.setOnAction(e -> {
             controller.openAggiungiRicettaPage();
         });
 
-        return container;
+        return ricettaBox;
     }
 
     private void setNotClickedButtonAesthetic(ToggleButton button) {
@@ -474,9 +500,4 @@ public class AggiungiSessionePage extends Stage {
     }
 
 
-    public static class DataNelPassatoException extends Exception {
-        public DataNelPassatoException() {
-            super("La data non può essere nel passato");
-        }
-    }
 }

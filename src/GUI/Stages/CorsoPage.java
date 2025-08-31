@@ -196,9 +196,8 @@ public class CorsoPage extends Stage {
                 this.close();
             } else {
                 controller.subscribeToCourse(corso);
-                ArrayList<Corso> corsi = controller.getUtente().getCorsi();
-                corsi.add(corso);
                 setIscrittoCorso(subscribeButton);
+                controller.refreshAccountPage();
             }
         });
 

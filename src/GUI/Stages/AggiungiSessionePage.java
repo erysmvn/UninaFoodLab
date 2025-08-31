@@ -343,6 +343,7 @@ public class AggiungiSessionePage extends Stage {
                 validConferma();
                 createSessione();
                 controller.insertRicettaToSessione(ricette,sessione);
+                controller.refreshAccountPage();
                 this.close();
             } catch (OrarioInizioEmptyException ex) {
                 erroreOrarioInizio.setText("Inserire ora di inizio");
@@ -362,8 +363,12 @@ public class AggiungiSessionePage extends Stage {
                 erroreOrarioFine.setText("Durata minima 1 ora");
             } catch (AlmenoUnaRicettaException ARE) {
                 errorAlmenoUnaRicettaLabel.setText("La sessione deve trattare almeno una ricetta");
-            } catch (SQLException sql ) {
-                errorInserimentoDatiLabel.setText("Errore inserimento dati. Riprovare più tardi");
+            } catch (SQLException sql ){
+                if(isFrequenzaSettimanaleLimiteError(sql.getSQLState())){
+                    errorInserimentoDatiLabel.setText("Frequenza limite settimanale superata");
+                }else
+                     errorInserimentoDatiLabel.setText("Errore inserimento dati. Riprovare più tardi");
+
             }catch (Exception ex) {
                 System.err.println("Errore inatteso: " + ex.getMessage());
             }
@@ -374,6 +379,9 @@ public class AggiungiSessionePage extends Stage {
         return confirmButton;
     }
 
+    private boolean isFrequenzaSettimanaleLimiteError(String error){
+        return error.equals("P0001");
+    }
 
     private HBox createChooseSessioneBox(Label metaLinkOrLuogo, TextField linkOrLuogoField) {
         HBox box = new HBox(20);

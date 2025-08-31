@@ -58,19 +58,19 @@
             this.utente = utente;
 
             accountPanel = createAccountPanel(utente);
-            accountCorsiPanel = createAccountCorsiPanel(controller);
+            accountCorsiPanel = createAccountCorsiPanel();
             impostazioniPanel = new ImpostazioniPanel(controller);
             calendarioPanel = new CalendarioPanel(controller);
             calendarioPanel.initCalendario(utente);
 
-            content.getChildren().addAll(accountPanel,accountCorsiPanel,impostazioniPanel,calendarioPanel);
+            content.getChildren().addAll(accountCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
 
             HBox topBar = createTopBar();
             root.setTop(topBar);
             root.setCenter(content);
 
-            showOnlyPanel(accountPanel);
-            setButtonAsActive(accountButton);
+            showOnlyPanel(accountCorsiPanel);
+            setButtonAsActive(corsiButton);
         }
 
 
@@ -84,11 +84,6 @@
             return calendarButton;
         }
 
-        public void refreshCalendario(){
-            calendarioPanel = new CalendarioPanel(controller);
-            calendarioPanel.initCalendario(utente);
-            initButton(calendarButton,calendarioPanel);
-        }
 
         private void initButton(Button button, Pane panel) {
             setFocusPropreties(button);
@@ -168,14 +163,14 @@
             accountPanel = new AccountPanel(utente);
             accountPanel.setSpacing(10);
             accountPanel.setPadding(new Insets(10));
-            accountPanel.setVisible(true);
-            accountPanel.setManaged(true);
             return accountPanel;
         }
 
-        private ElencoCorsiPanel createAccountCorsiPanel(Controller controller){
+        private ElencoCorsiPanel createAccountCorsiPanel(){
             ElencoCorsiPanel elencoCorsiPanel = new ElencoCorsiPanel(this.controller);
             elencoCorsiPanel.initPanel(utente);
+            elencoCorsiPanel.setVisible(true);
+            elencoCorsiPanel.setManaged(true);
             return elencoCorsiPanel;
         }
 
@@ -203,22 +198,21 @@
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            topBar.getChildren().addAll(accountButton, corsiButton, calendarButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
+            topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
 
             return  topBar;
         }
 
         private Button createAccountButton(){
             accountButton = new Button("Account");
-            setClickedAesthetics(accountButton);
             initButton(accountButton,accountPanel);
-            clickedButton = accountButton;
             return accountButton;
         }
 
         private Button createCorsiButton(){
             corsiButton = new Button("Corsi");
-            setNotCLickedAesthetics(corsiButton);
+            setClickedAesthetics(corsiButton);
+            clickedButton = corsiButton;
             initButton(corsiButton,accountCorsiPanel);
             return corsiButton;
         }

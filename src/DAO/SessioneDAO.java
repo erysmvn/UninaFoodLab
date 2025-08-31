@@ -62,7 +62,7 @@ public class SessioneDAO implements SessioneDAOInterface {
 
     @Override
     public Sessione createSessioneByResultSet(ResultSet rs) throws SQLException {
-        Sessione sessione = null;
+        Sessione sessione ;
         String modalita = rs.getString("modalita");
 
         LocalDate data = rs.getDate("data").toLocalDate();
@@ -99,12 +99,12 @@ public class SessioneDAO implements SessioneDAOInterface {
     }
 
     @Override
-    public ArrayList<Sessione> getSessioniByNomeCorso(String nomeCorso) throws SQLException {
+    public ArrayList<Sessione> getSessioniByIdCorso(int idcorso) throws SQLException {
 
         ArrayList<Sessione> sessioni = new ArrayList<>();
-        String sql = "SELECT * FROM corso NATURAL JOIN tiene natural join sessione WHERE nome_corso = ?";
+        String sql = "SELECT * FROM corso NATURAL JOIN tratta natural join sessione WHERE idcorso = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1, nomeCorso);
+        stmt.setInt(1, idcorso);
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {

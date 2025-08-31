@@ -137,6 +137,9 @@ public class CalendarioPanel extends Pane {
 
             for (Corso corso : corsi) {
                 sessioniDeiCorsi.add(corso.getSessioni());
+                for(Sessione s: corso.getSessioni()){
+                    System.out.println(s.getIdSessione());
+                }
             }
 
         setFirstSessionDay();
@@ -146,6 +149,8 @@ public class CalendarioPanel extends Pane {
 
     private void addAllEvents() {
         Entry<Object> entry;
+        sessioniPresenzaCalendar.clear();
+        sessioniOnlineCalendar.clear();
         int i = 0;
         for (ArrayList<Sessione> listaSessioni : sessioniDeiCorsi) {
             Corso corso = corsi.get(i++);
@@ -153,7 +158,7 @@ public class CalendarioPanel extends Pane {
                 for (Sessione s : listaSessioni) {
                     LocalDateTime start = s.getOra();
                     LocalDateTime end = start.plusMinutes((long) (s.getDurata() * 60));
-                    String titolo;
+                    String titolo = "";
                     if (s instanceof SessionePresenza sp) {
                         titolo = corso.getNome() + "\nLezione in presenza\n" + sp.getLuogo() + "\nclick for info";
                         entry = new Entry<>(titolo);

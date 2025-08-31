@@ -148,11 +148,13 @@ public class AggiungiRicettaPage extends Stage {
                         "-fx-padding: 5 10 5 10;"
         );
         ingredientiBoxList = new ArrayList<>();
+
         aggiungiIngredienteBtn.setOnAction(e -> {
             VBox singoloIngredienteBox = createIngredienteBox();
             ingredientiBox.getChildren().add(singoloIngredienteBox);
             ingredientiBoxList.add(singoloIngredienteBox);
         });
+
         erroreInserimentoIngredientiLabel = new Label();
         erroreInserimentoIngredientiLabel.setTextFill(Color.RED);
         container.getChildren().addAll(aggiungiIngredienteBtn, erroreInserimentoIngredientiLabel,scroll);
@@ -368,6 +370,7 @@ public class AggiungiRicettaPage extends Stage {
                 erroreInserimentoIngredientiLabel.setText("Inserire categoria ingrediente");
             }catch (Exception e) {
                 erroreInserimentoIngredientiLabel.setText("Errore nell'inserimento dati. Riprovare più tardi");
+                e.printStackTrace();
             }
         });
 
@@ -376,17 +379,18 @@ public class AggiungiRicettaPage extends Stage {
     }
 
 
-    private Ingrediente getIngredienteFromBox(VBox box) {
+    private Ingrediente getIngredienteFromBox(VBox box){
+        HBox nomeBox = (HBox) box.getChildren().getFirst();
         @SuppressWarnings("unchecked")
-        ComboBox<String> ingredienteCombo = (ComboBox<String>) box.getChildren().get(0);
-        TextField nuovoIngredienteField = (TextField) box.getChildren().get(1);
+        ComboBox<String> ingredienteCombo = (ComboBox<String>) nomeBox.getChildren().getFirst();
+        TextField nuovoIngredienteField = (TextField) nomeBox.getChildren().get(1);
 
-        HBox sottoBox = (HBox) box.getChildren().get(2);
-        TextField allergeniField = (TextField) sottoBox.getChildren().get(0);
+        HBox sottoBox = (HBox) box.getChildren().get(1);
+        TextField allergeniField = (TextField) sottoBox.getChildren().getFirst();
         TextField categoriaField = (TextField) sottoBox.getChildren().get(1);
 
-        HBox quantitaBox = (HBox) box.getChildren().get(3);
-        TextField quantitaField = (TextField) quantitaBox.getChildren().get(0);
+        HBox quantitaBox = (HBox) box.getChildren().get(2);
+        TextField quantitaField = (TextField) quantitaBox.getChildren().getFirst();
 
         @SuppressWarnings("unchecked")
         ComboBox<UnitaIngrediente> unitaBox = (ComboBox<UnitaIngrediente>) quantitaBox.getChildren().get(1);

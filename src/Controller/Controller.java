@@ -267,6 +267,16 @@ public class Controller {
         }
     }
 
+    public void refreshAccountPage() {
+        if(accountPage != null)
+            accountPage.close();
+
+        accountPage = new AccountPage(this);
+        accountPage.initPage(utente);
+        accountPage.show();
+
+    }
+
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();
         this.elencoCorsiPanel = elencoCorsiPanel;

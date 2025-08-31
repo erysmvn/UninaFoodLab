@@ -398,9 +398,10 @@ public class CorsoDAO implements CorsoDAOInterface {
         }
     }
 
-    private ArrayList<Sessione> getSessioniCorso(String nomeCorso)throws SQLException{
+//TODO o cess da cambiare
+    private ArrayList<Sessione> getSessioniCorso(int idcorso)throws SQLException{
         SessioneDAO sessioneDAO = new SessioneDAO(controller);
-        return sessioneDAO.getSessioniByNomeCorso(nomeCorso);
+        return sessioneDAO.getSessioniByIdCorso(idcorso);
     }
 
     private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {
@@ -420,8 +421,7 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
-        corso.setSessioni(this.getSessioniCorso(rs.getString("nome_corso")));
-
+        corso.setSessioni(this.getSessioniCorso(rs.getInt("idcorso")));
         setChefs(corso);
 
         return  corso;

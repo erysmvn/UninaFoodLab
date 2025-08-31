@@ -29,6 +29,8 @@ public class Controller {
     private AggiungiSessionePage aggiungiSessionePage;
     private EditCorsoPage editCorsoPage;
 
+    private ElencoCorsiPanel elencoCorsiPanel;
+
     private DBConnection dbc;
 
     private Utente utente;
@@ -267,6 +269,13 @@ public class Controller {
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();
+        this.elencoCorsiPanel = elencoCorsiPanel;
+    }
+
+    public void refreshCorsi() {
+        if (elencoCorsiPanel != null) {
+            elencoCorsiPanel.showCorsi();
+        }
     }
 
     private void removeCorsoPage(Corso corso){

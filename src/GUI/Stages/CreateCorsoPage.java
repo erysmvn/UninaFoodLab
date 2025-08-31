@@ -515,6 +515,7 @@ public class CreateCorsoPage extends Stage {
                    CCEE.printStackTrace();
                }
 
+               controller.refreshCorsi();
 
                this.close();
 

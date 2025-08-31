@@ -272,4 +272,8 @@
         public void setCalendarioPanel(CalendarioPanel calendarioPanel){
             this.calendarioPanel = calendarioPanel;
         }
+
+        public BorderPane getAccountCorsiPanel(){
+            return accountCorsiPanel;
+        }
     }

@@ -76,7 +76,7 @@ public class EditCorsoPage extends Stage {
         topHbox.setSpacing(40);
 
         bottomHbox = new HBox(15);
-        bottomHbox.setAlignment(Pos.TOP_CENTER);
+        bottomHbox.setAlignment(Pos.TOP_LEFT);
 
         footerVbox = new VBox(15);
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
@@ -252,6 +252,7 @@ public class EditCorsoPage extends Stage {
     private VBox createChefsBox() {
         VBox chefsBox = new VBox(5);
         vbox.setAlignment(Pos.TOP_LEFT);
+        chefsBox.setAlignment(Pos.TOP_LEFT);
         Label titolo = new Label("Chef del corso:");
         titolo.setFont(Font.font("System", FontWeight.BOLD, 28));
 
@@ -276,7 +277,19 @@ public class EditCorsoPage extends Stage {
         HBox.setHgrow(spacer1, Priority.ALWAYS);
 
         titoloBox.getChildren().addAll(titolo, spacer1, addChefButton);
-        chefsBox.getChildren().addAll(titoloBox, listaChef);
+
+        ScrollPane scrollPane = new ScrollPane(listaChef);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+//        scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
+//        scrollPane.getViewport().setStyle("-fx-background: white; -fx-background-color: white;");
+
+        scrollPane.setPrefHeight(150);
+        scrollPane.setMaxHeight(150);
+
+        chefsBox.getChildren().addAll(titoloBox, scrollPane);
 
         aggiornaListaChef();
 
@@ -488,7 +501,8 @@ public class EditCorsoPage extends Stage {
             nameError.setText("");
         }
 
-        if (controller.getCorsoByNome(nomeField.getText()) != null && controller.getCorsoByNome(nomeField.getText()) != this.corso) {
+        Corso corsoTrovato = controller.getCorsoByNome(nomeField.getText());
+        if (corsoTrovato != null && corsoTrovato.getIdCorso() != this.corso.getIdCorso()) {
             throw new nameAlreadyTakenException();
         } else {
             nomeField.setStyle(null);

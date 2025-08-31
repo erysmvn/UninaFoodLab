@@ -185,3 +185,73 @@
     -fx-pref-height: 80px; /* aumenta l'altezza del campo */
     -fx-padding: 10px; /* padding interno */
 }
+
+/* SPINNER - stile macOS minimal */
+.spinner {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-min-height: 28px;
+}
+
+.spinner:hover {
+    -fx-border-color: #a0a0a0;
+    -fx-background-color: #fafafa;
+}
+
+.spinner:focused {
+    -fx-border-color: #007aff; /* blu macOS */
+    -fx-background-color: #ffffff;
+}
+
+/* TextField interno allo Spinner */
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-font-family: "San Francisco", "Segoe UI", sans-serif;
+    -fx-font-weight: 300;
+    -fx-text-fill: #333333;
+    -fx-cursor: text;
+}
+
+/* Bottoni increment/decrement */
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6 0 6;
+    -fx-cursor: hand;
+    -fx-background-radius: 0; /* uniforme */
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Icone frecce */
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: #666666; /* colore freccia */
+}
+
+.spinner .increment-arrow-button:hover .increment-arrow,
+.spinner .decrement-arrow-button:hover .decrement-arrow {
+    -fx-background-color: #000000;
+}
+
+.scroll-pane {
+    -fx-background: white;
+    -fx-background-color: white;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: white;
+}

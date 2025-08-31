@@ -51,5 +51,9 @@ public class SessionePresenza extends Sessione {
         return luogo;
     }
 
+    public void setLuogo(String luogo) {
+        this.luogo = luogo;
+    }
+
 }
 

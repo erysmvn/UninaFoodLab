@@ -14,4 +14,5 @@ public interface SessioneDAOInterface {
     Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;
 
     ArrayList<Sessione> getSessioniByIdCorso(int idcorso) throws SQLException;
+    void update(Sessione sessione)throws SQLException;
 }

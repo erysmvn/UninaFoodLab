@@ -131,6 +131,7 @@ public class SessionePage extends Stage {
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
            if(controller.isStudent())
                 footerVbox.getChildren().add(createPartecipaButton());
+           else footerVbox.getChildren().add(createEditButton());
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -228,6 +229,34 @@ public class SessionePage extends Stage {
     private boolean checkIfAlreadyAdded(){
         String matricola = ((Studente)(controller.getUtente())).getMatricola();
          return  ((SessionePresenza)sessione).checkIfAlreadyAdded(matricola);
+    }
+
+    private Button createEditButton() {
+        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/editIcon.png")));
+        ImageView uploadView = new ImageView(uploadImage);
+
+        uploadView.setFitHeight(20);
+        uploadView.setFitWidth(20);
+
+        Button editButton = new Button("Modifica");
+        editButton.setGraphic(uploadView);
+        editButton.setContentDisplay(ContentDisplay.LEFT);
+
+        styleButton(editButton, Color.valueOf("#3a6698"));
+
+        editButton.setPrefWidth(120);
+        editButton.setMinWidth(120);
+        editButton.setMaxWidth(120);
+
+        editButton.setPrefHeight(30);
+        editButton.setMinHeight(30);
+        editButton.setMaxHeight(30);
+
+        editButton.setOnAction(event -> {
+            controller.openEditSessionePage(sessione);
+        });
+
+        return editButton;
     }
 
 

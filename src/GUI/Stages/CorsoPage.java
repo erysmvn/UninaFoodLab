@@ -11,6 +11,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -320,33 +321,47 @@ public class CorsoPage extends Stage {
 
     private void buildDescBox(VBox descBox) {
         Label ricetteTrattate = new Label("Ricette trattate: ");
-        ricetteTrattate.setFont(Font.font(30));;
+        ricetteTrattate.setFont(Font.font(30));
         ricetteTrattate.setTextFill(Color.valueOf("#000000"));
         ricetteTrattate.setStyle("-fx-font-weight: bold;");
         ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
         descBox.getChildren().add(ricetteTrattate);
         VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
+        VBox ricetteList = new VBox(5);
+        ricetteList.setAlignment(Pos.TOP_LEFT);
+
         if (corso.getRicetteTrattate().size() > 0) {
             for (Ricetta r : corso.getRicetteTrattate()) {
                 Label ricettaLabel = new Label("   \u2022 " + r.getNome());
-                ricettaLabel.setFont(Font.font(17));;
+                ricettaLabel.setFont(Font.font(17));
                 ricettaLabel.setTextFill(Color.valueOf("#000000"));
                 ricettaLabel.setAlignment(Pos.CENTER_LEFT);
                 ricettaLabel.setStyle("-fx-cursor: hand;");
 
-                ricettaLabel.setOnMouseClicked(event -> {
-                    controller.openRicettaPage(r);
-                });
+                ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(r));
 
-                descBox.getChildren().add(ricettaLabel);
+                ricetteList.getChildren().add(ricettaLabel);
             }
         } else {
             Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
             noRicetteTrattate.setFont(Font.font(28));
             noRicetteTrattate.setTextFill(Color.valueOf("#000000"));
             noRicetteTrattate.setAlignment(Pos.CENTER);
-            descBox.getChildren().add(noRicetteTrattate);
+            ricetteList.getChildren().add(noRicetteTrattate);
         }
+
+        ScrollPane scrollPane = new ScrollPane(ricetteList);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
+        ricetteList.setStyle("-fx-background-color: white;");
+
+        scrollPane.setPrefHeight(250);
+        scrollPane.setMaxHeight(250);
+
+        descBox.getChildren().add(scrollPane);
     }
 }

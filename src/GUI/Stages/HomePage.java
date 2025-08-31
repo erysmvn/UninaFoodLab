@@ -7,6 +7,8 @@ import GUI.Pane.*;
 import GUI.Buttons.*;
 
 import javafx.animation.*;
+import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -22,6 +24,7 @@ import javafx.util.Duration;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class HomePage extends Stage {
@@ -36,37 +39,49 @@ public class HomePage extends Stage {
     private Boolean isChef = false;
     private HBox choiceBox;
     private ArrayList<Corso> corsi;
-    private Timeline AnimazioneRicerca;
     private TextField searchField;
     private Button searchButton;
     private Button tuttiCorsi;
     private Button homeButton;
 
-    private boolean mostraTuttiCorsiClicked  = false;
+    ToggleGroup choiceGroup;
+    ToggleButton corsoChoice;
+    ToggleButton chefChoice;
+    ToggleButton tipologiaChoice;
+
+    ToggleGroup modalitaGroup;
+    ToggleButton onlineChoice;
+    ToggleButton presenzaChoice;
+
+    Button costoFilter;
+
+    private boolean mostraTuttiCorsiClicked = false;
     private Utente utente = null;
+    private Cursor originalCursor;
 
     public HomePage(Controller controller) {
         this.controller = controller;
         setFunctionalitiesHomePage();
         setAestheticsHomePage();
         this.setCTRLW();
+        this.originalCursor = scene.getCursor();
     }
 
-    private void setFunctionalitiesHomePage(){
+    private void setFunctionalitiesHomePage() {
         root = new BorderPane();
         root.setTop(createTopBar());
         root.setCenter(createCenterContent());
     }
 
-    private void setCTRLW(){
+    private void setCTRLW() {
         scene.setOnKeyPressed(event -> {
-            if(event.isControlDown() && event.getCode() == KeyCode.W){
+            if (event.isControlDown() && event.getCode() == KeyCode.W) {
                 controller.closeAll();
             }
         });
     }
 
-    private void setAestheticsHomePage(){
+    private void setAestheticsHomePage() {
         this.initStyle(StageStyle.UNDECORATED);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         this.setX(screenBounds.getMinX());
@@ -78,7 +93,7 @@ public class HomePage extends Stage {
         this.setScene(scene);
     }
 
-    private void setTopBarAesthetics(VBox topBar){
+    private void setTopBarAesthetics(VBox topBar) {
         topBar.setPadding(new Insets(10));
         topBar.setSpacing(20);
         topBar.setStyle("-fx-background-color: WHITE;");
@@ -86,18 +101,18 @@ public class HomePage extends Stage {
                 Color.valueOf("#3A6698"),
                 BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY,
-                new BorderWidths(0,0,2,0)
+                new BorderWidths(0, 0, 2, 0)
         )));
     }
 
-    private BorderPane createCloseAndMinimizePane(){
+    private BorderPane createCloseAndMinimizePane() {
         BorderPane closeAndMinimizePane = new BorderPane();
         HBox controlButtons = new HBox(5);
         controlButtons.setAlignment(Pos.TOP_RIGHT);
 
         controlButtons.getChildren().addAll(
                 new CircleButton().setToMinimizeButtonWithAction(this),
-                new CircleButton().setToCloseButtonWithAction(e->{
+                new CircleButton().setToCloseButtonWithAction(e -> {
                     controller.closeAll();
                 })
         );
@@ -155,7 +170,7 @@ public class HomePage extends Stage {
         return loginButton;
     }
 
-    private void createHomeButton(){
+    private void createHomeButton() {
 
         homeButton = new Button("Home");
 
@@ -185,7 +200,7 @@ public class HomePage extends Stage {
 
     }
 
-    private Button createSearchButton(){
+    private Button createSearchButton() {
         searchButton = new Button("🔍");
         searchButton.setStyle("-fx-font-size: 26px; -fx-background-radius: 8;-fx-text-fill: \"3A6698\";-fx-background-color: WHITE; -fx-cursor: hand;");
         searchButton.setBorder(new Border(new BorderStroke(
@@ -198,10 +213,10 @@ public class HomePage extends Stage {
         searchButton.setMaxHeight(30);
         searchButton.setPrefHeight(30);
 
-        return  searchButton;
+        return searchButton;
     }
 
-    private void setSearchFieldAesthetics(TextField field){
+    private void setSearchFieldAesthetics(TextField field) {
         field.setFont(Font.font("Arial", 26));
         field.setPrefHeight(30);
         field.setPrefWidth(600);
@@ -214,56 +229,9 @@ public class HomePage extends Stage {
         )));
     }
 
-    private void setSearchButtonOnAction(Button searchButton){
-
-        PauseTransition pause = new PauseTransition(Duration.seconds(6));
-
+    private void setSearchButtonOnAction(Button searchButton) {
         searchButton.setOnAction(Click -> {
-
-            setNotClickedButtonAesthetic(tuttiCorsi);
-            mostraTuttiCorsiClicked = false;
-
-            corsiBox.getChildren().clear();
-
-            this.setLoadingPane();
-
-            pause.setOnFinished(pauseEnded -> {
-                AnimazioneRicerca.stop();
-                String toSearch = searchField.getText();
-                try{
-
-                    if (!toSearch.isEmpty()) {
-                        corsiBox.getChildren().clear();
-                        if (searchField.getPromptText().equals("Cerca per nome corso")) {
-                            corsi = controller.searchCorsiLikeString(toSearch);
-                        } else if (searchField.getPromptText().equals("Cerca per chef")) {
-                            corsi = controller.searchCorsiByChef(toSearch);
-                        } else {
-                            corsi = controller.searchCorsiByTipologia(toSearch);
-                        }
-                    }else {
-                        this.loadTopCorsi();
-                    }
-
-                    if(corsi == null)
-                        throw new corsiNotFoundException();
-
-                    CorsoPanel tempCorsoPanel;
-
-                        for (Corso corso : corsi) {
-                            tempCorsoPanel = new CorsoPanel(this.controller);
-                            tempCorsoPanel.setCorso(corso);
-                            corsiBox.getChildren().add(tempCorsoPanel);
-                            addHoverAnimation(tempCorsoPanel);
-                        }
-
-                }catch (corsiNotFoundException | SQLException CNFE){
-                        corsiBox.getChildren().clear();
-                        this.setNotFoundTextField();
-                }
-
-            });
-            pause.play();
+            setCorsiByChoice();
         });
     }
 
@@ -275,7 +243,7 @@ public class HomePage extends Stage {
 
         searchArea.getChildren().addAll(searchBar, choiceBox);
 
-        return  searchArea;
+        return searchArea;
     }
 
     private HBox createSearchBar() {
@@ -291,15 +259,14 @@ public class HomePage extends Stage {
         this.setSearchFieldAesthetics(searchField);
         this.setSearchFieldProprieties(searchField);
 
-        searchBar.getChildren().addAll(searchField,searchButton);
+        searchBar.getChildren().addAll(searchField, searchButton);
 
         return searchBar;
     }
 
-    public void mostraTuttiCorsi(){
+    public void mostraTuttiCorsi() {
         tuttiCorsi.fire();
     }
-
 
     private HBox createChoiceBox() {
         choiceBox = new HBox(2);
@@ -311,57 +278,28 @@ public class HomePage extends Stage {
         cercaPerLabel.setPadding(new Insets(6, 10, 5, 10));
         cercaPerLabel.setStyle("-fx-background-color: #3a6698; -fx-background-radius: 7;");
 
-        ToggleGroup choiceGroup = new ToggleGroup();
+        choiceGroup = new ToggleGroup();
 
-        ToggleButton corsoChoice = new ToggleButton("Corso");
+        corsoChoice = new ToggleButton("Corso");
         corsoChoice.setToggleGroup(choiceGroup);
 
-        ToggleButton chefChoice = new ToggleButton("Chef");
+        chefChoice = new ToggleButton("Chef");
         chefChoice.setToggleGroup(choiceGroup);
 
-        ToggleButton tipologiaChoice = new ToggleButton("Tipologia");
+        tipologiaChoice = new ToggleButton("Tipologia");
         tipologiaChoice.setToggleGroup(choiceGroup);
 
-        tuttiCorsi = new Button("Mostra tutti");;
-
-        tuttiCorsi.setOnAction(event -> {
-            
-            if(!mostraTuttiCorsiClicked){
-                setClickedButtonAesthetic(tuttiCorsi);
-                mostraTuttiCorsiClicked = true;
-                corsiBox.getChildren().clear();
-                ArrayList<Corso> corsi = controller.getAllCourses();
-                if (corsi != null) {
-                    CorsoPanel tempCorsoPanel;
-                    for (Corso corso : corsi) {
-                        tempCorsoPanel = new CorsoPanel(this.controller);
-                        tempCorsoPanel.setCorso(corso);
-                        corsiBox.getChildren().add(tempCorsoPanel);
-                        addHoverAnimation(tempCorsoPanel);
-                    }
-                }else{
-                    setNotFoundTextField();
-                }
-            }
-
-        });
-
-        setClickedButtonAesthetic(corsoChoice);
-        setNotClickedButtonAesthetic(tuttiCorsi);
-        setNotClickedButtonAesthetic(chefChoice);
-        setNotClickedButtonAesthetic(tipologiaChoice);
-
-        choiceGroup.selectedToggleProperty().addListener((obs, oldT, choosed) -> {
+        choiceGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             for (Toggle tb : choiceGroup.getToggles()) {
                 ToggleButton temptb = (ToggleButton) tb;
-                if(temptb == choosed)
+                if (temptb == newToggle)
                     setClickedButtonAesthetic(temptb);
                 else
                     setNotClickedButtonAesthetic(temptb);
             }
 
-            if (choosed != null) {
-                ToggleButton selectedToggle = (ToggleButton) choosed;
+            if (newToggle != null) {
+                ToggleButton selectedToggle = (ToggleButton) newToggle;
                 switch (selectedToggle.getText()) {
                     case "Corso" -> searchField.setPromptText("Cerca per nome corso");
                     case "Chef" -> searchField.setPromptText("Cerca per chef");
@@ -372,93 +310,91 @@ public class HomePage extends Stage {
                 setClickedButtonAesthetic(corsoChoice);
             }
 
-        });
-        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice, tuttiCorsi);
-        return choiceBox;
-    }
-
-    private void setNotClickedButtonAesthetic(ToggleButton button){
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(base);
-    }
-
-    private void setClickedButtonAesthetic(ToggleButton button){
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(selected);
-    }
-
-    private void setNotClickedButtonAesthetic(Button button){
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(base);
-    }
-
-    private void setClickedButtonAesthetic(Button button){
-        String selected  = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
-
-        button.setStyle(selected);
-    }
-
-    private void setSearchFieldProprieties(TextField searchField){
-        searchField.setFocusTraversable(true);
-        searchField.setOnKeyPressed(e->{
-            if(e.getCode() == KeyCode.ENTER)
-                    searchButton.fire();
-        });
-        searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal && searchField.getText().isEmpty()) {
-               this.loadTopCorsi();
+            if (newToggle != null && !searchField.getText().isEmpty()) {
+                setCorsiByChoice();
             }
         });
 
+        tuttiCorsi = new Button("Mostra tutti");
+        tuttiCorsi.setOnAction(event -> {
+            if (!mostraTuttiCorsiClicked) {
+                setClickedButtonAesthetic(tuttiCorsi);
+                mostraTuttiCorsiClicked = true;
+                setCorsiByChoice();
+            }else
+                setCorsiByChoice();
+        });
+
+        costoFilter = new Button("€");
+        this.setNotClickedButtonAesthetic(costoFilter);
+        costoFilter.setOnAction(event -> {
+            if (costoFilter.getText().equals("€")) {
+                this.setClickedButtonAesthetic(costoFilter);
+                costoFilter.setText("€↓");
+                sortCorsiByCostoIfNeeded();
+            } else if (costoFilter.getText().equals("€↓")) {
+                costoFilter.setText("€↑");
+                sortCorsiByCostoIfNeeded();
+            } else {
+                this.setNotClickedButtonAesthetic(costoFilter);
+                costoFilter.setText("€");
+            }
+            setCorsiBox();
+        });
+
+        modalitaGroup = new ToggleGroup();
+
+        onlineChoice = new ToggleButton("Online");
+        onlineChoice.setToggleGroup(modalitaGroup);
+        onlineChoice.setUserData("Online");
+       /*
+        onlineChoice.setOnAction(event -> {
+            filterCorsiByModalitaIfNeeded();
+            setCorsiBox();
+        });
+        */
+        presenzaChoice = new ToggleButton("Presenza");
+        presenzaChoice.setToggleGroup(modalitaGroup);
+        presenzaChoice.setUserData("Presenza");
+        /*
+        presenzaChoice.setOnAction(event ->{
+                filterCorsiByModalitaIfNeeded();
+                setCorsiBox();
+        });
+        */
+        modalitaGroup.selectedToggleProperty().addListener((obs, oldT, choosed) -> {
+            if (choosed != null && choosed.equals(oldT)) {
+                modalitaGroup.selectToggle(null);
+                return;
+            }
+
+            for (Toggle tb : modalitaGroup.getToggles()) {
+                ToggleButton temptb = (ToggleButton) tb;
+                if (temptb == choosed)
+                    setClickedButtonAesthetic(temptb);
+                else
+                    setNotClickedButtonAesthetic(temptb);
+            }
+
+            if(oldT == null) {
+                filterCorsiByModalitaIfNeeded();
+                setCorsiBox();
+            }else
+                setCorsiByChoice();
+        });
+
+        setClickedButtonAesthetic(corsoChoice);
+        setNotClickedButtonAesthetic(onlineChoice);
+        setNotClickedButtonAesthetic(presenzaChoice);
+        setNotClickedButtonAesthetic(tuttiCorsi);
+        setNotClickedButtonAesthetic(chefChoice);
+        setNotClickedButtonAesthetic(tipologiaChoice);
+
+        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice, onlineChoice, presenzaChoice, tuttiCorsi, costoFilter);
+        return choiceBox;
     }
 
-    private void setLoadingPane(){
-
-        StackPane loadingPane = new StackPane();
-        loadingPane.setPadding(new Insets(20));
-        Rectangle background = new Rectangle(600, 150);
-        background.setArcWidth(30);
-        background.setArcHeight(30);
-        background.setFill(Color.rgb(255, 255, 255, 0.85));
-
-        corsiBox.getChildren().add(loadingPane);
-        Text caricamentoText = new Text();
-        this.setTextAesthetics(caricamentoText);
-        AnimazioneRicerca = startAnimation(caricamentoText);
-
-        loadingPane.getChildren().addAll(background, caricamentoText);
-
-    }
-
-    private void setTextAesthetics(Text text){
-        text.setFill(Color.valueOf("#3A6698"));
-        text.setFont(
-                Font.loadFont(getClass().getResourceAsStream("/Media/Fonts/times.ttf"), 70)
-        );
-    }
-
-    private Timeline startAnimation(Text caricamentoText){
-      Timeline AnimazionePuntini = new Timeline(
-                new KeyFrame(Duration.seconds(0), e -> caricamentoText.setText("Ricerca in corso")),
-                new KeyFrame(Duration.seconds(0.3), e -> caricamentoText.setText("Ricerca in corso.")),
-                new KeyFrame(Duration.seconds(0.6), e -> caricamentoText.setText("Ricerca in corso..")),
-                new KeyFrame(Duration.seconds(0.9), e -> caricamentoText.setText("Ricerca in corso...")),
-                new KeyFrame(Duration.seconds(1.2), e -> caricamentoText.setText("Ricerca in corso..."))
-        );
-        AnimazionePuntini.setCycleCount(Animation.INDEFINITE);
-        AnimazionePuntini.play();
-
-        return AnimazionePuntini;
-    }
-
-    private void setNotFoundTextField() {
+       private void setNotFoundTextField() {
         Text notFound = new Text("Nessun corso trovato");
         this.setTextAesthetics(notFound);
         StackPane notFoundPane = new StackPane();
@@ -470,53 +406,117 @@ public class HomePage extends Stage {
         corsiBox.getChildren().add(notFoundPane);
     }
 
-    private void loadTopCorsi(){
-
-        corsiBox.getChildren().clear();
-        ArrayList<Corso> topCorsi = controller.getMostFollowedCourses(4);
-        CorsoPanel tempCorsoPanel;
-
-        for (Corso corso : topCorsi) {
-            tempCorsoPanel = new CorsoPanel(this.controller);
-            tempCorsoPanel.setCorso(corso);
-            corsiBox.getChildren().add(tempCorsoPanel);
-            addHoverAnimation(tempCorsoPanel);
-        }
+    private void setNotClickedButtonAesthetic(ToggleButton button) {
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        button.setStyle(base);
     }
+
+    private void setClickedButtonAesthetic(ToggleButton button) {
+        String selected = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        button.setStyle(selected);
+    }
+
+    private void setNotClickedButtonAesthetic(Button button) {
+        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        button.setStyle(base);
+    }
+
+    private void setClickedButtonAesthetic(Button button) {
+        String selected = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
+                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        button.setStyle(selected);
+    }
+
+    private void setSearchFieldProprieties(TextField searchField) {
+        searchField.setFocusTraversable(true);
+        searchField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER)
+                setCorsiByChoice();
+        });
+        searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && searchField.getText().isEmpty()) {
+                setCorsiByChoice();
+            }
+        });
+    }
+
+    private void setLoadingCursor() {
+        scene.setCursor(Cursor.WAIT);
+    }
+
+    private void restoreCursor() {
+        scene.setCursor(originalCursor);
+    }
+
+    private void setCorsiByChoice() {
+        setLoadingCursor();
+        corsiBox.getChildren().clear();
+        this.setLoadingPane();
+
+        new Thread(() -> {
+            try {
+                String toSearch = searchField.getText().trim();
+
+                if (!toSearch.isEmpty()) {
+
+                    if (searchField.getPromptText().equals("Cerca per nome corso")) {
+                        corsi = controller.searchCorsiLikeString(toSearch);
+                    } else if (searchField.getPromptText().equals("Cerca per chef")) {
+                        corsi = controller.searchCorsiByChef(toSearch);
+                    } else {
+                        corsi = controller.searchCorsiByTipologia(toSearch);
+                    }
+                } else if (mostraTuttiCorsiClicked) {
+                    corsi = controller.getAllCourses();
+                } else {
+                    corsi = controller.getMostFollowedCourses(4);
+                }
+
+                if (corsi == null || corsi.isEmpty()) {
+                    throw new corsiNotFoundException();
+                }
+
+                filterCorsiByModalitaIfNeeded();
+                sortCorsiByCostoIfNeeded();
+
+                Platform.runLater(() -> {
+                    setCorsiBox();
+                    restoreCursor();
+                });
+
+            } catch (corsiNotFoundException | SQLException e) {
+                Platform.runLater(() -> {
+                    corsiBox.getChildren().clear();
+                    setNotFoundTextField();
+                    restoreCursor();
+                });
+            }
+        }).start();
+    }
+
 
     private ScrollPane createCorsiContainer() {
-    HBox corsiHBox = new HBox(20);
-    corsiHBox.setAlignment(Pos.CENTER);
-    corsiHBox.setPadding(new Insets(20));
+        corsiBox = new HBox(20);
+        corsiBox.setAlignment(Pos.CENTER);
+        corsiBox.setPadding(new Insets(20));
 
+        corsi = controller.getMostFollowedCourses(4);
+        setCorsiBox();
 
-    ArrayList<Corso> corsi = controller.getMostFollowedCourses(4);;
+        corsiScrollPane = new ScrollPane(corsiBox);
+        corsiScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        corsiScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        corsiScrollPane.setFitToHeight(true);
+        corsiScrollPane.setPannable(true);
+        corsiScrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
 
-    for (Corso c : corsi) {
-        CorsoPanel tempCorsoPanel = new CorsoPanel(controller);
-        tempCorsoPanel.setCorso(c);
-        corsiHBox.getChildren().add(tempCorsoPanel);
-        addHoverAnimation(tempCorsoPanel);
+        corsiScrollPane.addEventFilter(MouseEvent.MOUSE_PRESSED, Event::consume);
+
+        return corsiScrollPane;
     }
-
-    corsiScrollPane = new ScrollPane(corsiHBox);
-
-    corsiScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-    corsiScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-    corsiScrollPane.setFitToHeight(true);;
-    corsiScrollPane.setPannable(true);
-    corsiScrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
-
-
-    corsiScrollPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-        event.consume();
-    });
-
-
-    this.corsiBox = corsiHBox;
-
-    return corsiScrollPane;
-}
 
     private VBox createCenterContent() {
         VBox center = new VBox(20);
@@ -524,7 +524,6 @@ public class HomePage extends Stage {
         center.setAlignment(Pos.TOP_CENTER);
 
         Image sfondo = new Image(Objects.requireNonNull(getClass().getResource("/Media/Background/sfondoBianco.png")).toExternalForm());
-
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO,
                 BackgroundSize.AUTO,
@@ -545,7 +544,6 @@ public class HomePage extends Stage {
         center.setBackground(new Background(backgroundImage));
 
         VBox searchArea = createSearchArea();
-
         HBox corsoRow = new HBox(20);
         corsoRow.setAlignment(Pos.CENTER);
 
@@ -555,9 +553,9 @@ public class HomePage extends Stage {
         scrollContainer.getChildren().add(corsiScrollPane);
 
         center.getChildren().addAll(searchArea, scrollContainer);
-
         return center;
     }
+
 
     private void addHoverAnimation(Region node) {
         ScaleTransition stEnlarge = new ScaleTransition(Duration.millis(200), node);
@@ -572,21 +570,58 @@ public class HomePage extends Stage {
         node.setOnMouseExited(e -> stShrink.playFromStart());
     }
 
-//TODO avendo utente si può usare instance of invece di avere dei booleani, loggedIn bisogna controllare se utente è null
-    public Boolean isLoggedIn(){
-        return isLoggedIn;
-    }
-    public Boolean isChef(){
-        return isChef;
-    }
-    public void setLoggedIn() {
-        isLoggedIn = true;
-    }
-    public void setChef() {
-        isChef = true;
+    private void setCorsiBox() {
+        corsiBox.getChildren().clear();
+
+        if (corsi == null || corsi.isEmpty()) {
+            setNotFoundTextField();
+            return;
+        }
+
+        CorsoPanel tempCorsoPanel;
+        for (Corso corso : corsi) {
+            tempCorsoPanel = new CorsoPanel(this.controller);
+            tempCorsoPanel.setCorso(corso);
+            corsiBox.getChildren().add(tempCorsoPanel);
+            addHoverAnimation(tempCorsoPanel);
+        }
     }
 
-    public void setUtente(Utente utente){
+    private void filterCorsiByModalitaIfNeeded() {
+        ToggleButton selected = (ToggleButton) modalitaGroup.getSelectedToggle();
+        if (corsi == null || selected == null) return;
+
+        corsi.removeIf(corso -> !corso.getModalita_corso().getLabel().equals(selected.getText()));
+    }
+
+    private void sortCorsiByCostoIfNeeded() {
+        if (corsi == null) return;
+
+        if (costoFilter.getText().equals("€↑"))
+            corsi.sort(Comparator.comparing(Corso::getCosto));
+        else if (costoFilter.getText().equals("€↓"))
+            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
+    }
+
+
+    private void setLoadingPane(){
+
+        StackPane loadingPane = new StackPane();
+        loadingPane.setPadding(new Insets(20));
+        Rectangle background = new Rectangle(600, 150);
+        background.setArcWidth(30);
+        background.setArcHeight(30);
+        background.setFill(Color.rgb(255, 255, 255, 0.85));
+
+        corsiBox.getChildren().add(loadingPane);
+        Text caricamentoText = new Text();
+        this.setTextAesthetics(caricamentoText);
+        startAnimation(caricamentoText);
+        loadingPane.getChildren().addAll(background, caricamentoText);
+
+    }
+
+  public void setUtente(Utente utente){
         this.utente = utente;
         createHomeButton();
         setLoggedIn();
@@ -596,12 +631,44 @@ public class HomePage extends Stage {
         homeButtons.getChildren().clear();
         homeButtons.getChildren().add(homeButton);
     }
-
+    public Boolean isLoggedIn(){
+        return isLoggedIn;
+    }
+    public void setLoggedIn() {
+        isLoggedIn = true;
+    }
+    public Boolean isChef(){
+        return isChef;
+    }
+    public void setChef() {
+        isChef = true;
+    }
     public void setLogOut() {
         homeButtons.getChildren().clear();
         homeButtons.getChildren().add(createLoginButton());
     }
 
-}
 
+    private Timeline startAnimation(Text caricamentoText){
+        Timeline AnimazionePuntini = new Timeline(
+                new KeyFrame(Duration.seconds(0), e -> caricamentoText.setText("Ricerca in corso")),
+                new KeyFrame(Duration.seconds(0.3), e -> caricamentoText.setText("Ricerca in corso.")),
+                new KeyFrame(Duration.seconds(0.6), e -> caricamentoText.setText("Ricerca in corso..")),
+                new KeyFrame(Duration.seconds(0.9), e -> caricamentoText.setText("Ricerca in corso...")),
+                new KeyFrame(Duration.seconds(1.2), e -> caricamentoText.setText("Ricerca in corso..."))
+        );
+        AnimazionePuntini.setCycleCount(Animation.INDEFINITE);
+        AnimazionePuntini.play();
+
+        return AnimazionePuntini;
+    }
+
+    private void setTextAesthetics(Text text){
+        text.setFill(Color.valueOf("#3A6698"));
+        text.setFont(
+                Font.loadFont(getClass().getResourceAsStream("/Media/Fonts/times.ttf"), 70)
+        );
+    }
+
+}
 

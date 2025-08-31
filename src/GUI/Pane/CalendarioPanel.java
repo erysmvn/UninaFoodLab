@@ -135,12 +135,9 @@ public class CalendarioPanel extends Pane {
         if(corsi == null)
                 return;
 
-            for (Corso corso : corsi) {
+            for (Corso corso : corsi)
                 sessioniDeiCorsi.add(corso.getSessioni());
-                for(Sessione s: corso.getSessioni()){
-                    System.out.println(s.getIdSessione());
-                }
-            }
+
 
         setFirstSessionDay();
         addAllEvents();

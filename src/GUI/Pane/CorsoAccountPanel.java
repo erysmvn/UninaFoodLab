@@ -207,6 +207,7 @@ public class CorsoAccountPanel extends Pane {
 
         updateButton.setOnAction(event -> {
             controller.openEditCorsoPage(corso);
+            controller.refreshCorsi(parent);
         });
 
         this.styleButton(updateButton, Color.valueOf("#3A6698"));

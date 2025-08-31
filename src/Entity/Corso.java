@@ -2,6 +2,7 @@ package Entity;
 
 import Entity.Enum.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -144,7 +145,26 @@ public class Corso {
     }
 
     public void setNome(String nome) {
+        String oldNameForPath = this.nome.replaceAll("\\s+", "");
+        String oldPath = "src/Media/CoursesImages/" + oldNameForPath + ".png";
+
         this.nome = nome;
+
+        String newNameForPath = nome.replaceAll("\\s+", "");
+        String newPath = "src/Media/CoursesImages/" + newNameForPath + ".png";
+        this.imagePath = newPath;
+
+        File oldFile = new File(oldPath);
+        File newFile = new File(newPath);
+
+        if (oldFile.exists()) {
+            boolean success = oldFile.renameTo(newFile);
+            if (!success) {
+                System.err.println("Errore nel rinominare l'immagine da " + oldPath + " a " + newPath);
+            }
+        } else {
+            System.err.println("File immagine non trovato: " + oldPath);
+        }
     }
 
     public void setDifficolta(Difficolta difficolta) {

@@ -517,18 +517,6 @@ public class EditCorsoPage extends Stage {
         saveButton.setOnAction(event -> {
             try {
                 validate();
-                // TODO ancora non aggiorna per qualche motivo (addChefToCorso)
-                // TODO CONTROLLARE L'ARRAY LIST UNA VOLTA PASSATO
-                controller.updateCorso(corso);
-                System.out.println(nomeField.getText());
-                System.out.println(difficoltaBox.getValue());
-                System.out.println(freqSettimanaleSpinner.getValue());
-                System.out.println(costoField.getText());
-
-                System.out.println("\n CHEFS:");
-                for (Chef chef : chefDelCorso) {
-                    System.out.println(chef.getNome() + " " + chef.getCognome());
-                }
 
                 corso.setNome(nomeField.getText());
 
@@ -538,11 +526,9 @@ public class EditCorsoPage extends Stage {
                 corso.setFrequenzaSettimanale(freqSettimanaleSpinner.getValue());
                 corso.setChefs(chefDelCorso);
 
-                System.out.println(corso.getNome());
-                System.out.println(corso.getDifficolta());
-                System.out.println(corso.getFrequenzaSettimanale());
-                System.out.println(corso.getCosto());
-                System.out.println(corso.getChefs());
+                controller.updateCorso(corso);
+
+                controller.refreshCorsi();
 
                 this.close();
 

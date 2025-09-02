@@ -1,6 +1,7 @@
 package GUI.Stages;
 
 import Controller.Controller;
+import Entity.IngredienteFormaRicetta;
 import Entity.Ricetta;
 import Entity.Ingrediente;
 import Entity.Enum.UnitaIngrediente;
@@ -33,7 +34,8 @@ public class AggiungiRicettaPage extends Stage {
     private Label erroreInserimentoIngredientiLabel;
     private ArrayList<VBox> ingredientiBoxList;
     private TextField descrizioneField;
-
+    private int quantita;
+    private UnitaIngrediente unita;
 
     public AggiungiRicettaPage(Controller controller,Stage caller) {
         this.controller = controller;
@@ -165,7 +167,7 @@ public class AggiungiRicettaPage extends Stage {
         VBox box = new VBox(5);
         box.setStyle("-fx-border-color: #3a6698; -fx-border-radius: 5; -fx-padding: 5;");
 
-        // Campo nome ingrediente
+
         ComboBox<String> ingredienteCombo = new ComboBox<>();
         ingredienteCombo.setPromptText("Seleziona ingrediente");
         ingredienteCombo.getItems().add("Nuovo Ingrediente");
@@ -182,15 +184,6 @@ public class AggiungiRicettaPage extends Stage {
         nuovoIngredienteField.setPromptText("Nome nuovo ingrediente");
         nuovoIngredienteField.setVisible(false);
 
-        ingredienteCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if ("Nuovo Ingrediente".equals(newVal)) {
-                nuovoIngredienteField.setVisible(true);
-            } else {
-                nuovoIngredienteField.setVisible(false);
-            }
-        });
-
-        // Bottone rimuovi accanto al campo nome
         Button removeButton = new Button("x");
         removeButton.setStyle(
                 "-fx-background-color: #da3d26; " +
@@ -210,7 +203,6 @@ public class AggiungiRicettaPage extends Stage {
             ingredientiBoxList.remove(box);
         });
 
-        // Campo allergeni e categoria
         HBox sottoBox = new HBox(10);
         TextField allergeniField = new TextField();
         allergeniField.setPromptText("Allergeni");
@@ -218,7 +210,7 @@ public class AggiungiRicettaPage extends Stage {
         categoriaField.setPromptText("Categoria");
         sottoBox.getChildren().addAll(allergeniField, categoriaField);
 
-        // Quantità e unità
+
         HBox quantitaBox = new HBox(10);
         TextField quantitaField = new TextField();
         quantitaField.setTextFormatter(new TextFormatter<>(change -> {
@@ -228,6 +220,20 @@ public class AggiungiRicettaPage extends Stage {
         }));
         quantitaField.setPromptText("Quantità");
         quantitaField.setPrefWidth(70);
+
+
+        ingredienteCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if ("Nuovo Ingrediente".equals(newVal)) {
+                nuovoIngredienteField.setVisible(true);
+                allergeniField.setDisable(false);
+                categoriaField.setDisable(false);
+            } else {
+                nuovoIngredienteField.setVisible(false);
+                allergeniField.setDisable(true);
+                categoriaField.setDisable(true);
+            }
+
+        });
 
         ComboBox<UnitaIngrediente> unitaBox = new ComboBox<>();
         unitaBox.getItems().setAll(UnitaIngrediente.values());
@@ -256,17 +262,16 @@ public class AggiungiRicettaPage extends Stage {
         ricetta.setNomeRicetta(nome);
         ricetta.setTempoPreparazione(Integer.parseInt(tempoDiPreparazione));
 
-        ArrayList<Ingrediente> ingredienti = new ArrayList<>();
+        Ingrediente ingrediente;
         for (VBox ingBox : ingredientiBoxList){
-            ingredienti.add(getIngredienteFromBox(ingBox));
+            ingrediente = getIngredienteFromBox(ingBox);
+            controller.insertIngredienti(ingrediente);
+            ricetta.addIngredienteFormaRicetta(getIngredienteFormaRicettaBox(ingrediente, ingBox));
         }
 
-        controller.insertIngredienti(ingredienti);
-
-        if(ingredienti.isEmpty())
+        if(ingredientiBoxList.isEmpty())
             throw new AlmenoUnIngredienteException();
 
-        ricetta.setIngredienti(ingredienti);
         return ricetta;
     }
 
@@ -380,46 +385,53 @@ public class AggiungiRicettaPage extends Stage {
     }
 
 
-    private Ingrediente getIngredienteFromBox(VBox box){
-        HBox nomeBox = (HBox) box.getChildren().getFirst();
-        @SuppressWarnings("unchecked")
-        ComboBox<String> ingredienteCombo = (ComboBox<String>) nomeBox.getChildren().getFirst();
-        TextField nuovoIngredienteField = (TextField) nomeBox.getChildren().get(1);
+    private IngredienteFormaRicetta getIngredienteFormaRicettaBox(Ingrediente ingrediente, VBox ingBox) {
 
-        HBox sottoBox = (HBox) box.getChildren().get(1);
-        TextField allergeniField = (TextField) sottoBox.getChildren().getFirst();
-        TextField categoriaField = (TextField) sottoBox.getChildren().get(1);
-
-        HBox quantitaBox = (HBox) box.getChildren().get(2);
+        HBox quantitaBox = (HBox) ingBox.getChildren().get(2);
         TextField quantitaField = (TextField) quantitaBox.getChildren().getFirst();
 
         @SuppressWarnings("unchecked")
         ComboBox<UnitaIngrediente> unitaBox = (ComboBox<UnitaIngrediente>) quantitaBox.getChildren().get(1);
 
+        String qText = quantitaField.getText();
+        if (qText == null || qText.isBlank()) throw new QuantitaEmptyException();
+
+        try { quantita = Integer.parseInt(qText.trim()); }
+        catch (NumberFormatException ex) { throw new QuantitaEmptyException(); }
+
+        unita = unitaBox.getValue();
+        if (unita == null) unita = UnitaIngrediente.Quantita;
+
+        return new IngredienteFormaRicetta(ingrediente,ricetta,quantita,unita);
+
+    }
+
+    private Ingrediente getIngredienteFromBox(VBox ingBox){
+        HBox nomeBox = (HBox) ingBox.getChildren().getFirst();
+        @SuppressWarnings("unchecked")
+        ComboBox<String> ingredienteCombo = (ComboBox<String>) nomeBox.getChildren().getFirst();
+        TextField nuovoIngredienteField = (TextField) nomeBox.getChildren().get(1);
+
+        HBox sottoBox = (HBox) ingBox.getChildren().get(1);
+        TextField allergeniField = (TextField) sottoBox.getChildren().getFirst();
+        TextField categoriaField = (TextField) sottoBox.getChildren().get(1);
+
+
         String nome = ingredienteCombo.getValue();
+        String categoria = categoriaField.getText();
         if ("Nuovo Ingrediente".equals(nome)) {
              nome = (nuovoIngredienteField != null && nuovoIngredienteField.isVisible())
                     ? nuovoIngredienteField.getText()
                     : ingredienteCombo.getEditor().getText();
+            if (categoria == null || categoria.isBlank()) throw new CategoriaEmptyException();
         }
         if (nome == null || nome.trim().isEmpty()) throw new NomeIngredienteEmptyException();
 
         String allergeni = allergeniField.getText();
         if (allergeni == null || allergeni.isBlank()) allergeni = "Nessuno";
 
-        String categoria = categoriaField.getText();
-        if (categoria == null || categoria.isBlank()) throw new CategoriaEmptyException();
 
-        String qText = quantitaField.getText();
-        if (qText == null || qText.isBlank()) throw new QuantitaEmptyException();
-        final int quantita;
-        try { quantita = Integer.parseInt(qText.trim()); }
-        catch (NumberFormatException ex) { throw new QuantitaEmptyException(); }
-
-        UnitaIngrediente unita = unitaBox.getValue();
-        if (unita == null) unita = UnitaIngrediente.Quantita;
-
-        return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim(), quantita, unita);
+        return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim());
     }
 
 

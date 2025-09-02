@@ -211,12 +211,10 @@ public class CorsoPage extends Stage {
     private void showSuccessDialog() {
         Stage dialog = createSuccessDialog();
         dialog.show();
+        controller.refreshAccountPage();
         new Thread(() -> {
-            try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
-            Platform.runLater(()->{
-                dialog.close();
-                controller.refreshAccountPage();
-            });
+            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            Platform.runLater(dialog::close);
         }).start();
     }
 

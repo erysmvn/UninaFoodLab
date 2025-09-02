@@ -9,6 +9,9 @@ public class Ricetta {
     private int tempoPreparazione;
     private String autore;
     private ArrayList<Ingrediente> ingredienti;
+
+    private ArrayList<IngredienteFormaRicetta> ingredienteFormaRicetta;
+
     private ArrayList<String> allergeniRicetta;
 
 
@@ -18,10 +21,13 @@ public class Ricetta {
         this.descrizione = descrizione;
         this.tempoPreparazione = tempoPreparazione;
         this.autore = autore;
+
+        ingredienteFormaRicetta = new ArrayList<>();
     }
 
     public Ricetta() {
         ingredienti = new ArrayList<>();
+        ingredienteFormaRicetta = new ArrayList<>();
     }
 
 
@@ -95,8 +101,18 @@ public class Ricetta {
     public void setIngredienti(ArrayList<Ingrediente> ingredienti) {
         this.ingredienti = ingredienti;
     }
-
+    public void setIngrediente(Ingrediente ingrediente) {
+        this.ingredienti.add(ingrediente);
+    }
     public void setIdRicetta(int id)  {
         this.idricetta = id;
     }
+
+    public ArrayList<IngredienteFormaRicetta> getIngredienteFormaRicetta() {
+        return ingredienteFormaRicetta;
+    }
+    public void addIngredienteFormaRicetta(IngredienteFormaRicetta ingFormaRicetta) {
+        ingredienteFormaRicetta.add(ingFormaRicetta);
+    }
+
 }

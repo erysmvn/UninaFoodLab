@@ -25,33 +25,42 @@ public class IngredienteDAO implements IngredienteDAOInterface {
     }
 
     private boolean checkIfAlredyExists(Ingrediente ingrediente)throws SQLException{
-        String sql = "select 1 from Ingrediente where nome_ingrediente = ?";
+        String sql = "select idingrediente from Ingrediente where nome_ingrediente = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setString(1,ingrediente.getNome());
         ResultSet rs = pstmt.executeQuery();
-        return rs.next();
+        if (rs.next()) {
+            int id = rs.getInt("idingrediente");
+            ingrediente.setIdingrediente(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void insertIngredienti(ArrayList<Ingrediente> ingredienti) throws SQLException {
-        String sql = "INSERT INTO Ingrediente (nome_ingrediente, allergeni, categoria) VALUES (?, ?, ?)";
+    public void insertIngrediente(Ingrediente ing) throws SQLException {
+        String sql = "INSERT INTO Ingrediente (nome_ingrediente, allergeni, categoria) VALUES (?, ?, ?) RETURNING idingrediente";
 
         PreparedStatement pstmt = con.prepareStatement(sql);
-            for (Ingrediente ing : ingredienti) {
+
                 if (!this.checkIfAlredyExists(ing)){
                     pstmt.setString(1, ing.getNome());
                     pstmt.setString(2, ing.getAllergeni());
                     pstmt.setString(3, ing.getCategoria());
-                    pstmt.executeUpdate();
+
+                    ResultSet rs = pstmt.executeQuery();
+                    if (rs.next()) {
+                        int id = rs.getInt("idingrediente");
+                        ing.setIdingrediente(id);
+                    }
                 }
-            }
     }
 
 
     @Override
     public ArrayList<Ingrediente> getAllIngredientes()throws SQLException {
         ArrayList<Ingrediente> ingredienti = new ArrayList<>();
-        String sql = "SELECT * FROM ingrediente natural join forma";
+        String sql = "SELECT * FROM ingrediente ";
         PreparedStatement pstmt = con.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
 

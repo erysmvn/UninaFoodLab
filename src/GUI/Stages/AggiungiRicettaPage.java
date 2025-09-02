@@ -24,7 +24,7 @@ public class AggiungiRicettaPage extends Stage {
 
     private final Controller controller;
     private Ricetta ricetta;
-
+    private Stage caller;
     private VBox ingredientiBox;
     private TextField nomeRicettaField;
     private TextField tempoField;
@@ -35,9 +35,9 @@ public class AggiungiRicettaPage extends Stage {
     private TextField descrizioneField;
 
 
-    public AggiungiRicettaPage(Controller controller) {
+    public AggiungiRicettaPage(Controller controller,Stage caller) {
         this.controller = controller;
-
+        this.caller = caller;
         VBox root = new VBox(15);
         root.setPadding(new Insets(30));
         root.setAlignment(Pos.TOP_LEFT);
@@ -244,19 +244,20 @@ public class AggiungiRicettaPage extends Stage {
         String nome = nomeRicettaField.getText();
         String tempoDiPreparazione = tempoField.getText();
         String descrizione = descrizioneField.getText();
+
         if(nome.isEmpty())
             throw new NomeRicettaEmptyException();
         if(tempoDiPreparazione.isEmpty())
             throw new TempoDiPreparazioneEmptyException();
 
+        if(descrizione.isEmpty()) ricetta.setDescrizione("no description");
+        else ricetta.setDescrizione(descrizione);
+
         ricetta.setNomeRicetta(nome);
         ricetta.setTempoPreparazione(Integer.parseInt(tempoDiPreparazione));
 
-        if(descrizione.isEmpty())
-            ricetta.setDescrizione("no description");
-
         ArrayList<Ingrediente> ingredienti = new ArrayList<>();
-        for (VBox ingBox : ingredientiBoxList) {
+        for (VBox ingBox : ingredientiBoxList){
             ingredienti.add(getIngredienteFromBox(ingBox));
         }
 
@@ -354,7 +355,7 @@ public class AggiungiRicettaPage extends Stage {
                 erroreNomeRicettaLabel.setText("");
                 erroreInserimentoIngredientiLabel.setText("");
                 ricetta = createRicetta();
-                controller.updateRicetteAggiunte(ricetta);
+                controller.updateRicetteAggiunte(ricetta,caller);
                 this.close();
             } catch (NomeIngredienteEmptyException NIEE) {
                 erroreInserimentoIngredientiLabel.setText("Inserire nome ingrediente");
@@ -420,6 +421,7 @@ public class AggiungiRicettaPage extends Stage {
 
         return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim(), quantita, unita);
     }
+
 
 
 }

@@ -18,6 +18,15 @@ public class Ingrediente {
         this.categoria = categoria;
     }
 
+    public Ingrediente(int idIngrediente,String nome, String allergeni, String categoria,int quantita, UnitaIngrediente unita) {
+        this.idIngrediente = idIngrediente;
+        this.nome = nome;
+        this.allergeni = allergeni;
+        this.categoria = categoria;
+        this.quantita = quantita;
+        this.unita = unita;
+    }
+
     public Ingrediente(String nome, String allergeni, String categoria,int quantita, UnitaIngrediente unita) {
         this.nome = nome;
         this.allergeni = allergeni;

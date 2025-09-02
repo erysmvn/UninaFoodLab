@@ -50,6 +50,20 @@ public class SessioneDAO implements SessioneDAOInterface {
 
     }
 
+
+    @Override
+    public void removeRicetta(Ricetta ricetta, Sessione sessione)throws SQLException{
+        String sql = "DELETE FROM tratta WHERE idricetta = ? AND idsessione = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setInt(1,ricetta.getIdRicetta());
+        pstmt.setInt(2,sessione.getIdSessione());
+        int rowDeleted = pstmt.executeUpdate();
+
+        if(rowDeleted <=0)
+            throw new SQLException();
+
+    }
+
     @Override
     public void insertRicettaToSessione(Ricetta ricetta, Sessione sessione)throws SQLException{
             String sql = "INSERT INTO Tratta (idricetta, idsessione) VALUES (" +
@@ -102,7 +116,7 @@ public class SessioneDAO implements SessioneDAOInterface {
     public ArrayList<Sessione> getSessioniByIdCorso(int idcorso) throws SQLException {
 
         ArrayList<Sessione> sessioni = new ArrayList<>();
-        String sql = "SELECT * FROM corso NATURAL JOIN tratta natural join sessione WHERE idcorso = ?";
+        String sql = "SELECT * FROM corso natural join sessione WHERE idcorso = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setInt(1, idcorso);
         ResultSet rs = stmt.executeQuery();
@@ -121,15 +135,30 @@ public class SessioneDAO implements SessioneDAOInterface {
         return faDAO.getFogliAdesioneByIdSessione(idsessione);
     }
 
-    public void update(Sessione sessione) {
+    public void update(Sessione sessione)throws SQLException {
+       String sql="";
+       String linkOrLuogo="";
         if (sessione instanceof SessionePresenza sp) {
-            String sql = "UPDATE sessione " +
-                    "SET data = ?, ora = ?, durata = ?, luogo = ?" +
+             sql = "UPDATE sessione " +
+                    "SET data = ?, ora = ?, durata = ?, luogo = ? "+
                     "WHERE idsessione = ?";
+             linkOrLuogo = sp.getLuogo();
         } else if (sessione instanceof SessioneOnline so) {
-            String sql = "UPDATE sessione " +
-                    "SET data = ?, ora = ?, durata = ?, link_incontro = ?" +
+            sql = "UPDATE sessione " +
+                    "SET data = ?, ora = ?, durata = ?, link_incontro = ? " +
                     "WHERE idsessione = ?";
+            linkOrLuogo = so.getLinkIncontro();
         }
+
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setObject(1,sessione.getData());
+        pstmt.setObject(2,sessione.getOra());
+        pstmt.setFloat(3,sessione.getDurata());
+        pstmt.setString(4,linkOrLuogo);
+        pstmt.setInt(5,sessione.getIdSessione());
+        int rowsAffected = pstmt.executeUpdate();
+        if (rowsAffected == 0)
+            throw new SQLException("Nessuna sessione aggiornata. ID non trovato: " + sessione.getIdSessione());
+
     }
 }

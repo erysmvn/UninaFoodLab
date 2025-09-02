@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class ImpostazioniPanel extends VBox {
@@ -39,10 +40,12 @@ public class ImpostazioniPanel extends VBox {
                         "Richiesta Supporto",
                         "Ciao,\nho bisogno di assistenza per..."
                 );
-            } catch (emailClientNotFoundException ex) {
-                showSupportoErrorLabel(ex);
+            } catch ( emailClientNotFoundException ex){
+                showSupportoErrorLabel();
+            }catch (Exception ex){
+                showSupportoErrorLabel();
             }
-        });
+            });
 
         Button logoutButton = setAestheticsButton("Logout");
         logoutButton.setOnAction(e -> controller.logOut());
@@ -80,8 +83,8 @@ public class ImpostazioniPanel extends VBox {
         supportoError.setText(" ");
     }
 
-    private void showSupportoErrorLabel(emailClientNotFoundException ECN){
-        supportoError.setText(ECN.getMessage());
+    private void showSupportoErrorLabel( ){
+        supportoError.setText("Email Client non trovato. Riprovare più tardi");
     }
 
     private ImageView createLogoView() {

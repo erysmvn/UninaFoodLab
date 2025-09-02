@@ -4,6 +4,7 @@ import Controller.Controller;
 import Entity.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -13,94 +14,80 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class EditSessionePage extends Stage {
     private Controller controller;
     private Sessione sessione;
-
-    private VBox root;
+    private ArrayList<Ricetta> ricetteToInsert;
+    private ArrayList<Ricetta> ricetteToDelete;
+    private BorderPane root;
     private VBox formBox;
-    private HBox topHbox;
-    private VBox footerVbox;
-
+    private VBox ricetteList;
     private DatePicker dataPicker;
     private Spinner<Integer> hourSpinner;
     private Spinner<Integer> minuteSpinner;
     private TextField durataField;
     private TextField luogoField;
     private TextField linkField;
+    private Label errorAlmenoUnRicetta;
+    private Label erroreInserimentoDati;
 
     public EditSessionePage(Controller controller) {
         this.controller = controller;
         this.initStyle(StageStyle.TRANSPARENT);
 
-        root = new VBox(15);
-        root.setPadding(new Insets(15));
-        root.setAlignment(Pos.TOP_CENTER);
+        root = new BorderPane();
+        root.setPadding(new Insets(10));
         root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
-
-        topHbox = new HBox(15);
-        topHbox.setAlignment(Pos.TOP_CENTER);
-        topHbox.setSpacing(20);
-        topHbox.setPadding(new Insets(20, 0, 10, 0));
-
-        formBox = new VBox(10);
-        formBox.setAlignment(Pos.TOP_LEFT);
-        formBox.setPadding(new Insets(0, 0, 0, 30));
-
-        footerVbox = new VBox(10);
-        footerVbox.setAlignment(Pos.BOTTOM_CENTER);
-        footerVbox.setSpacing(20);
-        footerVbox.setPadding(new Insets(0, 0, 20, 0));
-
-        root.getChildren().addAll(topHbox, formBox, footerVbox);
+        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID,
+                new CornerRadii(30), new BorderWidths(2))));
 
         Scene scene = new Scene(root, 800, 600);
         scene.setFill(Color.TRANSPARENT);
-
-
         scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
+                Objects.requireNonNull(getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css")).toExternalForm()
         );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
 
         this.setScene(scene);
     }
 
     public void initPage(Sessione sessione) {
         this.sessione = sessione;
+        this.ricetteToInsert = new ArrayList<>();
+        this.ricetteToDelete = new ArrayList<>();
         Corso corso = sessione.getCorso();
 
-        topHbox.getChildren().clear();
-        formBox.getChildren().clear();
-        footerVbox.getChildren().clear();
-
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        Label titoloLabel = new Label(corso.getNome() +" - "+ sessione.getData().format(dateFormatter));
+        Label titoloLabel = new Label(corso.getNome() + " - " + sessione.getData().format(dateFormatter));
         titoloLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
-        topHbox.getChildren().add(titoloLabel);
+
+        HBox topBox = new HBox(titoloLabel);
+        topBox.setAlignment(Pos.TOP_CENTER);
+        topBox.setPadding(new Insets(10, 0, 5, 0));
+        root.setTop(topBox);
+
+        formBox = new VBox(10);
+        formBox.setAlignment(Pos.TOP_LEFT);
+        formBox.setPadding(new Insets(0, 0, 0, 30));
 
         LocalDate oggi = LocalDate.now();
-        LocalDate startOfWeek = oggi.with(java.time.DayOfWeek.MONDAY);
-        LocalDate endOfWeek = oggi.with(java.time.DayOfWeek.SUNDAY);
-
         dataPicker = new DatePicker(sessione.getData());
+        LocalDate dataSessione = sessione.getData();
+        LocalDate startOfWeek = dataSessione.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = dataSessione.with(java.time.DayOfWeek.SUNDAY);
+
         dataPicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
-
                 if (empty || date.isBefore(startOfWeek) || date.isAfter(endOfWeek)) {
                     setDisable(true);
                     setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: gray;");
@@ -119,7 +106,6 @@ public class EditSessionePage extends Stage {
         freqWarning.setTextFill(Color.RED);
 
         formBox.getChildren().addAll(labeledNode("Data:", dataPicker), freqWarning);
-
 
         HBox timeBox = createTimeSpinner();
         formBox.getChildren().add(labeledNode("Ora:", timeBox));
@@ -142,6 +128,25 @@ public class EditSessionePage extends Stage {
             formBox.getChildren().add(labeledNode("Link:", linkField));
         }
 
+        Label ricetteTrattate = new Label("Ricette trattate: ");
+        ricetteTrattate.setStyle("-fx-font-weight: bold;-fx-font-size: 20px;-fx-text-fill: BLACK;-fx-alignment: CENTER_LEFT;");
+
+        ScrollPane ricetteScroll = new ScrollPane(createRicettaList());
+
+        ricetteScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        ricetteScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        ricetteScroll.setPrefWidth(250);
+        ricetteScroll.setMaxWidth(250);
+        ricetteScroll.setPrefHeight(120);
+        ricetteScroll.setMinHeight(120);
+        ricetteScroll.setMaxHeight(120);
+        setErrorAlmenoUnRicettaLabel();
+        VBox.setVgrow(ricetteScroll, Priority.NEVER);
+        formBox.getChildren().addAll(errorAlmenoUnRicetta, createAggiungiRicettaButton(), ricetteTrattate, ricetteScroll);
+        root.setCenter(formBox);
+        erroreInserimentoDati = new Label();
+        erroreInserimentoDati.setStyle("-fx-text-fill: red");
+
         Button salvaBtn = new Button("Salva");
         styleButton(salvaBtn, Color.valueOf("#3a6698"));
         salvaBtn.setOnAction(e -> salvaModifiche());
@@ -150,17 +155,27 @@ public class EditSessionePage extends Stage {
         styleButton(annullaBtn, Color.valueOf("#da3d26"));
         annullaBtn.setOnAction(e -> this.close());
 
-        footerVbox.getChildren().addAll(salvaBtn, annullaBtn);
+        VBox buttonsBox = new VBox(15, salvaBtn, annullaBtn);
+        buttonsBox.setAlignment(Pos.CENTER);
+
+        VBox footerBox = new VBox();
+        footerBox.setPadding(new Insets(0, 0, 20, 0));
+        footerBox.setAlignment(Pos.CENTER);
+        footerBox.getChildren().addAll(
+                erroreInserimentoDati,
+                buttonsBox
+        );
+        root.setBottom(footerBox);
+
     }
 
-    private HBox labeledNode(String label, Control control) {
+    private HBox labeledNode(String label, javafx.scene.Node node) {
         Label l = new Label(label);
         l.setFont(Font.font("System", FontWeight.BOLD, 16));
-        HBox box = new HBox(10, l, control);
+        HBox box = new HBox(10, l, node);
         box.setAlignment(Pos.CENTER_LEFT);
         return box;
     }
-
 
     private HBox createTimeSpinner() {
         hourSpinner = new Spinner<>();
@@ -176,40 +191,110 @@ public class EditSessionePage extends Stage {
         return hbox;
     }
 
+    private Button createAggiungiRicettaButton() {
+        Button aggiungiRicettaButton = new Button("Aggiungi ricetta");
+        aggiungiRicettaButton.setStyle("-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font: System;-fx-font-weight: bold;" +
+                "-fx-background-color: #3a6698;-fx-border-radius: 8;" +
+                "-fx-cursor: hand");
+
+        aggiungiRicettaButton.setOnMouseEntered(e -> aggiungiRicettaButton.setOpacity(0.8));
+        aggiungiRicettaButton.setOnMouseExited(e -> aggiungiRicettaButton.setOpacity(1.0));
+
+        aggiungiRicettaButton.setOnAction(e -> controller.openAggiungiRicettaPage(this));
+        return aggiungiRicettaButton;
+    }
+
+    private void setErrorAlmenoUnRicettaLabel() {
+        errorAlmenoUnRicetta = new Label();
+        errorAlmenoUnRicetta.setStyle("-fx-text-fill: red");
+    }
+
+    private VBox createRicettaList() {
+        ricetteList = new VBox(10);
+
+
+        if (!sessione.getRicette().isEmpty()) {
+            for (Ricetta ricetta : sessione.getRicette())
+                ricetteList.getChildren().add(createRicettaBox(ricetta));
+        } else {
+            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
+            noRicetteTrattate.setStyle("-fx-font-size: 23;-fx-color: BLACK;-fx-alignment: CENTER_LEFT;");
+            ricetteList.getChildren().add(noRicetteTrattate);
+        }
+
+        return ricetteList;
+    }
+
+    private HBox createRicettaBox(Ricetta ricetta) {
+        HBox ricettaBox = new HBox(10);
+
+        Label ricettaLabel = new Label("• " + ricetta.getNome());
+        ricettaLabel.setStyle("-fx-cursor: hand;-fx-font-size: 17;-fx-text-fill: BLACK;-fx-alignment: TOP_RIGHT;");
+        ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(ricetta));
+
+        Label removeLabel = new Label("✖");
+        removeLabel.setStyle("-fx-cursor: hand;-fx-text-fill: RED;-fx-font: System;-fx-font-size: 18");
+        removeLabel.setOnMouseClicked(event -> {
+                ricetteToDelete.add(ricetta);
+                ricetteToInsert.remove(ricetta);
+            aggiornaListaRicette();
+        });
+
+        ricettaBox.getChildren().addAll(ricettaLabel, removeLabel);
+        return ricettaBox;
+    }
+
+    public void updateRicetteAggiunte(Ricetta ricetta) {
+        ricetteToInsert.add(ricetta);
+        aggiornaListaRicette();
+    }
+
+    private void aggiornaListaRicette() {
+        ricetteList.getChildren().clear();
+
+        for (Ricetta ricetta : sessione.getRicette()){
+            if(!ricetteToDelete.contains(ricetta))
+                ricetteList.getChildren().add(createRicettaBox(ricetta));
+        }
+
+        for (Ricetta ricetta : ricetteToInsert)
+            ricetteList.getChildren().add(createRicettaBox(ricetta));
+    }
+
     private void salvaModifiche() {
         try {
             sessione.setData(dataPicker.getValue());
-
             LocalDate data = dataPicker.getValue();
+
             int h = hourSpinner.getValue();
             int m = minuteSpinner.getValue();
-
             LocalDateTime dateTime = LocalDateTime.of(data, LocalTime.of(h, m));
-
             sessione.setOra(dateTime);
 
             sessione.setDurata(Float.parseFloat(durataField.getText()));
 
-            System.out.println(sessione.getOra().getHour() + ":" + sessione.getOra().getMinute());
-            System.out.println(sessione.getData());
-            System.out.println(sessione.getDurata());
-
             if (sessione instanceof SessionePresenza sp) {
                 sp.setLuogo(luogoField.getText());
-                System.out.println(luogoField.getText());
             } else if (sessione instanceof SessioneOnline so) {
                 so.setLinkIncontro(linkField.getText());
-                System.out.println(linkField.getText());
             }
 
-            // TODO finish update dao
-            controller.updateSessione(sessione);
+            for(Ricetta ricettaToDelete: ricetteToDelete)
+                sessione.getRicette().remove(ricettaToDelete);
 
+            for (Ricetta ricettaToInsert : ricetteToInsert)
+                sessione.getRicette().add(ricettaToInsert);
+
+            controller.updateSessione(sessione);
+            controller.removeRicetteToSessione(ricetteToDelete,sessione);
+            controller.insertRicetteToSessione(ricetteToInsert, sessione);
+            controller.refreshCalendario();
             this.close();
         } catch (Exception ex) {
+            erroreInserimentoDati.setText("Errore inserimenti dati. Riprovare più tardi");
             ex.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Errore nel salvataggio: " + ex.getMessage());
-            alert.show();
         }
     }
 
@@ -217,18 +302,10 @@ public class EditSessionePage extends Stage {
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(javafx.scene.Cursor.HAND);
+        button.setCursor(Cursor.HAND);
     }
 
     public Sessione getSessione() {
         return sessione;
-    }
-
-    private HBox labeledNode(String label, javafx.scene.Node node) {
-        Label l = new Label(label);
-        l.setFont(Font.font("System", FontWeight.BOLD, 16));
-        HBox box = new HBox(10, l, node);
-        box.setAlignment(Pos.CENTER_LEFT);
-        return box;
     }
 }

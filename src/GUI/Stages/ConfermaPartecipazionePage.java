@@ -181,7 +181,9 @@ public class ConfermaPartecipazionePage extends Stage {
     private Button createCloseButton() {
         Button closeButton = new Button("Chiudi");
         styleButton(closeButton, Color.valueOf("#da3d26"));
-        closeButton.setOnAction(e -> this.close());
+        closeButton.setOnAction(e -> {
+            this.close();
+        });
         return closeButton;
     }
 
@@ -230,6 +232,9 @@ public class ConfermaPartecipazionePage extends Stage {
 
     public void setSessionePresenza(SessionePresenza sessionePresenza) {
         this.sessionePresenza = sessionePresenza;
+    }
+    public SessionePresenza getSessionePresenza() {
+        return sessionePresenza;
     }
 
 }

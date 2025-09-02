@@ -95,4 +95,8 @@ public class Ricetta {
     public void setIngredienti(ArrayList<Ingrediente> ingredienti) {
         this.ingredienti = ingredienti;
     }
+
+    public void setIdRicetta(int id)  {
+        this.idricetta = id;
+    }
 }

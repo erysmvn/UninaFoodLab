@@ -18,19 +18,19 @@ import javafx.scene.text.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.awt.*;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Objects;
+import javafx.scene.control.ScrollPane;
+
 
 public class SessionePage extends Stage {
     private Controller controller;
     private Sessione sessione;
 
-    private VBox root;
+    private BorderPane root;
     private VBox infoBox;
     private HBox topHbox;
     private VBox footerVbox;
@@ -41,33 +41,38 @@ public class SessionePage extends Stage {
         this.controller = controller;
         this.initStyle(StageStyle.TRANSPARENT);
 
-        root = new VBox(15);
+        // Root BorderPane
+        root = new BorderPane();
         root.setPadding(new Insets(15));
-        root.setAlignment(Pos.TOP_CENTER);
         root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
+        root.setBorder(new Border(new BorderStroke(
+                Color.valueOf("#3A6698"),
+                BorderStrokeStyle.SOLID,
+                new CornerRadii(30),
+                new BorderWidths(2)
+        )));
 
+        // Top
         topHbox = new HBox(15);
         topHbox.setAlignment(Pos.TOP_CENTER);
         topHbox.setSpacing(20);
         topHbox.setPadding(new Insets(50, 0, 10, 0));
-        topHbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        root.setTop(topHbox);
 
+        // Center (info box)
         infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_LEFT);
-        infoBox.setPadding(new Insets(0,0,0,30));
+        infoBox.setPadding(new Insets(0, 0, 0, 30));
+        root.setCenter(infoBox);
 
+        // Footer (bottom)
         footerVbox = new VBox(10);
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
         footerVbox.setSpacing(20);
         footerVbox.setPadding(new Insets(0, 0, 50, 0));
-        footerVbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        root.setBottom(footerVbox);
 
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-        root.setPadding(new Insets(10));
-        root.getChildren().addAll(topHbox, infoBox, spacer, footerVbox);
-
+        // Scene
         Scene scene = new Scene(root, 800, 600);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
@@ -85,19 +90,16 @@ public class SessionePage extends Stage {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-
-        Label titoloLabel = new Label(corso.getNome() +" - "+ sessione.getData().format(dateFormatter));
+        Label titoloLabel = new Label(corso.getNome() + " - " + sessione.getData().format(dateFormatter));
         titoloLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
         topHbox.getChildren().add(titoloLabel);
-
 
         Text orarioMeta = new Text("Orario: ");
         orarioMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
         Text orarioVal = new Text(sessione.getOra().format(timeFormatter));
         orarioVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(orarioMeta, orarioVal));
-
 
         DecimalFormat df = new DecimalFormat("#.##");
 
@@ -109,7 +111,6 @@ public class SessionePage extends Stage {
         } else {
             durataVal.setText(df.format(sessione.getDurata()) + " ora");
         }
-
         durataVal.setFont(Font.font(18));
         infoBox.getChildren().add(new TextFlow(durataMeta, durataVal));
 
@@ -129,9 +130,10 @@ public class SessionePage extends Stage {
             Text luogoVal = new Text(sp.getLuogo());
             luogoVal.setFont(Font.font(18));
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
-           if(controller.isStudent())
+            if (controller.isStudent())
                 footerVbox.getChildren().add(createPartecipaButton());
-           else footerVbox.getChildren().add(createEditButton());
+            else
+                footerVbox.getChildren().add(createEditButton());
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -169,31 +171,45 @@ public class SessionePage extends Stage {
         infoBox.getChildren().add(new TextFlow(chefLabel, chefValue));
 
         infoBox.getChildren().add(confermarePartecipazioneLabel);
-        Region spacer = new Region();
-        spacer.setPrefHeight(15);
 
         Label ricetteLabel = new Label("Ricette trattate:");
-        ricetteLabel.setFont(Font.font("System", FontWeight.BOLD, 24));
-        infoBox.getChildren().addAll(spacer,ricetteLabel);
+        ricetteLabel.setFont(Font.font("System", FontWeight.BOLD, 20));
+        infoBox.getChildren().add(ricetteLabel);
 
+        VBox listaRicetteBox = new VBox(10);
+        listaRicetteBox.setStyle("-fx-background-color: white ;");
         for (Ricetta r : sessione.getRicette()) {
-            Label rLabel = new Label("\u2022 " + r.getNome());
+            Label rLabel = new Label("• " + r.getNome());
             rLabel.setFont(Font.font(17));
-            rLabel.setTextFill(Color.valueOf("#000000"));
+            rLabel.setTextFill(Color.BLACK);
             rLabel.setCursor(Cursor.HAND);
+            rLabel.setWrapText(true);
             rLabel.setOnMouseClicked(e -> controller.openRicettaPage(r));
-            infoBox.getChildren().add(rLabel);
+            listaRicetteBox.getChildren().add(rLabel);
         }
+
+        ScrollPane listaRicette = new ScrollPane(listaRicetteBox);
+        listaRicette.setPrefWidth(250);
+        listaRicette.setMaxWidth(250);
+        listaRicette.setPrefHeight(120);
+        listaRicette.setMinHeight(120);
+        listaRicette.setMaxHeight(120);
+        listaRicette.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        listaRicette.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        listaRicette.setStyle("-fx-background: white;-fx-background-color: white;");
+        VBox.setVgrow(listaRicette, Priority.NEVER);
+        infoBox.getChildren().add(listaRicette);
 
         Button closeButton = new Button("Chiudi");
         closeButton.setPrefSize(120, 30);
         styleButton(closeButton, Color.valueOf("#da3d26"));
-        closeButton.setOnAction(e -> this.close());
+        closeButton.setOnAction(e -> {
+            this.close();
+        });
         footerVbox.getChildren().add(closeButton);
     }
 
-    private Button createPartecipaButton(){
-
+    private Button createPartecipaButton() {
         Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/uploadIcon.png")));
         ImageView uploadView = new ImageView(uploadImage);
 
@@ -207,17 +223,12 @@ public class SessionePage extends Stage {
         styleButton(partecipaButton, Color.valueOf("#3a6698"));
 
         partecipaButton.setPrefWidth(120);
-        partecipaButton.setMinWidth(120);
-        partecipaButton.setMaxWidth(120);
-
         partecipaButton.setPrefHeight(30);
-        partecipaButton.setMinHeight(30);
-        partecipaButton.setMaxHeight(30);
 
-        if(checkIfAlreadyAdded()){
+        if (checkIfAlreadyAdded()) {
             partecipaButton.setDisable(true);
             partecipaButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
-        }else{
+        } else {
             confermarePartecipazioneLabel.setVisible(true);
             partecipaButton.setOnAction(event -> {
                 controller.openConfermaPartecipazionePage((SessionePresenza) sessione);
@@ -226,9 +237,9 @@ public class SessionePage extends Stage {
         return partecipaButton;
     }
 
-    private boolean checkIfAlreadyAdded(){
-        String matricola = ((Studente)(controller.getUtente())).getMatricola();
-         return  ((SessionePresenza)sessione).checkIfAlreadyAdded(matricola);
+    private boolean checkIfAlreadyAdded() {
+        String matricola = ((Studente) (controller.getUtente())).getMatricola();
+        return ((SessionePresenza) sessione).checkIfAlreadyAdded(matricola);
     }
 
     private Button createEditButton() {
@@ -245,12 +256,7 @@ public class SessionePage extends Stage {
         styleButton(editButton, Color.valueOf("#3a6698"));
 
         editButton.setPrefWidth(120);
-        editButton.setMinWidth(120);
-        editButton.setMaxWidth(120);
-
         editButton.setPrefHeight(30);
-        editButton.setMinHeight(30);
-        editButton.setMaxHeight(30);
 
         editButton.setOnAction(event -> {
             controller.openEditSessionePage(sessione);
@@ -258,8 +264,6 @@ public class SessionePage extends Stage {
 
         return editButton;
     }
-
-
 
     private void styleButton(Button button, Color color) {
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
@@ -273,10 +277,9 @@ public class SessionePage extends Stage {
     public Sessione getSessione() {
         return sessione;
     }
-    public void changeUploadButton(){
-        int first = 0;
-        footerVbox.getChildren().remove(first);
-        footerVbox.getChildren().addFirst(createPartecipaButton());
+
+    public void changeUploadButton() {
+        footerVbox.getChildren().set(0, createPartecipaButton());
         confermarePartecipazioneLabel.setVisible(false);
     }
 }

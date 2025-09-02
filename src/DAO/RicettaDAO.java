@@ -3,6 +3,7 @@ package DAO;
 import Controller.Controller;
 import DAO.Interfaces.RicettaDAOInterface;
 import DB.DBConnection;
+import Entity.Enum.UnitaIngrediente;
 import Entity.Ingrediente;
 import Entity.Ricetta;
 
@@ -25,31 +26,39 @@ public class RicettaDAO implements RicettaDAOInterface {
     }
 
     public void insertRicetta(Ricetta ricetta) throws SQLException {
-        String sql = "INSERT INTO RICETTA(nome_ricetta, descrizione_ricetta,tempo_di_preparazione,autore) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO RICETTA(nome_ricetta, descrizione_ricetta,tempo_di_preparazione,autore) VALUES (?,?,?,?) RETURNING idricetta";
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setString(1,ricetta.getNome());
         ps.setString(2,ricetta.getDescrizione());
         ps.setInt(3,ricetta.getTempoPreparazione());
         ps.setString(4,ricetta.getAutore());
-        ps.executeUpdate();
+
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int id = rs.getInt("idricetta");
+            ricetta.setIdRicetta(id);
+        }
     }
 
     public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
 
-        this.insertRicetta(ricetta);
+
         String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, \"unità\", Quantità) " +
                 "SELECT r.idRicetta, i.idIngrediente, ?::\"unità_ingrediente\", ? " +
                 "FROM Ricetta r " +
                 "JOIN Ingrediente i ON i.nome_ingrediente = ? " +
-                "WHERE r.nome_ricetta = ?";
+                "WHERE r.idricetta = ?";
 
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             for (Ingrediente ingrediente : ricetta.getIngredienti()) {
+
                 pstmt.setString(1, ingrediente.getUnita().getDbValue());
                 pstmt.setInt(2, ingrediente.getQuantita());
                 pstmt.setString(3, ingrediente.getNome());
-                pstmt.setString(4, ricetta.getNome());
+                pstmt.setInt(4, ricetta.getIdRicetta());
                 pstmt.executeUpdate();
+
             }
         }
     }
@@ -74,9 +83,9 @@ public class RicettaDAO implements RicettaDAOInterface {
     @Override
     public void getIngredienti(Ricetta ricetta) {
         ricetta.allocaArrayIngredienti();
-        Ingrediente ingrediente = null;
+        Ingrediente ingrediente;
 
-        String sql = "SELECT DISTINCT idIngrediente, nome_ingrediente, allergeni, categoria " +
+        String sql = "SELECT DISTINCT idIngrediente, nome_ingrediente, allergeni, categoria,quantità ,unità as unita " +
                 "FROM ingrediente " +
                 "NATURAL JOIN forma " +
                 "NATURAL JOIN ricetta " +
@@ -91,17 +100,28 @@ public class RicettaDAO implements RicettaDAOInterface {
                             rs.getInt("idIngrediente"),
                             rs.getString("nome_ingrediente"),
                             rs.getString("allergeni"),
-                            rs.getString("categoria")
+                            rs.getString("categoria"),
+                            rs.getInt("quantità"),
+                            getUnitaFromDb(rs.getString("unita"))
                     );
                     ricetta.addIngrediente(ingrediente);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         } catch (Exception exc) {
             exc.printStackTrace();
         }
     }
+
+
+    private UnitaIngrediente getUnitaFromDb(String unitaDbValue) {
+        for (UnitaIngrediente u : UnitaIngrediente.values()) {
+            if (u.getDbValue().equals(unitaDbValue)) {
+                return u;
+            }
+        }
+        return UnitaIngrediente.Quantita;
+    }
+
 
     @Override
     public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{

@@ -198,7 +198,7 @@ public class CorsoPage extends Stage {
             } else {
                 controller.subscribeToCourse(corso);
                 setIscrittoCorso(subscribeButton);
-                controller.refreshAccountPage();
+                showSuccessDialog();
             }
         });
 
@@ -206,6 +206,36 @@ public class CorsoPage extends Stage {
             setIscrittoCorso(subscribeButton);
         }
         return subscribeButton;
+    }
+
+    private void showSuccessDialog() {
+        Stage dialog = createSuccessDialog();
+        dialog.show();
+        new Thread(() -> {
+            try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+            Platform.runLater(()->{
+                dialog.close();
+                controller.refreshAccountPage();
+            });
+        }).start();
+    }
+
+    private Stage createSuccessDialog() {
+        Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
+        dialog.initOwner(this);
+        Label label = new Label("Iscritto con successo !\nPer i pagamenti: segrepass->Pagamenti in debito");
+        label.setTextFill(Color.WHITE);
+        label.setStyle("-fx-background-color: rgba(128,128,128,0.8); -fx-padding: 20px; -fx-background-radius: 10;");
+        label.setFont(Font.font("System", FontWeight.BOLD, 16));
+        StackPane pane = new StackPane(label);
+        pane.setPrefSize(500, 220);
+        pane.setStyle("-fx-background-color: transparent;");
+        Scene scene = new Scene(pane);
+        scene.setFill(Color.TRANSPARENT);
+
+        dialog.setScene(scene);
+        return dialog;
     }
 
     private void setIscrittoCorso(Button subscribeButton) {
@@ -331,17 +361,9 @@ public class CorsoPage extends Stage {
         VBox ricetteList = new VBox(5);
         ricetteList.setAlignment(Pos.TOP_LEFT);
 
-        if (corso.getRicetteTrattate().size() > 0) {
+        if (!corso.getRicetteTrattate().isEmpty()) {
             for (Ricetta r : corso.getRicetteTrattate()) {
-                Label ricettaLabel = new Label("   \u2022 " + r.getNome());
-                ricettaLabel.setFont(Font.font(17));
-                ricettaLabel.setTextFill(Color.valueOf("#000000"));
-                ricettaLabel.setAlignment(Pos.CENTER_LEFT);
-                ricettaLabel.setStyle("-fx-cursor: hand;");
-
-                ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(r));
-
-                ricetteList.getChildren().add(ricettaLabel);
+                createRicettaLabel(ricetteList, r, controller);
             }
         } else {
             Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
@@ -363,5 +385,16 @@ public class CorsoPage extends Stage {
         scrollPane.setMaxHeight(250);
 
         descBox.getChildren().add(scrollPane);
+    }
+    private void createRicettaLabel(VBox ricetteList, Ricetta r, Controller controller) {
+        Label ricettaLabel = new Label("•" + r.getNome());
+        ricettaLabel.setFont(Font.font(17));
+        ricettaLabel.setTextFill(Color.valueOf("#000000"));
+        ricettaLabel.setAlignment(Pos.CENTER_LEFT);
+        ricettaLabel.setStyle("-fx-cursor: hand;");
+
+        ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(r));
+
+        ricetteList.getChildren().add(ricettaLabel);
     }
 }

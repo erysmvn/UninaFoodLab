@@ -13,8 +13,12 @@ import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -26,8 +30,6 @@ public class Controller {
     private ChangePasswordPage modificaPasswordPage;
     private CreateCorsoPage createCorsoPage;
     private AggiungiSessionePage aggiungiSessionePage;
-    private EditCorsoPage editCorsoPage;
-    private EditSessionePage editSessionePage;
 
     private ElencoCorsiPanel elencoCorsiPanel;
 
@@ -192,57 +194,53 @@ public class Controller {
         return null;
     }
 
+
+
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
+        for(ConfermaPartecipazionePage confPage: confermaPartecipazionePages){
+            if(confPage.getSessionePresenza().equals(sessionePresenza)){
+                confPage.toFront();
+                return;
+            }
+        }
+
         ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
         confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
+        confermaPartecipazionePages.add(confermaPartecipazionePage);
+        confermaPartecipazionePage.setOnCloseRequest(e->confermaPartecipazionePages.remove(confermaPartecipazionePage));
         confermaPartecipazionePage.show();
     }
-
     public void openSessionePage(Sessione sessione){
+
+        for(SessionePage sessionePage : sessionePages){
+            if(sessionePage.getSessione().equals(sessione)){
+                sessionePage.toFront();
+                return;
+            }
+        }
+
         SessionePage sessionePage = new SessionePage(this);
         sessionePage.initPage(sessione);
         sessionePages.add(sessionePage);
+        sessionePage.setOnCloseRequest(e -> sessionePages.remove(sessionePage));
         sessionePage.show();
-
     }
-    public void changeSessionePageButton(SessionePresenza sessionePresenza){
-        if(sessionePresenza != null) {
-            for (SessionePage sessionePage : sessionePages) {
-                if (sessionePage.getSessione().equals(sessionePresenza)) {
-                    sessionePage.changeUploadButton();
-                }
+    public void openRicettaPage(Ricetta ricetta){
+        for(RicettaPage ricettaPage: ricettaPages){
+            if(ricettaPage.getRicetta().equals(ricetta)){
+                ricettaPage.toFront();
+                return;
             }
         }
-    }
 
-    public void openRicettaPage(Ricetta ricetta){
-        RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
-
-        if(existingPage != null){
-            if(existingPage.isShowing()){
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
-        } else {
             RicettaPage ricettaPage = new RicettaPage( this);
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
+
             ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
             ricettaPage.show();
-        }
+
     }
-
-    private RicettaPage isRicettaPageAlreadyOpened(Ricetta r){
-        for(RicettaPage rp : ricettaPages){
-            if(rp.getRicetta().getIdRicetta() == r.getIdRicetta()){
-                return rp;
-            }
-        }
-        return null;
-    }
-
-
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
             accountPage = new AccountPage(this);
@@ -252,8 +250,7 @@ public class Controller {
             accountPage.toFront();
         }
     }
-
-    public void openRegisterPage() {
+    public void openRegisterPage(){
         if(registerPage == null || !registerPage.isShowing()) {
             registerPage = new RegisterPage(this);
             registerPage.show();
@@ -261,7 +258,6 @@ public class Controller {
             registerPage.toFront();
         }
     }
-
     public void openModificaPassword() {
         if(modificaPasswordPage == null || !modificaPasswordPage.isShowing()) {
             modificaPasswordPage = new ChangePasswordPage(this);
@@ -270,7 +266,6 @@ public class Controller {
             modificaPasswordPage.toFront();
         }
     }
-
     public void openCreateCorsoPage() {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
             if (getUtente() instanceof Chef chef) {
@@ -281,32 +276,86 @@ public class Controller {
             createCorsoPage.toFront();
         }
     }
+    public void openAggiungiSessionePage(Corso corso){
+        if(aggiungiSessionePage != null)
+            aggiungiSessionePage.close();
 
+        aggiungiSessionePage = new AggiungiSessionePage(this);
+        aggiungiSessionePage.initPage(corso);
+        aggiungiSessionePage.show();
+    }
+    public void openAggiungiRicettaPage(Stage caller){
+        //todo o si apre una sola aggiungiRicettaPage alla volta oppure si deve controllare se già aperta
+        // (funzione chiamta da editSessionePage oppure aggiungiSessionePage
+        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this,caller);
+        aggiungiRicettaPages.add(aggiungiRicettaPage);
+        aggiungiRicettaPage.show();
+    }
+    // Exit
+    public void closeApp(){
+        Platform.exit();
+    }
+    private void closeAllPages(ArrayList<? extends Stage> pages){
+        for(Stage page : pages){
+            if(page != null)
+                page.close();
+        }
+        pages.clear();
+    }
+    private void closeAllPages(){
+
+        closeAllPages(corsoPages);
+        closeAllPages(ricettaPages);
+        closeAllPages(sessionePages);
+        closeAllPages(confermaPartecipazionePages);
+        closeAllPages(aggiungiRicettaPages);
+        closeAllPages(editCorsoPages);
+        closeAllPages(editSessionePages);
+
+        ArrayList<Stage> singlePages = new ArrayList<>();
+        singlePages.add(accountPage);
+        singlePages.add(registerPage);
+        singlePages.add(modificaPasswordPage);
+        singlePages.add(createCorsoPage);
+        singlePages.add(aggiungiSessionePage);
+
+        closeAllPages(singlePages);
+    }
+
+
+    public void changeSessionePageButton(SessionePresenza sessionePresenza){
+        if(sessionePresenza != null) {
+            for (SessionePage sessionePage : sessionePages) {
+                if (sessionePage.getSessione().equals(sessionePresenza)) {
+                    sessionePage.changeUploadButton();
+                }
+            }
+        }
+    }
     public void refreshAccountPage() {
-        if(accountPage != null)
+      /*  if(accountPage != null)
             accountPage.close();
 
         accountPage = new AccountPage(this);
+      */
         accountPage.initPage(utente);
-        accountPage.show();
-
+        
     }
-    public ArrayList<Corso> getCorsiByModalita(String modalita) {
-        CorsoDAO corsoDAO = new CorsoDAO(this);
-        return corsoDAO.getCorsiByModalita(modalita);
+    public void removeRicetteToSessione(ArrayList<Ricetta> ricette, Sessione sessione)throws SQLException {
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
+       for(Ricetta ricetta:  ricette)
+        sessioneDAO.removeRicetta(ricetta,sessione);
     }
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
         elencoCorsiPanel.showCorsi();
         this.elencoCorsiPanel = elencoCorsiPanel;
     }
-
     public void refreshCorsi() {
         if (elencoCorsiPanel != null) {
             elencoCorsiPanel.showCorsi();
         }
     }
-
     private void removeCorsoPage(Corso corso){
         CorsoPage toRemove = null;
         for(CorsoPage cp : corsoPages){
@@ -324,8 +373,6 @@ public class Controller {
         homePage.mostraTuttiCorsi();
     }
 
-
-
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
         if (email.contains("@studenti.unina.it")) {
@@ -338,7 +385,6 @@ public class Controller {
         homePage.setUtente(utente);
         this.corsoPages.clear();
     }
-
     public void registerMethod(Utente utente) throws SQLException {
 
         if (utente instanceof Chef chef) {
@@ -361,11 +407,10 @@ public class Controller {
         this.corsoPages.clear();
 
     }
-
     public void logOut(){
         this.utente = null;
+        closeAllPages();
         homePage.setLogOut();
-        accountPage.close();
     }
 
     public void checkOldPassword(String oldPassword) throws oldPasswordErrorException {
@@ -379,7 +424,6 @@ public class Controller {
         }
 
     }
-
     public void changeUserPassword(String newPassword)throws changePasswordException,SQLException {
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = getStudenteDAO();
@@ -390,18 +434,6 @@ public class Controller {
         }
     }
 
-    public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
-        CorsoDAO corsoDAO = getCorsoDAO();
-        ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
-        return corsi;
-    }
-
-    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
-        CorsoDAO corsoDao = getCorsoDAO();
-        ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
-        return corsi;
-    }
-
     public void subscribeToCourse(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
@@ -409,7 +441,6 @@ public class Controller {
             studente.addCorso(corso);
         }
     }
-
     public void unsubscribeToCourse(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
@@ -418,7 +449,6 @@ public class Controller {
             this.removeCorsoPage(corso);
         }
     }
-
     public Boolean alreadySubscribed(Corso corso){
         if (utente instanceof Studente studente) {
             StudenteDAO studenteDao = new StudenteDAO(this);
@@ -428,52 +458,29 @@ public class Controller {
         }
     }
 
-    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
-        CorsoDAO corsoDAO = getCorsoDAO();
-        Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
-        return corso.getChefs();
-    }
-
-    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
-        ChefDAO chefDao = getChefDAO();
-        return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
-    }
-
-    public void openAggiungiSessionePage(Corso corso){
-        if(aggiungiSessionePage != null)
-                aggiungiSessionePage.close();
-
-        aggiungiSessionePage = new AggiungiSessionePage(this);
-        aggiungiSessionePage.initPage(corso);
-        aggiungiSessionePage.show();
-    }
-
     // Corso
-    public void getRicetteTrattate(Corso corso) {
-        CorsoDAO corsoDao = new CorsoDAO(this);
-        corsoDao.getRicetteTrattate(corso);
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
+        CorsoDAO corsoDAO = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
+        return corsi;
     }
-
-    public void setChefs(Corso corso) {
-        CorsoDAO corsoDao = new CorsoDAO(this);
-        corsoDao.setChefs(corso);
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
+        CorsoDAO corsoDao = getCorsoDAO();
+        ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
+        return corsi;
     }
-
+    /*todo rimuvoere?*/public ArrayList<Corso> getCorsiByModalita(String modalita) {
+        CorsoDAO corsoDAO = new CorsoDAO(this);
+        return corsoDAO.getCorsiByModalita(modalita);
+    }
     public ArrayList<Corso> getMostFollowedCourses(int limit) {
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.getCorsiConPiuStudenti(limit);
     }
-
     public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException,SQLException{
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.searchCorsiLikeString(nomeCorso);
     }
-
-    public void deleteCorso(Corso corso) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        corsoDao.delete(corso);
-    }
-
     public ArrayList<Corso> getAllCourses(){
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.getAllCourses();
@@ -483,7 +490,6 @@ public class Controller {
         CorsoDAO corsoDao = getCorsoDAO();
         return corsoDao.getCorsoByNome(nome);
     }
-
     public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
@@ -496,6 +502,28 @@ public class Controller {
         return newCorso;
     }
 
+    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
+        CorsoDAO corsoDAO = getCorsoDAO();
+        Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
+        return corso.getChefs();
+    }
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
+        ChefDAO chefDao = getChefDAO();
+        return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
+    }
+
+    public void getRicetteTrattate(Corso corso) {
+        CorsoDAO corsoDao = new CorsoDAO(this);
+        corsoDao.getRicetteTrattate(corso);
+    }
+    public void setChefs(Corso corso) {
+        CorsoDAO corsoDao = new CorsoDAO(this);
+        corsoDao.setChefs(corso);
+    }
+    public void deleteCorso(Corso corso) {
+        CorsoDAO corsoDao = getCorsoDAO();
+        corsoDao.delete(corso);
+    }
     public void updateCorso(Corso corso) {
         CorsoDAO corsoDao = getCorsoDAO();
         corsoDao.update(corso);
@@ -503,7 +531,6 @@ public class Controller {
         corsoDao.prepareChefs(corso.getIdCorso(), myChef.getIdchef());
         addChefsToCorso(corso.getIdCorso(), corso.getChefs());
     }
-
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
         CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {
@@ -511,17 +538,18 @@ public class Controller {
             corsoDao.addChefToCorso(idCorso, chef);
         }
     }
-
     public void addToCaratterizzato(int idcorso, int idtipologia) {
         CorsoDAO corsoDao = getCorsoDAO();
         corsoDao.addToCaratterizzato(idcorso, idtipologia);
     }
 
-
     // Sessione
-    public void insertRicettaToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException {
+    public void insertSessione(Sessione sessione)throws SQLException{
         SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.insertSessione(sessione);
+    }
+    public void insertRicetteToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException{
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
         for(Ricetta ricetta : ricette){
             inserisciIngredientiToRicetta(ricetta);
             sessioneDAO.insertRicettaToSessione(ricetta,sessione);
@@ -531,58 +559,67 @@ public class Controller {
         FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
         return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
     }
-
     public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
         FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
         foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
-
-    public void updateSessione(Sessione s) {
+    public void updateSessione(Sessione sessione)throws SQLException {
         SessioneDAO sessioneDAO = new SessioneDAO(this);
-        sessioneDAO.update(s);
+        sessioneDAO.update(sessione);
     }
-
-
+    public void refreshCalendario(){
+        accountPage.getCalendarioPanel().initCalendario(utente);
+    }
 
     // Ricetta
     public ArrayList<Ingrediente> getAllIngredienti()throws SQLException{
         IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
         return ingredienteDAO.getAllIngredientes();
     }
-
     public void getIngredientiRicetta(Ricetta Ricetta) {
         RicettaDAO ricettaDao = new RicettaDAO(this);
         ricettaDao.getIngredienti(Ricetta);
     }
-
     public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) {
         RicettaDAO ricettaDao = new RicettaDAO(this);
         String toReturn = ricettaDao.getQuantitaIngrediente(Ricetta, Ingrediente);
         return toReturn;
     }
-
     public void getAllergeniRicetta(Ricetta Ricetta) {
         RicettaDAO ricettaDao = new RicettaDAO(this);
         ricettaDao.getAllergeniRicetta(Ricetta);
     }
+    public void updateRicetteAggiunte(Ricetta ricetta,Stage caller) {
 
+        if(caller instanceof AggiungiSessionePage)
+            aggiungiSessionePage.updateRicetteAggiunte(ricetta);
+        else if(caller instanceof EditSessionePage)
+            ((EditSessionePage) caller).updateRicetteAggiunte(ricetta);
+    }
+    public void insertIngredienti(ArrayList<Ingrediente> ingredienti)throws SQLException{
+        IngredienteDAO ingredienteDao = new IngredienteDAO(this);
+        ingredienteDao.insertIngredienti(ingredienti);
+    }
+    public void inserisciIngredientiToRicetta(Ricetta ricetta)throws SQLException {
+        RicettaDAO ricettaDAO = new RicettaDAO(this);
+        ricettaDAO.insertRicetta(ricetta);
 
+        ricettaDAO.inserisciIngredientiToRicetta(ricetta);
+    }
 
     // TipologiaCorso
     public ArrayList<TipologiaCorso> getAllTipologie() {
         TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
         return tipologiaDao.getAll();
     }
-
     public TipologiaCorso getOrAddTipologiaCorso(String nomeTipo) {
         TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
         return tipologiaDao.addNewTipologiaCorso(nomeTipo);
     }
 
-
     // Mail
-    public void openEmail(String to, String subject, String body) throws emailClientNotFoundException {
-        try {
+    public void openEmail(String to, String subject, String body) throws emailClientNotFoundException, URISyntaxException, IOException {
+
             String uriStr = String.format(
                     "mailto:%s?subject=%s&body=%s",
                     to,
@@ -602,41 +639,11 @@ public class Controller {
             }else{
                throw new emailClientNotFoundException("Email client non trovato. Scrivere a supportfoodlab@uninasupport.it");
             }
-        } catch (emailClientNotFoundException ECN){
-            throw ECN;
-        }catch (Exception exc){
-            throw new emailClientNotFoundException("Errore del sistema. Riprovare più tardi");
-        }
-    }
 
+    }
     private String encode(String text) {
         return text.replace(" ", "%20")
                 .replace("\n", "%0A");
     }
 
-
-    // Exit
-    public void closeAll(){
-        Platform.exit();
-    }
-
-    public void updateRicetteAggiunte(Ricetta ricetta) {
-        aggiungiSessionePage.updateRicetteAggiunte(ricetta);
-    }
-
-    public void openAggiungiRicettaPage(){
-        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this);
-        aggiungiRicettaPages.add(aggiungiRicettaPage);
-        aggiungiRicettaPage.show();
-    }
-
-    public void insertIngredienti(ArrayList<Ingrediente> ingredienti)throws SQLException{
-        IngredienteDAO ingredienteDao = new IngredienteDAO(this);
-        ingredienteDao.insertIngredienti(ingredienti);
-    }
-
-    public void inserisciIngredientiToRicetta(Ricetta ricetta)throws SQLException {
-        RicettaDAO ricettaDAO = new RicettaDAO(this);
-        ricettaDAO.inserisciIngredientiToRicetta(ricetta);
-    }
 }

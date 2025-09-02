@@ -76,7 +76,7 @@ public class HomePage extends Stage {
     private void setCTRLW() {
         scene.setOnKeyPressed(event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.W) {
-                controller.closeAll();
+                controller.closeApp();
             }
         });
     }
@@ -113,7 +113,7 @@ public class HomePage extends Stage {
         controlButtons.getChildren().addAll(
                 new CircleButton().setToMinimizeButtonWithAction(this),
                 new CircleButton().setToCloseButtonWithAction(e -> {
-                    controller.closeAll();
+                    controller.closeApp();
                 })
         );
         closeAndMinimizePane.setRight(controlButtons);

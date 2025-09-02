@@ -342,7 +342,8 @@ public class AggiungiSessionePage extends Stage {
             try {
                 validConferma();
                 createSessione();
-                controller.insertRicettaToSessione(ricette,sessione);
+                controller.insertSessione(sessione);
+                controller.insertRicetteToSessione(ricette,sessione);
                 controller.refreshAccountPage();
                 this.close();
             } catch (OrarioInizioEmptyException ex) {
@@ -487,7 +488,7 @@ public class AggiungiSessionePage extends Stage {
         aggiungiRicettaBtn.setOnMouseExited(e -> aggiungiRicettaBtn.setOpacity(1.0));
 
         aggiungiRicettaBtn.setOnAction(e -> {
-            controller.openAggiungiRicettaPage();
+            controller.openAggiungiRicettaPage(this);
         });
 
         return ricettaBox;

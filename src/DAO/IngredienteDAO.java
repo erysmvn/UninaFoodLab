@@ -3,6 +3,7 @@ package DAO;
 import Controller.Controller;
 import DAO.Interfaces.IngredienteDAOInterface;
 import DB.DBConnection;
+import Entity.Enum.UnitaIngrediente;
 import Entity.Ingrediente;
 
 import java.sql.Connection;
@@ -50,7 +51,7 @@ public class IngredienteDAO implements IngredienteDAOInterface {
     @Override
     public ArrayList<Ingrediente> getAllIngredientes()throws SQLException {
         ArrayList<Ingrediente> ingredienti = new ArrayList<>();
-        String sql = "SELECT * FROM Ingrediente";
+        String sql = "SELECT * FROM ingrediente natural join forma";
         PreparedStatement pstmt = con.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
 

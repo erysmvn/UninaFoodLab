@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public interface SessioneDAOInterface {
 
+    void removeRicetta(Ricetta ricetta, Sessione sessione)throws SQLException;
+
     void insertRicettaToSessione(Ricetta ricetta, Sessione sessione)throws SQLException;
 
     Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;

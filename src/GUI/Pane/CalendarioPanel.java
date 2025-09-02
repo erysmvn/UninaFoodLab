@@ -78,7 +78,6 @@ public class CalendarioPanel extends Pane {
                             calendarView.showMonthPage();
                             calendarView.setDate(click.getEntry().getStartDate());
                         } else {
-                            //controller.openCorsoPage(corso);
                             controller.openSessionePage(sessione);
                         }
                     }
@@ -113,12 +112,10 @@ public class CalendarioPanel extends Pane {
                     node = node.getParent();
                 }
 
-                if (!clickedOnEntry) {
+                if (!clickedOnEntry)
                     e.consume();
-                }
 
             }
-
         };
 
         calendarView.addEventFilter(MouseEvent.MOUSE_CLICKED, filter);

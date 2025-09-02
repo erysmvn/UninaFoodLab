@@ -9,27 +9,36 @@ public class Utente {
     String passw;
     private ArrayList<Corso> corsi;
 
-    public Utente(String nome, String cognome, String email, String passw) {}
-
-    public Utente() {
-        ArrayList<Corso> corsi = new ArrayList<>();
+    public Utente(String nome, String cognome, String email, String passw) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.passw = passw;
+        this.corsi = new ArrayList<>();
     }
 
+    // Getter
     public String getNome() {
         return nome;
     }
+
     public String getCognome() {
         return cognome;
     }
+
     public String getEmail() {
         return email;
     }
+
     public String getPassw() {
         return passw;
     }
+
     public ArrayList<Corso> getCorsi() {
         return corsi;
     }
+
+    // Setter
     public void setCorsi(ArrayList<Corso> corsi) {
         this.corsi = corsi;
     }
@@ -41,6 +50,7 @@ public class Utente {
     public void addCorso(Corso corso) {
         corsi.add(corso);
     }
+
     public void removeCorso(Corso corso) {
         corsi.remove(corso);
     }

@@ -271,6 +271,7 @@ public class RegisterPage extends Stage {
                     this.close();
                 } catch (SQLException exc) {
                     inserimentoErratoLabel.setVisible(true);
+                    exc.printStackTrace();
                 }
             } catch (nameEmptyException NEE) {
                 txtNome.setStyle("-fx-border-color: red;");

@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.UserExceptions.ChangePasswordException.passwordTroppoCortaException;
 import Exception.UserExceptions.RegisterException.*;
 import GUI.Buttons.*;
 
@@ -290,6 +291,9 @@ public class RegisterPage extends Stage {
             } catch (passwordEmptyException PEN) {
                 txtPassword.setStyle("-fx-border-color: red;");
                 lblPasswordError.setText("Inserire password");
+            } catch (passwordTroppoCortaException passwordTroppoCortaException) {
+                txtPassword.setStyle("-fx-border-color: red;");
+                lblPasswordError.setText("Password troppo corta");
             } catch (repeatPasswordEmptyException RPEE) {
                 txtRipetiPassword.setStyle("-fx-border-color: red;");
                 lblRipetiPasswordError.setText("Inserire nuovamente la password");
@@ -357,6 +361,13 @@ public class RegisterPage extends Stage {
         if (txtPassword.getText().trim().isEmpty()) {
             throw new passwordEmptyException();
         } else {
+            txtPassword.setStyle(null);
+            lblPasswordError.setText("");
+        }
+
+        if(txtPassword.getText().length()<7){
+            throw new passwordTroppoCortaException();
+        }else{
             txtPassword.setStyle(null);
             lblPasswordError.setText("");
         }

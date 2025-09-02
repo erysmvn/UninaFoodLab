@@ -66,10 +66,9 @@ public class SessioneDAO implements SessioneDAOInterface {
 
     @Override
     public void insertRicettaToSessione(Ricetta ricetta, Sessione sessione)throws SQLException{
-            String sql = "INSERT INTO Tratta (idricetta, idsessione) VALUES (" +
-                    "(SELECT idricetta FROM ricetta WHERE nome_ricetta = ?),?)";
+            String sql = "INSERT INTO Tratta (idricetta, idsessione) VALUES (?,?)";
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, ricetta.getNome());
+            ps.setInt(1, ricetta.getIdRicetta());
             ps.setInt(2,sessione.getIdSessione());
             ps.executeUpdate();
     }

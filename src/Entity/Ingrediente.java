@@ -18,6 +18,7 @@ public class Ingrediente {
         this.categoria = categoria;
     }
 
+    /*
     public Ingrediente(int idIngrediente,String nome, String allergeni, String categoria,int quantita, UnitaIngrediente unita) {
         this.idIngrediente = idIngrediente;
         this.nome = nome;
@@ -27,13 +28,14 @@ public class Ingrediente {
         this.unita = unita;
     }
 
-    public Ingrediente(String nome, String allergeni, String categoria,int quantita, UnitaIngrediente unita) {
+
+     */
+    public Ingrediente(String nome, String allergeni, String categoria) {
         this.nome = nome;
         this.allergeni = allergeni;
         this.categoria = categoria;
-        this.quantita = quantita;
-        this.unita = unita;
     }
+
 
     public int getIdIngrediente() {
         return idIngrediente;
@@ -56,5 +58,9 @@ public class Ingrediente {
     }
     public UnitaIngrediente getUnita() {
         return unita;
+    }
+
+    public void setIdingrediente(int idIngrediente) {
+        this.idIngrediente = idIngrediente;
     }
 }

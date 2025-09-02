@@ -13,6 +13,7 @@ import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
 import javafx.application.*;
+import javafx.scene.chart.Axis;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -167,7 +168,7 @@ public class Controller {
         return null;
     }
 
-    public void openEditSessionePage(Sessione s){
+    public void openEditSessionePage(Sessione s, SessionePage sp){
         EditSessionePage existingPage = isEditSessionePageAlreadyOpened(s);
 
         if(existingPage != null){
@@ -177,7 +178,7 @@ public class Controller {
                 existingPage.show();
             }
         } else {
-            EditSessionePage editSessionePage = new EditSessionePage( this);
+            EditSessionePage editSessionePage = new EditSessionePage( this, sp);
             editSessionePage.initPage(s);
             editSessionePages.add(editSessionePage);
             editSessionePage.setOnCloseRequest(e -> editSessionePages.remove(editSessionePage));
@@ -211,14 +212,14 @@ public class Controller {
         confermaPartecipazionePage.show();
     }
     public void openSessionePage(Sessione sessione){
-
+/*
         for(SessionePage sessionePage : sessionePages){
             if(sessionePage.getSessione().equals(sessione)){
                 sessionePage.toFront();
                 return;
             }
         }
-
+*/
         SessionePage sessionePage = new SessionePage(this);
         sessionePage.initPage(sessione);
         sessionePages.add(sessionePage);
@@ -333,11 +334,10 @@ public class Controller {
         }
     }
     public void refreshAccountPage() {
-      /*  if(accountPage != null)
+        if(accountPage != null)
             accountPage.close();
 
         accountPage = new AccountPage(this);
-      */
         accountPage.initPage(utente);
         
     }
@@ -555,6 +555,7 @@ public class Controller {
             sessioneDAO.insertRicettaToSessione(ricetta,sessione);
         }
     }
+
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
         FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
         return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
@@ -596,14 +597,13 @@ public class Controller {
         else if(caller instanceof EditSessionePage)
             ((EditSessionePage) caller).updateRicetteAggiunte(ricetta);
     }
-    public void insertIngredienti(ArrayList<Ingrediente> ingredienti)throws SQLException{
+    public void insertIngredienti(Ingrediente ingrediente)throws SQLException{
         IngredienteDAO ingredienteDao = new IngredienteDAO(this);
-        ingredienteDao.insertIngredienti(ingredienti);
+        ingredienteDao.insertIngrediente(ingrediente);
     }
     public void inserisciIngredientiToRicetta(Ricetta ricetta)throws SQLException {
         RicettaDAO ricettaDAO = new RicettaDAO(this);
         ricettaDAO.insertRicetta(ricetta);
-
         ricettaDAO.inserisciIngredientiToRicetta(ricetta);
     }
 

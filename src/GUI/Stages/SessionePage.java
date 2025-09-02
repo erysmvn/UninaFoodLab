@@ -259,7 +259,7 @@ public class SessionePage extends Stage {
         editButton.setPrefHeight(30);
 
         editButton.setOnAction(event -> {
-            controller.openEditSessionePage(sessione);
+            controller.openEditSessionePage(sessione, this);
         });
 
         return editButton;

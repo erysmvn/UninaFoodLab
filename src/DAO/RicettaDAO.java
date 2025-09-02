@@ -5,6 +5,7 @@ import DAO.Interfaces.RicettaDAOInterface;
 import DB.DBConnection;
 import Entity.Enum.UnitaIngrediente;
 import Entity.Ingrediente;
+import Entity.IngredienteFormaRicetta;
 import Entity.Ricetta;
 
 import java.sql.*;
@@ -44,20 +45,22 @@ public class RicettaDAO implements RicettaDAOInterface {
     public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
 
 
-        String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, \"unità\", Quantità) " +
-                "SELECT r.idRicetta, i.idIngrediente, ?::\"unità_ingrediente\", ? " +
-                "FROM Ricetta r " +
-                "JOIN Ingrediente i ON i.nome_ingrediente = ? " +
-                "WHERE r.idricetta = ?";
+        String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, unità, quantità) " +
+                       "VALUES (?, ?, ?::unità_ingrediente, ?)";
 
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            for (Ingrediente ingrediente : ricetta.getIngredienti()) {
+            for (IngredienteFormaRicetta ingredienteFormaRicetta : ricetta.getIngredienteFormaRicetta()) {
 
-                pstmt.setString(1, ingrediente.getUnita().getDbValue());
-                pstmt.setInt(2, ingrediente.getQuantita());
-                pstmt.setString(3, ingrediente.getNome());
-                pstmt.setInt(4, ricetta.getIdRicetta());
+                pstmt.setInt(1, ricetta.getIdRicetta());
+                pstmt.setInt(2, ingredienteFormaRicetta.getIngrediente().getIdIngrediente());
+                pstmt.setString(3, ingredienteFormaRicetta.getUnitaIngrediente().getDbValue());
+                pstmt.setInt(4, ingredienteFormaRicetta.getQuantita());
                 pstmt.executeUpdate();
+
+                System.out.println(ingredienteFormaRicetta.getUnitaIngrediente().getDbValue());
+                System.out.println(ingredienteFormaRicetta.getQuantita());
+                System.out.println(ingredienteFormaRicetta.getIngrediente().getIdIngrediente());
+                System.out.println(ricetta.getIdRicetta());
 
             }
         }
@@ -100,9 +103,7 @@ public class RicettaDAO implements RicettaDAOInterface {
                             rs.getInt("idIngrediente"),
                             rs.getString("nome_ingrediente"),
                             rs.getString("allergeni"),
-                            rs.getString("categoria"),
-                            rs.getInt("quantità"),
-                            getUnitaFromDb(rs.getString("unita"))
+                            rs.getString("categoria")
                     );
                     ricetta.addIngrediente(ingrediente);
                 }

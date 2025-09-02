@@ -14,6 +14,8 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,8 +41,11 @@ public class EditSessionePage extends Stage {
     private Label errorAlmenoUnRicetta;
     private Label erroreInserimentoDati;
 
-    public EditSessionePage(Controller controller) {
+    private SessionePage parent;
+
+    public EditSessionePage(Controller controller, SessionePage parent) {
         this.controller = controller;
+        this.parent = parent;
         this.initStyle(StageStyle.TRANSPARENT);
 
         root = new BorderPane();
@@ -291,10 +296,19 @@ public class EditSessionePage extends Stage {
             controller.removeRicetteToSessione(ricetteToDelete,sessione);
             controller.insertRicetteToSessione(ricetteToInsert, sessione);
             controller.refreshCalendario();
+
+            parent.close();
             this.close();
-        } catch (Exception ex) {
+        } catch (SQLException sqlException) {
+            if(sqlException.getSQLState().equals("23505"))
+                erroreInserimentoDati.setText("Il corso ha già una sessione in data: "+dataPicker.getValue());
+
+            sqlException.printStackTrace();
+
+        }catch (Exception ex) {
             erroreInserimentoDati.setText("Errore inserimenti dati. Riprovare più tardi");
             ex.printStackTrace();
+
         }
     }
 

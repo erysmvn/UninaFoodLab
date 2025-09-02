@@ -8,18 +8,12 @@ public class Chef extends Utente {
     private ArrayList<Corso> corsi = new ArrayList<Corso>();
 
     public Chef(int id, String nome_chef, String cognome, String email, String password) {
+        super(nome_chef, cognome, email, password);
         this.idchef = id;
-        this.nome = nome_chef;
-        this.cognome = cognome;
-        this.email = email;
-        this.passw = password;
     }
 
     public Chef(String nome_chef, String cognome, String email, String password) {
-        this.nome = nome_chef;
-        this.cognome = cognome;
-        this.email = email;
-        this.passw = password;
+        super(nome_chef, cognome, email, password);
     }
 
     public int getIdchef() {

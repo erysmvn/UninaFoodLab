@@ -7,11 +7,8 @@ public class Studente extends Utente {
 
 
     public Studente(String matricola, String nome_studente, String cognome, String email, String password) {
+        super(nome_studente, cognome, email, password);
         this.matricola = matricola;
-        this.nome = nome_studente;
-        this.cognome = cognome;
-        this.email = email;
-        this.passw = password;
     }
 
     public String getMatricola() {

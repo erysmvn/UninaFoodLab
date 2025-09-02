@@ -544,11 +544,12 @@ public class Controller {
     }
 
     // Sessione
-    public void insertSessione(Sessione sessione)throws SQLException{
+    public void insertSessione(Sessione sessione) throws SQLException {
         SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.insertSessione(sessione);
     }
-    public void insertRicetteToSessione(ArrayList<Ricetta> ricette,Sessione sessione)throws SQLException{
+
+    public void insertRicetteToSessione(ArrayList<Ricetta> ricette,Sessione sessione) throws SQLException{
         SessioneDAO sessioneDAO = new SessioneDAO(this);
         for(Ricetta ricetta : ricette){
             inserisciIngredientiToRicetta(ricetta);
@@ -560,17 +561,26 @@ public class Controller {
         FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
         return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
     }
+
     public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
         FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
         foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
-    public void updateSessione(Sessione sessione)throws SQLException {
+
+    public void updateSessione(Sessione sessione) throws SQLException {
         SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.update(sessione);
     }
-    public void refreshCalendario(){
+
+    public void refreshCalendario() {
         accountPage.getCalendarioPanel().initCalendario(utente);
     }
+
+    public void deleteSessione(Sessione sessione) throws SQLException {
+        SessioneDAO sessioneDAO = new SessioneDAO(this);
+        sessioneDAO.delete(sessione);
+    }
+
 
     // Ricetta
     public ArrayList<Ingrediente> getAllIngredienti()throws SQLException{

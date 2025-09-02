@@ -10,11 +10,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.util.ArrayList;
@@ -143,12 +145,9 @@ public class AggiungiRicettaPage extends Stage {
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
         Button aggiungiIngredienteBtn = new Button("Aggiungi ingrediente");
-        aggiungiIngredienteBtn.setStyle(
-                "-fx-background-color: #3a6698;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-border-radius: 7;" +
-                        "-fx-padding: 5 10 5 10;"
-        );
+        styleButton(aggiungiIngredienteBtn, Color.valueOf("#3a6698"));
+        aggiungiIngredienteBtn.setMinWidth(200);
+
         ingredientiBoxList = new ArrayList<>();
 
         aggiungiIngredienteBtn.setOnAction(e -> {
@@ -185,13 +184,7 @@ public class AggiungiRicettaPage extends Stage {
         nuovoIngredienteField.setVisible(false);
 
         Button removeButton = new Button("x");
-        removeButton.setStyle(
-                "-fx-background-color: #da3d26; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-border-radius: 3;" +
-                        "-fx-padding: 0 5 0 5;"
-        );
+        styleButton(removeButton, Color.valueOf("#da3d26"));
 
         HBox nomeBox = new HBox(5);
         nomeBox.getChildren().addAll(ingredienteCombo, nuovoIngredienteField, removeButton);
@@ -345,13 +338,10 @@ public class AggiungiRicettaPage extends Stage {
         aggiungiBtn.setPrefSize(80, 30);
         annullaBtn.setPrefSize(80, 30);
 
-        aggiungiBtn.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
-        aggiungiBtn.setOnMouseEntered(e -> aggiungiBtn.setOpacity(0.8));
-        aggiungiBtn.setOnMouseExited(e -> aggiungiBtn.setOpacity(1.0));
+        styleButton(aggiungiBtn, Color.valueOf("#3a6698"));
 
-        annullaBtn.setStyle("-fx-background-color: #da3d26;-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1;");
-        annullaBtn.setOnMouseEntered(e -> annullaBtn.setOpacity(0.8));
-        annullaBtn.setOnMouseExited(e -> annullaBtn.setOpacity(1.0));
+        styleButton(annullaBtn, Color.valueOf("#da3d26"));
+
 
         annullaBtn.setOnAction(e -> this.close());
         aggiungiBtn.setOnAction(event -> {
@@ -434,6 +424,15 @@ public class AggiungiRicettaPage extends Stage {
         return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim());
     }
 
+    private void styleButton(Button button, Color color) {
+        button.setPrefSize(100, 30);
+        button.setFont(Font.font("System", FontWeight.BOLD, 14));
+        button.setTextFill(Color.WHITE);
+        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+        button.setCursor(Cursor.HAND);
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
+    }
 
 
 }

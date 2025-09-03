@@ -13,9 +13,9 @@ public interface ChefDAOInterface {
     Chef register(Chef chef) throws SQLException;
     void checkOldPassword(String oldPassword, Chef chef)throws changePasswordException;
     void changeUserPassword(String newPassword, Chef chef) throws changePasswordException, SQLException;
+    void setCorsiToChef(Chef chef);
 
     // Get methods
     Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email);
-    void setCorsiToChef(Chef chef);
 
 }

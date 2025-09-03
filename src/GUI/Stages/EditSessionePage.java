@@ -316,8 +316,6 @@ public class EditSessionePage extends Stage {
 
             sessione.setDurata(durataOre);
 
-//            sessione.setDurata(Float.parseFloat(durataField.getText()));
-
             if (sessione instanceof SessionePresenza sp) {
                 sp.setLuogo(luogoField.getText());
             } else if (sessione instanceof SessioneOnline so) {

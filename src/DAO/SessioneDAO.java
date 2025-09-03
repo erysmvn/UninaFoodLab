@@ -74,17 +74,16 @@ public class SessioneDAO implements SessioneDAOInterface {
     }
 
     @Override
-    public Sessione createSessioneByResultSet(ResultSet rs) throws SQLException {
-        Sessione sessione ;
-        String modalita = rs.getString("modalita");
+    public Sessione createSessioneByResultSet(ResultSet rs, Corso corso) throws SQLException {
+        Sessione sessione;
 
+        String modalita = rs.getString("modalita");
         LocalDate data = rs.getDate("data").toLocalDate();
         LocalTime ora = rs.getTime("ora").toLocalTime();
         LocalDateTime orario = LocalDateTime.of(data, ora);
 
         //TODO SOLO CON IL CONTROLLER
         RicettaDAO ricettaDAO = new RicettaDAO(controller);
-        Corso corso = controller.getCorsoDAO().getCorsoByResultSetWithOutSessioni(rs);
         if (modalita.equals("Presenza")) {
             sessione = new SessionePresenza(
                     rs.getInt("idsessione"),
@@ -95,7 +94,7 @@ public class SessioneDAO implements SessioneDAOInterface {
                     corso
             );
             ((SessionePresenza)sessione).setFogliAdesione(getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
-        }else{
+        }else {
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),
                     rs.getDate("data").toLocalDate(),
@@ -112,20 +111,19 @@ public class SessioneDAO implements SessioneDAOInterface {
     }
 
     @Override
-    public ArrayList<Sessione> getSessioniByIdCorso(int idcorso) throws SQLException {
+    public ArrayList<Sessione> getSessioniByCorso(Corso corso) throws SQLException {
 
         ArrayList<Sessione> sessioni = new ArrayList<>();
-        String sql = "SELECT * FROM corso natural join sessione WHERE idcorso = ?";
+        String sql = "SELECT * FROM sessione WHERE idcorso = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setInt(1, idcorso);
+        stmt.setInt(1, corso.getIdCorso());
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            sessioni.add(createSessioneByResultSet(rs));
+            sessioni.add(createSessioneByResultSet(rs,corso));
         }
 
         return sessioni;
-
     }
 
     private ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){

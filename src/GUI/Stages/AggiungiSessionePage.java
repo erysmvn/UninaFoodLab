@@ -344,6 +344,7 @@ public class AggiungiSessionePage extends Stage {
                 createSessione();
                 controller.insertSessione(sessione);
                 controller.insertRicetteToSessione(ricette,sessione);
+                sessione.getCorso().addSessione(sessione);
                 controller.refreshAccountPage();
                 this.close();
             } catch (OrarioInizioEmptyException ex) {

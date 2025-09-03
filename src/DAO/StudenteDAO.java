@@ -51,7 +51,6 @@ public class StudenteDAO implements StudenteDAOInterface {
                     );
                     studente.setCorsi(getCorsiFromStudente(studente));
                 } else {
-                    // Se l'email esiste ma la password è sbagliata
                     if (existingEmail(email)) {
                         throw new passwordErrataException();
                     } else {
@@ -185,6 +184,7 @@ public class StudenteDAO implements StudenteDAOInterface {
             ResultSet rs2 = stmt2.executeQuery(sql);
             while (rs2.next()) {
                 Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
+
                 corsi.add(corso);
             }
         } catch (SQLException sqle) {

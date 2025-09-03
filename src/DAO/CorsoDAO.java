@@ -209,6 +209,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
+    /*
     @Override
     public Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException{
 
@@ -232,6 +233,8 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         return  corso;
     }
+
+     */
 
     @Override
     public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
@@ -342,7 +345,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         if(rs.next())
             return createCorsoByResultSet(rs);
 
-      }catch (SQLException sqle){
+      } catch (SQLException sqle) {
           sqle.printStackTrace();
       }
         return null;
@@ -398,9 +401,9 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
 //TODO o cess da cambiare
-    private ArrayList<Sessione> getSessioniCorso(int idcorso)throws SQLException{
+    private ArrayList<Sessione> getSessioniCorso(Corso corso)throws SQLException{
         SessioneDAO sessioneDAO = new SessioneDAO(controller);
-        return sessioneDAO.getSessioniByIdCorso(idcorso);
+        return sessioneDAO.getSessioniByCorso(corso);
     }
 
     @Override
@@ -437,7 +440,8 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
-        corso.setSessioni(this.getSessioniCorso(rs.getInt("idcorso")));
+        System.out.println("sto mettendo sessioni");
+        corso.setSessioni(this.getSessioniCorso(corso));
         setChefs(corso);
 
         return  corso;

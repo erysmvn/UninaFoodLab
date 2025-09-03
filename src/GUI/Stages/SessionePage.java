@@ -133,14 +133,6 @@ public class SessionePage extends Stage {
             Text luogoVal = new Text(sp.getLuogo());
             luogoVal.setFont(Font.font(18));
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
-            if (controller.isStudent())
-                footerVbox.getChildren().add(createPartecipaButton());
-            else {
-                HBox options = new HBox(10);
-                options.setAlignment(Pos.CENTER);
-                options.getChildren().addAll(createEditButton(), createDeleteButton());
-                footerVbox.getChildren().add(options);
-            }
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -166,6 +158,16 @@ public class SessionePage extends Stage {
             });
 
             infoBox.getChildren().add(new TextFlow(linkMeta, linkVal));
+        }
+
+
+        if (controller.isStudent())
+            footerVbox.getChildren().add(createPartecipaButton());
+        else {
+            HBox options = new HBox(10);
+            options.setAlignment(Pos.CENTER);
+            options.getChildren().addAll(createEditButton(), createDeleteButton());
+            footerVbox.getChildren().add(options);
         }
 
         controller.setChefs(corso);
@@ -292,6 +294,7 @@ public class SessionePage extends Stage {
             // TODO DELETE THIS SESSION
             showConfirmPanel("Sei sicuro di voler eliminare la sessione?", () -> {
                 try {
+                    sessione.getCorso().deleteSessione(sessione);
                     controller.deleteSessione(sessione);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -356,6 +359,8 @@ public class SessionePage extends Stage {
         yesButton.setOnAction(e -> {
             onConfirm.run();
             confirmStage.close();
+            controller.refreshCalendario();
+            this.close();
         });
 
         noButton.setOnAction(e -> confirmStage.close());

@@ -26,6 +26,14 @@ public class SessioneOnline extends Sessione{
         this.corso = corso;
     }
 
+    public SessioneOnline(int id, LocalDate date, String linkIncontro, float durata, LocalDateTime ora) {
+        this.data = date;
+        this.linkIncontro = linkIncontro;
+        this.durata = durata;
+        this.orario = ora;
+        this.idsessione = id;
+    }
+
 
 
     public String getLinkIncontro() {

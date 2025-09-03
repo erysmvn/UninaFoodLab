@@ -26,8 +26,5 @@ public class Chef extends Utente {
     public ArrayList<Corso> getCorsi() {
         return corsi;
     }
-    public void setCorsi(ArrayList<Corso> corsi) {
-        this.corsi = corsi;
-    }
 
 }

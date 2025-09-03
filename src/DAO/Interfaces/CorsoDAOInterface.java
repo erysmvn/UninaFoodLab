@@ -19,7 +19,7 @@ public interface CorsoDAOInterface {
     void prepareChefs(int idCorso, int idChef);
 
     // Get methods
-    Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException;
+    // Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException;
     ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi);
     Corso getCorsoByTitle(String Title);
     ArrayList<Corso> getAllCourses();

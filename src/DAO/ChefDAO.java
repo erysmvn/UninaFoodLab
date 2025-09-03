@@ -118,16 +118,17 @@ public class ChefDAO implements ChefDAOInterface {
         ArrayList<Corso> corsi = new ArrayList<>();
         CorsoDAO corsoDao = controller.getCorsoDAO();
 
-        String sql = "SELECT DISTINCT c.nome_corso " +
-                "FROM corso c NATURAL JOIN chef ch NATURAL JOIN tiene " +
-                "WHERE ch.email = '" + chef.getEmail() + "'";
+        String sql = "SELECT DISTINCT c.idcorso " +
+                "FROM tiene NATURAL JOIN chef ch NATURAL JOIN corso c " +
+                "WHERE ch.idchef = ?";
 
         try {
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, chef.getIdchef());
+            ResultSet rs = ps.executeQuery();
 
-            while (rs2.next()) {
-                Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
+            while (rs.next()) {
+                Corso corso = corsoDao.getCorsoByIdCorso(rs.getInt("idcorso"));
                 corsi.add(corso);
             }
 
@@ -149,7 +150,7 @@ public class ChefDAO implements ChefDAOInterface {
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return createChefByRs(rs);
+                return createChefByRsForSetCorsi(rs);
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -168,6 +169,8 @@ public class ChefDAO implements ChefDAOInterface {
             return false;
         }
     }
+
+    /*
     private Chef createChefByRs(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
@@ -179,6 +182,8 @@ public class ChefDAO implements ChefDAOInterface {
 
         return chef;
     }
+     */
+
     private Chef createChefByRsForSetCorsi(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
@@ -188,7 +193,7 @@ public class ChefDAO implements ChefDAOInterface {
                 rs.getString("passw")
         );
         chef.setCorsi(getCorsiFromChef(chef));
-
+        System.out.println(chef.getCorsi());
         return chef;
     }
 

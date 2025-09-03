@@ -1,5 +1,6 @@
 package DAO.Interfaces;
 
+import Entity.Corso;
 import Entity.Ricetta;
 import Entity.Sessione;
 
@@ -13,9 +14,10 @@ public interface SessioneDAOInterface {
 
     void insertRicettaToSessione(Ricetta ricetta, Sessione sessione)throws SQLException;
 
-    Sessione createSessioneByResultSet(ResultSet rs)throws SQLException;
 
-    ArrayList<Sessione> getSessioniByIdCorso(int idcorso) throws SQLException;
+    Sessione createSessioneByResultSet(ResultSet rs, Corso corso) throws SQLException;
+    ;
+    ArrayList<Sessione> getSessioniByCorso(Corso corso) throws SQLException;
 
     void update(Sessione sessione) throws SQLException;
 

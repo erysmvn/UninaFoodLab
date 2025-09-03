@@ -1,6 +1,7 @@
 package Entity;
 
 import Entity.Enum.*;
+import GUI.Stages.SessionePage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class Corso {
     private Difficolta difficolta;
     private String imagePath;
 
-    private ArrayList<Chef> chefs = null;
-    private ArrayList<Ricetta> ricetteTrattate = null;
-    private ArrayList<Sessione> sessioni = null;
+    private ArrayList<Chef> chefs;
+    private ArrayList<Ricetta> ricetteTrattate;
+    private ArrayList<Sessione> sessioni;
 
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,
@@ -138,6 +139,14 @@ public class Corso {
     // Setter
     public void setSessioni(ArrayList<Sessione> sessioni) {
         this.sessioni = sessioni;
+    }
+
+    public void deleteSessione(Sessione sessione) {
+        this.sessioni.remove(sessione);
+    }
+
+    public void addSessione(Sessione sessione) {
+        this.sessioni.add(sessione);
     }
 
     public void setImagePath(String imagePath){

@@ -10,7 +10,6 @@ import Exception.UserExceptions.LoginException.emailNotFoundException;
 import Exception.UserExceptions.LoginException.passwordErrataException;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class ChefDAO implements ChefDAOInterface {
     Controller controller;
@@ -113,9 +112,8 @@ public class ChefDAO implements ChefDAOInterface {
 
     // Get methods
     @Override
-    public ArrayList<Corso> getCorsiFromChef(Chef chef){
+    public void setCorsiToChef(Chef chef){
 
-        ArrayList<Corso> corsi = new ArrayList<>();
         CorsoDAO corsoDao = controller.getCorsoDAO();
 
         String sql = "SELECT DISTINCT c.idcorso " +
@@ -129,14 +127,13 @@ public class ChefDAO implements ChefDAOInterface {
 
             while (rs.next()) {
                 Corso corso = corsoDao.getCorsoByIdCorso(rs.getInt("idcorso"));
-                corsi.add(corso);
+                chef.getCorsi().add(corso);
+                System.out.println(corso.getIdCorso() +"- - - "+ corso.getNome());
             }
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-
-        return corsi;
     }
 
     @Override
@@ -192,7 +189,8 @@ public class ChefDAO implements ChefDAOInterface {
                 rs.getString("email"),
                 rs.getString("passw")
         );
-        chef.setCorsi(getCorsiFromChef(chef));
+        setCorsiToChef(chef);
+        System.out.println("Corsi trovati per chef " + chef.getNome() + ": " + chef.getCorsi().size());
         System.out.println(chef.getCorsi());
         return chef;
     }

@@ -16,6 +16,6 @@ public interface ChefDAOInterface {
 
     // Get methods
     Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email);
-    ArrayList<Corso> getCorsiFromChef(Chef chef);
+    void setCorsiToChef(Chef chef);
 
 }

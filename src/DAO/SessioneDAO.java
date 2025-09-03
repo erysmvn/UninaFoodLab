@@ -160,4 +160,14 @@ public class SessioneDAO implements SessioneDAOInterface {
             throw new SQLException("Nessuna sessione aggiornata. ID non trovato: " + sessione.getIdSessione());
 
     }
+
+    public void delete(Sessione sessione) throws SQLException {
+        String sql = "DELETE FROM sessione WHERE idsessione = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setInt(1,sessione.getIdSessione());
+        int rowsAffected = pstmt.executeUpdate();
+        if (rowsAffected < 1) {
+            throw new SQLException("Nessuna sessione aggiornata.");
+        }
+    }
 }

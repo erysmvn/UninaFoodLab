@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,21 +28,30 @@ import java.util.Objects;
 public class EditSessionePage extends Stage {
     private Controller controller;
     private Sessione sessione;
+
     private ArrayList<Ricetta> ricetteToInsert;
     private ArrayList<Ricetta> ricetteToDelete;
+
     private BorderPane root;
     private VBox formBox;
     private VBox ricetteList;
+
     private DatePicker dataPicker;
-    private Spinner<Integer> hourSpinner;
-    private Spinner<Integer> minuteSpinner;
-    private TextField durataField;
+    private Spinner<Integer> hourSpinnerInizio;
+    private Spinner<Integer> minuteSpinnerInizio;
+
+    private Spinner<Integer> hourSpinnerFine;
+    private Spinner<Integer> minuteSpinnerFine;
+
+//    private TextField durataField;
     private TextField luogoField;
     private TextField linkField;
+
     private Label errorAlmenoUnRicetta;
     private Label erroreInserimentoDati;
 
     private SessionePage parent;
+
 
     public EditSessionePage(Controller controller, SessionePage parent) {
         this.controller = controller;
@@ -112,18 +122,21 @@ public class EditSessionePage extends Stage {
 
         formBox.getChildren().addAll(labeledNode("Data:", dataPicker), freqWarning);
 
-        HBox timeBox = createTimeSpinner();
-        formBox.getChildren().add(labeledNode("Ora:", timeBox));
+        HBox timeBoxInizio = createTimeSpinnerInizio();
+        formBox.getChildren().add(labeledNode("Ora inizio:", timeBoxInizio));
 
-        durataField = new TextField(String.valueOf(sessione.getDurata()));
-        durataField.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d{0,1}(\\.\\d{0,1})?")) {
-                return change;
-            }
-            return null;
-        }));
-        formBox.getChildren().add(labeledNode("Durata (ore):", durataField));
+        HBox timeBoxFine = createTimeSpinnerFine();
+        formBox.getChildren().add(labeledNode("Ora fine:", timeBoxFine));
+
+//        durataField = new TextField(String.valueOf(sessione.getDurata()));
+//        durataField.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
+//            String newText = change.getControlNewText();
+//            if (newText.matches("\\d{0,1}(\\.\\d{0,1})?")) {
+//                return change;
+//            }
+//            return null;
+//        }));
+//        formBox.getChildren().add(labeledNode("Durata (ore):", durataField));
 
         if (sessione instanceof SessionePresenza sp) {
             luogoField = new TextField(sp.getLuogo());
@@ -182,16 +195,30 @@ public class EditSessionePage extends Stage {
         return box;
     }
 
-    private HBox createTimeSpinner() {
-        hourSpinner = new Spinner<>();
-        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 12, sessione.getOra().getHour()));
-        hourSpinner.setEditable(true);
+    private HBox createTimeSpinnerInizio() {
+        hourSpinnerInizio = new Spinner<>();
+        hourSpinnerInizio.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 18, sessione.getOra().getHour()));
+        hourSpinnerInizio.setEditable(true);
 
-        minuteSpinner = new Spinner<>();
-        minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, sessione.getOra().getMinute()));
-        minuteSpinner.setEditable(true);
+        minuteSpinnerInizio = new Spinner<>();
+        minuteSpinnerInizio.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, sessione.getOra().getMinute()));
+        minuteSpinnerInizio.setEditable(true);
 
-        HBox hbox = new HBox(5, hourSpinner, new Label(":"), minuteSpinner);
+        HBox hbox = new HBox(5, hourSpinnerInizio, new Label(":"), minuteSpinnerInizio);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        return hbox;
+    }
+
+    private HBox createTimeSpinnerFine() {
+        hourSpinnerFine = new Spinner<>();
+        hourSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 20, sessione.getOra().getHour()));
+        hourSpinnerFine.setEditable(true);
+
+        minuteSpinnerFine = new Spinner<>();
+        minuteSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, sessione.getOra().getMinute()));
+        minuteSpinnerFine.setEditable(true);
+
+        HBox hbox = new HBox(5, hourSpinnerFine, new Label(":"), minuteSpinnerFine);
         hbox.setAlignment(Pos.CENTER_LEFT);
         return hbox;
     }
@@ -273,12 +300,23 @@ public class EditSessionePage extends Stage {
             sessione.setData(dataPicker.getValue());
             LocalDate data = dataPicker.getValue();
 
-            int h = hourSpinner.getValue();
-            int m = minuteSpinner.getValue();
-            LocalDateTime dateTime = LocalDateTime.of(data, LocalTime.of(h, m));
-            sessione.setOra(dateTime);
+            int hInizio = hourSpinnerInizio.getValue();
+            int mInizio = minuteSpinnerInizio.getValue();
+            LocalDateTime dateTimeInizio = LocalDateTime.of(data, LocalTime.of(hInizio, mInizio));
+            sessione.setOra(dateTimeInizio);
 
-            sessione.setDurata(Float.parseFloat(durataField.getText()));
+            int hFine = hourSpinnerFine.getValue();
+            int mFine = minuteSpinnerFine.getValue();
+            LocalDateTime dateTimeFine = LocalDateTime.of(data, LocalTime.of(hFine, mFine));
+
+            long durataMinuti = Duration.between(dateTimeInizio, dateTimeFine).toMinutes();
+
+            Float durataOre = durataMinuti / 60f;
+            System.out.println("durata: " + durataOre);
+
+            sessione.setDurata(durataOre);
+
+//            sessione.setDurata(Float.parseFloat(durataField.getText()));
 
             if (sessione instanceof SessionePresenza sp) {
                 sp.setLuogo(luogoField.getText());
@@ -300,7 +338,7 @@ public class EditSessionePage extends Stage {
             parent.close();
             this.close();
         } catch (SQLException sqlException) {
-            if(sqlException.getSQLState().equals("23505"))
+            if(sqlException.getSQLState() != null && sqlException.getSQLState().equals("23505"))
                 erroreInserimentoDati.setText("Il corso ha già una sessione in data: "+dataPicker.getValue());
 
             sqlException.printStackTrace();
@@ -313,10 +351,13 @@ public class EditSessionePage extends Stage {
     }
 
     private void styleButton(Button button, Color color) {
+        button.setPrefSize(100, 30);
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
         button.setCursor(Cursor.HAND);
+        button.setOnMouseEntered(e -> button.setOpacity(0.8));
+        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     public Sessione getSessione() {

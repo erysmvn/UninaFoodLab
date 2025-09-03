@@ -16,12 +16,15 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.awt.*;
 import java.net.URI;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Objects;
 import javafx.scene.control.ScrollPane;
 
@@ -132,8 +135,12 @@ public class SessionePage extends Stage {
             infoBox.getChildren().add(new TextFlow(luogoMeta, luogoVal));
             if (controller.isStudent())
                 footerVbox.getChildren().add(createPartecipaButton());
-            else
-                footerVbox.getChildren().add(createEditButton());
+            else {
+                HBox options = new HBox(10);
+                options.setAlignment(Pos.CENTER);
+                options.getChildren().addAll(createEditButton(), createDeleteButton());
+                footerVbox.getChildren().add(options);
+            }
         } else if (sessione instanceof SessioneOnline so) {
             Text linkMeta = new Text("Link incontro: ");
             linkMeta.setFont(Font.font("System", FontWeight.BOLD, 18));
@@ -201,7 +208,7 @@ public class SessionePage extends Stage {
         infoBox.getChildren().add(listaRicette);
 
         Button closeButton = new Button("Chiudi");
-        closeButton.setPrefSize(120, 30);
+        closeButton.setPrefSize(250, 30);
         styleButton(closeButton, Color.valueOf("#da3d26"));
         closeButton.setOnAction(e -> {
             this.close();
@@ -265,6 +272,36 @@ public class SessionePage extends Stage {
         return editButton;
     }
 
+    private Button createDeleteButton() {
+        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/deleteIcon.png")));
+        ImageView uploadView = new ImageView(uploadImage);
+
+        uploadView.setFitHeight(20);
+        uploadView.setFitWidth(20);
+
+        Button deleteButton = new Button("Elimina");
+        deleteButton.setGraphic(uploadView);
+        deleteButton.setContentDisplay(ContentDisplay.LEFT);
+
+        styleButton(deleteButton, Color.valueOf("#da3d26"));
+
+        deleteButton.setPrefWidth(120);
+        deleteButton.setPrefHeight(30);
+
+        deleteButton.setOnAction(event -> {
+            // TODO DELETE THIS SESSION
+            showConfirmPanel("Sei sicuro di voler eliminare la sessione?", () -> {
+                try {
+                    controller.deleteSessione(sessione);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        return deleteButton;
+    }
+
     private void styleButton(Button button, Color color) {
         button.setFont(Font.font("System", FontWeight.BOLD, 14));
         button.setTextFill(Color.WHITE);
@@ -281,5 +318,48 @@ public class SessionePage extends Stage {
     public void changeUploadButton() {
         footerVbox.getChildren().set(0, createPartecipaButton());
         confermarePartecipazioneLabel.setVisible(false);
+    }
+
+    private void showConfirmPanel(String message, Runnable onConfirm) {
+        Stage confirmStage = new Stage();
+        confirmStage.initModality(Modality.APPLICATION_MODAL);
+        confirmStage.initStyle(StageStyle.TRANSPARENT);
+
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
+        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(15), new BorderWidths(2))));
+
+        Label label = new Label(message);
+        label.setFont(Font.font("System", FontWeight.BOLD, 18));
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setWrapText(true);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setMaxWidth(300);
+
+        Button yesButton = new Button("Si");
+        Button noButton = new Button("No");
+
+        styleButton(yesButton, Color.valueOf("#3A6698"));
+        styleButton(noButton, Color.valueOf("#da3d26"));
+
+        HBox buttons = new HBox(15, yesButton, noButton);
+        buttons.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(label, buttons);
+
+        Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+        confirmStage.setScene(scene);
+
+        yesButton.setOnAction(e -> {
+            onConfirm.run();
+            confirmStage.close();
+        });
+
+        noButton.setOnAction(e -> confirmStage.close());
+
+        confirmStage.showAndWait();
     }
 }

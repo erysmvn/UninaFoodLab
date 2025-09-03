@@ -400,12 +400,6 @@ public class CorsoDAO implements CorsoDAOInterface {
         }
     }
 
-//TODO o cess da cambiare
-    private ArrayList<Sessione> getSessioniCorso(Corso corso)throws SQLException{
-        SessioneDAO sessioneDAO = new SessioneDAO(controller);
-        return sessioneDAO.getSessioniByCorso(corso);
-    }
-
     @Override
     public ArrayList<Corso> getCorsiByModalita(String modalita){
         String sql = "SELECT * FROM corso WHERE modcorso = '"+modalita+"'";
@@ -441,7 +435,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
         System.out.println("sto mettendo sessioni");
-        corso.setSessioni(this.getSessioniCorso(corso));
+        corso.setSessioni(controller.getSessioniCorso(corso));
         setChefs(corso);
 
         return  corso;

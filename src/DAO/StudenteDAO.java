@@ -171,24 +171,19 @@ public class StudenteDAO implements StudenteDAOInterface {
 
     // Get methods
     @Override
-    public ArrayList<Corso> getCorsiFromStudente(Studente studente) {
+    public ArrayList<Corso> getCorsiFromStudente(Studente studente) throws SQLException {
         ArrayList<Corso> corsi = new ArrayList<>();
-        CorsoDAO corsoDao = new CorsoDAO(controller);
 
-        String sql = "SELECT DISTINCT c.nome_corso " +
+        String sql = "SELECT DISTINCT c.idcorso " +
                 "FROM corso c NATURAL JOIN studente s NATURAL JOIN segue " +
-                "WHERE s.email = '" + studente.getEmail() + "'";
+                "WHERE Matricola = ? ";
 
-        try {
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(sql);
-            while (rs2.next()) {
-                Corso corso = corsoDao.getCorsoByTitle(rs2.getString("nome_corso"));
-
-                corsi.add(corso);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, studente.getMatricola());
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
+            corsi.add(corso);
         }
 
         return corsi;

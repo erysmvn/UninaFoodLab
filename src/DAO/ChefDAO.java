@@ -37,7 +37,7 @@ public class ChefDAO implements ChefDAOInterface {
         ResultSet rs = pstmt.executeQuery();
 
         if(rs.next()){
-            chef = createChefByRsForSetCorsi(rs);
+            chef = createChefByRs(rs);
         }else{
 
             if (existingEmail(email))
@@ -112,34 +112,26 @@ public class ChefDAO implements ChefDAOInterface {
 
     // Get methods
     @Override
-    public void setCorsiToChef(Chef chef){
-
-        CorsoDAO corsoDao = controller.getCorsoDAO();
+    public void setCorsiToChef(Chef chef) throws SQLException {
 
         String sql = "SELECT DISTINCT c.idcorso " +
                 "FROM tiene NATURAL JOIN chef ch NATURAL JOIN corso c " +
                 "WHERE ch.idchef = ?";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, chef.getIdchef());
-            ResultSet rs = ps.executeQuery();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, chef.getIdchef());
+        ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                Corso corso = corsoDao.getCorsoByIdCorso(rs.getInt("idcorso"));
-                chef.getCorsi().add(corso);
-                System.out.println(corso.getIdCorso() +"- - - "+ corso.getNome());
-            }
-
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        while (rs.next()) {
+            Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
+            chef.getCorsi().add(corso);
+            System.out.println(corso.getIdCorso() +"- - - "+ corso.getNome());
         }
     }
 
     @Override
-    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) throws SQLException {
         String sql = "SELECT * FROM chef WHERE UPPER(nome_chef) = UPPER(?) AND UPPER(cognome) = UPPER(?) AND UPPER(email) = UPPER(?);";
-        try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, nome);
             pstmt.setString(2, cognome);
@@ -147,11 +139,8 @@ public class ChefDAO implements ChefDAOInterface {
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return createChefByRsForSetCorsi(rs);
+                return createChefByRs(rs);
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
         return null;
     }
 
@@ -167,21 +156,8 @@ public class ChefDAO implements ChefDAOInterface {
         }
     }
 
-    /*
+
     private Chef createChefByRs(ResultSet rs) throws SQLException{
-        Chef chef = new Chef(
-                rs.getInt("idchef"),
-                rs.getString("nome_chef"),
-                rs.getString("cognome"),
-                rs.getString("email"),
-                rs.getString("passw")
-        );
-
-        return chef;
-    }
-     */
-
-    private Chef createChefByRsForSetCorsi(ResultSet rs) throws SQLException{
         Chef chef = new Chef(
                 rs.getInt("idchef"),
                 rs.getString("nome_chef"),

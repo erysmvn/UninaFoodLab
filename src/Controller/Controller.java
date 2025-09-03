@@ -1,5 +1,6 @@
 package Controller;
 
+import DAO.Interfaces.ChefDAOInterface;
 import Entity.*;
 import DB.DBConnection;
 import Exception.CorsoExceptions.CreateCorsoException.createCorsoErrorException;
@@ -46,6 +47,15 @@ public class Controller {
     private ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
     private ArrayList<EditSessionePage> editSessionePages = new ArrayList<>();
 
+    private final ChefDAO chefDAO = new ChefDAO(this);
+    private final StudenteDAO studenteDAO = new StudenteDAO(this);
+    private final CorsoDAO corsoDAO = new CorsoDAO(this);
+    private final TipologiaCorsoDAO tipologiaCorsoDAO = new TipologiaCorsoDAO(this);
+    private final SessioneDAO sessioneDAO = new SessioneDAO(this);
+    private final RicettaDAO ricettaDAO = new RicettaDAO(this);
+    private final IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
+    private final FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
+
 
     public Controller(){
         dbc = new DBConnection();
@@ -59,9 +69,11 @@ public class Controller {
     public Utente getUtente(){
         return utente;
     }
+
     public boolean isChef(){
         return utente instanceof Chef;
     }
+
     public boolean isStudent(){
         return utente instanceof Studente;
     }
@@ -82,22 +94,6 @@ public class Controller {
 
     public boolean isAlreadyLoggedIn() {
         return homePage.isLoggedIn();
-    }
-
-    public CorsoDAO getCorsoDAO(){
-        return new CorsoDAO(this);
-    }
-
-    public ChefDAO getChefDAO(){
-        return new ChefDAO(this);
-    }
-
-    public StudenteDAO getStudenteDAO(){
-        return new StudenteDAO(this);
-    }
-
-    public RicettaDAO getRicettaDAO(){
-        return new RicettaDAO(this);
     }
 
 
@@ -195,8 +191,6 @@ public class Controller {
         return null;
     }
 
-
-
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
         for(ConfermaPartecipazionePage confPage: confermaPartecipazionePages){
             if(confPage.getSessionePresenza().equals(sessionePresenza)){
@@ -211,21 +205,15 @@ public class Controller {
         confermaPartecipazionePage.setOnCloseRequest(e->confermaPartecipazionePages.remove(confermaPartecipazionePage));
         confermaPartecipazionePage.show();
     }
+
     public void openSessionePage(Sessione sessione){
-/*
-        for(SessionePage sessionePage : sessionePages){
-            if(sessionePage.getSessione().equals(sessione)){
-                sessionePage.toFront();
-                return;
-            }
-        }
-*/
         SessionePage sessionePage = new SessionePage(this);
         sessionePage.initPage(sessione);
         sessionePages.add(sessionePage);
         sessionePage.setOnCloseRequest(e -> sessionePages.remove(sessionePage));
         sessionePage.show();
     }
+
     public void openRicettaPage(Ricetta ricetta){
 
             RicettaPage ricettaPage = new RicettaPage( this);
@@ -236,6 +224,7 @@ public class Controller {
             ricettaPage.show();
 
     }
+
     public void openAccountPage(Utente utente) {
         if(accountPage == null || !accountPage.isShowing()) {
             accountPage = new AccountPage(this);
@@ -245,6 +234,7 @@ public class Controller {
             accountPage.toFront();
         }
     }
+
     public void openRegisterPage(){
         if(registerPage == null || !registerPage.isShowing()) {
             registerPage = new RegisterPage(this);
@@ -253,6 +243,7 @@ public class Controller {
             registerPage.toFront();
         }
     }
+
     public void openModificaPassword() {
         if(modificaPasswordPage == null || !modificaPasswordPage.isShowing()) {
             modificaPasswordPage = new ChangePasswordPage(this);
@@ -261,6 +252,7 @@ public class Controller {
             modificaPasswordPage.toFront();
         }
     }
+
     public void openCreateCorsoPage() {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
             if (getUtente() instanceof Chef chef) {
@@ -271,6 +263,7 @@ public class Controller {
             createCorsoPage.toFront();
         }
     }
+
     public void openAggiungiSessionePage(Corso corso){
         if(aggiungiSessionePage != null)
             aggiungiSessionePage.close();
@@ -279,6 +272,7 @@ public class Controller {
         aggiungiSessionePage.initPage(corso);
         aggiungiSessionePage.show();
     }
+
     public void openAggiungiRicettaPage(Stage caller){
         //todo o si apre una sola aggiungiRicettaPage alla volta oppure si deve controllare se già aperta
         // (funzione chiamta da editSessionePage oppure aggiungiSessionePage
@@ -286,10 +280,20 @@ public class Controller {
         aggiungiRicettaPages.add(aggiungiRicettaPage);
         aggiungiRicettaPage.show();
     }
+
+    public void updateRicetteAggiunte(Ricetta ricetta,Stage caller) {
+        if(caller instanceof AggiungiSessionePage)
+            aggiungiSessionePage.updateRicetteAggiunte(ricetta);
+        else if(caller instanceof EditSessionePage)
+            ((EditSessionePage) caller).updateRicetteAggiunte(ricetta);
+    }
+
+
     // Exit
     public void closeApp(){
         Platform.exit();
     }
+
     private void closeAllPages(ArrayList<? extends Stage> pages){
         for(Stage page : pages){
             if(page != null)
@@ -297,6 +301,7 @@ public class Controller {
         }
         pages.clear();
     }
+
     private void closeAllPages(){
 
         closeAllPages(corsoPages);
@@ -317,7 +322,6 @@ public class Controller {
         closeAllPages(singlePages);
     }
 
-
     public void changeSessionePageButton(SessionePresenza sessionePresenza){
         if(sessionePresenza != null) {
             for (SessionePage sessionePage : sessionePages) {
@@ -327,14 +331,7 @@ public class Controller {
             }
         }
     }
-    public void refreshAccountPage() {
-        if(accountPage != null)
-            accountPage.close();
 
-        accountPage = new AccountPage(this);
-        accountPage.initPage(utente);
-        
-    }
     public void removeRicetteToSessione(ArrayList<Ricetta> ricette, Sessione sessione)throws SQLException {
         SessioneDAO sessioneDAO = new SessioneDAO(this);
        for(Ricetta ricetta:  ricette)
@@ -345,11 +342,24 @@ public class Controller {
         elencoCorsiPanel.showCorsi();
         this.elencoCorsiPanel = elencoCorsiPanel;
     }
+
     public void refreshCorsi() {
         if (elencoCorsiPanel != null) {
             elencoCorsiPanel.showCorsi();
         }
     }
+
+    public void refreshCalendario() {
+        accountPage.getCalendarioPanel().initCalendario(utente);
+    }
+
+    public void refreshAccountPage() {
+        if(accountPage != null)
+            accountPage.close();
+        accountPage = new AccountPage(this);
+        accountPage.initPage(utente);
+    }
+
     private void removeCorsoPage(Corso corso){
         CorsoPage toRemove = null;
         for(CorsoPage cp : corsoPages){
@@ -367,30 +377,28 @@ public class Controller {
         homePage.mostraTuttiCorsi();
     }
 
+
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
         if (email.contains("@studenti.unina.it")) {
-            StudenteDAO studenteDao = getStudenteDAO();
-            utente = studenteDao.login(email, password);
+            utente = studenteDAO.login(email, password);
         } else {
-            ChefDAO chefDao = getChefDAO();
-            utente = chefDao.login(email, password);
+            utente = chefDAO.login(email, password);
         }
         homePage.setUtente(utente);
         this.corsoPages.clear();
     }
+
     public void registerMethod(Utente utente) throws SQLException {
 
         if (utente instanceof Chef chef) {
-            ChefDAO chefDao = getChefDAO();
-            Chef ch = chefDao.register(chef);
+            Chef ch = chefDAO.register(chef);
 
             if(ch != null){
                 this.utente = ch;
             }
         } else if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = getStudenteDAO();
-            Studente st = studenteDao.register(studente);
+            Studente st = studenteDAO.register(studente);
 
             if(st != null){
                 this.utente = st;
@@ -401,6 +409,7 @@ public class Controller {
         this.corsoPages.clear();
 
     }
+
     public void logOut(){
         this.utente = null;
         closeAllPages();
@@ -408,85 +417,78 @@ public class Controller {
     }
 
     public void checkOldPassword(String oldPassword) throws oldPasswordErrorException {
-
         if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = getStudenteDAO();
-            studenteDao.checkOldPassword(oldPassword, studente);
+            studenteDAO.checkOldPassword(oldPassword, studente);
         } else if (utente instanceof Chef chef) {
-            ChefDAO chefDao = getChefDAO();
-            chefDao.checkOldPassword(oldPassword, chef);
+            chefDAO.checkOldPassword(oldPassword, chef);
         }
-
     }
+
     public void changeUserPassword(String newPassword)throws changePasswordException,SQLException {
         if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = getStudenteDAO();
-            studenteDao.changeUserPassword(newPassword, studente);
+            studenteDAO.changeUserPassword(newPassword, studente);
         } else if (utente instanceof Chef chef) {
-            ChefDAO chefDao = getChefDAO();
-            chefDao.changeUserPassword(newPassword, chef);
+            chefDAO.changeUserPassword(newPassword, chef);
         }
     }
 
     public void subscribeToCourse(Corso corso){
         if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = new StudenteDAO(this);
-            studenteDao.subscribeToCourse(studente, corso);
+            studenteDAO.subscribeToCourse(studente, corso);
             studente.addCorso(corso);
         }
     }
-    public void unsubscribeToCourse(Corso corso){
+
+    public void unsubscribeToCourse(Corso corso) {
         if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = new StudenteDAO(this);
-            studenteDao.unsubscribeToCourse(studente, corso);
+            studenteDAO.unsubscribeToCourse(studente, corso);
             studente.removeCorso(corso);
             this.removeCorsoPage(corso);
         }
     }
+
     public Boolean alreadySubscribed(Corso corso){
         if (utente instanceof Studente studente) {
-            StudenteDAO studenteDao = new StudenteDAO(this);
-            return studenteDao.checkIfSubscribed(studente, corso);
+            return studenteDAO.checkIfSubscribed(studente, corso);
         } else {
             return false;
         }
     }
 
+
     // Corso
     public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
-        CorsoDAO corsoDAO = getCorsoDAO();
         ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
         return corsi;
     }
+
     public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
-        CorsoDAO corsoDao = getCorsoDAO();
-        ArrayList<Corso> corsi = corsoDao.searchCorsiByChef(nomeChef);
+        ArrayList<Corso> corsi = corsoDAO.searchCorsiByChef(nomeChef);
         return corsi;
     }
-    /*todo rimuvoere?*/public ArrayList<Corso> getCorsiByModalita(String modalita) {
-        CorsoDAO corsoDAO = new CorsoDAO(this);
-        return corsoDAO.getCorsiByModalita(modalita);
-    }
+
     public ArrayList<Corso> getMostFollowedCourses(int limit) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        return corsoDao.getCorsiConPiuStudenti(limit);
+        return corsoDAO.getCorsiConPiuStudenti(limit);
     }
+
     public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException,SQLException{
-        CorsoDAO corsoDao = getCorsoDAO();
-        return corsoDao.searchCorsiLikeString(nomeCorso);
+        return corsoDAO.searchCorsiLikeString(nomeCorso);
     }
+
     public ArrayList<Corso> getAllCourses(){
-        CorsoDAO corsoDao = getCorsoDAO();
-        return corsoDao.getAllCourses();
+        return corsoDAO.getAllCourses();
     }
 
     public Corso getCorsoByNome(String nome){
-        CorsoDAO corsoDao = getCorsoDAO();
-        return corsoDao.getCorsoByNome(nome);
+        return corsoDAO.getCorsoByNome(nome);
     }
+
+    public Corso getCorsoByIdCorso(int id) {
+        return corsoDAO.getCorsoByIdCorso(id);
+    }
+
     public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        Corso newCorso = corsoDao.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
+        Corso newCorso = corsoDAO.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
             addChefsToCorso(newCorso.getIdCorso(), chefs);
             addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
@@ -497,54 +499,54 @@ public class Controller {
     }
 
     public ArrayList<Chef> getChefsByIdCorso(int idcorso){
-        CorsoDAO corsoDAO = getCorsoDAO();
         Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
         return corso.getChefs();
     }
-    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) {
-        ChefDAO chefDao = getChefDAO();
-        return chefDao.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
+
+    public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) throws SQLException {
+        return chefDAO.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
     }
 
     public void getRicetteTrattate(Corso corso) {
-        CorsoDAO corsoDao = new CorsoDAO(this);
-        corsoDao.getRicetteTrattate(corso);
+        corsoDAO.getRicetteTrattate(corso);
     }
+
     public void setChefs(Corso corso) {
-        CorsoDAO corsoDao = new CorsoDAO(this);
-        corsoDao.setChefs(corso);
+        corsoDAO.setChefs(corso);
     }
+
     public void deleteCorso(Corso corso) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        corsoDao.delete(corso);
+        corsoDAO.delete(corso);
     }
+
     public void updateCorso(Corso corso) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        corsoDao.update(corso);
+        corsoDAO.update(corso);
         Chef myChef = (Chef) utente;
-        corsoDao.prepareChefs(corso.getIdCorso(), myChef.getIdchef());
+        corsoDAO.prepareChefs(corso.getIdCorso(), myChef.getIdchef());
         addChefsToCorso(corso.getIdCorso(), corso.getChefs());
     }
+
     public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
-        CorsoDAO corsoDao = getCorsoDAO();
         for (Chef chef : chefs) {
-            System.out.println(chef.getIdchef());
-            corsoDao.addChefToCorso(idCorso, chef);
+            corsoDAO.addChefToCorso(idCorso, chef);
         }
     }
+
     public void addToCaratterizzato(int idcorso, int idtipologia) {
-        CorsoDAO corsoDao = getCorsoDAO();
-        corsoDao.addToCaratterizzato(idcorso, idtipologia);
+        corsoDAO.addToCaratterizzato(idcorso, idtipologia);
     }
+
+    public ArrayList<Sessione> getSessioniCorso(Corso corso) throws SQLException {
+        return sessioneDAO.getSessioniByCorso(corso);
+    }
+
 
     // Sessione
     public void insertSessione(Sessione sessione) throws SQLException {
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.insertSessione(sessione);
     }
 
     public void insertRicetteToSessione(ArrayList<Ricetta> ricette,Sessione sessione) throws SQLException{
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
         for(Ricetta ricetta : ricette){
             inserisciIngredientiToRicetta(ricetta);
             sessioneDAO.insertRicettaToSessione(ricetta,sessione);
@@ -552,74 +554,66 @@ public class Controller {
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
-        FoglioAdesioneDAO foglioDAO = new FoglioAdesioneDAO(this);
-        return foglioDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+        return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+    }
+
+    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
+        return foglioAdesioneDAO.getFogliAdesioneByIdSessione(idsessione);
     }
 
     public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
-        FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
         foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
     }
 
     public void updateSessione(Sessione sessione) throws SQLException {
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.update(sessione);
     }
 
-    public void refreshCalendario() {
-        accountPage.getCalendarioPanel().initCalendario(utente);
-    }
-
     public void deleteSessione(Sessione sessione) throws SQLException {
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
         sessioneDAO.delete(sessione);
     }
 
 
     // Ricetta
-    public ArrayList<Ingrediente> getAllIngredienti()throws SQLException{
-        IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
+    public ArrayList<Ingrediente> getAllIngredienti() throws SQLException {
         return ingredienteDAO.getAllIngredientes();
     }
-    public void getIngredientiRicetta(Ricetta Ricetta) {
-        RicettaDAO ricettaDao = new RicettaDAO(this);
-        ricettaDao.getIngredienti(Ricetta);
-    }
-    public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) {
-        RicettaDAO ricettaDao = new RicettaDAO(this);
-        String toReturn = ricettaDao.getQuantitaIngrediente(Ricetta, Ingrediente);
-        return toReturn;
-    }
-    public void getAllergeniRicetta(Ricetta Ricetta) {
-        RicettaDAO ricettaDao = new RicettaDAO(this);
-        ricettaDao.getAllergeniRicetta(Ricetta);
-    }
-    public void updateRicetteAggiunte(Ricetta ricetta,Stage caller) {
 
-        if(caller instanceof AggiungiSessionePage)
-            aggiungiSessionePage.updateRicetteAggiunte(ricetta);
-        else if(caller instanceof EditSessionePage)
-            ((EditSessionePage) caller).updateRicetteAggiunte(ricetta);
+    public ArrayList<Ricetta> getRicetteByIdSessione(int idSessione) throws SQLException {
+        return ricettaDAO.getRicetteByIdSessione(idSessione);
     }
+
+    public void getIngredientiRicetta(Ricetta Ricetta) {
+        ricettaDAO.getIngredienti(Ricetta);
+    }
+
+    public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) {
+        return ricettaDAO.getQuantitaIngrediente(Ricetta, Ingrediente);
+    }
+
+    public void getAllergeniRicetta(Ricetta Ricetta) {
+        ricettaDAO.getAllergeniRicetta(Ricetta);
+    }
+
     public void insertIngredienti(Ingrediente ingrediente)throws SQLException{
-        IngredienteDAO ingredienteDao = new IngredienteDAO(this);
-        ingredienteDao.insertIngrediente(ingrediente);
+        ingredienteDAO.insertIngrediente(ingrediente);
     }
+
     public void inserisciIngredientiToRicetta(Ricetta ricetta)throws SQLException {
-        RicettaDAO ricettaDAO = new RicettaDAO(this);
         ricettaDAO.insertRicetta(ricetta);
         ricettaDAO.inserisciIngredientiToRicetta(ricetta);
     }
 
+
     // TipologiaCorso
     public ArrayList<TipologiaCorso> getAllTipologie() {
-        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
-        return tipologiaDao.getAll();
+        return tipologiaCorsoDAO.getAll();
     }
+
     public TipologiaCorso getOrAddTipologiaCorso(String nomeTipo) {
-        TipologiaCorsoDAO tipologiaDao = new TipologiaCorsoDAO(this);
-        return tipologiaDao.addNewTipologiaCorso(nomeTipo);
+        return tipologiaCorsoDAO.addNewTipologiaCorso(nomeTipo);
     }
+
 
     // Mail
     public void openEmail(String to, String subject, String body) throws emailClientNotFoundException, URISyntaxException, IOException {
@@ -645,6 +639,7 @@ public class Controller {
             }
 
     }
+
     private String encode(String text) {
         return text.replace(" ", "%20")
                 .replace("\n", "%0A");

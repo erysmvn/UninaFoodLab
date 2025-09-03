@@ -17,6 +17,6 @@ public interface StudenteDAOInterface {
     void changeUserPassword(String newPassword, Studente studente)throws changePasswordException, SQLException;
     void checkOldPassword(String oldPassword, Studente studente) throws changePasswordException;
     // Get methods
-    ArrayList<Corso> getCorsiFromStudente(Studente studente);
+    ArrayList<Corso> getCorsiFromStudente(Studente studente) throws SQLException;
 
 }

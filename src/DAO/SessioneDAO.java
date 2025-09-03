@@ -82,8 +82,6 @@ public class SessioneDAO implements SessioneDAOInterface {
         LocalTime ora = rs.getTime("ora").toLocalTime();
         LocalDateTime orario = LocalDateTime.of(data, ora);
 
-        //TODO SOLO CON IL CONTROLLER
-        RicettaDAO ricettaDAO = new RicettaDAO(controller);
         if (modalita.equals("Presenza")) {
             sessione = new SessionePresenza(
                     rs.getInt("idsessione"),
@@ -93,7 +91,7 @@ public class SessioneDAO implements SessioneDAOInterface {
                     orario,
                     corso
             );
-            ((SessionePresenza)sessione).setFogliAdesione(getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
+            ((SessionePresenza)sessione).setFogliAdesione(controller.getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
         }else {
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),
@@ -105,7 +103,7 @@ public class SessioneDAO implements SessioneDAOInterface {
             );
         }
 
-        sessione.setRicette(ricettaDAO.getRicetteByIdSessione(rs.getInt("idsessione")));
+        sessione.setRicette(controller.getRicetteByIdSessione(rs.getInt("idsessione")));
 
         return sessione;
     }
@@ -124,12 +122,6 @@ public class SessioneDAO implements SessioneDAOInterface {
         }
 
         return sessioni;
-    }
-
-    private ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
-        //todo tramite il controller
-        FoglioAdesioneDAO faDAO = new FoglioAdesioneDAO(controller);
-        return faDAO.getFogliAdesioneByIdSessione(idsessione);
     }
 
     public void update(Sessione sessione)throws SQLException {

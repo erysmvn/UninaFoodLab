@@ -227,12 +227,6 @@ public class Controller {
         sessionePage.show();
     }
     public void openRicettaPage(Ricetta ricetta){
-        for(RicettaPage ricettaPage: ricettaPages){
-            if(ricettaPage.getRicetta().equals(ricetta)){
-                ricettaPage.toFront();
-                return;
-            }
-        }
 
             RicettaPage ricettaPage = new RicettaPage( this);
             ricettaPage.initPage(ricetta);

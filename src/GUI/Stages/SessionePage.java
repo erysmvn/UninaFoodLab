@@ -170,7 +170,11 @@ public class SessionePage extends Stage {
             footerVbox.getChildren().add(options);
         }
 
-        controller.setChefs(corso);
+        try {
+            controller.setChefs(corso);
+        } catch (SQLException ex) {
+            // TODO Dialog
+        }
 
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");

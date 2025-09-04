@@ -8,5 +8,5 @@ import java.util.ArrayList;
 public interface IngredienteDAOInterface {
     ArrayList<Ingrediente> getAllIngredientes() throws SQLException;
 
-    void insertIngrediente(Ingrediente ing)throws SQLException;
+    void insertIngrediente(Ingrediente ing) throws SQLException;
 }

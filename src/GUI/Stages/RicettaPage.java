@@ -21,6 +21,7 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
@@ -163,8 +164,13 @@ public class RicettaPage extends Stage {
         nomeRicetta.setWrapText(true);
         infoBox.getChildren().add(nomeRicetta);
 
-        controller.getIngredientiRicetta(ricetta);
-        controller.getAllergeniRicetta(ricetta);
+        try {
+            controller.getIngredientiRicetta(ricetta);
+            controller.getAllergeniRicetta(ricetta);
+        } catch (SQLException sqle) {
+            // TODO dialog
+            sqle.printStackTrace();
+        }
 
         Text allergeniLabel = new Text("Allergeni: ");
         allergeniLabel.setStyle("-fx-font-weight: bold;");
@@ -199,21 +205,26 @@ public class RicettaPage extends Stage {
         descBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
         String quantitaIngrediente = "";
-        for (Ingrediente ingrediente : ricetta.getIngredienti()) {
-            quantitaIngrediente = controller.getQuantitaIngrediente(ricetta, ingrediente);
+        try {
+            for (Ingrediente ingrediente : ricetta.getIngredienti()) {
+                quantitaIngrediente = controller.getQuantitaIngrediente(ricetta, ingrediente);
 
-            Text nomeText = new Text("   \u2022 " + ingrediente.getNome() + ": ");
-            nomeText.setFont(Font.font("System", FontWeight.BOLD, 17));
-            nomeText.setFill(Color.BLACK);
+                Text nomeText = new Text("   \u2022 " + ingrediente.getNome() + ": ");
+                nomeText.setFont(Font.font("System", FontWeight.BOLD, 17));
+                nomeText.setFill(Color.BLACK);
 
-            Text quantitaText = new Text(quantitaIngrediente);
-            quantitaText.setFont(Font.font("System", FontPosture.ITALIC, 17));
-            quantitaText.setFill(Color.BLACK);
+                Text quantitaText = new Text(quantitaIngrediente);
+                quantitaText.setFont(Font.font("System", FontPosture.ITALIC, 17));
+                quantitaText.setFill(Color.BLACK);
 
-            TextFlow ricettaFlow = new TextFlow(nomeText, quantitaText);
-            ricettaFlow.setTextAlignment(TextAlignment.LEFT);
+                TextFlow ricettaFlow = new TextFlow(nomeText, quantitaText);
+                ricettaFlow.setTextAlignment(TextAlignment.LEFT);
 
-            descBox.getChildren().add(ricettaFlow);
+                descBox.getChildren().add(ricettaFlow);
+            }
+        } catch (SQLException sqle) {
+            // TODO dialog
+            sqle.printStackTrace();
         }
     }
 }

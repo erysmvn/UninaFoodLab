@@ -138,7 +138,7 @@ public class RicettaDAO implements RicettaDAOInterface {
     }
 
     @Override
-    public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) {
+    public String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) throws SQLException {
         String sql = "SELECT quantità, unità " +
                 "FROM forma " +
                 "NATURAL JOIN ricetta " +
@@ -147,26 +147,20 @@ public class RicettaDAO implements RicettaDAOInterface {
 
         String toReturn = "";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, ricetta.getIdRicetta());
             pstmt.setInt(2, ingrediente.getIdIngrediente());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
                     toReturn = rs.getString("quantità") + " " + rs.getString("unità");
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
 
         return toReturn;
     }
 
     @Override
-    public void getAllergeniRicetta(Ricetta ricetta) {
+    public void getAllergeniRicetta(Ricetta ricetta) throws SQLException {
         ricetta.allocaArrayAllergeniRicetta();
         String sql = "SELECT DISTINCT allergeni " +
                 "FROM ingrediente " +
@@ -176,28 +170,21 @@ public class RicettaDAO implements RicettaDAOInterface {
 
         Set<String> allergeniSet = new HashSet<>();
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, ricetta.getIdRicetta());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    String allergeniStr = rs.getString("allergeni");
-                    if (allergeniStr != null && !allergeniStr.isEmpty()) {
-                        String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
-                        for (String allergene : allergeniArray) {
-                            if (!"Nessuno".equalsIgnoreCase(allergene)) {
-                                allergeniSet.add(allergene);
-                            }
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String allergeniStr = rs.getString("allergeni");
+                if (allergeniStr != null && !allergeniStr.isEmpty()) {
+                    String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
+                    for (String allergene : allergeniArray) {
+                        if (!"Nessuno".equalsIgnoreCase(allergene)) {
+                            allergeniSet.add(allergene);
                         }
                     }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
-
         for (String allergene : allergeniSet) {
             ricetta.addAllergeniRicetta(allergene);
         }

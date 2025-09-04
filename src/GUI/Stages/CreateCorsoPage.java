@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CreateCorsoPage extends Stage {
@@ -212,7 +213,12 @@ public class CreateCorsoPage extends Stage {
         corsoType.getItems().add("Seleziona tipologia");
         corsoType.setValue("Seleziona tipologia");
         corsoType.getItems().add("Nuova tipologia");
-        tipologie = controller.getAllTipologie();
+        try {
+            tipologie = controller.getAllTipologie();
+        } catch (SQLException e) {
+            typeError.setText("Tipologie non trovate");
+            // TODO close
+        }
         for (TipologiaCorso t : tipologie) {
             corsoType.getItems().add(t.getNome());
         }
@@ -329,6 +335,8 @@ public class CreateCorsoPage extends Stage {
                 surnameChefError.setText("Inserire cognome chef");
                 emailChef.setStyle("-fx-border-color: red;");
                 emailChefError.setText("Inserire email chef");
+            } catch (SQLException sqle) {
+                error.setText(sqle.getMessage());
             }
         });
 
@@ -511,8 +519,8 @@ public class CreateCorsoPage extends Stage {
                try {
                    Corso newCorso = controller.createNewCorso(nomeCorso, price, freq, difficolta, tp, chefAggiunti);
                    controller.getUtente().getCorsi().add(newCorso);
-               } catch (createCorsoErrorException CCEE) {
-                   CCEE.printStackTrace();
+               } catch (createCorsoErrorException | SQLException CCEE) {
+                   // TODO dialog
                }
 
                controller.refreshCorsi();
@@ -552,6 +560,9 @@ public class CreateCorsoPage extends Stage {
 
                corsoDifficulty.setStyle("-fx-border-color: red;");
                difficultyError.setText("Inserire la difficoltà del corso");
+           } catch (SQLException SQLE) {
+               // TODO Dialog
+               SQLE.printStackTrace();
            }
         });
         styleButton(confermaButton, Color.valueOf("#3A6698"));
@@ -576,7 +587,7 @@ public class CreateCorsoPage extends Stage {
         button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
-    private void validateCorso() throws createCorsoErrorException {
+    private void validateCorso() throws SQLException, createCorsoErrorException {
         if (corsoName.getText().isEmpty() && corsoPrice.getText().isEmpty()
                 && corsoType.getValue().equals("Seleziona tipologia")
                 && corsoFrequency.getValue().equals("Seleziona frequenza") && corsoDifficulty.getValue().equals("Seleziona difficoltà")) {

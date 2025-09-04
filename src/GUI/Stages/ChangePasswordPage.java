@@ -238,7 +238,7 @@ public class ChangePasswordPage extends Stage {
             return confermaButton;
         }
 
-    private void validConferma() throws changePasswordException {
+    private void validConferma() throws SQLException, changePasswordException {
 
                 if (txtVecchiaPassword.getText().trim().isEmpty()) {
                     throw new oldPasswordEmptyException();

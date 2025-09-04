@@ -13,7 +13,7 @@ public interface RicettaDAOInterface {
     // Get methods
      void getIngredienti(Ricetta ricetta);
     ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException;
-    String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente);
-    void getAllergeniRicetta(Ricetta ricetta);
+    String getQuantitaIngrediente(Ricetta ricetta, Ingrediente ingrediente) throws SQLException;
+    void getAllergeniRicetta(Ricetta ricetta) throws SQLException;
 
 }

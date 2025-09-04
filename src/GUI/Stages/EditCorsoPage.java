@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EditCorsoPage extends Stage {
@@ -120,7 +121,12 @@ public class EditCorsoPage extends Stage {
 
     public void initPage(Corso corso){
         this.corso = corso;
-        chefDelCorso = controller.getChefsByIdCorso(corso.getIdCorso());
+        try {
+            chefDelCorso = controller.getChefsByIdCorso(corso.getIdCorso());
+        } catch (SQLException throwables) {
+            // TODO DIALOG
+            chefDelCorso = null;
+        }
 
         VBox infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_RIGHT);
@@ -405,6 +411,8 @@ public class EditCorsoPage extends Stage {
                 surnameChefError.setText("Inserire cognome chef");
                 emailChef.setStyle("-fx-border-color: red;");
                 emailChefError.setText("Inserire email chef");
+            } catch (SQLException sqle) {
+                error.setText(sqle.getMessage());
             }
         });
 
@@ -498,12 +506,16 @@ public class EditCorsoPage extends Stage {
             nameError.setText("");
         }
 
-        Corso corsoTrovato = controller.getCorsoByNome(nomeField.getText());
-        if (corsoTrovato != null && corsoTrovato.getIdCorso() != this.corso.getIdCorso()) {
-            throw new nameAlreadyTakenException();
-        } else {
-            nomeField.setStyle(null);
-            nameError.setText("");
+        try {
+            Corso corsoTrovato = controller.getCorsoByNome(nomeField.getText());
+            if (corsoTrovato != null && corsoTrovato.getIdCorso() != this.corso.getIdCorso()) {
+                throw new nameAlreadyTakenException();
+            } else {
+                nomeField.setStyle(null);
+                nameError.setText("");
+            }
+        } catch (SQLException sqle) {
+            // TODO DIALOG
         }
 
         if (costoField.getText().isEmpty()) {
@@ -537,7 +549,11 @@ public class EditCorsoPage extends Stage {
                 corso.setFrequenzaSettimanale(freqSettimanaleSpinner.getValue());
                 corso.setChefs(chefDelCorso);
 
-                controller.updateCorso(corso);
+                try {
+                    controller.updateCorso(corso);
+                } catch (SQLException sqle) {
+                    // TODO dialog
+                }
 
                 controller.refreshCorsi();
 

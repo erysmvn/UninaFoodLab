@@ -47,19 +47,28 @@ public class Controller {
     private ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
     private ArrayList<EditSessionePage> editSessionePages = new ArrayList<>();
 
-    private final ChefDAO chefDAO = new ChefDAO(this);
-    private final StudenteDAO studenteDAO = new StudenteDAO(this);
-    private final CorsoDAO corsoDAO = new CorsoDAO(this);
-    private final TipologiaCorsoDAO tipologiaCorsoDAO = new TipologiaCorsoDAO(this);
-    private final SessioneDAO sessioneDAO = new SessioneDAO(this);
-    private final RicettaDAO ricettaDAO = new RicettaDAO(this);
-    private final IngredienteDAO ingredienteDAO = new IngredienteDAO(this);
-    private final FoglioAdesioneDAO foglioAdesioneDAO = new FoglioAdesioneDAO(this);
+    private final ChefDAO chefDAO;
+    private final StudenteDAO studenteDAO;
+    private final CorsoDAO corsoDAO;
+    private final TipologiaCorsoDAO tipologiaCorsoDAO;
+    private final SessioneDAO sessioneDAO;
+    private final RicettaDAO ricettaDAO;
+    private final IngredienteDAO ingredienteDAO;
+    private final FoglioAdesioneDAO foglioAdesioneDAO;
 
 
     public Controller(){
         dbc = new DBConnection();
         dbc.DBConnect();
+        
+        chefDAO = new ChefDAO(this);
+        studenteDAO = new StudenteDAO(this);
+        corsoDAO = new CorsoDAO(this);
+        tipologiaCorsoDAO = new TipologiaCorsoDAO(this);
+        sessioneDAO = new SessioneDAO(this);
+        ricettaDAO = new RicettaDAO(this);
+        ingredienteDAO = new IngredienteDAO(this);
+        foglioAdesioneDAO = new FoglioAdesioneDAO(this);
     }
 
     public DBConnection getDBConnection(){
@@ -416,7 +425,7 @@ public class Controller {
         homePage.setLogOut();
     }
 
-    public void checkOldPassword(String oldPassword) throws oldPasswordErrorException {
+    public void checkOldPassword(String oldPassword) throws SQLException, oldPasswordErrorException {
         if (utente instanceof Studente studente) {
             studenteDAO.checkOldPassword(oldPassword, studente);
         } else if (utente instanceof Chef chef) {
@@ -424,7 +433,7 @@ public class Controller {
         }
     }
 
-    public void changeUserPassword(String newPassword)throws changePasswordException,SQLException {
+    public void changeUserPassword(String newPassword) throws changePasswordException,SQLException {
         if (utente instanceof Studente studente) {
             studenteDAO.changeUserPassword(newPassword, studente);
         } else if (utente instanceof Chef chef) {
@@ -432,14 +441,14 @@ public class Controller {
         }
     }
 
-    public void subscribeToCourse(Corso corso){
+    public void subscribeToCourse(Corso corso) throws SQLException {
         if (utente instanceof Studente studente) {
             studenteDAO.subscribeToCourse(studente, corso);
             studente.addCorso(corso);
         }
     }
 
-    public void unsubscribeToCourse(Corso corso) {
+    public void unsubscribeToCourse(Corso corso) throws SQLException {
         if (utente instanceof Studente studente) {
             studenteDAO.unsubscribeToCourse(studente, corso);
             studente.removeCorso(corso);
@@ -447,7 +456,7 @@ public class Controller {
         }
     }
 
-    public Boolean alreadySubscribed(Corso corso){
+    public Boolean alreadySubscribed(Corso corso) throws SQLException {
         if (utente instanceof Studente studente) {
             return studenteDAO.checkIfSubscribed(studente, corso);
         } else {
@@ -467,27 +476,27 @@ public class Controller {
         return corsi;
     }
 
-    public ArrayList<Corso> getMostFollowedCourses(int limit) {
+    public ArrayList<Corso> getMostFollowedCourses(int limit) throws SQLException {
         return corsoDAO.getCorsiConPiuStudenti(limit);
     }
 
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException,SQLException{
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws SQLException, corsiNotFoundException {
         return corsoDAO.searchCorsiLikeString(nomeCorso);
     }
 
-    public ArrayList<Corso> getAllCourses(){
+    public ArrayList<Corso> getAllCourses() throws SQLException, corsiNotFoundException {
         return corsoDAO.getAllCourses();
     }
 
-    public Corso getCorsoByNome(String nome){
+    public Corso getCorsoByNome(String nome) throws SQLException, corsiNotFoundException {
         return corsoDAO.getCorsoByNome(nome);
     }
 
-    public Corso getCorsoByIdCorso(int id) {
+    public Corso getCorsoByIdCorso(int id) throws SQLException, corsiNotFoundException {
         return corsoDAO.getCorsoByIdCorso(id);
     }
 
-    public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) {
+    public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) throws SQLException {
         Corso newCorso = corsoDAO.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
             addChefsToCorso(newCorso.getIdCorso(), chefs);
@@ -498,7 +507,7 @@ public class Controller {
         return newCorso;
     }
 
-    public ArrayList<Chef> getChefsByIdCorso(int idcorso){
+    public ArrayList<Chef> getChefsByIdCorso(int idcorso) throws SQLException {
         Corso corso = corsoDAO.getCorsoByIdCorso(idcorso);
         return corso.getChefs();
     }
@@ -507,32 +516,32 @@ public class Controller {
         return chefDAO.getChefDaAggiungereToNuovoCorso(nome, cognome, email);
     }
 
-    public void getRicetteTrattate(Corso corso) {
+    public void getRicetteTrattate(Corso corso) throws SQLException {
         corsoDAO.getRicetteTrattate(corso);
     }
 
-    public void setChefs(Corso corso) {
+    public void setChefs(Corso corso) throws SQLException {
         corsoDAO.setChefs(corso);
     }
 
-    public void deleteCorso(Corso corso) {
+    public void deleteCorso(Corso corso) throws SQLException {
         corsoDAO.delete(corso);
     }
 
-    public void updateCorso(Corso corso) {
+    public void updateCorso(Corso corso) throws SQLException {
         corsoDAO.update(corso);
         Chef myChef = (Chef) utente;
         corsoDAO.prepareChefs(corso.getIdCorso(), myChef.getIdchef());
         addChefsToCorso(corso.getIdCorso(), corso.getChefs());
     }
 
-    public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) {
+    public void addChefsToCorso(int idCorso, ArrayList<Chef> chefs) throws SQLException {
         for (Chef chef : chefs) {
             corsoDAO.addChefToCorso(idCorso, chef);
         }
     }
 
-    public void addToCaratterizzato(int idcorso, int idtipologia) {
+    public void addToCaratterizzato(int idcorso, int idtipologia) throws SQLException {
         corsoDAO.addToCaratterizzato(idcorso, idtipologia);
     }
 
@@ -553,11 +562,11 @@ public class Controller {
         }
     }
 
-    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza){
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {
         return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
     }
 
-    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
+    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException {
         return foglioAdesioneDAO.getFogliAdesioneByIdSessione(idsessione);
     }
 
@@ -587,11 +596,11 @@ public class Controller {
         ricettaDAO.getIngredienti(Ricetta);
     }
 
-    public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) {
+    public String getQuantitaIngrediente(Ricetta Ricetta, Ingrediente Ingrediente) throws SQLException {
         return ricettaDAO.getQuantitaIngrediente(Ricetta, Ingrediente);
     }
 
-    public void getAllergeniRicetta(Ricetta Ricetta) {
+    public void getAllergeniRicetta(Ricetta Ricetta) throws SQLException {
         ricettaDAO.getAllergeniRicetta(Ricetta);
     }
 
@@ -606,11 +615,11 @@ public class Controller {
 
 
     // TipologiaCorso
-    public ArrayList<TipologiaCorso> getAllTipologie() {
+    public ArrayList<TipologiaCorso> getAllTipologie() throws SQLException {
         return tipologiaCorsoDAO.getAll();
     }
 
-    public TipologiaCorso getOrAddTipologiaCorso(String nomeTipo) {
+    public TipologiaCorso getOrAddTipologiaCorso(String nomeTipo) throws SQLException {
         return tipologiaCorsoDAO.addNewTipologiaCorso(nomeTipo);
     }
 

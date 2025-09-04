@@ -26,12 +26,12 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
     }
 
     @Override
-    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione){
+    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException {
 
         ArrayList<FoglioAdesione> fogli = new ArrayList<>();
         String sql = "select * from conferma_partecipazione where idsessione = ?";
 
-        try{
+
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, idsessione);
             ResultSet rs = pstmt.executeQuery();
@@ -40,17 +40,12 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
                 fogli.add(createFoglioAdesioneByResultSet(rs));
             }
 
-        }catch (Exception e){
-            return  null;
-        }
-
         return fogli;
     }
 
     @Override
-    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza){
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza) throws SQLException {
         String sql = "select * from conferma_partecipazione where idsessione = ? and matricola = ? and documento = ?  ";
-        try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1,sessionePresenza.getIdSessione());
             pstmt.setString(2,((Studente)(controller.getUtente())).getMatricola());
@@ -58,9 +53,7 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
             ResultSet rs = pstmt.executeQuery();
             if(rs.next())
               return createFoglioAdesioneByResultSet(rs);
-        }catch (Exception e){
-            System.out.println(sql + " FOGLIO INSESISTENTE");
-        }
+
             return  null;
     }
 
@@ -80,13 +73,12 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
 
         }
 
-    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs)throws SQLException{
-
+    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs) throws SQLException {
         return new FoglioAdesione(
                 rs.getInt("idsessione"),
                 rs.getString("matricola"),
                 rs.getString("documento")
         );
-
     }
+
 }

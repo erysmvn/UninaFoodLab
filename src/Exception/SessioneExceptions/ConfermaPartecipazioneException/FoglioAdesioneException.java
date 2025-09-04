@@ -1,4 +1,4 @@
-package Exception;
+package Exception.SessioneExceptions.ConfermaPartecipazioneException;
 
 import java.sql.SQLException;
 

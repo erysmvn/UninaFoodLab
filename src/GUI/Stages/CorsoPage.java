@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,7 +103,11 @@ public class CorsoPage extends Stage {
 
         this.buildInfoBox(infoBox);
 
-        controller.getRicetteTrattate(corso);
+        try {
+            controller.getRicetteTrattate(corso);
+        } catch (SQLException e) {
+            // TODO dialog
+        }
 
         if (!controller.isHomePageChef()) {
             Button subscribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
@@ -192,18 +197,28 @@ public class CorsoPage extends Stage {
         styleButton(subscribeButton, Color.valueOf("#3a6698"));
 
         subscribeButton.setOnAction(event -> {
-            if (!isLoggedIn) {
-                controller.openLoginPage();
-                this.close();
-            } else {
-                controller.subscribeToCourse(corso);
-                setIscrittoCorso(subscribeButton);
-                showSuccessDialog();
+            try {
+                if (!isLoggedIn) {
+                    controller.openLoginPage();
+                    this.close();
+                } else {
+                    controller.subscribeToCourse(corso);
+                    setIscrittoCorso(subscribeButton);
+                    showSuccessDialog();
+                }
+            } catch (SQLException sqle) {
+                // TODO DIALOG
+                sqle.printStackTrace();
             }
         });
 
-        if (controller.alreadySubscribed(corso)) {
-            setIscrittoCorso(subscribeButton);
+        try {
+            if (controller.alreadySubscribed(corso)) {
+                setIscrittoCorso(subscribeButton);
+            }
+        } catch (SQLException e) {
+            // TODO DIALOG
+            System.err.println("SQLException su studente");
         }
         return subscribeButton;
     }
@@ -272,7 +287,11 @@ public class CorsoPage extends Stage {
         nomeCorsoFlow.setTextAlignment(TextAlignment.LEFT);
         infoBox.getChildren().add(nomeCorsoFlow);
 
-        controller.setChefs(corso);
+        try {
+            controller.setChefs(corso);
+        } catch (SQLException sqle) {
+            // TODO Dialog
+        }
 
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");

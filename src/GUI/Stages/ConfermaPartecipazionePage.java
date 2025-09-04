@@ -5,7 +5,7 @@ import Entity.Corso;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Utente;
-import Exception.UserExceptions.namingFileException;
+import Exception.SessioneExceptions.ConfermaPartecipazioneException.namingFileException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -158,7 +158,7 @@ public class ConfermaPartecipazionePage extends Stage {
         uploadButton.setOnAction(e -> {
                     Path destDir = Paths.get("src/Media/FogliDiAdesione/");
                        try{
-                           Corso corso = controller.getCorsoDAO().getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
+                           Corso corso = controller.getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
                            nomeCorsoNoSpace = corso.getNome().replaceAll(" ","_");
 
                            addFolgioAdesione(destDir+file.getName()+nomeCorsoNoSpace);

@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.SessioneExceptions.*;
 import GUI.Buttons.CircleButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,8 +22,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import Exception.OrarioMassimoOttoOreException;
-import Exception.*;
 import javafx.util.converter.LocalTimeStringConverter;
 
 import static java.time.Duration.between;
@@ -255,7 +254,7 @@ public class AggiungiSessionePage extends Stage {
             throw new DataNelPassatoException();
 
         if (fine.isBefore(inizio))
-            throw new OrarioNonValidoExceptio();
+            throw new OrarioNonValidoException();
 
         Duration durata = between(inizio, fine);
         if (durata.toHours() > 8)
@@ -355,7 +354,7 @@ public class AggiungiSessionePage extends Stage {
                 erroreDataSessione.setText("Inserire data sessione");
             } catch (DataNelPassatoException ex) {
                 erroreDataSessione.setText("Data nel passato non ammessa");
-            } catch (OrarioNonValidoExceptio ex) {
+            } catch (OrarioNonValidoException ex) {
                 erroreOrarioFine.setText("Orario fine < inizio");
             } catch (OrarioMassimoOttoOreException ex) {
                 erroreOrarioFine.setText("Durata > 8 ore");

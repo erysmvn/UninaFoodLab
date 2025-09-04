@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -43,7 +44,6 @@ public class EditSessionePage extends Stage {
     private Spinner<Integer> hourSpinnerFine;
     private Spinner<Integer> minuteSpinnerFine;
 
-//    private TextField durataField;
     private TextField luogoField;
     private TextField linkField;
 
@@ -128,16 +128,6 @@ public class EditSessionePage extends Stage {
         HBox timeBoxFine = createTimeSpinnerFine();
         formBox.getChildren().add(labeledNode("Ora fine:", timeBoxFine));
 
-//        durataField = new TextField(String.valueOf(sessione.getDurata()));
-//        durataField.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
-//            String newText = change.getControlNewText();
-//            if (newText.matches("\\d{0,1}(\\.\\d{0,1})?")) {
-//                return change;
-//            }
-//            return null;
-//        }));
-//        formBox.getChildren().add(labeledNode("Durata (ore):", durataField));
-
         if (sessione instanceof SessionePresenza sp) {
             luogoField = new TextField(sp.getLuogo());
             formBox.getChildren().add(labeledNode("Luogo:", luogoField));
@@ -165,12 +155,10 @@ public class EditSessionePage extends Stage {
         erroreInserimentoDati = new Label();
         erroreInserimentoDati.setStyle("-fx-text-fill: red");
 
-        Button salvaBtn = new Button("Salva");
-        styleButton(salvaBtn, Color.valueOf("#3a6698"));
+        MyButton salvaBtn = new MyButton("Salva", MyButton.ButtonType.PRIMARY);
         salvaBtn.setOnAction(e -> salvaModifiche());
 
-        Button annullaBtn = new Button("Annulla");
-        styleButton(annullaBtn, Color.valueOf("#da3d26"));
+        MyButton annullaBtn = new MyButton("Annulla", MyButton.ButtonType.SECONDARY);
         annullaBtn.setOnAction(e -> this.close());
 
         VBox buttonsBox = new VBox(15, salvaBtn, annullaBtn);
@@ -223,18 +211,12 @@ public class EditSessionePage extends Stage {
         return hbox;
     }
 
-    private Button createAggiungiRicettaButton() {
-        Button aggiungiRicettaButton = new Button("Aggiungi ricetta");
-        aggiungiRicettaButton.setStyle("-fx-text-fill: white;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font: System;-fx-font-weight: bold;" +
-                "-fx-background-color: #3a6698;-fx-border-radius: 8;" +
-                "-fx-cursor: hand");
-
-        aggiungiRicettaButton.setOnMouseEntered(e -> aggiungiRicettaButton.setOpacity(0.8));
-        aggiungiRicettaButton.setOnMouseExited(e -> aggiungiRicettaButton.setOpacity(1.0));
+    private MyButton createAggiungiRicettaButton() {
+        MyButton aggiungiRicettaButton = new MyButton("Aggiungi ricetta", MyButton.ButtonType.PRIMARY);
+        aggiungiRicettaButton.setSize(120, 30);
 
         aggiungiRicettaButton.setOnAction(e -> controller.openAggiungiRicettaPage(this));
+
         return aggiungiRicettaButton;
     }
 
@@ -346,16 +328,6 @@ public class EditSessionePage extends Stage {
             ex.printStackTrace();
 
         }
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     public Sessione getSessione() {

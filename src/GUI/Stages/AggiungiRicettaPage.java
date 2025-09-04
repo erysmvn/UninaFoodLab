@@ -12,6 +12,7 @@ import Exception.RicettaExceptions.AlmenoUnIngredienteException;
 import Exception.RicettaExceptions.NomeRicettaEmptyException;
 import Exception.RicettaExceptions.TempoDiPreparazioneEmptyException;
 import GUI.Buttons.CircleButton;
+import GUI.Buttons.MyButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -149,9 +150,8 @@ public class AggiungiRicettaPage extends Stage {
         scroll.setPrefHeight(250);
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
-        Button aggiungiIngredienteBtn = new Button("Aggiungi ingrediente");
-        styleButton(aggiungiIngredienteBtn, Color.valueOf("#3a6698"));
-        aggiungiIngredienteBtn.setMinWidth(200);
+        MyButton aggiungiIngredienteBtn = new MyButton("Aggiungi ingrediente", MyButton.ButtonType.PRIMARY);
+        aggiungiIngredienteBtn.setSize(200, 40);
 
         ingredientiBoxList = new ArrayList<>();
 
@@ -188,8 +188,7 @@ public class AggiungiRicettaPage extends Stage {
         nuovoIngredienteField.setPromptText("Nome nuovo ingrediente");
         nuovoIngredienteField.setVisible(false);
 
-        Button removeButton = new Button("x");
-        styleButton(removeButton, Color.valueOf("#da3d26"));
+        MyButton removeButton = new MyButton("x", MyButton.ButtonType.SECONDARY);
 
         HBox nomeBox = new HBox(5);
         nomeBox.getChildren().addAll(ingredienteCombo, nuovoIngredienteField, removeButton);
@@ -338,14 +337,11 @@ public class AggiungiRicettaPage extends Stage {
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        Button aggiungiBtn = new Button("Aggiungi");
-        Button annullaBtn = new Button("Annulla");
-        aggiungiBtn.setPrefSize(80, 30);
-        annullaBtn.setPrefSize(80, 30);
+        MyButton aggiungiBtn = new MyButton("Aggiungi", MyButton.ButtonType.PRIMARY);
+        MyButton annullaBtn = new MyButton("Annulla", MyButton.ButtonType.SECONDARY);
 
-        styleButton(aggiungiBtn, Color.valueOf("#3a6698"));
-
-        styleButton(annullaBtn, Color.valueOf("#da3d26"));
+        aggiungiBtn.setSize(80, 30);
+        annullaBtn.setSize(80, 30);
 
 
         annullaBtn.setOnAction(e -> this.close());
@@ -428,16 +424,5 @@ public class AggiungiRicettaPage extends Stage {
 
         return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim());
     }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
-    }
-
 
 }

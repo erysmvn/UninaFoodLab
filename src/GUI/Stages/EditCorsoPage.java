@@ -9,6 +9,7 @@ import Exception.CorsoExceptions.CreateCorsoException.nameAlreadyTakenException;
 import Exception.CorsoExceptions.CreateCorsoException.nameCorsoNotFoundException;
 import Exception.CorsoExceptions.CreateCorsoException.priceCorsoNotFoundException;
 import Exception.CorsoExceptions.imageNotFoundException;
+import GUI.Buttons.MyButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -140,11 +141,9 @@ public class EditCorsoPage extends Stage {
 
         VBox chefBox = createChefsBox();
 
-        Button saveButton = createSaveButton();
-        footerVbox.getChildren().add(saveButton);
+        footerVbox.getChildren().add(createSaveButton());
 
-        Button closeButton = createCloseButton();
-        footerVbox.getChildren().add(closeButton);
+        footerVbox.getChildren().add(createCloseButton());
 
         Region spacer1 = new Region();
         Region spacer2 = new Region();
@@ -266,11 +265,9 @@ public class EditCorsoPage extends Stage {
 
         listaChef = new VBox(5);
 
-        Button addChefButton = new Button("Aggiungi altro chef");
-        styleButton(addChefButton, Color.valueOf("#3A6698"));
-        addChefButton.setMinWidth(200);
-        addChefButton.setMaxWidth(200);
-        addChefButton.setMaxHeight(100);
+        MyButton addChefButton = new MyButton("Aggiungi altro chef", MyButton.ButtonType.PRIMARY);
+
+        addChefButton.setSize(200, 40);
 
         addChefButton.setOnAction(e -> {
             addChefToCourse(() -> {
@@ -331,7 +328,7 @@ public class EditCorsoPage extends Stage {
         }
     }
 
-    private void addChefToCourse( Runnable onConfirm) {
+    private void addChefToCourse(Runnable onConfirm) {
         Stage addChefToCourseStage = new Stage();
 
         addChefToCourseStage.initModality(Modality.APPLICATION_MODAL);
@@ -345,11 +342,8 @@ public class EditCorsoPage extends Stage {
                 "-fx-font-family: System;");
         titolo.setAlignment(Pos.TOP_CENTER);
 
-        Button yesButton = new Button("Conferma");
-        Button noButton = new Button("Annulla");
-
-        styleButton(yesButton, Color.valueOf("#3A6698"));
-        styleButton(noButton, Color.valueOf("#da3d26"));
+        MyButton yesButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
+        MyButton noButton = new MyButton("Annulla", MyButton.ButtonType.SECONDARY);
 
         VBox buttons = new VBox(20,yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);
@@ -534,9 +528,8 @@ public class EditCorsoPage extends Stage {
         return box;
     }
 
-    private Button createSaveButton() {
-        Button saveButton = new Button("Salva");
-        styleButton(saveButton, Color.valueOf("#3a6698"));
+    private MyButton createSaveButton() {
+        MyButton saveButton = new MyButton("Salva", MyButton.ButtonType.PRIMARY);
         saveButton.setOnAction(event -> {
             try {
                 validate();
@@ -574,19 +567,8 @@ public class EditCorsoPage extends Stage {
     }
 
     private Button createCloseButton() {
-        Button closeButton = new Button("Chiudi");
-        styleButton(closeButton, Color.valueOf("#da3d26"));
+        MyButton closeButton = new MyButton("Chiudi", MyButton.ButtonType.SECONDARY);
         closeButton.setOnAction(e -> this.close());
         return closeButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

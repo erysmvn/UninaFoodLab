@@ -7,6 +7,7 @@ import Entity.TipologiaCorso;
 import Exception.CorsoExceptions.CreateCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
+import GUI.Buttons.MyButton;
 import GUI.Pane.ElencoCorsiPanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -236,12 +237,9 @@ public class CreateCorsoPage extends Stage {
 
     private VBox createChefsBox() {
         Label chefsCount = new Label("");
-        Button addChefButton = new Button();
-        addChefButton.setText("Aggiungi altro chef");
-        styleButton(addChefButton, Color.valueOf("#3A6698"));
-        addChefButton.setMinWidth(200);
-        addChefButton.setMaxWidth(200);
-        addChefButton.setMaxHeight(100);
+        MyButton addChefButton = new MyButton("Aggiungi altro chef", MyButton.ButtonType.PRIMARY);
+        addChefButton.setSize(200, 40);
+
         addChefButton.setOnAction(e -> {
             addChefToCourse( () -> {
                 validateChef();
@@ -270,11 +268,8 @@ public class CreateCorsoPage extends Stage {
                 "-fx-font-family: System;");
         titolo.setAlignment(Pos.TOP_CENTER);
 
-        Button yesButton = new Button("Conferma");
-        Button noButton = new Button("Annulla");
-
-        styleButton(yesButton, Color.valueOf("#3A6698"));
-        styleButton(noButton, Color.valueOf("#da3d26"));
+        MyButton yesButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
+        MyButton noButton = new MyButton("Annulla", MyButton.ButtonType.SECONDARY);
 
         VBox buttons = new VBox(20,yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);
@@ -481,9 +476,9 @@ public class CreateCorsoPage extends Stage {
         return minimizeButton;
     }
 
-    private Button createConfermaButton() {
-        Button confermaButton = new Button();
-        confermaButton.setText("Conferma");
+    private MyButton createConfermaButton() {
+        MyButton confermaButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
+
         confermaButton.setOnAction(e -> {
            try {
                validateCorso();
@@ -565,7 +560,6 @@ public class CreateCorsoPage extends Stage {
                SQLE.printStackTrace();
            }
         });
-        styleButton(confermaButton, Color.valueOf("#3A6698"));
         return confermaButton;
     }
 
@@ -574,17 +568,6 @@ public class CreateCorsoPage extends Stage {
         confermaButtonBox.setAlignment(Pos.BOTTOM_CENTER);
         confermaButtonBox.setSpacing(20);
         confermaButtonBox.getChildren().add(createConfermaButton());
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 20);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     private void validateCorso() throws SQLException, createCorsoErrorException {

@@ -648,6 +648,8 @@ public class HomePage extends Stage {
         isChef = true;
     }
     public void setLogOut() {
+        isChef = false;
+        isLoggedIn = false;
         homeButtons.getChildren().clear();
         homeButtons.getChildren().add(createLoginButton());
     }

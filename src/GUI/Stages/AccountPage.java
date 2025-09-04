@@ -19,11 +19,11 @@
         BorderPane root;
         StackPane content;
 
-        Button impostazioniButton;
-        Button accountButton;
-        Button corsiButton;
-        Button calendarButton;
-        Button clickedButton;
+        MyButton impostazioniButton;
+        MyButton accountButton;
+        MyButton corsiButton;
+        MyButton calendarButton;
+        MyButton clickedButton;
 
         VBox impostazioniPanel;
         VBox accountPanel;
@@ -74,69 +74,36 @@
         }
 
 
-        private Button createCalendarButton(){
-
-            calendarButton = new Button("Calendario");
-            setNotCLickedAesthetics(calendarButton);
-            setFocusPropreties(calendarButton);
-            setOnMouseTraverse(calendarButton, calendarioPanel);
-            initButton(calendarButton,calendarioPanel);
-            return calendarButton;
-        }
-
-
-        private void initButton(Button button, Pane panel) {
-            setFocusPropreties(button);
-            setOnMouseTraverse(button,panel);
+        private void initButton(MyButton button, Pane panel) {
+            button.setToOutlineButton();
             button.setOnAction(e -> {
                 setButtonAsActive(button);
                 showOnlyPanel(panel);
             });
+
+            button.setOnMouseExited(e -> {
+                if (button != clickedButton) {
+                    button.setOutlineNotClickedStyle();
+                }
+            });
         }
 
-        private void setButtonAsActive(Button button) {
+        private void setButtonAsActive(MyButton button) {
             clickedButton = button;
 
-            if(clickedButton != accountButton) setNotCLickedAesthetics(accountButton);
-            else setClickedAesthetics(accountButton);
+            if(clickedButton != accountButton) accountButton.setOutlineNotClickedStyle();
+            else accountButton.setOutlineClickedStyle();
 
-            if(clickedButton != corsiButton) setNotCLickedAesthetics(corsiButton);
-            else setClickedAesthetics(corsiButton);
+            if(clickedButton != corsiButton) corsiButton.setOutlineNotClickedStyle();
+            else corsiButton.setOutlineClickedStyle();
 
-            if(clickedButton != impostazioniButton) setNotCLickedAesthetics(impostazioniButton);
-            else setClickedAesthetics(impostazioniButton);
+            if(clickedButton != impostazioniButton) impostazioniButton.setOutlineNotClickedStyle();
+            else impostazioniButton.setOutlineClickedStyle();
 
-            if(clickedButton != calendarButton) setNotCLickedAesthetics(calendarButton);
-            else setClickedAesthetics(calendarButton);
+            if(clickedButton != calendarButton) calendarButton.setOutlineNotClickedStyle();
+            else calendarButton.setOutlineClickedStyle();
 
         }
-
-        private void setNotCLickedAesthetics(Button button) {
-            Font robotoFont = Font.loadFont(
-                    getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                    12
-            );
-            button.setFont(robotoFont);
-            button.setStyle("-fx-background-color: #3A6698; -fx-text-fill: WHITE;");
-            button.setBorder(Border.EMPTY);
-        }
-
-        private void setClickedAesthetics(Button button) {
-            Font robotoFont = Font.loadFont(
-                    getClass().getResourceAsStream("/Media/Fonts/Roboto.ttf"),
-                    12
-            );
-            button.setFont(robotoFont);
-            button.setStyle("-fx-background-color: WHITE; -fx-text-fill: #3A6698; -fx-cursor: hand;");
-            button.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    new BorderWidths(0, 0, 1, 0)
-            )));
-        }
-
-
 
 
         private BorderPane createRoot(){
@@ -203,44 +170,29 @@
             return  topBar;
         }
 
-        private Button createAccountButton(){
-            accountButton = new Button("Account");
+        private MyButton createAccountButton(){
+            accountButton = new MyButton("Account");
             initButton(accountButton,accountPanel);
             return accountButton;
         }
 
-        private Button createCorsiButton(){
-            corsiButton = new Button("Corsi");
-            setClickedAesthetics(corsiButton);
+        private MyButton createCorsiButton(){
+            corsiButton = new MyButton("Corsi");
             clickedButton = corsiButton;
             initButton(corsiButton,accountCorsiPanel);
             return corsiButton;
         }
 
-        private Button createImpostazioniButton(){
-            impostazioniButton = new Button("Impostazioni");
-            setNotCLickedAesthetics(impostazioniButton);
+        private MyButton createImpostazioniButton(){
+            impostazioniButton = new MyButton("Impostazioni");
             initButton(impostazioniButton,impostazioniPanel);
             return impostazioniButton;
         }
 
-        private void setOnMouseTraverse(Button button, Pane panel) {
-            button.setOnMouseEntered(e -> {
-                if(clickedButton != button) setClickedAesthetics(button);
-            });
-
-            button.setOnMouseExited(e -> {
-                if(clickedButton != button) setNotCLickedAesthetics(button);
-            });
-        }
-
-        private void setFocusPropreties(Button button) {
-            button.setFocusTraversable(true);
-            button.focusedProperty().addListener((obs, oldValue, newValue) -> {
-                if(clickedButton != button){
-                    setNotCLickedAesthetics(button);
-                }
-            });
+        private MyButton createCalendarButton(){
+            calendarButton = new MyButton("Calendario");
+            initButton(calendarButton,calendarioPanel);
+            return calendarButton;
         }
 
         private void showOnlyPanel(Pane panelToShow){

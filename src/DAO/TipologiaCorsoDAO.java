@@ -24,23 +24,22 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
     // Methods
     @Override
     // TODO posso chiamare questa funzione invece di fare get tipo by nome?
-    public TipologiaCorso addNewTipologiaCorso(String nomeTipo) {
+    public TipologiaCorso addNewTipologiaCorso(String nomeTipo) throws SQLException {
         String checkSql = "SELECT COUNT(*) FROM tipologiacorso WHERE nome_tipo = ?";
         String insertSql = "INSERT INTO tipologiacorso (nome_tipo) VALUES (?)";
 
-        try (PreparedStatement checkStmt = con.prepareStatement(checkSql)) {
+        PreparedStatement checkStmt = con.prepareStatement(checkSql);
             checkStmt.setString(1, nomeTipo);
 
-            try (ResultSet rs = checkStmt.executeQuery()) {
+            ResultSet rs = checkStmt.executeQuery();
                 if (rs.next()) {
                     int count = rs.getInt(1);
                     if (count > 0) {
                         return getTipologiaByName(nomeTipo);
                     }
                 }
-            }
 
-            try (PreparedStatement insertStmt = con.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement insertStmt = con.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
                 insertStmt.setString(1, nomeTipo);
                 int rowsInserted = insertStmt.executeUpdate();
 
@@ -48,28 +47,22 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
                     throw new SQLException("Nessuna riga inserita per la nuova tipologia corso.");
                 }
 
-                try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                ResultSet generatedKeys = insertStmt.getGeneratedKeys();
                     if (generatedKeys.next()) {
                         int id = generatedKeys.getInt(1);
                         return new TipologiaCorso(id, nomeTipo);
                     } else {
                         throw new SQLException("Creazione tipologiaCorso fallita, nessun ID generato.");
                     }
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
+
 
     // Get Methods
     @Override
-    public TipologiaCorso getTipologiaByName(String nomeTipo) {
+    public TipologiaCorso getTipologiaByName(String nomeTipo) throws SQLException {
         String sql = "SELECT * FROM tipologiacorso WHERE nome_tipo = ?";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, nomeTipo);
 
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -79,19 +72,16 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
                     return new TipologiaCorso(id, nome);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
     @Override
-    public ArrayList<TipologiaCorso> getAll() {
+    public ArrayList<TipologiaCorso> getAll() throws SQLException {
         ArrayList<TipologiaCorso> lista = new ArrayList<>();
         String sql = "SELECT * FROM tipologiacorso";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 TipologiaCorso tipologiaCorso = new TipologiaCorso(
@@ -101,9 +91,7 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
                 );
                 lista.add(tipologiaCorso);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return lista;
     }
+
 }

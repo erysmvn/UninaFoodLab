@@ -503,8 +503,12 @@ public class HomePage extends Stage {
         corsiBox.setAlignment(Pos.CENTER);
         corsiBox.setPadding(new Insets(20));
 
-        corsi = controller.getMostFollowedCourses(4);
-        setCorsiBox();
+        try {
+            corsi = controller.getMostFollowedCourses(4);
+            setCorsiBox();
+        } catch (corsiNotFoundException | SQLException e) {
+            setNotFoundTextField();
+        }
 
         corsiScrollPane = new ScrollPane(corsiBox);
         corsiScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -644,6 +648,8 @@ public class HomePage extends Stage {
         isChef = true;
     }
     public void setLogOut() {
+        isChef = false;
+        isLoggedIn = false;
         homeButtons.getChildren().clear();
         homeButtons.getChildren().add(createLoginButton());
     }

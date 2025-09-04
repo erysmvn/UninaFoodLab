@@ -27,96 +27,74 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     // Methods
     @Override
-    public Corso createNewCorso(String nome, double price, int frequenza, String difficolta) {
+    public Corso createNewCorso(String nome, double price, int frequenza, String difficolta) throws SQLException {
         String sql = "INSERT INTO corso (nome_corso, costo, frequenza_settimanale, difficolta) " +
                 "VALUES (?, ?, ?, ?::difficolta) RETURNING idcorso";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, nome);
             pstmt.setBigDecimal(2, BigDecimal.valueOf(price));
             pstmt.setInt(3, frequenza);
             pstmt.setString(4, difficolta);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+        ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
                     int id = rs.getInt("idcorso");
                     return new Corso(id, nome, (float) price, frequenza, Difficolta.valueOf(difficolta));
                 } else {
                     throw new SQLException("Creating corso failed, no ID obtained.");
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
-    public void addChefToCorso(int idCorso, Chef chef) {
+    public void addChefToCorso(int idCorso, Chef chef) throws SQLException {
         String checksql = "SELECT COUNT(*) FROM tiene WHERE idcorso = ? AND idchef = ?";
         String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?, ?)";
 
-        try (PreparedStatement ps = con.prepareStatement(checksql)) {
+        PreparedStatement ps = con.prepareStatement(checksql);
             ps.setInt(1, idCorso);
             ps.setInt(2, chef.getIdchef());
 
-            try (ResultSet rs = ps.executeQuery()) {
+            ResultSet rs = ps.executeQuery();
                 if (rs.next() && rs.getInt(1) == 0) {
-                    try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+                    PreparedStatement pstmt = con.prepareStatement(sql);
                         pstmt.setInt(1, idCorso);
                         pstmt.setInt(2, chef.getIdchef());
                         int rowsInserted = pstmt.executeUpdate();
                         if (rowsInserted == 0) {
                             System.err.println("⚠️ Nessuna riga inserita in tiene");
                         }
-                    }
-                } else {
-                    System.out.println("Chef già presente per questo corso → skip");
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
-    public void addToCaratterizzato(int idcorso, int idtipologia) {
+    public void addToCaratterizzato(int idcorso, int idtipologia) throws SQLException {
         String sql = "INSERT INTO caratterizzato (idcorso, idtipologiacorso) VALUES (?,?)";
 
-        try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, idcorso);
             pstmt.setInt(2, idtipologia);
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted == 0) {
-                Exception exc  = new Exception("No row inserted");
-                throw exc;
+                throw new SQLException("No row inserted");
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
-    public void delete(Corso corso) {
+    public void delete(Corso corso) throws SQLException {
         String sql = "DELETE FROM Corso WHERE idcorso = ?";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, corso.getIdCorso());
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void update(Corso corso) {
+    public void update(Corso corso) throws SQLException {
         String sql = "UPDATE corso " +
                 "SET nome_corso = ?, costo = ?, difficolta = ?::difficolta, frequenza_settimanale = ? " +
                 "WHERE idcorso = ?";
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, corso.getNome());
             ps.setBigDecimal(2, BigDecimal.valueOf(corso.getCosto()));
             ps.setString(3, corso.getDifficolta().name());
@@ -127,42 +105,34 @@ public class CorsoDAO implements CorsoDAOInterface {
             if (rows == 0) {
                 System.err.println("Nessuna riga aggiornata! Controlla l'idcorso.");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void prepareChefs(int idCorso, int idChef) {
+    public void prepareChefs(int idCorso, int idChef) throws SQLException {
         String sql = "DELETE FROM tiene WHERE idcorso = ? AND idchef <> ?";
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, idCorso);
             ps.setInt(2, idChef);
 
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                System.err.println("Nessuna riga eliminata! Controlla l'idcorso.");
+                throw new SQLException("Nessuna riga eliminata!");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 
     // Get methods
     @Override
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException, SQLException {
+    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws SQLException, corsiNotFoundException {
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE ?";
 
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, "%" + nomeCorso.toUpperCase() + "%");
-            try (ResultSet rs = stmt.executeQuery()) {
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, "%" + nomeCorso.toUpperCase() + "%");
+        ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     corsi.add(createCorsoByResultSet(rs));
                 }
-            }
-        }
 
         if (corsi.isEmpty())
             throw new corsiNotFoundException();
@@ -171,7 +141,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException, SQLException{
+    public ArrayList<Corso> searchCorsiByTipologia(String tipologia) throws SQLException, corsiNotFoundException {
         tipologia = tipologia.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
@@ -188,7 +158,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException{
+    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws SQLException, corsiNotFoundException {
         nomeChef = nomeChef.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct  c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
@@ -209,99 +179,57 @@ public class CorsoDAO implements CorsoDAOInterface {
         return corsi;
     }
 
-    /*
-    @Override
-    public Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException{
-
-        Corso corso = new Corso(
-                rs.getInt("idcorso"),
-                rs.getString("nome_corso"),
-                rs.getInt("numerosessioni"),
-                rs.getFloat("ore_totali"),
-                rs.getInt("frequenza_settimanale"),
-                rs.getDate("datainizio"),
-                rs.getDate("datafine"),
-                rs.getFloat("costo"),
-                ModalitaCorso.fromString( rs.getString("modcorso") ),
-                Difficolta.valueOf(rs.getString("difficolta") ),
-                rs.getString("desc_corso")
-        );
-
-        String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
-        corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
-        setChefs(corso);
-
-        return  corso;
-    }
-
-     */
 
     @Override
-    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi){
+    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi) throws SQLException {
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "SELECT corso.nome_corso, count(segue.matricola) as NumStudenti " +
                 "FROM corso NATURAL JOIN segue NATURAL JOIN studente " +
                 "GROUP BY corso.idCorso, corso.nome_corso " +
-                "ORDER BY NumStudenti DESC LIMIT " + numeroCorsi;
+                "ORDER BY NumStudenti DESC LIMIT ?";
 
-        try {
-            Statement stmtLocal = con.createStatement();
-            ResultSet rsLocal = stmtLocal.executeQuery(sql);
-            while (rsLocal.next()) {
-                Corso corso = getCorsoByTitle(rsLocal.getString("nome_corso"));
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, numeroCorsi);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Corso corso = getCorsoByTitle(rs.getString("nome_corso"));
                 if (corso != null) {
                     corsi.add(corso);
                 }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         return corsi;
     }
 
     @Override
-    public ArrayList<Corso> getAllCourses(){
+    public ArrayList<Corso> getAllCourses() throws SQLException {
         String sql = "SELECT * FROM corso";
         ArrayList<Corso> corsi = new ArrayList<>();
-        try {
             PreparedStatement stmt = con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 corsi.add(createCorsoByResultSet(rs));
             }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
         return corsi;
     }
 
     @Override
-    public Corso getCorsoByTitle(String Title){
+    public Corso getCorsoByTitle(String Title) throws SQLException {
         String sql = "SELECT * FROM corso WHERE nome_corso = ?";
 
         Corso corso = null;
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, Title);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
                     corso = createCorsoByResultSet(rs);
                 } else {
                     System.out.println("Corso non trovato");
                 }
-            }
-        } catch (SQLException sqle) {
-            System.out.println("Errore nel cercare il corso");
-            sqle.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return corso;
     }
 
     @Override
-    public void getRicetteTrattate(Corso corso) {
+    public void getRicetteTrattate(Corso corso) throws SQLException {
         corso.allocaArrayRicette();
         Ricetta ricetta = null;
 
@@ -312,10 +240,10 @@ public class CorsoDAO implements CorsoDAOInterface {
                 "NATURAL JOIN ricetta " +
                 "WHERE idcorso = ?";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, corso.getIdCorso());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+         ResultSet rs = pstmt.executeQuery();
                 while (rs.next()) {
                     ricetta = new Ricetta(
                             rs.getInt("idricetta"),
@@ -326,49 +254,35 @@ public class CorsoDAO implements CorsoDAOInterface {
                     );
                     corso.addRicetta(ricetta);
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
     }
 
     @Override
-    public Corso getCorsoByIdCorso(int idcorso){
+    public Corso getCorsoByIdCorso(int idcorso) throws SQLException {
         String sql = "SELECT * FROM corso WHERE idcorso = ?";
 
-      try {
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setInt(1, idcorso);
         ResultSet rs = stmt.executeQuery();
         if(rs.next())
             return createCorsoByResultSet(rs);
 
-      } catch (SQLException sqle) {
-          sqle.printStackTrace();
-      }
         return null;
     }
 
-    public Corso getCorsoByNome(String nome){
+    public Corso getCorsoByNome(String nome) throws SQLException {
         String sql = "SELECT * FROM corso WHERE nome_corso = ?";
 
-        try {
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, nome);
             ResultSet rs = stmt.executeQuery();
             if(rs.next())
                 return createCorsoByResultSet(rs);
 
-        }catch (SQLException sqle){
-            sqle.printStackTrace();
-        }
         return null;
     }
 
     @Override
-    public void setChefs(Corso corso) {
+    public void setChefs(Corso corso) throws SQLException {
         corso.allocaArrayChefs();
         Chef chef = null;
 
@@ -378,10 +292,10 @@ public class CorsoDAO implements CorsoDAOInterface {
                 "NATURAL JOIN corso " +
                 "WHERE idcorso = ?";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, corso.getIdCorso());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            ResultSet rs = pstmt.executeQuery();
                 while (rs.next()) {
                     chef = new Chef(
                             rs.getInt("idchef"),
@@ -392,32 +306,9 @@ public class CorsoDAO implements CorsoDAOInterface {
                     );
                     corso.addChef(chef);
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
     }
 
-    @Override
-    public ArrayList<Corso> getCorsiByModalita(String modalita){
-        String sql = "SELECT * FROM corso WHERE modcorso = '"+modalita+"'";
-        ArrayList<Corso> corsi = new ArrayList<>();
-        try {
-          PreparedStatement pstmt = con.prepareStatement(sql);
-          ResultSet rs = pstmt.executeQuery();
-          while (rs.next()) {
-              corsi.add(createCorsoByResultSet(rs));
-          }
-        }catch (SQLException sqle){
-            return null;
-        }
-
-        return corsi;
-    }
-
-    private Corso createCorsoByResultSet(ResultSet rs)throws SQLException {
+    private Corso createCorsoByResultSet(ResultSet rs) throws SQLException {
         Corso corso = new Corso(
                 rs.getInt("idcorso"),
                 rs.getString("nome_corso"),

@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -98,12 +99,16 @@ public class CorsoAccountPanel extends Pane {
 
         ImageView imageView = createImage(corso.getImagePath());
         Label titoloLabel = createTitolo(corso.getNome());
-        controller.setChefs(corso);
+        try {
+            controller.setChefs(corso);
+        } catch (SQLException e) {
+            // TODO DIALOG
+        }
+
         Label chefsLabel = createChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
         Button addSessionButton = createAddSessionButton();
         Button updateButton = createUpdateButton();
-
 
         VBox imagineBox  = new VBox(imageView);
         imagineBox.setAlignment(Pos.CENTER);
@@ -178,11 +183,19 @@ public class CorsoAccountPanel extends Pane {
         unsubscribeButton.setOnAction(event -> {
             if (controller.getUtente() instanceof Studente studente) {
                 showConfirmPanel("Sei sicuro di voler annullare l'iscrizione al corso?", () -> {
-                    controller.unsubscribeToCourse(corso);
+                    try {
+                        controller.unsubscribeToCourse(corso);
+                    } catch (SQLException e) {
+                        // TODO DIALOG
+                    }
                 });
             } else if (controller.getUtente() instanceof Chef chef) {
                 showConfirmPanel("Sei sicuro di voler eliminare il corso?", () -> {
-                    controller.deleteCorso(corso);
+                    try {
+                        controller.deleteCorso(corso);
+                    } catch (SQLException e) {
+                        // TODO Dialog
+                    }
                 });
             }
         });

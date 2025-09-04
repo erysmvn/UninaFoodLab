@@ -3,6 +3,7 @@ package GUI.Stages;
 import Controller.Controller;
 import Exception.UserExceptions.ChangePasswordException.*;
 import GUI.Buttons.CircleButton;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -144,7 +145,6 @@ public class ChangePasswordPage extends Stage {
             return grid;
         }
 
-
         private HBox createBottomBox() {
             HBox bottomBox = new HBox(50);
             Button confermaButton = createConfermaButton();
@@ -158,12 +158,8 @@ public class ChangePasswordPage extends Stage {
             return bottomBox;
         }
 
-    private Button createConfermaButton() {
-            Button confermaButton = new Button("Conferma");
-            confermaButton.setTextFill(Color.WHITE);
-            confermaButton.setStyle("-fx-background-color: #3A6698;");
-            confermaButton.setMaxWidth(100);
-            confermaButton.setMinWidth(100);
+    private MyButton createConfermaButton() {
+            MyButton confermaButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
 
             confermaButton.setOnAction(e -> {
                 lblErroreInserimentoDB.setText("");
@@ -233,12 +229,11 @@ public class ChangePasswordPage extends Stage {
                     lblErroreInserimentoDB.setText("Errore nell'inserimento dei dati");
                 }
             });
-            this.styleButton(confermaButton, Color.valueOf("#3A6698"));
 
             return confermaButton;
         }
 
-    private void validConferma() throws changePasswordException {
+    private void validConferma() throws SQLException, changePasswordException {
 
                 if (txtVecchiaPassword.getText().trim().isEmpty()) {
                     throw new oldPasswordEmptyException();
@@ -293,16 +288,5 @@ public class ChangePasswordPage extends Stage {
         CircleButton minimizeButton = new CircleButton();
         minimizeButton.setToCloseButtonWithAction(this);
         return minimizeButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

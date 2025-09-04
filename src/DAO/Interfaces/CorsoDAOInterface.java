@@ -10,25 +10,22 @@ import java.util.ArrayList;
 
 public interface CorsoDAOInterface {
     // Methods
-    Corso createNewCorso(String nome, double price, int frequenza, String difficolta);
-    void addToCaratterizzato(int idcorso, int idtipologia);
-    void addChefToCorso(int idCorso, Chef chef);
-    void delete(Corso corso);
-    void setChefs(Corso corso);
-    void update(Corso corso);
-    void prepareChefs(int idCorso, int idChef);
+    Corso createNewCorso(String nome, double price, int frequenza, String difficolta) throws SQLException;
+    void addToCaratterizzato(int idcorso, int idtipologia) throws SQLException;
+    void addChefToCorso(int idCorso, Chef chef) throws SQLException;
+    void delete(Corso corso) throws SQLException;
+    void setChefs(Corso corso) throws SQLException;
+    void update(Corso corso) throws SQLException;
+    void prepareChefs(int idCorso, int idChef) throws SQLException;
 
     // Get methods
-    // Corso getCorsoByResultSetWithOutSessioni(ResultSet rs)throws corsiNotFoundException, SQLException;
-    ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi);
-    Corso getCorsoByTitle(String Title);
-    ArrayList<Corso> getAllCourses();
-    void getRicetteTrattate(Corso corso);
-    Corso getCorsoByIdCorso(int idcorso);
-    ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws corsiNotFoundException, SQLException;
-    ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException, SQLException;
-    ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException;
-    Corso getCorsoByNome(String nome) throws corsiNotFoundException, SQLException;
-
-    ArrayList<Corso> getCorsiByModalita(String modalita);
+    ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi) throws SQLException;
+    Corso getCorsoByTitle(String Title) throws SQLException;
+    ArrayList<Corso> getAllCourses() throws SQLException;
+    void getRicetteTrattate(Corso corso) throws SQLException;
+    Corso getCorsoByIdCorso(int idcorso) throws SQLException;
+    ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws SQLException, corsiNotFoundException;
+    ArrayList<Corso> searchCorsiByTipologia(String tipologia) throws SQLException, corsiNotFoundException;
+    ArrayList<Corso> searchCorsiByChef(String nomeChef) throws SQLException, corsiNotFoundException;
+    Corso getCorsoByNome(String nome) throws SQLException, corsiNotFoundException;
 }

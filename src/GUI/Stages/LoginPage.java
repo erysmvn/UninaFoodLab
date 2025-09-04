@@ -23,12 +23,14 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class LoginPage extends Stage {
-
-    BorderPane root;
-    Scene scene;
     Controller controller;
+
+    Scene scene;
+    BorderPane root;
+
     TextField emailField;
     TextField passwordField;
+
     Label passwordErrorLabel;
     Label emailErrorLabel;
     Label errorLoginLabel;
@@ -169,9 +171,7 @@ public class LoginPage extends Stage {
     }
 
     public void tryLogin(String email, String password) {
-
         try {
-
             if (email.isEmpty() && password.isEmpty())
                 throw new emailEmptyException();
 
@@ -222,17 +222,13 @@ public class LoginPage extends Stage {
                emailErrorLabel.setText("");
                emailField.setStyle("");
             }
-
             errorLoginLabel.setText("");
         }
 
     }
 
-    public Button createButtonLogin() {
-        Button loginButton = new Button("Login");
-
-        loginButton.setMinHeight(30);
-        loginButton.setMaxHeight(30);
+    public MyButton createButtonLogin() {
+        MyButton loginButton = new MyButton("Login", MyButton.ButtonType.PRIMARY);
 
         loginButton.setOnAction(event -> {
             String email = emailField.getText();
@@ -240,7 +236,6 @@ public class LoginPage extends Stage {
             tryLogin(email, password);
         });
 
-        this.styleButton(loginButton, Color.valueOf("#3A6698"));
         return loginButton;
     }
 
@@ -265,30 +260,15 @@ public class LoginPage extends Stage {
         errorLoginLabel.setText("Errore nel recuperare i dati. Riprovare più tardi");
     }
 
-    public Button createButtonRegister(){
-        Button registerButton = new Button("Register");
-
-        registerButton.setMinHeight(30);
-        registerButton.setMaxHeight(30);
+    public MyButton createButtonRegister(){
+        MyButton registerButton = new MyButton("Register", MyButton.ButtonType.PRIMARY);
 
         registerButton.setOnAction(event -> {
             controller.openRegisterPage();
             this.close();
         });
 
-        this.styleButton(registerButton, Color.valueOf("#3A6698"));
         return registerButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 40);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
 }

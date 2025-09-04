@@ -246,14 +246,10 @@ public class RegisterPage extends Stage {
     }
 
     private Button createConfermaButton() {
-        Button confermaButton = new Button("Conferma");
-
-        confermaButton.setMinHeight(30);
-        confermaButton.setMaxHeight(30);
+        MyButton confermaButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
 
         confermaButton.setOnAction(e -> {{
             try {
-//                resetAll();
                 inserimentoErratoLabel.setVisible(false);
                 validConferma();
                 String nome = txtNome.getText();
@@ -313,7 +309,6 @@ public class RegisterPage extends Stage {
             }
         }});
 
-        this.styleButton(confermaButton, Color.valueOf("#3A6698"));
         return confermaButton;
     }
 
@@ -383,32 +378,13 @@ public class RegisterPage extends Stage {
         }
     }
 
-    private void resetAll(){
-        lblNomeError.setText("");
-        lblCognomeError.setText("");
-        lblEmailError.setText("");
-        lblPasswordError.setText("");
-        lblRipetiPasswordError.setText("");
-
-        txtNome.setStyle(null);
-        txtCognome.setStyle(null);
-        txtEmail.setStyle(null);
-        txtPassword.setStyle(null);
-        txtRipetiPassword.setStyle(null);
-    }
-
-    private Button createIndietroButton() {
-        Button indietroButton = new Button("Indietro");
-
-        indietroButton.setMinHeight(30);
-        indietroButton.setMaxHeight(30);
+    private MyButton createIndietroButton() {
+        MyButton indietroButton = new MyButton("Indietro", MyButton.ButtonType.PRIMARY);
 
         indietroButton.setOnAction(e -> {
             controller.openLoginPage();
             this.close();
         });
-
-        this.styleButton(indietroButton, Color.valueOf("#3A6698"));
 
         return indietroButton;
     }
@@ -423,16 +399,5 @@ public class RegisterPage extends Stage {
         CircleButton minimizeButton = new CircleButton();
         minimizeButton.setToCloseButtonWithAction(this);
         return minimizeButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 20);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

@@ -1,4 +1,4 @@
-package Exception;
+package Exception.RicettaExceptions;
 
 public class erroreInserimentoRicetta extends RuntimeException {
     public erroreInserimentoRicetta() {

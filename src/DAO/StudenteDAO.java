@@ -83,25 +83,22 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     @Override
-    public void checkOldPassword(String oldPassword, Studente studente) throws changePasswordException{
+    public void checkOldPassword(String oldPassword, Studente studente) throws SQLException, changePasswordException {
         String sql = "SELECT 1 FROM Studente WHERE passw = md5(?) AND matricola = ?";
         System.out.println("Controllo password: " + oldPassword);
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, oldPassword);
-                ps.setString(2, studente.getMatricola());
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, oldPassword);
+        ps.setString(2, studente.getMatricola());
 
-                ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    throw new oldPasswordErrorException();
-                }
-            } catch (SQLException e) {
-                throw new oldPasswordErrorException();
-            }
+        ResultSet rs = ps.executeQuery();
+        if (!rs.next()) {
+            throw new oldPasswordErrorException();
+        }
     }
 
     @Override
-    public void changeUserPassword(String newPassword, Studente studente)throws changePasswordException, SQLException{
+    public void changeUserPassword(String newPassword, Studente studente)throws changePasswordException, SQLException {
 
         String sql = "UPDATE Studente SET passw = md5(?) WHERE matricola = ?";
 
@@ -120,52 +117,36 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     @Override
-    public void subscribeToCourse(Studente studente, Corso corso) {
-        try {
+    public void subscribeToCourse(Studente studente, Corso corso) throws SQLException {
             String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, studente.getMatricola());
             stmt.setInt(2, corso.getIdCorso());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante l'iscrizione al corso", e);
-        }
     }
 
     @Override
-    public void unsubscribeToCourse(Studente studente, Corso corso){
-        try {
+    public void unsubscribeToCourse(Studente studente, Corso corso) throws SQLException {
             String sql = "DELETE FROM segue WHERE matricola = ? AND idcorso = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, studente.getMatricola());
             stmt.setInt(2, corso.getIdCorso());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante l'eliminazione dell'iscrizione al corso", e);
-        }
     }
 
     @Override
-    public Boolean checkIfSubscribed(Studente studente, Corso corso) {
-        try {
+    public Boolean checkIfSubscribed(Studente studente, Corso corso) throws SQLException {
             String sql = "SELECT COUNT(*) FROM segue WHERE matricola = ? AND idcorso = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setString(1, studente.getMatricola());
             stmt.setInt(2, corso.getIdCorso());
 
-            try (ResultSet rs = stmt.executeQuery()) {
+            ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     int count = rs.getInt(1);
                     return count > 0;
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante la verifica di iscrizione al corso", e);
-        }
         return false;
     }
 
@@ -189,7 +170,7 @@ public class StudenteDAO implements StudenteDAOInterface {
         return corsi;
     }
 
-    private boolean existingEmail(String email)throws SQLException{
+    private boolean existingEmail(String email) throws SQLException {
         String sql = "Select 1 from studente where email = '" + email + "'";
         PreparedStatement pstmt = con.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();

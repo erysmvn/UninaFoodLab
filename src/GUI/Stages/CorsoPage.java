@@ -4,6 +4,7 @@ import Controller.Controller;
 import Entity.*;
 
 import Exception.CorsoExceptions.imageNotFoundException;
+import GUI.Buttons.MyButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,7 +104,11 @@ public class CorsoPage extends Stage {
 
         this.buildInfoBox(infoBox);
 
-        controller.getRicetteTrattate(corso);
+        try {
+            controller.getRicetteTrattate(corso);
+        } catch (SQLException e) {
+            // TODO dialog
+        }
 
         if (!controller.isHomePageChef()) {
             Button subscribeButton = createSubscribeButton(controller.isAlreadyLoggedIn());
@@ -186,24 +192,32 @@ public class CorsoPage extends Stage {
         return corso;
     }
 
-    private Button createSubscribeButton(boolean isLoggedIn) {
-        Button subscribeButton = new Button("Iscriviti");
-        subscribeButton.setPrefSize(100, 30);
-        styleButton(subscribeButton, Color.valueOf("#3a6698"));
+    private MyButton createSubscribeButton(boolean isLoggedIn) {
+        MyButton subscribeButton = new MyButton("Iscriviti", MyButton.ButtonType.PRIMARY);
 
         subscribeButton.setOnAction(event -> {
-            if (!isLoggedIn) {
-                controller.openLoginPage();
-                this.close();
-            } else {
-                controller.subscribeToCourse(corso);
-                setIscrittoCorso(subscribeButton);
-                showSuccessDialog();
+            try {
+                if (!isLoggedIn) {
+                    controller.openLoginPage();
+                    this.close();
+                } else {
+                    controller.subscribeToCourse(corso);
+                    setIscrittoCorso(subscribeButton);
+                    showSuccessDialog();
+                }
+            } catch (SQLException sqle) {
+                // TODO DIALOG
+                sqle.printStackTrace();
             }
         });
 
-        if (controller.alreadySubscribed(corso)) {
-            setIscrittoCorso(subscribeButton);
+        try {
+            if (controller.alreadySubscribed(corso)) {
+                setIscrittoCorso(subscribeButton);
+            }
+        } catch (SQLException e) {
+            // TODO DIALOG
+            System.err.println("SQLException su studente");
         }
         return subscribeButton;
     }
@@ -236,28 +250,17 @@ public class CorsoPage extends Stage {
         return dialog;
     }
 
-    private void setIscrittoCorso(Button subscribeButton) {
+    private void setIscrittoCorso(MyButton subscribeButton) {
         subscribeButton.setText("Iscritto");
-        subscribeButton.setDisable(true);
-        subscribeButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+        subscribeButton.setDisabledStyle();
     }
 
-    private Button createCloseButton() {
-        Button closeButton = new Button("Chiudi");
-        styleButton(closeButton, Color.valueOf("#da3d26"));
+    private MyButton createCloseButton() {
+        MyButton closeButton = new MyButton("Chiudi", MyButton.ButtonType.SECONDARY);
+
         closeButton.setOnAction(e -> this.close());
+
         return closeButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     private void buildInfoBox(VBox infoBox) {
@@ -272,7 +275,11 @@ public class CorsoPage extends Stage {
         nomeCorsoFlow.setTextAlignment(TextAlignment.LEFT);
         infoBox.getChildren().add(nomeCorsoFlow);
 
-        controller.setChefs(corso);
+        try {
+            controller.setChefs(corso);
+        } catch (SQLException sqle) {
+            // TODO Dialog
+        }
 
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");
@@ -384,6 +391,7 @@ public class CorsoPage extends Stage {
 
         descBox.getChildren().add(scrollPane);
     }
+
     private void createRicettaLabel(VBox ricetteList, Ricetta r, Controller controller) {
         Label ricettaLabel = new Label("•" + r.getNome());
         ricettaLabel.setFont(Font.font(17));

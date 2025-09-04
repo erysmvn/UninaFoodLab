@@ -4,6 +4,7 @@ import Controller.Controller;
 import Entity.Corso;
 import Entity.Ingrediente;
 import Entity.Ricetta;
+import GUI.Buttons.MyButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +22,7 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
@@ -135,22 +137,12 @@ public class RicettaPage extends Stage {
         return ricetta;
     }
 
-    private Button createCloseButton() {
-        Button closeButton = new Button("Chiudi");
-        closeButton.setPrefSize(100, 30);
-        styleButton(closeButton, Color.valueOf("#da3d26"));
-        closeButton.setOnAction(e -> this.close());
-        return closeButton;
-    }
+    private MyButton createCloseButton() {
+        MyButton closeButton = new MyButton("Chiudi", MyButton.ButtonType.SECONDARY);
 
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
+        closeButton.setOnAction(e -> this.close());
+
+        return closeButton;
     }
 
     private void buildInfoBox(VBox infoBox) {
@@ -163,8 +155,13 @@ public class RicettaPage extends Stage {
         nomeRicetta.setWrapText(true);
         infoBox.getChildren().add(nomeRicetta);
 
-        controller.getIngredientiRicetta(ricetta);
-        controller.getAllergeniRicetta(ricetta);
+        try {
+            controller.getIngredientiRicetta(ricetta);
+            controller.getAllergeniRicetta(ricetta);
+        } catch (SQLException sqle) {
+            // TODO dialog
+            sqle.printStackTrace();
+        }
 
         Text allergeniLabel = new Text("Allergeni: ");
         allergeniLabel.setStyle("-fx-font-weight: bold;");
@@ -199,21 +196,26 @@ public class RicettaPage extends Stage {
         descBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
         String quantitaIngrediente = "";
-        for (Ingrediente ingrediente : ricetta.getIngredienti()) {
-            quantitaIngrediente = controller.getQuantitaIngrediente(ricetta, ingrediente);
+        try {
+            for (Ingrediente ingrediente : ricetta.getIngredienti()) {
+                quantitaIngrediente = controller.getQuantitaIngrediente(ricetta, ingrediente);
 
-            Text nomeText = new Text("   \u2022 " + ingrediente.getNome() + ": ");
-            nomeText.setFont(Font.font("System", FontWeight.BOLD, 17));
-            nomeText.setFill(Color.BLACK);
+                Text nomeText = new Text("   \u2022 " + ingrediente.getNome() + ": ");
+                nomeText.setFont(Font.font("System", FontWeight.BOLD, 17));
+                nomeText.setFill(Color.BLACK);
 
-            Text quantitaText = new Text(quantitaIngrediente);
-            quantitaText.setFont(Font.font("System", FontPosture.ITALIC, 17));
-            quantitaText.setFill(Color.BLACK);
+                Text quantitaText = new Text(quantitaIngrediente);
+                quantitaText.setFont(Font.font("System", FontPosture.ITALIC, 17));
+                quantitaText.setFill(Color.BLACK);
 
-            TextFlow ricettaFlow = new TextFlow(nomeText, quantitaText);
-            ricettaFlow.setTextAlignment(TextAlignment.LEFT);
+                TextFlow ricettaFlow = new TextFlow(nomeText, quantitaText);
+                ricettaFlow.setTextAlignment(TextAlignment.LEFT);
 
-            descBox.getChildren().add(ricettaFlow);
+                descBox.getChildren().add(ricettaFlow);
+            }
+        } catch (SQLException sqle) {
+            // TODO dialog
+            sqle.printStackTrace();
         }
     }
 }

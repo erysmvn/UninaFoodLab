@@ -5,7 +5,8 @@ import Entity.Corso;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Utente;
-import Exception.UserExceptions.namingFileException;
+import Exception.SessioneExceptions.ConfermaPartecipazioneException.namingFileException;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -33,7 +34,7 @@ import java.time.format.DateTimeFormatter;
 public class ConfermaPartecipazionePage extends Stage {
 
     Controller controller;
-    private Button uploadButton;
+    private MyButton uploadButton;
     private Label dropArea;
     private Label errorLabel;
     private SessionePresenza sessionePresenza;
@@ -130,8 +131,8 @@ public class ConfermaPartecipazionePage extends Stage {
     }
 
     private void setUploadButton(){
-        uploadButton = new Button("Scegli file");
-        styleButton(uploadButton, Color.valueOf("#3A6698"));
+        uploadButton = new MyButton("Scegli file", MyButton.ButtonType.PRIMARY);
+
         setUploadButtonOnAction();
     }
 
@@ -158,7 +159,7 @@ public class ConfermaPartecipazionePage extends Stage {
         uploadButton.setOnAction(e -> {
                     Path destDir = Paths.get("src/Media/FogliDiAdesione/");
                        try{
-                           Corso corso = controller.getCorsoDAO().getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
+                           Corso corso = controller.getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
                            nomeCorsoNoSpace = corso.getNome().replaceAll(" ","_");
 
                            addFolgioAdesione(destDir+file.getName()+nomeCorsoNoSpace);
@@ -178,25 +179,14 @@ public class ConfermaPartecipazionePage extends Stage {
         errorLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
     }
 
-    private Button createCloseButton() {
-        Button closeButton = new Button("Chiudi");
-        styleButton(closeButton, Color.valueOf("#da3d26"));
+    private MyButton createCloseButton() {
+        MyButton closeButton = new MyButton("Chiudi", MyButton.ButtonType.SECONDARY);
+
         closeButton.setOnAction(e -> {
             this.close();
         });
+
         return closeButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(100, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setAlignment(Pos.BOTTOM_CENTER);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
 

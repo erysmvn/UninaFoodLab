@@ -2,7 +2,9 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.SessioneExceptions.*;
 import GUI.Buttons.CircleButton;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,8 +23,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import Exception.OrarioMassimoOttoOreException;
-import Exception.*;
 import javafx.util.converter.LocalTimeStringConverter;
 
 import static java.time.Duration.between;
@@ -189,8 +189,6 @@ public class AggiungiSessionePage extends Stage {
         )));
     }
 
-
-
     private VBox createLinkOrLuogoBox() {
         VBox linkOrLuogoBox = new VBox(20);
         linkOrLuogoBox.setAlignment(Pos.CENTER_LEFT);
@@ -247,7 +245,6 @@ public class AggiungiSessionePage extends Stage {
         if (fine == null)
             throw new OrarioFineEmptyException();
 
-
         if (dataSessione == null)
             throw new DataSessioneEmptyException();
 
@@ -255,7 +252,7 @@ public class AggiungiSessionePage extends Stage {
             throw new DataNelPassatoException();
 
         if (fine.isBefore(inizio))
-            throw new OrarioNonValidoExceptio();
+            throw new OrarioNonValidoException();
 
         Duration durata = between(inizio, fine);
         if (durata.toHours() > 8)
@@ -269,7 +266,6 @@ public class AggiungiSessionePage extends Stage {
 
         if(ricette.isEmpty())
             throw new AlmenoUnaRicettaException();
-
 
     }
 
@@ -314,24 +310,14 @@ public class AggiungiSessionePage extends Stage {
         return  bottomBox;
     }
 
-    private Button createAnnulaButton(){
-        Button annulaButton = new Button("Annula");
-        annulaButton.setPrefSize(80, 30);
-
-        annulaButton.setStyle("-fx-background-color: #da3d26;-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1;");
-        annulaButton.setOnMouseEntered(e -> annulaButton.setOpacity(0.8));
-        annulaButton.setOnMouseExited(e -> annulaButton.setOpacity(1.0));
-
-        annulaButton.setOnAction(e -> this.close());
-
-        return annulaButton;
+    private MyButton createAnnulaButton(){
+        MyButton annullaButton = new MyButton("Annulla", MyButton.ButtonType.SECONDARY);
+        annullaButton.setOnAction(e -> this.close());
+        return annullaButton;
     }
 
-    private Button createConfermaButton() {
-        Button confirmButton = new Button("Conferma");
-        confirmButton.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
-        confirmButton.setOnMouseEntered(e -> confirmButton.setOpacity(0.8));
-        confirmButton.setOnMouseExited(e -> confirmButton.setOpacity(1.0));
+    private MyButton createConfermaButton() {
+        MyButton confirmButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
 
         confirmButton.setOnAction(e -> {
             erroreOrarioInizio.setText("");
@@ -355,7 +341,7 @@ public class AggiungiSessionePage extends Stage {
                 erroreDataSessione.setText("Inserire data sessione");
             } catch (DataNelPassatoException ex) {
                 erroreDataSessione.setText("Data nel passato non ammessa");
-            } catch (OrarioNonValidoExceptio ex) {
+            } catch (OrarioNonValidoException ex) {
                 erroreOrarioFine.setText("Orario fine < inizio");
             } catch (OrarioMassimoOttoOreException ex) {
                 erroreOrarioFine.setText("Durata > 8 ore");
@@ -480,13 +466,10 @@ public class AggiungiSessionePage extends Stage {
         errorAlmenoUnaRicettaLabel.setStyle("-fx-text-fill: red;");
 
 
-        Button aggiungiRicettaBtn = new Button("Aggiungi ricetta");
+        MyButton aggiungiRicettaBtn = new MyButton("Aggiungi ricetta", MyButton.ButtonType.PRIMARY);
+        aggiungiRicettaBtn.setSize(120, 30);
+
         ricettaBox.getChildren().addAll(numeroRicette, aggiungiRicettaBtn,errorAlmenoUnaRicettaLabel);
-
-        aggiungiRicettaBtn.setStyle("-fx-text-fill: white;-fx-border-radius: 7;-fx-border-width: 1; -fx-background-color: #3a6698;");
-
-        aggiungiRicettaBtn.setOnMouseEntered(e -> aggiungiRicettaBtn.setOpacity(0.8));
-        aggiungiRicettaBtn.setOnMouseExited(e -> aggiungiRicettaBtn.setOpacity(1.0));
 
         aggiungiRicettaBtn.setOnAction(e -> {
             controller.openAggiungiRicettaPage(this);
@@ -508,6 +491,5 @@ public class AggiungiSessionePage extends Stage {
 
         button.setStyle(selected);
     }
-
 
 }

@@ -50,7 +50,7 @@ public class ChefDAO implements ChefDAOInterface {
     }
 
     @Override
-    public Chef register(Chef chef) throws SQLException{
+    public Chef register(Chef chef) throws SQLException {
         String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
 
             PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -79,17 +79,14 @@ public class ChefDAO implements ChefDAOInterface {
     }
 
     @Override
-    public void checkOldPassword(String oldPassword, Chef chef) throws changePasswordException {
+    public void checkOldPassword(String oldPassword, Chef chef) throws SQLException, changePasswordException {
         String sql = "SELECT 1 FROM chef WHERE passw = md5(?) AND idchef = ?";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, oldPassword);
-            ps.setInt(2, chef.getIdchef());
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, oldPassword);
+        ps.setInt(2, chef.getIdchef());
 
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new oldPasswordErrorException();
-            }
-        } catch (SQLException e) {
+        ResultSet rs = ps.executeQuery();
+        if (!rs.next()) {
             throw new oldPasswordErrorException();
         }
     }

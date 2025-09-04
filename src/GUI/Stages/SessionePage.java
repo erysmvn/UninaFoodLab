@@ -2,6 +2,7 @@ package GUI.Stages;
 
 import Controller.Controller;
 import Entity.*;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -170,7 +171,11 @@ public class SessionePage extends Stage {
             footerVbox.getChildren().add(options);
         }
 
-        controller.setChefs(corso);
+        try {
+            controller.setChefs(corso);
+        } catch (SQLException ex) {
+            // TODO Dialog
+        }
 
         Text chefLabel = new Text("Chef: ");
         chefLabel.setStyle("-fx-font-weight: bold;");
@@ -209,34 +214,26 @@ public class SessionePage extends Stage {
         VBox.setVgrow(listaRicette, Priority.NEVER);
         infoBox.getChildren().add(listaRicette);
 
-        Button closeButton = new Button("Chiudi");
-        closeButton.setPrefSize(250, 30);
-        styleButton(closeButton, Color.valueOf("#da3d26"));
+
+        MyButton closeButton = new MyButton("Chiudi", MyButton.ButtonType.SECONDARY);
+
+        closeButton.setSize(250, 30);
+
         closeButton.setOnAction(e -> {
             this.close();
         });
         footerVbox.getChildren().add(closeButton);
     }
 
-    private Button createPartecipaButton() {
-        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/uploadIcon.png")));
-        ImageView uploadView = new ImageView(uploadImage);
+    private MyButton createPartecipaButton() {
+        MyButton partecipaButton = new MyButton("Partecipa", MyButton.ButtonType.PRIMARY);
 
-        uploadView.setFitHeight(20);
-        uploadView.setFitWidth(20);
+        partecipaButton.setWithIcon("/Media/Icons/uploadIcon.png", 20, 20);
 
-        Button partecipaButton = new Button("Partecipa");
-        partecipaButton.setGraphic(uploadView);
-        partecipaButton.setContentDisplay(ContentDisplay.LEFT);
-
-        styleButton(partecipaButton, Color.valueOf("#3a6698"));
-
-        partecipaButton.setPrefWidth(120);
-        partecipaButton.setPrefHeight(30);
+        partecipaButton.setSize(250, 30);
 
         if (checkIfAlreadyAdded()) {
-            partecipaButton.setDisable(true);
-            partecipaButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+            partecipaButton.setDisabledStyle();
         } else {
             confermarePartecipazioneLabel.setVisible(true);
             partecipaButton.setOnAction(event -> {
@@ -251,21 +248,12 @@ public class SessionePage extends Stage {
         return ((SessionePresenza) sessione).checkIfAlreadyAdded(matricola);
     }
 
-    private Button createEditButton() {
-        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/editIcon.png")));
-        ImageView uploadView = new ImageView(uploadImage);
+    private MyButton createEditButton() {
+        MyButton editButton = new MyButton("Modifica", MyButton.ButtonType.PRIMARY);
 
-        uploadView.setFitHeight(20);
-        uploadView.setFitWidth(20);
+        editButton.setWithIcon("/Media/Icons/editIcon.png", 20, 20);
 
-        Button editButton = new Button("Modifica");
-        editButton.setGraphic(uploadView);
-        editButton.setContentDisplay(ContentDisplay.LEFT);
-
-        styleButton(editButton, Color.valueOf("#3a6698"));
-
-        editButton.setPrefWidth(120);
-        editButton.setPrefHeight(30);
+        editButton.setSize(120, 30);
 
         editButton.setOnAction(event -> {
             controller.openEditSessionePage(sessione, this);
@@ -274,44 +262,24 @@ public class SessionePage extends Stage {
         return editButton;
     }
 
-    private Button createDeleteButton() {
-        Image uploadImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Icons/deleteIcon.png")));
-        ImageView uploadView = new ImageView(uploadImage);
+    private MyButton createDeleteButton() {
+        MyButton deleteButton = new MyButton("Elimina", MyButton.ButtonType.SECONDARY);
 
-        uploadView.setFitHeight(20);
-        uploadView.setFitWidth(20);
+        deleteButton.setWithIcon("/Media/Icons/deleteIcon.png", 20, 20);
 
-        Button deleteButton = new Button("Elimina");
-        deleteButton.setGraphic(uploadView);
-        deleteButton.setContentDisplay(ContentDisplay.LEFT);
-
-        styleButton(deleteButton, Color.valueOf("#da3d26"));
-
-        deleteButton.setPrefWidth(120);
-        deleteButton.setPrefHeight(30);
+        deleteButton.setSize(120, 30);
 
         deleteButton.setOnAction(event -> {
-            // TODO DELETE THIS SESSION
             showConfirmPanel("Sei sicuro di voler eliminare la sessione?", () -> {
                 try {
                     sessione.getCorso().deleteSessione(sessione);
                     controller.deleteSessione(sessione);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    // TODO dialog
                 }
             });
         });
-
         return deleteButton;
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 
     public Sessione getSessione() {
@@ -341,11 +309,8 @@ public class SessionePage extends Stage {
         label.setTextAlignment(TextAlignment.CENTER);
         label.setMaxWidth(300);
 
-        Button yesButton = new Button("Si");
-        Button noButton = new Button("No");
-
-        styleButton(yesButton, Color.valueOf("#3A6698"));
-        styleButton(noButton, Color.valueOf("#da3d26"));
+        MyButton yesButton = new MyButton("Si", MyButton.ButtonType.PRIMARY);
+        MyButton noButton = new MyButton("No", MyButton.ButtonType.SECONDARY);
 
         HBox buttons = new HBox(15, yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);

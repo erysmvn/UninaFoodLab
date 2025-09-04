@@ -1,10 +1,11 @@
-package GUI.Stages;
+package GUI.Stages.CreateStages;
 
 import Controller.Controller;
 import Entity.*;
 import Exception.SessioneExceptions.*;
 import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,11 +28,10 @@ import javafx.util.converter.LocalTimeStringConverter;
 
 import static java.time.Duration.between;
 
-public class AggiungiSessionePage extends Stage {
+public class AggiungiSessionePage extends MyStage {
     private Controller controller;
-
     private VBox root;
-    private Scene scene;
+
     private Label numeroRicette;
 
     private Corso corso;
@@ -52,11 +52,14 @@ public class AggiungiSessionePage extends Stage {
     private Label errorLinkOrLuogoLabel;
     private Label errorInserimentoDatiLabel;
     private Label errorAlmenoUnaRicettaLabel;
-    public AggiungiSessionePage(Controller controller) {
-        this.controller = controller;
 
-        this.setRootAesthetics();
-        this.setSceneAesthetics();
+
+    public AggiungiSessionePage(Controller controller) {
+        super(450, 700, RootType.VBOX);
+        this.controller = controller;
+        root = getRootVBox();
+
+        addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
     public void initPage(Corso corso) {
@@ -142,26 +145,7 @@ public class AggiungiSessionePage extends Stage {
         return dateBox;
     }
 
-    private void setSceneAesthetics() {
-        scene = new Scene(root, 450, 700);
-        scene.setFill(Color.TRANSPARENT);
-        scene.setOnKeyPressed(e -> {
-            if (e.isControlDown() && e.getCode() == KeyCode.W) {
-                this.close();
-            }
-        });
-
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
-
-    }
-
     private void setRootFunctionalities() {
-
         root.setAlignment(Pos.CENTER);
         root.setSpacing(30);
         root.getChildren().addAll(

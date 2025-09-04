@@ -12,6 +12,14 @@ import Exception.UserExceptions.SupportException.emailClientNotFoundException;
 import GUI.Pane.ElencoCorsiPanel;
 import GUI.Stages.*;
 import DAO.*;
+import GUI.Stages.ClassDataStages.AccountPage;
+import GUI.Stages.ClassDataStages.CorsoPage;
+import GUI.Stages.ClassDataStages.RicettaPage;
+import GUI.Stages.ClassDataStages.SessionePage;
+import GUI.Stages.CreateStages.*;
+import GUI.Stages.EditStages.EditPasswordPage;
+import GUI.Stages.EditStages.EditCorsoPage;
+import GUI.Stages.EditStages.EditSessionePage;
 import javafx.application.*;
 import javafx.stage.Stage;
 
@@ -26,7 +34,7 @@ public class Controller {
     private LoginPage loginPage;
     private AccountPage accountPage;
     private RegisterPage registerPage;
-    private ChangePasswordPage modificaPasswordPage;
+    private EditPasswordPage modificaPasswordPage;
     private CreateCorsoPage createCorsoPage;
     private AggiungiSessionePage aggiungiSessionePage;
 
@@ -221,14 +229,12 @@ public class Controller {
     }
 
     public void openRicettaPage(Ricetta ricetta){
-
             RicettaPage ricettaPage = new RicettaPage( this);
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
 
             ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
             ricettaPage.show();
-
     }
 
     public void openAccountPage(Utente utente) {
@@ -252,7 +258,7 @@ public class Controller {
 
     public void openModificaPassword() {
         if(modificaPasswordPage == null || !modificaPasswordPage.isShowing()) {
-            modificaPasswordPage = new ChangePasswordPage(this);
+            modificaPasswordPage = new EditPasswordPage(this);
             modificaPasswordPage.show();
         } else {
             modificaPasswordPage.toFront();

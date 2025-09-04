@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.CreateStages;
 
 import Controller.Controller;
 import Entity.IngredienteFormaRicetta;
@@ -13,50 +13,51 @@ import Exception.RicettaExceptions.NomeRicettaEmptyException;
 import Exception.RicettaExceptions.TempoDiPreparazioneEmptyException;
 import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.util.ArrayList;
 
 
-public class AggiungiRicettaPage extends Stage {
-
+public class AggiungiRicettaPage extends MyStage {
     private final Controller controller;
     private Ricetta ricetta;
+
     private Stage caller;
+    private VBox root;
+
     private VBox ingredientiBox;
+
     private TextField nomeRicettaField;
     private TextField tempoField;
+    private TextField descrizioneField;
+
     private Label erroreNomeRicettaLabel;
     private Label erroreTempoLabel;
     private Label erroreInserimentoIngredientiLabel;
+
     private ArrayList<VBox> ingredientiBoxList;
-    private TextField descrizioneField;
-    private int quantita;
     private UnitaIngrediente unita;
+    private int quantita;
 
     public AggiungiRicettaPage(Controller controller,Stage caller) {
+        super(450, 700, RootType.VBOX);
         this.controller = controller;
         this.caller = caller;
-        VBox root = new VBox(15);
+
+        root = getRootVBox();
+
+        root.setSpacing(15);
         root.setPadding(new Insets(30));
         root.setAlignment(Pos.TOP_LEFT);
-        root.setStyle("-fx-background-color: white;" +
-                "-fx-border-radius: 30;" +
-                "-fx-background-radius: 30;" +
-                "-fx-border-width: 1;" +
-                "-fx-border-color: #3a6698"
-        );
 
         Region spacer = new Region();
         spacer.setPrefHeight(30);
@@ -70,16 +71,7 @@ public class AggiungiRicettaPage extends Stage {
                 createActionButtons()
         );
 
-        Scene scene = new Scene(root, 450, 700);
-
-        scene.setFill(Color.TRANSPARENT);
-
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
 

@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.CreateStages;
 
 import Controller.Controller;
 import Entity.*;
@@ -6,31 +6,21 @@ import Exception.UserExceptions.ChangePasswordException.passwordTroppoCortaExcep
 import Exception.UserExceptions.RegisterException.*;
 import GUI.Buttons.*;
 
+import GUI.Stages.MyStage;
 import javafx.geometry.*;
-import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
 
-public class RegisterPage extends Stage {
-
+public class RegisterPage extends MyStage {
     private Controller controller;
+
     private VBox root;
+
     private Label lblMatricola;
-    private TextField txtMatricola;
-    private TextField txtEmail;
-    private TextField txtNome;
-    private TextField txtCognome;
-    private PasswordField txtPassword;
-    private PasswordField txtRipetiPassword;
     private Label lblNomeError;
     private Label lblCognomeError;
     private Label lblEmailError;
@@ -39,29 +29,26 @@ public class RegisterPage extends Stage {
     private Label lblRipetiPasswordError;
     private Label inserimentoErratoLabel;
 
+    private TextField txtMatricola;
+    private TextField txtEmail;
+    private TextField txtNome;
+    private TextField txtCognome;
+
+    private PasswordField txtPassword;
+    private PasswordField txtRipetiPassword;
+
+
     public RegisterPage(Controller controller) {
-
+        super(850, 650, RootType.VBOX);
         this.controller = controller;
-        this.setRoot();
-        this.setRootAesthetics();
 
-        Scene scene = new Scene(root, 850, 650);
-        scene.setFill(Color.TRANSPARENT);
-        scene.setOnKeyPressed(e->{
-            if(e.isControlDown() && e.getCode()== KeyCode.W){
-                this.close();
-            }
-        });
+        root = getRootVBox();
+        setRootElements();
 
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
-    private void setRoot(){
+    private void setRootElements(){
         Label lblCredenziali = new Label("Credenziali di accesso");
         lblCredenziali.setStyle("-fx-font-weight: bold; -fx-text-fill: #3A6698;");
         Label lblDati = new Label("Dati anagrafici");
@@ -77,8 +64,12 @@ public class RegisterPage extends Stage {
         VBox.setVgrow(spacer, Priority.ALWAYS);
         Region spacer1 = new Region();
         VBox.setVgrow(spacer1, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        VBox.setVgrow(spacer2, Priority.ALWAYS);
 
-        root = new VBox(15, funcBox, spacer1, topBox, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
+        root.setPadding(new Insets(20, 20, 50, 50));
+        root.setSpacing(15);
+        root.getChildren().addAll(funcBox, spacer1, topBox, spacer2, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
     }
 
     private void setRootAesthetics(){
@@ -188,8 +179,6 @@ public class RegisterPage extends Stage {
         return grid;
     }
 
-
-
     private HBox createTopBox() {
         HBox topBox = new HBox(5);
         topBox.setAlignment(Pos.TOP_LEFT);
@@ -225,7 +214,7 @@ public class RegisterPage extends Stage {
     }
 
     private HBox createBottomBox() {
-        HBox bottomBox = new HBox(50);
+        HBox bottomBox = new HBox(20);
         Button indietroButton = createIndietroButton();
         Button confermaButton = createConfermaButton();
 
@@ -235,12 +224,15 @@ public class RegisterPage extends Stage {
         Region spacer2 = new Region();
         HBox.setHgrow(spacer2, Priority.ALWAYS);
 
+        Region spacer3 = new Region();
+        spacer3.setMaxWidth(10);
+
 
         inserimentoErratoLabel = new Label("Errore inserimento dati. Riprovare più tardi.");
         inserimentoErratoLabel.setTextFill(Color.RED);
         inserimentoErratoLabel.setVisible(false);
         bottomBox.setAlignment(Pos.BOTTOM_CENTER);
-        bottomBox.getChildren().addAll(indietroButton, spacer,inserimentoErratoLabel, spacer2,confermaButton);
+        bottomBox.getChildren().addAll(indietroButton, spacer,inserimentoErratoLabel, spacer2,confermaButton, spacer3);
 
         return bottomBox;
     }

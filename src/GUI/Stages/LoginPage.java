@@ -9,23 +9,19 @@ import Exception.UserExceptions.RegisterException.passwordEmptyException;
 import GUI.Buttons.*;
 
 import javafx.geometry.*;
-import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.*;
 import javafx.scene.image.*;
 
 import java.sql.SQLException;
 import java.util.Objects;
 
-public class LoginPage extends Stage {
+
+public class LoginPage extends MyStage {
     Controller controller;
 
-    Scene scene;
     BorderPane root;
 
     TextField emailField;
@@ -37,29 +33,17 @@ public class LoginPage extends Stage {
 
 
     public LoginPage(Controller controller) {
+        super(500, 725, MyStage.RootType.BORDERPANE);
         this.controller = controller;
 
-        root = new BorderPane();
-        this.setRootAesthetics();
+        root = this.getRootBorderPane();
+
         root.setTop(createButtonsTopBox());
         root.setCenter(createCenterContent());
 
-        scene = new Scene(root, 500, 725);
-        scene.setFill(Color.TRANSPARENT);
-        scene.setOnKeyPressed(event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.W
-                    && this.isShowing() && !this.isIconified()) {
-                this.close();
-            }
-        });
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
 
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
         this.mostraInserireEmail();
-        this.setScene(scene);
         this.show();
     }
 
@@ -76,8 +60,9 @@ public class LoginPage extends Stage {
         errorLoginLabel = new Label();
         errorLoginLabel.setTextFill(Color.RED);
 
-        Button loginButton = createButtonLogin();
-        Button registerButton = createButtonRegister();
+        MyButton loginButton = createButtonLogin();
+        MyButton registerButton = createButtonRegister();
+
         Region spacer = new Region();
         spacer.setPrefHeight(8);
         Region spacer2 = new Region();
@@ -100,19 +85,6 @@ public class LoginPage extends Stage {
         return centerBox;
     }
 
-
-    private void setRootAesthetics() {
-        root.setPadding(new Insets(20));
-        root.setBackground(new Background(new BackgroundFill(
-                Color.WHITE, new CornerRadii(30), Insets.EMPTY
-        )));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
-    }
 
     private HBox createButtonsTopBox() {
         HBox buttonsTopBox = new HBox(5);
@@ -250,7 +222,7 @@ public class LoginPage extends Stage {
         } catch (passwordErrataException passwordExc){
             passwordErrorLabel.setText("Password errata");
             passwordField.setStyle("-fx-border-color: red;");
-        } catch (SQLException sqle) {
+        } catch (SQLException SQLE) {
             showErrorLoginLabel();
         }
     }
@@ -260,7 +232,7 @@ public class LoginPage extends Stage {
         errorLoginLabel.setText("Errore nel recuperare i dati. Riprovare più tardi");
     }
 
-    public MyButton createButtonRegister(){
+    public MyButton createButtonRegister() {
         MyButton registerButton = new MyButton("Register", MyButton.ButtonType.PRIMARY);
 
         registerButton.setOnAction(event -> {

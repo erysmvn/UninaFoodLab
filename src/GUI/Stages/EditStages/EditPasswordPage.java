@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.EditStages;
 
 import Controller.Controller;
 import Exception.UserExceptions.ChangePasswordException.*;
@@ -6,7 +6,6 @@ import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,14 +14,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
 
-public class ChangePasswordPage extends Stage {
+public class EditPasswordPage extends Stage {
 
         private Controller controller;
         private VBox root;
@@ -34,7 +31,7 @@ public class ChangePasswordPage extends Stage {
         private Label lblRipetiPasswordError;
         private Label lblErroreInserimentoDB;
 
-        public ChangePasswordPage(Controller controller) {
+        public EditPasswordPage(Controller controller) {
 
             this.controller = controller;
             this.setRoot();

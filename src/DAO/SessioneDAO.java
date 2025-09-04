@@ -71,6 +71,8 @@ public class SessioneDAO implements SessioneDAOInterface {
             ps.setInt(1, ricetta.getIdRicetta());
             ps.setInt(2,sessione.getIdSessione());
             ps.executeUpdate();
+
+            sessione.setRicette(controller.getRicetteByIdSessione(sessione.getIdSessione()));
     }
 
     @Override

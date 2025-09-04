@@ -1,34 +1,27 @@
-package GUI.Stages;
+package GUI.Stages.ClassDataStages;
 
 import Controller.Controller;
-import Entity.Corso;
 import Entity.Ingrediente;
 import Entity.Ricetta;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
-public class RicettaPage extends Stage {
+public class RicettaPage extends MyStage {
 
-    private VBox vbox;
+    private VBox root;
     private HBox topHbox;
     private HBox bottomHbox;
     private VBox footerVbox;
@@ -37,15 +30,13 @@ public class RicettaPage extends Stage {
     private Ricetta ricetta;
 
     public RicettaPage(Controller controller){
+        super(900, 750, RootType.VBOX);
         this.controller = controller;
-        this.initStyle(StageStyle.TRANSPARENT);
 
-        vbox = new VBox(15);
-        vbox.setPadding(new Insets(50, 0, 0, 0));
-        vbox.setPadding(new Insets(15));
-        vbox.setAlignment(Pos.TOP_LEFT);
-        vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        vbox.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
+        root = getRootVBox();
+        root.setSpacing(15);
+        root.setPadding(new Insets(15));
+        root.setAlignment(Pos.TOP_LEFT);
 
         topHbox = new HBox(15);
         topHbox.setPadding(new Insets(50, 0, 10, 0));
@@ -64,39 +55,21 @@ public class RicettaPage extends Stage {
         footerVbox.setSpacing(20);
         footerVbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
 
-        Rectangle clip = new Rectangle();
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        vbox.setClip(clip);
-        vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            clip.setWidth(newBounds.getWidth());
-            clip.setHeight(newBounds.getHeight());
-        });
-
-        Platform.runLater(() -> clip.requestFocus()); // sposta il focus in modo da non selezionare il primo pulsante automaticamente
-
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        vbox.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox);
-
-        Scene scene = new Scene(vbox, 900, 750);
-        scene.setFill(Color.TRANSPARENT);
-        this.setScene(scene);
+        root.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox);
     }
 
     public void initPage(Ricetta ricetta){
         this.ricetta = ricetta;
-
 
         VBox infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_LEFT);
 
         this.buildInfoBox(infoBox);
 
-       // controller.getIngredientiRicetta(ricetta);
-
-        Button closeButton = createCloseButton();
+        MyButton closeButton = createCloseButton();
         footerVbox.getChildren().add(closeButton);
         HBox.setMargin(closeButton, new Insets(0, 0, 10, 0));
 

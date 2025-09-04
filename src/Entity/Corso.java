@@ -1,7 +1,6 @@
 package Entity;
 
 import Entity.Enum.*;
-import GUI.Stages.SessionePage;
 
 import java.io.File;
 import java.util.ArrayList;

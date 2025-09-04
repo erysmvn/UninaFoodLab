@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.CreateStages;
 
 import Controller.Controller;
 import Entity.Chef;
@@ -8,19 +8,15 @@ import Exception.CorsoExceptions.CreateCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
-import GUI.Pane.ElencoCorsiPanel;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -36,7 +32,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CreateCorsoPage extends Stage {
+public class CreateCorsoPage extends MyStage {
     private Controller controller;
     private Chef chef;
     private ArrayList<TipologiaCorso> tipologie;
@@ -76,44 +72,19 @@ public class CreateCorsoPage extends Stage {
 
 
     public CreateCorsoPage(Controller controller, Chef chef) {
+        super(850, 650, RootType.VBOX);
         this.chef = chef;
         chefAggiunti = new ArrayList<>();
         chefAggiunti.add(this.chef); //TODO CON IL CONTROLLER (CONTROLLER HA L'UTENTE LOGGATO
 
         this.controller = controller;
-        root = new VBox(15);
-        setRootStyle();
+        root = getRootVBox();
+        setRootElements();
 
-        Scene scene = new Scene(root, 850, 650);
-        scene.setFill(Color.TRANSPARENT);
-        scene.setOnKeyPressed(e->{
-            if(e.isControlDown() && e.getCode()== KeyCode.W){
-                this.close();
-            }
-        });
-
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
-    private void setRootStyle(){
-        root.setPadding(new Insets(20, 20, 20, 20));
-        root.setSpacing(20);
-        root.setAlignment(Pos.TOP_LEFT);
-        root.setBackground(new Background(
-                new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
-        ));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
-
+    private void setRootElements(){
         createFunctionalityButtonsBox();
         createTitleBox();
         createContainerBox();
@@ -125,7 +96,10 @@ public class CreateCorsoPage extends Stage {
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
 
-        root.getChildren().addAll(functionalityButtons, titleBox, container, spacer, confermaButtonBox, bottomSpacer);
+        Region topSpacer = new Region();
+        VBox.setVgrow(topSpacer, Priority.ALWAYS);
+
+        root.getChildren().addAll(functionalityButtons, titleBox, topSpacer, container, spacer, confermaButtonBox, bottomSpacer);
     }
 
     private void createTitleBox() {

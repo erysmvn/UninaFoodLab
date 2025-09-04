@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.EditStages;
 
 import Controller.Controller;
 import Entity.*;
@@ -13,7 +13,6 @@ import GUI.Buttons.MyButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;

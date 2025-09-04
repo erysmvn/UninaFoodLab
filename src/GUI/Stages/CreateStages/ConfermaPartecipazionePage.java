@@ -1,4 +1,4 @@
-package GUI.Stages;
+package GUI.Stages.CreateStages;
 
 import Controller.Controller;
 import Entity.Corso;
@@ -7,11 +7,10 @@ import Entity.SessionePresenza;
 import Entity.Utente;
 import Exception.SessioneExceptions.ConfermaPartecipazioneException.namingFileException;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -31,40 +30,34 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 
-public class ConfermaPartecipazionePage extends Stage {
+public class ConfermaPartecipazionePage extends MyStage {
+    private Controller controller;
+    private SessionePresenza sessionePresenza;
 
-    Controller controller;
+    private String nomeCorsoNoSpace;
     private MyButton uploadButton;
     private Label dropArea;
     private Label errorLabel;
-    private SessionePresenza sessionePresenza;
-    private String nomeCorsoNoSpace;
-    public ConfermaPartecipazionePage(Controller controller) {
-        this.controller = controller;
-        VBox root = new VBox(10);
-        root.setPadding(new Insets(10));
-        root.setBackground(new Background(new BackgroundFill(
-                Color.WHITE, new CornerRadii(30), Insets.EMPTY
-        )));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
 
+    private VBox root;
+
+
+    public ConfermaPartecipazionePage(Controller controller) {
+        super(550, 400, RootType.VBOX);
+        this.controller = controller;
+
+        root = getRootVBox();
+        root.setSpacing(5);
         root.setAlignment(Pos.CENTER);
 
         setUploadButton();
         setDropArea();
         setErrorLabel();
 
-        root.getChildren().addAll(dropArea, uploadButton, errorLabel, createCloseButton());
-        Scene scene = new Scene(root, 550, 400);
-        scene.setFill(Color.TRANSPARENT);
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
+        root.getChildren().addAll(dropArea, spacer, uploadButton, errorLabel, createCloseButton());
     }
 
     private void setDropArea(){
@@ -77,7 +70,6 @@ public class ConfermaPartecipazionePage extends Stage {
                 "-fx-alignment: center;");
         setDropAreaFunctionalities();
     }
-
 
     private void checkNamingFile(String nomeFile)throws namingFileException{
             Utente utente = controller.getUtente();
@@ -223,6 +215,7 @@ public class ConfermaPartecipazionePage extends Stage {
     public void setSessionePresenza(SessionePresenza sessionePresenza) {
         this.sessionePresenza = sessionePresenza;
     }
+
     public SessionePresenza getSessionePresenza() {
         return sessionePresenza;
     }

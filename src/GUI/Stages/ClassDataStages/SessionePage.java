@@ -1,18 +1,15 @@
-package GUI.Stages;
+package GUI.Stages.ClassDataStages;
 
 import Controller.Controller;
 import Entity.*;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
@@ -25,12 +22,11 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Objects;
+
 import javafx.scene.control.ScrollPane;
 
 
-public class SessionePage extends Stage {
+public class SessionePage extends MyStage {
     private Controller controller;
     private Sessione sessione;
 
@@ -42,21 +38,14 @@ public class SessionePage extends Stage {
     Label confermarePartecipazioneLabel;
 
     public SessionePage(Controller controller) {
+        super(800, 600, RootType.BORDERPANE);
         this.controller = controller;
-        this.initStyle(StageStyle.TRANSPARENT);
 
         // Root BorderPane
-        root = new BorderPane();
-        root.setPadding(new Insets(15));
-        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
+        root = getRootBorderPane();
 
         // Top
+        topHbox = new HBox();
         topHbox = new HBox(15);
         topHbox.setAlignment(Pos.TOP_CENTER);
         topHbox.setSpacing(20);
@@ -75,11 +64,6 @@ public class SessionePage extends Stage {
         footerVbox.setSpacing(20);
         footerVbox.setPadding(new Insets(0, 0, 50, 0));
         root.setBottom(footerVbox);
-
-        // Scene
-        Scene scene = new Scene(root, 800, 600);
-        scene.setFill(Color.TRANSPARENT);
-        this.setScene(scene);
     }
 
     public void initPage(Sessione sessione) {
@@ -270,10 +254,11 @@ public class SessionePage extends Stage {
         deleteButton.setSize(120, 30);
 
         deleteButton.setOnAction(event -> {
-            showConfirmPanel("Sei sicuro di voler eliminare la sessione?", () -> {
+            this.showConfirmPanel("Sei sicuro di voler eliminare la sessione?", () -> {
                 try {
                     sessione.getCorso().deleteSessione(sessione);
                     controller.deleteSessione(sessione);
+                    controller.refreshCalendario();
                 } catch (SQLException e) {
                     // TODO dialog
                 }
@@ -289,47 +274,5 @@ public class SessionePage extends Stage {
     public void changeUploadButton() {
         footerVbox.getChildren().set(0, createPartecipaButton());
         confermarePartecipazioneLabel.setVisible(false);
-    }
-
-    private void showConfirmPanel(String message, Runnable onConfirm) {
-        Stage confirmStage = new Stage();
-        confirmStage.initModality(Modality.APPLICATION_MODAL);
-        confirmStage.initStyle(StageStyle.TRANSPARENT);
-
-        VBox root = new VBox(20);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
-        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(15), new BorderWidths(2))));
-
-        Label label = new Label(message);
-        label.setFont(Font.font("System", FontWeight.BOLD, 18));
-        label.setTextFill(Color.valueOf("#2F3A42"));
-        label.setWrapText(true);
-        label.setTextAlignment(TextAlignment.CENTER);
-        label.setMaxWidth(300);
-
-        MyButton yesButton = new MyButton("Si", MyButton.ButtonType.PRIMARY);
-        MyButton noButton = new MyButton("No", MyButton.ButtonType.SECONDARY);
-
-        HBox buttons = new HBox(15, yesButton, noButton);
-        buttons.setAlignment(Pos.CENTER);
-
-        root.getChildren().addAll(label, buttons);
-
-        Scene scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT);
-        confirmStage.setScene(scene);
-
-        yesButton.setOnAction(e -> {
-            onConfirm.run();
-            confirmStage.close();
-            controller.refreshCalendario();
-            this.close();
-        });
-
-        noButton.setOnAction(e -> confirmStage.close());
-
-        confirmStage.showAndWait();
     }
 }

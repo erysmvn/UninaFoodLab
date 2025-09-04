@@ -1,14 +1,14 @@
-package GUI.Stages;
+package GUI.Stages.ClassDataStages;
 
 import Controller.Controller;
 import Entity.*;
 
 import Exception.CorsoExceptions.imageNotFoundException;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,27 +26,23 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
-public class CorsoPage extends Stage {
-
-    private VBox vbox;
-    private HBox topHbox;
-    private HBox bottomHbox;
-    private VBox footerVbox;
-    private Rectangle clip;
+public class CorsoPage extends MyStage {
     private Controller controller;
     private Corso corso;
 
-    public CorsoPage(Controller controller){
-        this.controller = controller;
-        this.initStyle(StageStyle.TRANSPARENT);
+    private VBox root;
+    private HBox topHbox;
+    private HBox bottomHbox;
+    private VBox footerVbox;
 
-        vbox = new VBox(15);
-        vbox.setPadding(new Insets(15));
-        vbox.setAlignment(Pos.TOP_CENTER);
-        vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        vbox.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
+    public CorsoPage(Controller controller){
+        super(900, 750, RootType.VBOX);
+        this.controller = controller;
+
+        root = getRootVBox();
+        root.setSpacing(15);
+        root.setAlignment(Pos.TOP_CENTER);
 
         topHbox = new HBox(15);
         topHbox.setPadding(new Insets(50, 0, 10, 0));
@@ -65,30 +61,10 @@ public class CorsoPage extends Stage {
         footerVbox.setSpacing(20);
         footerVbox.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        clip = new Rectangle();
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        vbox.setClip(clip);
-        vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            clip.setWidth(newBounds.getWidth());
-            clip.setHeight(newBounds.getHeight());
-        });
-
-        moveFocusToNotShowBottonClicked();
-
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        vbox.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox);
-
-        Scene scene = new Scene(vbox, 900, 750);
-        scene.setFill(Color.TRANSPARENT);
-        this.setScene(scene);
-    }
-
-    private void moveFocusToNotShowBottonClicked(){
-        Platform.runLater(clip::requestFocus);
-
+        root.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox);
     }
 
     public void initPage(Corso corso){

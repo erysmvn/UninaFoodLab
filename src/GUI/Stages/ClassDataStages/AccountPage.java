@@ -1,21 +1,19 @@
-    package GUI.Stages;
+    package GUI.Stages.ClassDataStages;
 
     import Controller.Controller;
     import Entity.*;
     import GUI.Pane.*;
     import GUI.Buttons.*;
+    import GUI.Stages.MyStage;
     import javafx.geometry.Insets;
     import javafx.scene.*;
     import javafx.scene.input.KeyCode;
     import javafx.scene.layout.*;
-    import javafx.scene.control.*;
     import javafx.scene.paint.Color;
-    import javafx.scene.text.Font;
     import javafx.stage.*;
 
-    public class AccountPage extends Stage {
+    public class AccountPage extends MyStage {
         Controller controller;
-        Scene scene;
         BorderPane root;
         StackPane content;
 
@@ -33,25 +31,13 @@
         Utente utente;
 
         public AccountPage(Controller controller){
-
+            super(1050, 750, RootType.BORDERPANE);
             this.controller = controller;
-            this.initStyle(StageStyle.TRANSPARENT);
 
-            root = createRoot();
+            root = getRootBorderPane();
             content = new StackPane();
 
             content.setStyle("-fx-background-color: WHITE;");
-
-            scene = new Scene(root, 1050,750);
-            scene.setFill(Color.TRANSPARENT);
-
-            scene.setOnKeyPressed(event -> {
-                if(event.isControlDown() && event.getCode() == KeyCode.W){
-                    this.close();
-                }
-            });
-
-            this.setScene(scene);
         }
 
         public void initPage(Utente utente){
@@ -103,27 +89,6 @@
             if(clickedButton != calendarButton) calendarButton.setOutlineNotClickedStyle();
             else calendarButton.setOutlineClickedStyle();
 
-        }
-
-
-        private BorderPane createRoot(){
-            root = new BorderPane();
-            root.setBackground(new Background(
-                    new BackgroundFill(Color.WHITE, new CornerRadii(30, 30, 30, 30, false), Insets.EMPTY)
-            ));
-
-            root.setPadding(new Insets(10));
-            root.setBackground(new Background(new BackgroundFill(
-                    Color.WHITE, new CornerRadii(30, 30, 30, 30, false), Insets.EMPTY
-            )));
-
-            root.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    new CornerRadii(30,30,30,30,false),
-                    new BorderWidths(2)
-            )));
-            return  root;
         }
 
         private VBox createAccountPanel(Utente utente){

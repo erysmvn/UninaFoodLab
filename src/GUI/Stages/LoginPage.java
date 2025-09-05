@@ -31,7 +31,6 @@ public class LoginPage extends MyStage {
     Label emailErrorLabel;
     Label errorLoginLabel;
 
-
     public LoginPage(Controller controller) {
         super(500, 725, MyStage.RootType.BORDERPANE);
         this.controller = controller;

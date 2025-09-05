@@ -181,7 +181,7 @@
 }
 
 #nomeCorsoField {
-    -fx-font-size: 50px; /* più grande del font attuale */
+    -fx-font-size: 45px; /* più grande del font attuale */
     -fx-pref-height: 80px; /* aumenta l'altezza del campo */
     -fx-padding: 10px; /* padding interno */
 }

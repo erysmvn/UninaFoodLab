@@ -28,21 +28,29 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class HomePage extends Stage {
-
     private Controller controller;
+    private ArrayList<Corso> corsi;
+    private Utente utente = null;
+
     private BorderPane root;
-    private ScrollPane corsiScrollPane;
     private Scene scene;
-    private HBox homeButtons;
-    private HBox corsiBox;
+    private Cursor originalCursor;
+
     private Boolean isLoggedIn = false;
     private Boolean isChef = false;
+    private boolean mostraTuttiCorsiClicked = false;
+
+    private HBox homeButtons;
+    private HBox corsiBox;
     private HBox choiceBox;
-    private ArrayList<Corso> corsi;
+    private ScrollPane corsiScrollPane;
+
     private TextField searchField;
+
     private Button searchButton;
     private Button tuttiCorsi;
     private Button homeButton;
+    private Button costoFilter;
 
     ToggleGroup choiceGroup;
     ToggleButton corsoChoice;
@@ -53,11 +61,7 @@ public class HomePage extends Stage {
     ToggleButton onlineChoice;
     ToggleButton presenzaChoice;
 
-    Button costoFilter;
 
-    private boolean mostraTuttiCorsiClicked = false;
-    private Utente utente = null;
-    private Cursor originalCursor;
 
     public HomePage(Controller controller) {
         this.controller = controller;
@@ -347,21 +351,11 @@ public class HomePage extends Stage {
         onlineChoice = new ToggleButton("Online");
         onlineChoice.setToggleGroup(modalitaGroup);
         onlineChoice.setUserData("Online");
-       /*
-        onlineChoice.setOnAction(event -> {
-            filterCorsiByModalitaIfNeeded();
-            setCorsiBox();
-        });
-        */
+
         presenzaChoice = new ToggleButton("Presenza");
         presenzaChoice.setToggleGroup(modalitaGroup);
         presenzaChoice.setUserData("Presenza");
-        /*
-        presenzaChoice.setOnAction(event ->{
-                filterCorsiByModalitaIfNeeded();
-                setCorsiBox();
-        });
-        */
+
         modalitaGroup.selectedToggleProperty().addListener((obs, oldT, choosed) -> {
             if (choosed != null && choosed.equals(oldT)) {
                 modalitaGroup.selectToggle(null);
@@ -625,7 +619,7 @@ public class HomePage extends Stage {
 
     }
 
-  public void setUtente(Utente utente){
+    public void setUtente(Utente utente){
         this.utente = utente;
         createHomeButton();
         setLoggedIn();
@@ -635,18 +629,23 @@ public class HomePage extends Stage {
         homeButtons.getChildren().clear();
         homeButtons.getChildren().add(homeButton);
     }
+
     public Boolean isLoggedIn(){
         return isLoggedIn;
     }
+
     public void setLoggedIn() {
         isLoggedIn = true;
     }
+
     public Boolean isChef(){
         return isChef;
     }
+
     public void setChef() {
         isChef = true;
     }
+
     public void setLogOut() {
         isChef = false;
         isLoggedIn = false;
@@ -655,7 +654,7 @@ public class HomePage extends Stage {
     }
 
 
-    private Timeline startAnimation(Text caricamentoText){
+    private void startAnimation(Text caricamentoText){
         Timeline AnimazionePuntini = new Timeline(
                 new KeyFrame(Duration.seconds(0), e -> caricamentoText.setText("Ricerca in corso")),
                 new KeyFrame(Duration.seconds(0.3), e -> caricamentoText.setText("Ricerca in corso.")),
@@ -666,7 +665,7 @@ public class HomePage extends Stage {
         AnimazionePuntini.setCycleCount(Animation.INDEFINITE);
         AnimazionePuntini.play();
 
-        return AnimazionePuntini;
+//        return AnimazionePuntini;
     }
 
     private void setTextAesthetics(Text text){

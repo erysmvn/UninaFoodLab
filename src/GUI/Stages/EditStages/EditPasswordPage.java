@@ -4,6 +4,7 @@ import Controller.Controller;
 import Exception.UserExceptions.ChangePasswordException.*;
 import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,10 +20,10 @@ import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
 
-public class EditPasswordPage extends Stage {
-
+public class EditPasswordPage extends MyStage {
         private Controller controller;
         private VBox root;
+
         private TextField txtVecchiaPassword;
         private PasswordField txtNuovaPassword;
         private PasswordField txtRipetiPassword;
@@ -32,25 +33,12 @@ public class EditPasswordPage extends Stage {
         private Label lblErroreInserimentoDB;
 
         public EditPasswordPage(Controller controller) {
-
+            super(600, 500, RootType.VBOX);
             this.controller = controller;
+            root = getRootVBox();
             this.setRoot();
-            this.setRootAesthetics();
 
-            Scene scene = new Scene(root, 600, 500);
-            scene.setFill(Color.TRANSPARENT);
-            scene.setOnKeyPressed(e->{
-                if(e.isControlDown() && e.getCode()== KeyCode.W){
-                    this.close();
-                }
-            });
-
-            scene.getStylesheets().add(
-                    getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-            );
-
-            this.initStyle(StageStyle.TRANSPARENT);
-            this.setScene(scene);
+            this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
         }
 
         private void setRoot(){
@@ -73,21 +61,8 @@ public class EditPasswordPage extends Stage {
             Region spacer3 = new Region();
             spacer3.setPrefHeight(30);
 
-            root = new VBox(15, funcBox, spacer1, labelModificaPassword,spacer3, gridDati, spacer, bottomBox,spacer2 );
-        }
-
-        private void setRootAesthetics(){
-            root.setPadding(new Insets(30, 30, 30, 30));
-            root.setAlignment(Pos.TOP_LEFT);
-            root.setBackground(new Background(
-                    new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
-            ));
-            root.setBorder(new Border(new BorderStroke(
-                    Color.valueOf("#3A6698"),
-                    BorderStrokeStyle.SOLID,
-                    new CornerRadii(30),
-                    new BorderWidths(2)
-            )));
+            root.setSpacing(15);
+            root.getChildren().addAll(funcBox, spacer1, labelModificaPassword, spacer3, gridDati, spacer, bottomBox, spacer2);
         }
 
         private VBox createVecchiaPasswordBox() {

@@ -10,6 +10,7 @@ import Exception.CorsoExceptions.CreateCorsoException.nameCorsoNotFoundException
 import Exception.CorsoExceptions.CreateCorsoException.priceCorsoNotFoundException;
 import Exception.CorsoExceptions.imageNotFoundException;
 import GUI.Buttons.MyButton;
+import GUI.Stages.MyStage;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,9 +30,9 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class EditCorsoPage extends Stage {
+public class EditCorsoPage extends MyStage {
 
-    private VBox vbox;
+    private VBox root;
     private HBox topHbox;
     private HBox bottomHbox;
     private VBox footerVbox;
@@ -61,15 +62,12 @@ public class EditCorsoPage extends Stage {
 
 
     public EditCorsoPage(Controller controller){
+        super(900, 750, RootType.VBOX);
         this.controller = controller;
 
-        this.initStyle(StageStyle.TRANSPARENT);
-
-        vbox = new VBox(25);
-        vbox.setPadding(new Insets(25));
-        vbox.setAlignment(Pos.TOP_CENTER);
-        vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        vbox.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID, new CornerRadii(30), new BorderWidths(2))));
+        root = getRootVBox();
+        root.setSpacing(25);
+        root.setAlignment(Pos.TOP_CENTER);
 
         topHbox = new HBox(15);
         topHbox.setPadding(new Insets(50, 0, 10, 0));
@@ -83,40 +81,14 @@ public class EditCorsoPage extends Stage {
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
         footerVbox.setSpacing(20);
 
-        clip = new Rectangle();
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        vbox.setClip(clip);
-        vbox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            clip.setWidth(newBounds.getWidth());
-            clip.setHeight(newBounds.getHeight());
-        });
-
-        moveFocusToNotShowBottonClicked();
-
         Region spacer = new Region();
         Region bottomspacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
         VBox.setVgrow(bottomspacer, Priority.ALWAYS);
 
-        vbox.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox, bottomspacer);
+        root.getChildren().addAll(topHbox, bottomHbox, spacer, footerVbox, bottomspacer);
 
-        Scene scene = new Scene(vbox, 900, 750);
-        scene.setFill(Color.TRANSPARENT);
-
-
-        scene.getStylesheets().add(
-                getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css").toExternalForm()
-        );
-
-        this.initStyle(StageStyle.TRANSPARENT);
-        this.setScene(scene);
-
-        this.setScene(scene);
-    }
-
-    private void moveFocusToNotShowBottonClicked(){
-        Platform.runLater(clip::requestFocus);
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
     public void initPage(Corso corso){
@@ -204,9 +176,11 @@ public class EditCorsoPage extends Stage {
 
     private void buildInfoBox(VBox infoBox) {
         nomeField = new TextField(corso.getNome());
-        nomeField.setFont(Font.font(40));
+        nomeField.setFont(Font.font(20));
         nomeField.setId("nomeCorsoField");
-        nomeField.setPrefWidth(400);
+        nomeField.setPrefWidth(300);
+        nomeField.setMaxHeight(80);
+        nomeField.setMaxWidth(400);
         nameError = new Label("");
         nameError.setTextFill(Color.RED);
         infoBox.getChildren().addAll(nomeField, nameError);
@@ -232,7 +206,7 @@ public class EditCorsoPage extends Stage {
         freqBox.setAlignment(Pos.CENTER_LEFT);
 
         Label freqWarning = new Label("*La frequenza settimanale non può essere minore di quella attuale.");
-        freqWarning.setFont(Font.font("System", FontPosture.ITALIC, 13));
+        freqWarning.setFont(Font.font("System", FontPosture.ITALIC, 14));
         freqWarning.setTextFill(Color.RED);
 
         VBox freqContainer = new VBox(5, labeledField("Frequenza:", freqBox), freqWarning);
@@ -255,7 +229,6 @@ public class EditCorsoPage extends Stage {
 
     private VBox createChefsBox() {
         VBox chefsBox = new VBox(5);
-        vbox.setAlignment(Pos.TOP_LEFT);
         chefsBox.setAlignment(Pos.TOP_LEFT);
         Label titolo = new Label("Chef del corso:");
         titolo.setFont(Font.font("System", FontWeight.BOLD, 28));
@@ -266,7 +239,7 @@ public class EditCorsoPage extends Stage {
 
         MyButton addChefButton = new MyButton("Aggiungi altro chef", MyButton.ButtonType.PRIMARY);
 
-        addChefButton.setSize(200, 40);
+        addChefButton.setSize(180, 30);
 
         addChefButton.setOnAction(e -> {
             addChefToCourse(() -> {

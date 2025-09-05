@@ -4,6 +4,7 @@ import Controller.Controller;
 import Entity.*;
 import GUI.Buttons.MyButton;
 import GUI.Stages.ClassDataStages.SessionePage;
+import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-public class EditSessionePage extends Stage {
+public class EditSessionePage extends MyStage {
     private Controller controller;
     private Sessione sessione;
 
@@ -54,23 +55,13 @@ public class EditSessionePage extends Stage {
 
 
     public EditSessionePage(Controller controller, SessionePage parent) {
+        super(800, 600, RootType.BORDERPANE);
         this.controller = controller;
         this.parent = parent;
-        this.initStyle(StageStyle.TRANSPARENT);
 
-        root = new BorderPane();
-        root.setPadding(new Insets(10));
-        root.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)));
-        root.setBorder(new Border(new BorderStroke(Color.valueOf("#3A6698"), BorderStrokeStyle.SOLID,
-                new CornerRadii(30), new BorderWidths(2))));
+        root = getRootBorderPane();
 
-        Scene scene = new Scene(root, 800, 600);
-        scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/Media/StyleSheets/fieldsAndBoxesStyle.css")).toExternalForm()
-        );
-
-        this.setScene(scene);
+        this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
     public void initPage(Sessione sessione) {

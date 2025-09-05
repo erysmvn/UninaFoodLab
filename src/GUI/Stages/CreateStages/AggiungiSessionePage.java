@@ -270,13 +270,9 @@ public class AggiungiSessionePage extends MyStage {
                     errorInserimentoDatiLabel.setText("Frequenza limite settimanale superata");
                 } else
                      errorInserimentoDatiLabel.setText("Errore inserimento dati. Riprovare più tardi");
-<<<<<<< HEAD
+
             }catch (Exception ex) {
                 showDialog("Errore di sistema. Riprovare più tardi");
-=======
-            } catch (Exception ex) {
-                System.err.println("Errore inatteso: " + ex.getMessage());
->>>>>>> 4f61d1e1dfd7809e08109f845ce877ba4bbd3f0f
             }
         });
 

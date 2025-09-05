@@ -417,4 +417,8 @@ public class AggiungiRicettaPage extends MyStage {
         return new Ingrediente(nome.trim(), allergeni.trim(), categoria.trim());
     }
 
+    public Stage getCaller(){
+        return caller;
+    }
+
 }

@@ -1,6 +1,7 @@
 package GUI.Stages;
 
 import GUI.Buttons.MyButton;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -174,4 +175,36 @@ public class MyStage extends Stage {
 
         confirmStage.showAndWait();
     }
+
+    protected void showDialog(String message) {
+        Stage dialog = createDialogAScomparsa(message);
+        dialog.show();
+
+        Platform.runLater(this::close);
+
+        new Thread(() -> {
+            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            Platform.runLater(dialog::close);
+        }).start();
+    }
+
+    private Stage createDialogAScomparsa(String message) {
+        Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
+
+        Label label = new Label(message);
+        label.setTextFill(Color.WHITE);
+        label.setStyle("-fx-background-color: rgba(128,128,128,0.73); -fx-padding: 20px; -fx-background-radius: 10;");
+        label.setFont(Font.font("System", FontWeight.BOLD, 16));
+
+        StackPane pane = new StackPane(label);
+        pane.setStyle("-fx-background-color: transparent;");
+        Scene scene = new Scene(pane);
+        scene.setFill(Color.TRANSPARENT);
+
+        dialog.setScene(scene);
+        return dialog;
+    }
+
+
 }

@@ -392,6 +392,7 @@ public class Controller {
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
+
         if (email.contains("@studenti.unina.it")) {
             utente = studenteDAO.login(email, password);
         } else {
@@ -399,6 +400,7 @@ public class Controller {
         }
         homePage.setUtente(utente);
         this.corsoPages.clear();
+
     }
 
     public void registerMethod(Utente utente) throws SQLException {

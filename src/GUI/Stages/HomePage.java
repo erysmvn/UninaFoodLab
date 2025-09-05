@@ -12,6 +12,7 @@ import javafx.event.Event;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
@@ -21,7 +22,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
+import org.postgresql.replication.fluent.physical.StartPhysicalReplicationCallback;
 
+import java.net.CookieHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -276,12 +279,11 @@ public class HomePage extends Stage {
         choiceBox = new HBox(2);
         choiceBox.setAlignment(Pos.CENTER);
 
-        Label cercaPerLabel = new Label("Cerca per");
-        cercaPerLabel.setFont(Font.font("System", 14));
-        cercaPerLabel.setTextFill(Color.web("WHITE"));
-        cercaPerLabel.setPadding(new Insets(6, 10, 5, 10));
-        cercaPerLabel.setStyle("-fx-background-color: #3a6698; -fx-background-radius: 7;");
+        Label cercaPerLabel = new Label("Cerca per:");
+        SetLabelSearchArea(cercaPerLabel);
 
+        Label modalitaLabel = new Label("Modalità:");
+        SetLabelSearchArea(modalitaLabel);
         choiceGroup = new ToggleGroup();
 
         corsoChoice = new ToggleButton("Corso");
@@ -387,11 +389,24 @@ public class HomePage extends Stage {
         setNotClickedButtonAesthetic(chefChoice);
         setNotClickedButtonAesthetic(tipologiaChoice);
 
-        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice, onlineChoice, presenzaChoice, tuttiCorsi, costoFilter);
+        Region spacer = new Region();
+        spacer.setMinWidth(15);
+        Region spacer2 = new Region();
+        spacer2.setMinWidth(15);
+
+        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice,chefChoice, tipologiaChoice, spacer,modalitaLabel, onlineChoice, presenzaChoice,spacer2, tuttiCorsi, costoFilter);
         return choiceBox;
     }
 
-       private void setNotFoundTextField() {
+    private void SetLabelSearchArea(Label modalitaLabel) {
+        modalitaLabel.setFont(Font.font("System", 14));
+        modalitaLabel.setTextFill(Color.web("#3a6698"));
+        modalitaLabel.setPadding(new Insets(6, 10, 5, 10));
+        modalitaLabel.setStyle("-fx-background-color: WHITE; -fx-background-radius: 7;-fx-border-color: #3A6698;-fx-border-width: 1; -fx-border-radius: 7");
+        modalitaLabel.setEffect(new DropShadow(10,1,3, Color.LIGHTGREY));
+    }
+
+    private void setNotFoundTextField() {
         Text notFound = new Text("Nessun corso trovato");
         this.setTextAesthetics(notFound);
         StackPane notFoundPane = new StackPane();

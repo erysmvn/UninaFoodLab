@@ -260,7 +260,7 @@ public class SessionePage extends MyStage {
                     controller.deleteSessione(sessione);
                     controller.refreshCalendario();
                 } catch (SQLException e) {
-                    // TODO dialog
+                    showDialog("Errore di sistema. Riprovare più tardi");
                 }
             });
         });

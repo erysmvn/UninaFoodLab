@@ -176,6 +176,7 @@ public class AggiungiRicettaPage extends MyStage {
             enableIngredienteSearch(ingredienteCombo, ingredientiEsistenti);
         } catch (Exception ignora) {}
 
+
         TextField nuovoIngredienteField = new TextField();
         nuovoIngredienteField.setPromptText("Nome nuovo ingrediente");
         nuovoIngredienteField.setVisible(false);
@@ -358,8 +359,7 @@ public class AggiungiRicettaPage extends MyStage {
             } catch (CategoriaEmptyException CEE) {
                 erroreInserimentoIngredientiLabel.setText("Inserire categoria ingrediente");
             }catch (Exception e) {
-                erroreInserimentoIngredientiLabel.setText("Errore nell'inserimento dati. Riprovare più tardi");
-                e.printStackTrace();
+                showDialog("Errore di sistema. Riprovare più tardi");
             }
         });
 

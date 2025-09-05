@@ -191,8 +191,7 @@ public class CreateCorsoPage extends MyStage {
         try {
             tipologie = controller.getAllTipologie();
         } catch (SQLException e) {
-            typeError.setText("Tipologie non trovate");
-            // TODO close
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
         for (TipologiaCorso t : tipologie) {
             corsoType.getItems().add(t.getNome());

@@ -222,14 +222,10 @@ public class LoginPage extends MyStage {
             passwordErrorLabel.setText("Password errata");
             passwordField.setStyle("-fx-border-color: red;");
         } catch (SQLException SQLE) {
-            showErrorLoginLabel();
+            showDialog("Errore di sistema.\nRiprovare più tardi.");
         }
     }
 
-    public void showErrorLoginLabel(){
-        errorLoginLabel.setTextFill(Color.RED);
-        errorLoginLabel.setText("Errore nel recuperare i dati. Riprovare più tardi");
-    }
 
     public MyButton createButtonRegister() {
         MyButton registerButton = new MyButton("Register", MyButton.ButtonType.PRIMARY);

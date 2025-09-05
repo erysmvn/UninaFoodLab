@@ -9,6 +9,7 @@ import GUI.Stages.MyStage;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -83,7 +84,7 @@ public class CorsoPage extends MyStage {
         try {
             controller.getRicetteTrattate(corso);
         } catch (SQLException e) {
-            // TODO dialog
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
 
         if (!controller.isHomePageChef()) {
@@ -143,16 +144,20 @@ public class CorsoPage extends MyStage {
        double imgWidth = image.getWidth();
        double imgHeight = image.getHeight();
 
-       double x = 0, y = 0, width = imgWidth, height = imgHeight;
+       double puntoInizioRitaglioX = 0, puntoInizioRitaglioY = 0;
 
-       if (imgWidth > imgHeight) {
-           width = imgHeight;
-           x = (imgWidth - imgHeight) / 2;
+       double latoCorto = 0;
+
+       if (imgWidth >= imgHeight) {
+           // width = imgHeight;
+           latoCorto = imgHeight;
+           puntoInizioRitaglioX = (imgWidth - imgHeight) / 2;
        } else if (imgHeight > imgWidth) {
-           height = imgWidth;
-           y = (imgHeight - imgWidth) / 2;
+           // height = imgWidth;
+           latoCorto = imgWidth;
+           puntoInizioRitaglioY = (imgHeight - imgWidth) / 2;
        }
-                imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, width, height));
+                imageView.setViewport(new Rectangle2D(puntoInizioRitaglioX, puntoInizioRitaglioY, latoCorto, latoCorto));
                 imageView.setFitWidth(size);
                 imageView.setFitHeight(size);
                 imageView.setPreserveRatio(false);
@@ -182,18 +187,16 @@ public class CorsoPage extends MyStage {
                     showSuccessDialog();
                 }
             } catch (SQLException sqle) {
-                // TODO DIALOG
-                sqle.printStackTrace();
+                showDialog("Errore di sistema. Riprovare più tardi");
             }
         });
 
         try {
-            if (controller.alreadySubscribed(corso)) {
+            if (controller.alreadySubscribed(corso))
                 setIscrittoCorso(subscribeButton);
-            }
+
         } catch (SQLException e) {
-            // TODO DIALOG
-            System.err.println("SQLException su studente");
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
         return subscribeButton;
     }
@@ -333,7 +336,7 @@ public class CorsoPage extends MyStage {
     private void buildDescBox(VBox descBox) {
         Label ricetteTrattate = new Label("Ricette trattate: ");
         ricetteTrattate.setFont(Font.font(30));
-        ricetteTrattate.setTextFill(Color.valueOf("#000000"));
+        ricetteTrattate.setTextFill(Color.WHITE);
         ricetteTrattate.setStyle("-fx-font-weight: bold;");
         ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
         descBox.getChildren().add(ricetteTrattate);
@@ -342,17 +345,20 @@ public class CorsoPage extends MyStage {
         VBox ricetteList = new VBox(5);
         ricetteList.setAlignment(Pos.TOP_LEFT);
 
-        if (!corso.getRicetteTrattate().isEmpty()) {
-            for (Ricetta r : corso.getRicetteTrattate()) {
-                createRicettaLabel(ricetteList, r, controller);
-            }
-        } else {
-            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
-            noRicetteTrattate.setFont(Font.font(28));
-            noRicetteTrattate.setTextFill(Color.valueOf("#000000"));
-            noRicetteTrattate.setAlignment(Pos.CENTER);
-            ricetteList.getChildren().add(noRicetteTrattate);
-        }
+                if (!corso.getRicetteTrattate().isEmpty()) {
+                    for (Ricetta r : corso.getRicetteTrattate()) {
+                        createRicettaLabel(ricetteList, r, controller);
+                    }
+                } else {
+                    Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
+                    noRicetteTrattate.setFont(Font.font(28));
+                    noRicetteTrattate.setTextFill(Color.WHITE);
+                    noRicetteTrattate.setAlignment(Pos.CENTER);
+                    ricetteList.getChildren().add(noRicetteTrattate);
+                }
+
+
+
 
         ScrollPane scrollPane = new ScrollPane(ricetteList);
         scrollPane.setFitToWidth(true);

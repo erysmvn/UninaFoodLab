@@ -115,7 +115,7 @@ public class ConfermaPartecipazionePage extends MyStage {
                 } catch (namingFileException NFE){
                     errorLabel.setText("Il nome file deve essere Nome_Cognome_DD-MM-YYYY");
                 }catch (Exception FAE ){
-                    errorLabel.setText("Caricamento fallito. Riprovare più tardi");
+                    showDialog("Errore di sistema. Riprovare più tardi");
                 }
             }
             event.consume();
@@ -183,7 +183,7 @@ public class ConfermaPartecipazionePage extends MyStage {
 
 
     private void showSuccessDialog() {
-        Stage dialog = createSuccessDialog();
+        Stage dialog = this.createSuccessDialog();
         dialog.show();
 
         javafx.application.Platform.runLater(this::close);

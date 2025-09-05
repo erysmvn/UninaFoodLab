@@ -59,7 +59,6 @@
             setButtonAsActive(corsiButton);
         }
 
-
         private void initButton(MyButton button, Pane panel) {
             button.setToOutlineButton();
             button.setOnAction(e -> {
@@ -105,7 +104,6 @@
             elencoCorsiPanel.setManaged(true);
             return elencoCorsiPanel;
         }
-
 
         private HBox createTopBar() {
             HBox topBar = new HBox();
@@ -176,15 +174,7 @@
 
         }
 
-
         public CalendarioPanel getCalendarioPanel(){
             return calendarioPanel;
-        }
-        public void setCalendarioPanel(CalendarioPanel calendarioPanel){
-            this.calendarioPanel = calendarioPanel;
-        }
-
-        public BorderPane getAccountCorsiPanel(){
-            return accountCorsiPanel;
         }
     }

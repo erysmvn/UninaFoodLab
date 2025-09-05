@@ -3,10 +3,10 @@ package Entity;
 import java.util.ArrayList;
 
 public class Utente {
-    String nome;
-    String cognome;
-    String email;
-    String passw;
+    protected String nome;
+    protected String cognome;
+    protected String email;
+    protected String passw;
     private ArrayList<Corso> corsi;
 
     public Utente(String nome, String cognome, String email, String passw) {

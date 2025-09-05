@@ -112,6 +112,62 @@ public class Controller {
 
 
     // Pages
+    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
+        for(CorsoPage cp : corsoPages){
+            if(cp.getCorso().getIdCorso() == c.getIdCorso())
+                return cp;
+        }
+        return null;
+    }
+
+    private RicettaPage isRicettaPageAlreadyOpened(Ricetta ricetta) {
+        for (RicettaPage rp : ricettaPages) {
+            if (rp.getRicetta().getIdRicetta() == ricetta.getIdRicetta())
+                return rp;
+        }
+        return null;
+    }
+
+    private SessionePage isSessionePageAlreadyOpened(Sessione sessione) {
+        for (SessionePage sp : sessionePages) {
+            if (sp.getSessione().getIdSessione() == sessione.getIdSessione())
+                return sp;
+        }
+        return null;
+    }
+
+    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
+        for(EditCorsoPage edcp : editCorsoPages){
+            if(edcp.getCorso().getIdCorso() == c.getIdCorso())
+                return edcp;
+        }
+        return null;
+    }
+
+    private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
+        for(EditSessionePage esp : editSessionePages){
+            if(esp.getSessione().getIdSessione() == s.getIdSessione())
+                return esp;
+        }
+        return null;
+    }
+
+    private AggiungiRicettaPage isAggiungiRicettaPageAlreadyOpened(Stage caller) {
+        for (AggiungiRicettaPage arp : aggiungiRicettaPages) {
+            if (arp.getCaller().equals(caller))
+                return arp;
+        }
+        return null;
+    }
+
+    private ConfermaPartecipazionePage isConfermaPartecipazionePageAlreadyOpened(SessionePresenza sessionePresenza) {
+        for (ConfermaPartecipazionePage cpp : confermaPartecipazionePages) {
+            if (cpp.getSessionePresenza().getIdSessione() == sessionePresenza.getIdSessione())
+                return cpp;
+        }
+        return null;
+    }
+
     public void openLoginPage(){
         if (loginPage == null || !loginPage.isShowing()){
             if( registerPage != null ){
@@ -143,58 +199,6 @@ public class Controller {
         }
     }
 
-    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
-        for(CorsoPage cp : corsoPages){
-            if(cp.getCorso().getIdCorso() == c.getIdCorso())
-                return cp;
-        }
-        return null;
-    }
-    private RicettaPage isRicettaPageAlreadyOpened(Ricetta ricetta) {
-        for (RicettaPage rp : ricettaPages) {
-            if (rp.getRicetta().getIdRicetta() == ricetta.getIdRicetta())
-                return rp;
-        }
-        return null;
-    }
-    private SessionePage isSessionePageAlreadyOpened(Sessione sessione) {
-        for (SessionePage sp : sessionePages) {
-            if (sp.getSessione().getIdSessione() == sessione.getIdSessione())
-                return sp;
-        }
-        return null;
-    }
-    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
-        for(EditCorsoPage edcp : editCorsoPages){
-            if(edcp.getCorso().getIdCorso() == c.getIdCorso())
-                return edcp;
-        }
-        return null;
-    }
-    private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
-        for(EditSessionePage esp : editSessionePages){
-            if(esp.getSessione().getIdSessione() == s.getIdSessione())
-                return esp;
-        }
-        return null;
-    }
-    private AggiungiRicettaPage isAggiungiRicettaPageAlreadyOpened(Stage caller) {
-        for (AggiungiRicettaPage arp : aggiungiRicettaPages) {
-            if (arp.getCaller().equals(caller))
-                return arp;
-        }
-        return null;
-    }
-    private ConfermaPartecipazionePage isConfermaPartecipazionePageAlreadyOpened(SessionePresenza sessionePresenza) {
-        for (ConfermaPartecipazionePage cpp : confermaPartecipazionePages) {
-            if (cpp.getSessionePresenza().getIdSessione() == sessionePresenza.getIdSessione())
-                return cpp;
-        }
-        return null;
-    }
-
-
-
     public void openEditCorsoPage(Corso corso){
         EditCorsoPage existingPage = isEditCorsoPageAlreadyOpened(corso);
 
@@ -208,9 +212,7 @@ public class Controller {
             EditCorsoPage editCorsoPage = new EditCorsoPage( this);
             editCorsoPage.initPage(corso);
             editCorsoPages.add(editCorsoPage);
-<<<<<<< HEAD
             editCorsoPage.setOnCloseRequest(e -> editCorsoPages.remove(editCorsoPage));
->>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
 
             editCorsoPage.show();
         }
@@ -237,7 +239,6 @@ public class Controller {
 
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
 
-<<<<<<< HEAD
         ConfermaPartecipazionePage existingPage = isConfermaPartecipazionePageAlreadyOpened(sessionePresenza);
 
         if (existingPage != null) {
@@ -271,7 +272,6 @@ public class Controller {
             sessionePage.setOnCloseRequest(e -> sessionePages.remove(sessionePage));
             sessionePage.show();
         }
->>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
     }
 
     public void openRicettaPage(Ricetta ricetta){
@@ -287,10 +287,7 @@ public class Controller {
             RicettaPage ricettaPage = new RicettaPage(this);
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
-<<<<<<< HEAD
-
             ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
->>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
             ricettaPage.show();
         }
     }
@@ -350,7 +347,6 @@ public class Controller {
     }
 
     public void openAggiungiRicettaPage(Stage caller){
-<<<<<<< HEAD
         AggiungiRicettaPage existingPage = isAggiungiRicettaPageAlreadyOpened(caller);
 
         if (existingPage != null) {
@@ -365,7 +361,6 @@ public class Controller {
             aggiungiRicettaPage.setOnCloseRequest(e -> aggiungiRicettaPages.remove(aggiungiRicettaPage));
             aggiungiRicettaPage.show();
         }
->>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
     }
 
     public void updateRicetteAggiunte(Ricetta ricetta,Stage caller) {
@@ -373,40 +368,6 @@ public class Controller {
             aggiungiSessionePage.updateRicetteAggiunte(ricetta);
         else if(caller instanceof EditSessionePage)
             ((EditSessionePage) caller).updateRicetteAggiunte(ricetta);
-    }
-
-
-    // Exit
-    public void closeApp(){
-        Platform.exit();
-    }
-
-    private void closeAllPages(ArrayList<? extends Stage> pages){
-        for(Stage page : pages){
-            if(page != null)
-                page.close();
-        }
-        pages.clear();
-    }
-
-    private void closeAllPages(){
-
-        closeAllPages(corsoPages);
-        closeAllPages(ricettaPages);
-        closeAllPages(sessionePages);
-        closeAllPages(confermaPartecipazionePages);
-        closeAllPages(aggiungiRicettaPages);
-        closeAllPages(editCorsoPages);
-        closeAllPages(editSessionePages);
-
-        ArrayList<Stage> singlePages = new ArrayList<>();
-        singlePages.add(accountPage);
-        singlePages.add(registerPage);
-        singlePages.add(modificaPasswordPage);
-        singlePages.add(createCorsoPage);
-        singlePages.add(aggiungiSessionePage);
-
-        closeAllPages(singlePages);
     }
 
     public void changeSessionePageButton(SessionePresenza sessionePresenza){
@@ -419,10 +380,10 @@ public class Controller {
         }
     }
 
-    public void removeRicetteToSessione(ArrayList<Ricetta> ricette, Sessione sessione)throws SQLException {
+    public void removeRicetteToSessione(ArrayList<Ricetta> ricette, Sessione sessione) throws SQLException {
         SessioneDAO sessioneDAO = new SessioneDAO(this);
-       for(Ricetta ricetta:  ricette)
-        sessioneDAO.removeRicetta(ricetta,sessione);
+        for(Ricetta ricetta:  ricette)
+            sessioneDAO.removeRicetta(ricetta,sessione);
     }
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
@@ -463,6 +424,41 @@ public class Controller {
         homePage.toFront();
         homePage.mostraTuttiCorsi();
     }
+
+
+    // Exit
+    public void closeApp(){
+        Platform.exit();
+    }
+
+    private void closeAllPages(ArrayList<? extends Stage> pages){
+        for(Stage page : pages){
+            if(page != null)
+                page.close();
+        }
+        pages.clear();
+    }
+
+    private void closeAllPages(){
+
+        closeAllPages(corsoPages);
+        closeAllPages(ricettaPages);
+        closeAllPages(sessionePages);
+        closeAllPages(confermaPartecipazionePages);
+        closeAllPages(aggiungiRicettaPages);
+        closeAllPages(editCorsoPages);
+        closeAllPages(editSessionePages);
+
+        ArrayList<Stage> singlePages = new ArrayList<>();
+        singlePages.add(accountPage);
+        singlePages.add(registerPage);
+        singlePages.add(modificaPasswordPage);
+        singlePages.add(createCorsoPage);
+        singlePages.add(aggiungiSessionePage);
+
+        closeAllPages(singlePages);
+    }
+
 
 
     // User

@@ -60,7 +60,7 @@ public class ConfermaPartecipazionePage extends MyStage {
         root.getChildren().addAll(dropArea, spacer, uploadButton, errorLabel, createCloseButton());
     }
 
-    private void setDropArea(){
+    private void setDropArea() {
         dropArea = new Label("Trascina qui il file");
         dropArea.setStyle("-fx-border-color: #3a6698;" +
                 " -fx-border-width: 1;" +
@@ -71,7 +71,7 @@ public class ConfermaPartecipazionePage extends MyStage {
         setDropAreaFunctionalities();
     }
 
-    private void checkNamingFile(String nomeFile)throws namingFileException{
+    private void checkNamingFile(String nomeFile) throws namingFileException {
             Utente utente = controller.getUtente();
             String dataItaliana = sessionePresenza.getData().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             String namingRight = utente.getNome() +"_"+ utente.getCognome()+"_"+dataItaliana+".pdf";
@@ -81,13 +81,13 @@ public class ConfermaPartecipazionePage extends MyStage {
 
     }
 
-    private void addFolgioAdesione(String filePath)throws SQLException {
+    private void addFolgioAdesione(String filePath) throws SQLException {
         controller.insertFoglioAdesione(filePath, sessionePresenza);
         FoglioAdesione foglio = controller.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
         sessionePresenza.getFogliAdesione().add(foglio);
     }
 
-    private void addFileToServer(File file)throws Exception{
+    private void addFileToServer(File file) throws Exception {
         Path destDir = Paths.get("src/Media/FogliDiAdesione/");
         Files.copy(file.toPath(),
                 destDir.resolve(nomeCorsoNoSpace+file.getName()),
@@ -96,7 +96,7 @@ public class ConfermaPartecipazionePage extends MyStage {
 
     }
 
-    private void setDropAreaFunctionalities(){
+    private void setDropAreaFunctionalities() {
         dropArea.setOnDragOver((DragEvent event) -> {
             if (event.getGestureSource() != dropArea && event.getDragboard().hasFiles())
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -122,13 +122,13 @@ public class ConfermaPartecipazionePage extends MyStage {
         });
     }
 
-    private void setUploadButton(){
+    private void setUploadButton() {
         uploadButton = new MyButton("Scegli file", MyButton.ButtonType.PRIMARY);
 
         setUploadButtonOnAction();
     }
 
-    private void setUploadButtonOnAction(){
+    private void setUploadButtonOnAction() {
         uploadButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File PDF", "*.pdf"));
@@ -144,7 +144,7 @@ public class ConfermaPartecipazionePage extends MyStage {
         });
     }
 
-    private void setUploadButtonToConfirmButton(File file){
+    private void setUploadButtonToConfirmButton(File file) {
         uploadButton.setText("Carica");
         dropArea.setText("File caricato: " + file.getName());
 
@@ -180,7 +180,6 @@ public class ConfermaPartecipazionePage extends MyStage {
 
         return closeButton;
     }
-
 
     private void showSuccessDialog() {
         Stage dialog = this.createSuccessDialog();

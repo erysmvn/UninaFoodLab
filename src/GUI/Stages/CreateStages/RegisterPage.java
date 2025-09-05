@@ -72,20 +72,6 @@ public class RegisterPage extends MyStage {
         root.getChildren().addAll(funcBox, spacer1, topBox, spacer2, lblCredenziali, gridCredenziali, lblDati, gridDati, spacer, bottomBox);
     }
 
-    private void setRootAesthetics(){
-        root.setPadding(new Insets(20, 20, 50, 50));
-        root.setAlignment(Pos.TOP_LEFT);
-        root.setBackground(new Background(
-                new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
-        ));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
-    }
-
     private VBox createNomeBox() {
         Label lbl = new Label("Nome *");
         txtNome = new TextField();

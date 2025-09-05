@@ -129,7 +129,6 @@ public class AggiungiRicettaPage extends MyStage {
         return box;
     }
 
-
     private VBox createIngredientiSection() {
         VBox container = new VBox(10);
         container.setStyle("-fx-background-color: transparent;");
@@ -265,7 +264,6 @@ public class AggiungiRicettaPage extends MyStage {
         return ricetta;
     }
 
-
     private void enableIngredienteSearch(ComboBox<String> combo, ArrayList<Ingrediente> ingredienti) {
         ObservableList<String> originalItems = FXCollections.observableArrayList();
         originalItems.add("Nuovo Ingrediente");
@@ -295,7 +293,6 @@ public class AggiungiRicettaPage extends MyStage {
         });
     }
 
-
     private HBox createTopBox() {
         HBox topBox = new HBox(5);
         topBox.setAlignment(Pos.TOP_RIGHT);
@@ -324,7 +321,6 @@ public class AggiungiRicettaPage extends MyStage {
         closeButton.setToCloseButtonWithAction(this);
         return closeButton;
     }
-
 
     private VBox createActionButtons() {
         VBox buttonBox = new VBox(10);
@@ -366,7 +362,6 @@ public class AggiungiRicettaPage extends MyStage {
         buttonBox.getChildren().addAll(aggiungiBtn, annullaBtn);
         return buttonBox;
     }
-
 
     private IngredienteFormaRicetta getIngredienteFormaRicettaBox(Ingrediente ingrediente, VBox ingBox) {
 

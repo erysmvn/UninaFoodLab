@@ -115,7 +115,7 @@ public class CorsoPage extends MyStage {
         bottomHbox.getChildren().add(descBox);
     }
 
-        private void addImageCorso(String imagePath, VBox imgBox) {
+    private void addImageCorso(String imagePath, VBox imgBox) {
             ImageView imageView;
             Image image;
             try {
@@ -347,7 +347,7 @@ public class CorsoPage extends MyStage {
 
                 if (!corso.getRicetteTrattate().isEmpty()) {
                     for (Ricetta r : corso.getRicetteTrattate()) {
-                        createRicettaLabel(ricetteList, r, controller);
+                        createRicettaLabel(ricetteList, r);
                     }
                 } else {
                     Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
@@ -374,14 +374,14 @@ public class CorsoPage extends MyStage {
         descBox.getChildren().add(scrollPane);
     }
 
-    private void createRicettaLabel(VBox ricetteList, Ricetta r, Controller controller) {
-        Label ricettaLabel = new Label("•" + r.getNome());
+    private void createRicettaLabel(VBox ricetteList, Ricetta ricetta) {
+        Label ricettaLabel = new Label("•" + ricetta.getNome());
         ricettaLabel.setFont(Font.font(17));
         ricettaLabel.setTextFill(Color.valueOf("#000000"));
         ricettaLabel.setAlignment(Pos.CENTER_LEFT);
         ricettaLabel.setStyle("-fx-cursor: hand;");
 
-        ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(r));
+        ricettaLabel.setOnMouseClicked(event -> controller.openRicettaPage(ricetta));
 
         ricetteList.getChildren().add(ricettaLabel);
     }

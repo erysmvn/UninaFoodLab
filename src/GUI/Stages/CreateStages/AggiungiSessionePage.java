@@ -100,7 +100,6 @@ public class AggiungiSessionePage extends MyStage {
         return orarioBox;
     }
 
-
     private HBox createDateBox() {
         HBox dateBox = new HBox(30);
         VBox dataSessioneBox = new VBox(5);

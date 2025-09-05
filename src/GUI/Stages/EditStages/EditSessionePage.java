@@ -41,7 +41,6 @@ public class EditSessionePage extends MyStage {
     private DatePicker dataPicker;
     private Spinner<Integer> hourSpinnerInizio;
     private Spinner<Integer> minuteSpinnerInizio;
-
     private Spinner<Integer> hourSpinnerFine;
     private Spinner<Integer> minuteSpinnerFine;
 

@@ -325,8 +325,11 @@ public class HomePage extends Stage {
                 setClickedButtonAesthetic(tuttiCorsi);
                 mostraTuttiCorsiClicked = true;
                 setCorsiByChoice();
-            }else
+            }else{
+                setNotClickedButtonAesthetic(tuttiCorsi);
+                mostraTuttiCorsiClicked = false;
                 setCorsiByChoice();
+            }
         });
 
         costoFilter = new Button("€");
@@ -392,10 +395,12 @@ public class HomePage extends Stage {
         Text notFound = new Text("Nessun corso trovato");
         this.setTextAesthetics(notFound);
         StackPane notFoundPane = new StackPane();
+
         Rectangle bg = new Rectangle(600, 150);
         bg.setArcWidth(30);
         bg.setArcHeight(30);
         bg.setFill(Color.rgb(255, 255, 255, 0.85));
+
         notFoundPane.getChildren().addAll(bg, notFound);
         corsiBox.getChildren().add(notFoundPane);
     }

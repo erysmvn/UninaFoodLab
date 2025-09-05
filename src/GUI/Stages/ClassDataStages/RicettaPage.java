@@ -131,9 +131,8 @@ public class RicettaPage extends MyStage {
         try {
             controller.getIngredientiRicetta(ricetta);
             controller.getAllergeniRicetta(ricetta);
-        } catch (SQLException sqle) {
+        } catch (SQLException SQLE) {
             // TODO dialog
-            sqle.printStackTrace();
         }
 
         Text allergeniLabel = new Text("Allergeni: ");

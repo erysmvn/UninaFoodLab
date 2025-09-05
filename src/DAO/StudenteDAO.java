@@ -31,36 +31,33 @@ public class StudenteDAO implements StudenteDAOInterface {
     public Studente login(String email, String password)
             throws emailNotFoundException, passwordErrataException, SQLException {
 
-        Studente studente = null;
         email = email.trim();
 
         String sql = "SELECT * FROM studente WHERE email = ? AND passw = md5(?)";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            pstmt.setString(1, email);
-            pstmt.setString(2, password);
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, email);
+        pstmt.setString(2, password);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    studente = new Studente(
-                            rs.getString("matricola"),
-                            rs.getString("nome_stud"),
-                            rs.getString("cognome"),
-                            rs.getString("email"),
-                            rs.getString("passw")
-                    );
-                    studente.setCorsi(getCorsiFromStudente(studente));
-                } else {
-                    if (existingEmail(email)) {
-                        throw new passwordErrataException();
-                    } else {
-                        throw new emailNotFoundException();
-                    }
-                }
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            Studente studente = new Studente(
+                    rs.getString("matricola"),
+                    rs.getString("nome_stud"),
+                    rs.getString("cognome"),
+                    rs.getString("email"),
+                    rs.getString("passw")
+            );
+            studente.setCorsi(getCorsiFromStudente(studente));
+            return studente;
+        } else {
+            if (existingEmail(email)) {
+                throw new passwordErrataException();
+            } else {
+                throw new emailNotFoundException();
             }
         }
-
-        return studente;
+        
     }
 
     @Override
@@ -85,7 +82,6 @@ public class StudenteDAO implements StudenteDAOInterface {
     @Override
     public void checkOldPassword(String oldPassword, Studente studente) throws SQLException, changePasswordException {
         String sql = "SELECT 1 FROM Studente WHERE passw = md5(?) AND matricola = ?";
-        System.out.println("Controllo password: " + oldPassword);
 
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setString(1, oldPassword);
@@ -98,55 +94,61 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     @Override
-    public void changeUserPassword(String newPassword, Studente studente)throws changePasswordException, SQLException {
+    public void changeUserPassword(String newPassword, Studente studente) throws changePasswordException, SQLException {
 
         String sql = "UPDATE Studente SET passw = md5(?) WHERE matricola = ?";
 
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, newPassword);
-            ps.setString(2, studente.getMatricola());
-            int rows = ps.executeUpdate();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, newPassword);
+        ps.setString(2, studente.getMatricola());
+        int rows = ps.executeUpdate();
 
 
-            if (rows > 0) {
-                studente.setPassw(newPassword);
-            } else {
-                throw new changePasswordException();
-            }
+        if (rows > 0) {
+            studente.setPassw(newPassword);
+        } else {
+            throw new changePasswordException();
+        }
 
     }
 
     @Override
     public void subscribeToCourse(Studente studente, Corso corso) throws SQLException {
-            String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, studente.getMatricola());
-            stmt.setInt(2, corso.getIdCorso());
-            stmt.executeUpdate();
+        String sql = "INSERT INTO segue (matricola, idcorso) VALUES (?, ?)";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+
+        stmt.setString(1, studente.getMatricola());
+        stmt.setInt(2, corso.getIdCorso());
+
+        stmt.executeUpdate();
     }
 
     @Override
     public void unsubscribeToCourse(Studente studente, Corso corso) throws SQLException {
-            String sql = "DELETE FROM segue WHERE matricola = ? AND idcorso = ?";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, studente.getMatricola());
-            stmt.setInt(2, corso.getIdCorso());
-            stmt.executeUpdate();
+        String sql = "DELETE FROM segue WHERE matricola = ? AND idcorso = ?";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+            
+        stmt.setString(1, studente.getMatricola());
+        stmt.setInt(2, corso.getIdCorso());
+            
+        stmt.executeUpdate();
     }
 
     @Override
     public Boolean checkIfSubscribed(Studente studente, Corso corso) throws SQLException {
-            String sql = "SELECT COUNT(*) FROM segue WHERE matricola = ? AND idcorso = ?";
-            PreparedStatement stmt = con.prepareStatement(sql);
+        String sql = "SELECT COUNT(*) FROM segue WHERE matricola = ? AND idcorso = ?";
+        PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setString(1, studente.getMatricola());
-            stmt.setInt(2, corso.getIdCorso());
+        stmt.setString(1, studente.getMatricola());
+        stmt.setInt(2, corso.getIdCorso());
 
-            ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-                    return count > 0;
-                }
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            int count = rs.getInt(1);
+            return count > 0;
+        }
         return false;
     }
 
@@ -171,13 +173,12 @@ public class StudenteDAO implements StudenteDAOInterface {
     }
 
     private boolean existingEmail(String email) throws SQLException {
-        String sql = "Select 1 from studente where email = '" + email + "'";
+        String sql = "Select 1 from studente where email = ?";
+
         PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, email);
+
         ResultSet rs = pstmt.executeQuery();
-        if(rs.next()){
-            return true;
-        }else {
-            return false;
-        }
+        return rs.next();
     }
 }

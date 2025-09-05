@@ -24,6 +24,7 @@ public class ChefDAO implements ChefDAOInterface {
         this.controller = controller;
     }
 
+
     // Methods
     @Override
     public Chef login(String email, String password) throws emailNotFoundException, passwordErrataException,SQLException{
@@ -38,13 +39,11 @@ public class ChefDAO implements ChefDAOInterface {
 
         if(rs.next()){
             chef = createChefByRs(rs);
-        }else{
-
+        } else {
             if (existingEmail(email))
                 throw new passwordErrataException();
             else
                 throw new emailNotFoundException();
-
         }
         return chef;
     }
@@ -53,27 +52,27 @@ public class ChefDAO implements ChefDAOInterface {
     public Chef register(Chef chef) throws SQLException {
         String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
 
-            PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            pstmt.setString(1, chef.getNome());
-            pstmt.setString(2, chef.getCognome());
-            pstmt.setString(3, chef.getEmail());
-            pstmt.setString(4, chef.getPassw());
+        pstmt.setString(1, chef.getNome());
+        pstmt.setString(2, chef.getCognome());
+        pstmt.setString(3, chef.getEmail());
+        pstmt.setString(4, chef.getPassw());
 
-            int rowsInserted = pstmt.executeUpdate();
+        int rowsInserted = pstmt.executeUpdate();
 
-            if (rowsInserted == 0)
-                throw new SQLException();
+        if (rowsInserted == 0)
+            throw new SQLException();
 
 
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+        ResultSet generatedKeys = pstmt.getGeneratedKeys();
 
-                if (generatedKeys.next()){
-                    int id = generatedKeys.getInt("idchef");
-                    chef.setIdchef(id);
-                } else {
-                    throw new SQLException();
-                }
+        if (generatedKeys.next()){
+            int id = generatedKeys.getInt("idchef");
+            chef.setIdchef(id);
+        } else {
+            throw new SQLException();
+        }
 
         return chef;
     }
@@ -122,39 +121,41 @@ public class ChefDAO implements ChefDAOInterface {
         while (rs.next()) {
             Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
             chef.getCorsi().add(corso);
-            System.out.println(corso.getIdCorso() +"- - - "+ corso.getNome());
         }
     }
 
     @Override
     public Chef getChefDaAggiungereToNuovoCorso(String nome, String cognome, String email) throws SQLException {
         String sql = "SELECT * FROM chef WHERE UPPER(nome_chef) = UPPER(?) AND UPPER(cognome) = UPPER(?) AND UPPER(email) = UPPER(?);";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, nome);
-            pstmt.setString(2, cognome);
-            pstmt.setString(3, email);
+        
+        PreparedStatement pstmt = con.prepareStatement(sql);
 
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return createChefByRs(rs);
-            }
+        pstmt.setString(1, nome);
+        pstmt.setString(2, cognome);
+        pstmt.setString(3, email);
+
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return createChefByRs(rs);
+        }
+
         return null;
     }
 
 
     private boolean existingEmail(String email) throws SQLException {
-        String sql = "Select 1 from chef where email = '" + email + "'";
+        String sql = "Select 1 from chef where email = ?";
+
         PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, email);
+
         ResultSet rs = pstmt.executeQuery();
-        if(rs.next()){
-            return true;
-        }else {
-            return false;
-        }
+
+        return rs.next();
     }
 
 
-    private Chef createChefByRs(ResultSet rs) throws SQLException{
+    private Chef createChefByRs(ResultSet rs) throws SQLException {
         Chef chef = new Chef(
                 rs.getInt("idchef"),
                 rs.getString("nome_chef"),
@@ -163,11 +164,7 @@ public class ChefDAO implements ChefDAOInterface {
                 rs.getString("passw")
         );
         setCorsiToChef(chef);
-        System.out.println("Corsi trovati per chef " + chef.getNome() + ": " + chef.getCorsi().size());
-        System.out.println(chef.getCorsi());
         return chef;
     }
-
-
 
 }

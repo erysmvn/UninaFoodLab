@@ -40,17 +40,17 @@ public class Controller {
 
     private ElencoCorsiPanel elencoCorsiPanel;
 
-    private DBConnection dbc;
+    private final DBConnection dbc;
 
     private Utente utente;
 
-    private ArrayList<CorsoPage> corsoPages = new ArrayList<>();
-    private ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
-    private ArrayList<SessionePage> sessionePages = new ArrayList<>();
-    private ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
-    private ArrayList<AggiungiRicettaPage> aggiungiRicettaPages = new ArrayList<>();
-    private ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
-    private ArrayList<EditSessionePage> editSessionePages = new ArrayList<>();
+    private final ArrayList<CorsoPage> corsoPages = new ArrayList<>();
+    private final ArrayList<RicettaPage> ricettaPages = new ArrayList<>();
+    private final ArrayList<SessionePage> sessionePages = new ArrayList<>();
+    private final ArrayList<ConfermaPartecipazionePage> confermaPartecipazionePages = new ArrayList<>();
+    private final ArrayList<AggiungiRicettaPage> aggiungiRicettaPages = new ArrayList<>();
+    private final ArrayList<EditCorsoPage> editCorsoPages = new ArrayList<>();
+    private final ArrayList<EditSessionePage> editSessionePages = new ArrayList<>();
 
     private final ChefDAO chefDAO;
     private final StudenteDAO studenteDAO;
@@ -137,7 +137,7 @@ public class Controller {
             CorsoPage corsoPage = new CorsoPage( this);
             corsoPage.initPage(corso);
             corsoPages.add(corsoPage);
-            corsoPage.setOnCloseRequest(e -> corsoPages.remove(corsoPage));
+            corsoPage.setOnCloseRequest(_ -> corsoPages.remove(corsoPage));
 
             corsoPage.show();
         }
@@ -164,7 +164,7 @@ public class Controller {
             EditCorsoPage editCorsoPage = new EditCorsoPage( this);
             editCorsoPage.initPage(corso);
             editCorsoPages.add(editCorsoPage);
-            editCorsoPage.setOnCloseRequest(e -> corsoPages.remove(editCorsoPage));
+            editCorsoPage.setOnCloseRequest(_ -> editCorsoPages.remove(editCorsoPage));
 
             editCorsoPage.show();
         }
@@ -191,7 +191,7 @@ public class Controller {
             EditSessionePage editSessionePage = new EditSessionePage( this, sp);
             editSessionePage.initPage(s);
             editSessionePages.add(editSessionePage);
-            editSessionePage.setOnCloseRequest(e -> editSessionePages.remove(editSessionePage));
+            editSessionePage.setOnCloseRequest(_ -> editSessionePages.remove(editSessionePage));
 
             editSessionePage.show();
         }
@@ -216,7 +216,7 @@ public class Controller {
         ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
         confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
         confermaPartecipazionePages.add(confermaPartecipazionePage);
-        confermaPartecipazionePage.setOnCloseRequest(e->confermaPartecipazionePages.remove(confermaPartecipazionePage));
+        confermaPartecipazionePage.setOnCloseRequest(_ ->confermaPartecipazionePages.remove(confermaPartecipazionePage));
         confermaPartecipazionePage.show();
     }
 
@@ -224,7 +224,7 @@ public class Controller {
         SessionePage sessionePage = new SessionePage(this);
         sessionePage.initPage(sessione);
         sessionePages.add(sessionePage);
-        sessionePage.setOnCloseRequest(e -> sessionePages.remove(sessionePage));
+        sessionePage.setOnCloseRequest(_ -> sessionePages.remove(sessionePage));
         sessionePage.show();
     }
 
@@ -233,7 +233,7 @@ public class Controller {
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
 
-            ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
+            ricettaPage.setOnCloseRequest(_ -> ricettaPages.remove(ricettaPage));
             ricettaPage.show();
     }
 
@@ -287,7 +287,7 @@ public class Controller {
 
     public void openAggiungiRicettaPage(Stage caller){
         //todo o si apre una sola aggiungiRicettaPage alla volta oppure si deve controllare se già aperta
-        // (funzione chiamta da editSessionePage oppure aggiungiSessionePage
+        // (funzione chiamata da editSessionePage oppure aggiungiSessionePage
         AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this,caller);
         aggiungiRicettaPages.add(aggiungiRicettaPage);
         aggiungiRicettaPage.show();
@@ -470,16 +470,14 @@ public class Controller {
 
     // Corso
     public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
-        ArrayList<Corso> corsi = corsoDAO.searchCorsiByTipologia(tipologia);
-        return corsi;
+        return corsoDAO.searchCorsiByTipologia(tipologia);
     }
 
     public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws corsiNotFoundException,SQLException {
-        ArrayList<Corso> corsi = corsoDAO.searchCorsiByChef(nomeChef);
-        return corsi;
+        return corsoDAO.searchCorsiByChef(nomeChef);
     }
 
-    public ArrayList<Corso> getMostFollowedCourses(int limit) throws SQLException {
+    public ArrayList<Corso> getMostFollowedCourses(int limit) throws SQLException, corsiNotFoundException {
         return corsoDAO.getCorsiConPiuStudenti(limit);
     }
 
@@ -595,7 +593,7 @@ public class Controller {
         return ricettaDAO.getRicetteByIdSessione(idSessione);
     }
 
-    public void getIngredientiRicetta(Ricetta Ricetta) {
+    public void getIngredientiRicetta(Ricetta Ricetta) throws SQLException {
         ricettaDAO.getIngredienti(Ricetta);
     }
 

@@ -284,7 +284,6 @@ public class EditSessionePage extends MyStage {
             long durataMinuti = Duration.between(dateTimeInizio, dateTimeFine).toMinutes();
 
             Float durataOre = durataMinuti / 60f;
-            System.out.println("durata: " + durataOre);
 
             sessione.setDurata(durataOre);
 

@@ -5,6 +5,7 @@ import Entity.Chef;
 import Entity.Corso;
 import Entity.Studente;
 import Exception.CorsoExceptions.imageNotFoundException;
+import GUI.Buttons.MyButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -28,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CorsoAccountPanel extends Pane {
-
         Controller controller;
         Corso corso;
+
         HBox content;
         ElencoCorsiPanel parent;
 
@@ -150,14 +151,12 @@ public class CorsoAccountPanel extends Pane {
                 12
         );
         chefsLabel.setFont(robotoFont);
-        chefsLabel.setTextFill(Color.valueOf("#000000"));
+        chefsLabel.setTextFill(Color.WHITE);
         return chefsLabel;
     }
 
     private Button createAddSessionButton(){
-        Button addSessionButton = new Button("Aggiungi sessione");
-        addSessionButton.setTextFill(Color.WHITE);
-        addSessionButton.setStyle("-fx-background-color: \"#3A6698\";");
+        MyButton addSessionButton = new MyButton("Aggiungi sessione", MyButton.ButtonType.PRIMARY);
 
         addSessionButton.setPrefWidth(160);
         addSessionButton.setMinWidth(160);
@@ -167,14 +166,11 @@ public class CorsoAccountPanel extends Pane {
             controller.openAggiungiSessionePage(corso);
         });
 
-        this.styleButton(addSessionButton, Color.valueOf("#3A6698"));
         return addSessionButton;
     }
 
     private Button createUnsubscribeButton(){
-        Button unsubscribeButton = new Button("x");
-        unsubscribeButton.setTextFill(Color.WHITE);
-        unsubscribeButton.setStyle("-fx-background-color: \"#da3d26\";");
+        MyButton unsubscribeButton = new MyButton("x", MyButton.ButtonType.SECONDARY);
 
         unsubscribeButton.setPrefWidth(30);
         unsubscribeButton.setMinWidth(30);
@@ -199,20 +195,13 @@ public class CorsoAccountPanel extends Pane {
                 });
             }
         });
-        this.styleButton(unsubscribeButton, Color.valueOf("#da3d26"));
 
         return unsubscribeButton;
     }
 
     private Button createUpdateButton() {
-        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/Media/Icons/editIcon.png")));
-        icon.setFitWidth(16);
-        icon.setFitHeight(16);
-        icon.setPreserveRatio(true);
-
-        Button updateButton = new Button();
-        updateButton.setGraphic(icon);
-        updateButton.setStyle("-fx-background-color: #3A6698;");
+        MyButton updateButton = new MyButton("", MyButton.ButtonType.PRIMARY);
+        updateButton.setWithIcon("/Media/Icons/editIcon.png", 16, 16);
 
         updateButton.setPrefWidth(30);
         updateButton.setMinWidth(30);
@@ -222,8 +211,6 @@ public class CorsoAccountPanel extends Pane {
             controller.openEditCorsoPage(corso);
             controller.refreshCorsi(parent);
         });
-
-        this.styleButton(updateButton, Color.valueOf("#3A6698"));
 
         return updateButton;
     }
@@ -246,11 +233,8 @@ public class CorsoAccountPanel extends Pane {
         label.setTextAlignment(TextAlignment.CENTER);
         label.setMaxWidth(300);
 
-        Button yesButton = new Button("Si");
-        Button noButton = new Button("No");
-
-        styleButton(yesButton, Color.valueOf("#3A6698"));
-        styleButton(noButton, Color.valueOf("#da3d26"));
+        MyButton yesButton = new MyButton("Yes", MyButton.ButtonType.PRIMARY);
+        MyButton noButton = new MyButton("No", MyButton.ButtonType.SECONDARY);
 
         HBox buttons = new HBox(15, yesButton, noButton);
         buttons.setAlignment(Pos.CENTER);
@@ -274,16 +258,5 @@ public class CorsoAccountPanel extends Pane {
         noButton.setOnAction(e -> confirmStage.close());
 
         confirmStage.showAndWait();
-    }
-
-    private void styleButton(Button button, Color color) {
-        button.setPrefSize(80, 30);
-        button.setFont(Font.font("System", FontWeight.BOLD, 14));
-        button.setTextFill(Color.WHITE);
-        button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
-        button.setCursor(Cursor.HAND);
-
-        button.setOnMouseEntered(e -> button.setOpacity(0.8));
-        button.setOnMouseExited(e -> button.setOpacity(1.0));
     }
 }

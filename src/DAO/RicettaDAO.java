@@ -43,26 +43,16 @@ public class RicettaDAO implements RicettaDAOInterface {
     }
 
     public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
-
-
         String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, unità, quantità) " +
                        "VALUES (?, ?, ?::unità_ingrediente, ?)";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            for (IngredienteFormaRicetta ingredienteFormaRicetta : ricetta.getIngredienteFormaRicetta()) {
-
-                pstmt.setInt(1, ricetta.getIdRicetta());
-                pstmt.setInt(2, ingredienteFormaRicetta.getIngrediente().getIdIngrediente());
-                pstmt.setString(3, ingredienteFormaRicetta.getUnitaIngrediente().getDbValue());
-                pstmt.setInt(4, ingredienteFormaRicetta.getQuantita());
-                pstmt.executeUpdate();
-
-                System.out.println(ingredienteFormaRicetta.getUnitaIngrediente().getDbValue());
-                System.out.println(ingredienteFormaRicetta.getQuantita());
-                System.out.println(ingredienteFormaRicetta.getIngrediente().getIdIngrediente());
-                System.out.println(ricetta.getIdRicetta());
-
-            }
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        for (IngredienteFormaRicetta ingredienteFormaRicetta : ricetta.getIngredienteFormaRicetta()) {
+            pstmt.setInt(1, ricetta.getIdRicetta());
+            pstmt.setInt(2, ingredienteFormaRicetta.getIngrediente().getIdIngrediente());
+            pstmt.setString(3, ingredienteFormaRicetta.getUnitaIngrediente().getDbValue());
+            pstmt.setInt(4, ingredienteFormaRicetta.getQuantita());
+            pstmt.executeUpdate();
         }
     }
 
@@ -77,6 +67,7 @@ public class RicettaDAO implements RicettaDAOInterface {
                 rs.getInt("tempo_di_preparazione"),
                 rs.getString("autore")
         );
+
         getIngredienti(ricetta);
         getAllergeniRicetta(ricetta);
         return ricetta;
@@ -84,7 +75,7 @@ public class RicettaDAO implements RicettaDAOInterface {
 
     // Get Methods
     @Override
-    public void getIngredienti(Ricetta ricetta) {
+    public void getIngredienti(Ricetta ricetta) throws SQLException {
         ricetta.allocaArrayIngredienti();
         Ingrediente ingrediente;
 
@@ -94,22 +85,18 @@ public class RicettaDAO implements RicettaDAOInterface {
                 "NATURAL JOIN ricetta " +
                 "WHERE idricetta = ?";
 
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            pstmt.setInt(1, ricetta.getIdRicetta());
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setInt(1, ricetta.getIdRicetta());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    ingrediente = new Ingrediente(
-                            rs.getInt("idIngrediente"),
-                            rs.getString("nome_ingrediente"),
-                            rs.getString("allergeni"),
-                            rs.getString("categoria")
-                    );
-                    ricetta.addIngrediente(ingrediente);
-                }
-            }
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            ingrediente = new Ingrediente(
+                    rs.getInt("idIngrediente"),
+                    rs.getString("nome_ingrediente"),
+                    rs.getString("allergeni"),
+                    rs.getString("categoria")
+            );
+            ricetta.addIngrediente(ingrediente);
         }
     }
 
@@ -120,6 +107,7 @@ public class RicettaDAO implements RicettaDAOInterface {
                 return u;
             }
         }
+
         return UnitaIngrediente.Quantita;
     }
 
@@ -128,9 +116,12 @@ public class RicettaDAO implements RicettaDAOInterface {
     public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{
         ArrayList<Ricetta> ricette = new ArrayList<>();
         String sql = "select * from ricetta natural join tratta natural join sessione s where idsessione = ?";
+        
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, idsessione);
+        
         ResultSet rs = ps.executeQuery();
+
         while(rs.next()){
             ricette.add(createRicettaByResulSet(rs));
         }
@@ -148,13 +139,13 @@ public class RicettaDAO implements RicettaDAOInterface {
         String toReturn = "";
 
         PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, ricetta.getIdRicetta());
-            pstmt.setInt(2, ingrediente.getIdIngrediente());
+        pstmt.setInt(1, ricetta.getIdRicetta());
+        pstmt.setInt(2, ingrediente.getIdIngrediente());
 
-            ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    toReturn = rs.getString("quantità") + " " + rs.getString("unità");
-                }
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            toReturn = rs.getString("quantità") + " " + rs.getString("unità");
+        }
 
         return toReturn;
     }
@@ -171,22 +162,25 @@ public class RicettaDAO implements RicettaDAOInterface {
         Set<String> allergeniSet = new HashSet<>();
 
         PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, ricetta.getIdRicetta());
+        pstmt.setInt(1, ricetta.getIdRicetta());
 
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                String allergeniStr = rs.getString("allergeni");
-                if (allergeniStr != null && !allergeniStr.isEmpty()) {
-                    String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
-                    for (String allergene : allergeniArray) {
-                        if (!"Nessuno".equalsIgnoreCase(allergene)) {
-                            allergeniSet.add(allergene);
-                        }
+        ResultSet rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            String allergeniStr = rs.getString("allergeni");
+            if (allergeniStr != null && !allergeniStr.isEmpty()) {
+                String[] allergeniArray = allergeniStr.split("\\s*,\\s*");
+                for (String allergene : allergeniArray) {
+                    if (!"Nessuno".equalsIgnoreCase(allergene)) {
+                        allergeniSet.add(allergene);
                     }
                 }
             }
+        }
+
         for (String allergene : allergeniSet) {
             ricetta.addAllergeniRicetta(allergene);
         }
     }
+    
 }

@@ -54,6 +54,8 @@ public class CorsoPanel extends VBox {
         getChildren().clear();
         imageView = createImage(corso.getImagePath());
         titoloText = createTitolo(corso.getNome());
+        titoloText.setPadding(new Insets(10, 0, 0, 0));
+
 
         getChildren().addAll(imageView, titoloText);
     }

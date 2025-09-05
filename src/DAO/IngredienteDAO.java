@@ -3,7 +3,6 @@ package DAO;
 import Controller.Controller;
 import DAO.Interfaces.IngredienteDAOInterface;
 import DB.DBConnection;
-import Entity.Enum.UnitaIngrediente;
 import Entity.Ingrediente;
 
 import java.sql.Connection;
@@ -24,8 +23,9 @@ public class IngredienteDAO implements IngredienteDAOInterface {
         this.con = dbc.getConnection();
     }
 
-    private boolean checkIfAlredyExists(Ingrediente ingrediente)throws SQLException{
+    private boolean checkIfAlreadyExists(Ingrediente ingrediente) throws SQLException {
         String sql = "select idingrediente from Ingrediente where nome_ingrediente = ?";
+
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setString(1,ingrediente.getNome());
         ResultSet rs = pstmt.executeQuery();
@@ -43,17 +43,17 @@ public class IngredienteDAO implements IngredienteDAOInterface {
 
         PreparedStatement pstmt = con.prepareStatement(sql);
 
-                if (!this.checkIfAlredyExists(ing)){
-                    pstmt.setString(1, ing.getNome());
-                    pstmt.setString(2, ing.getAllergeni());
-                    pstmt.setString(3, ing.getCategoria());
+        if (!this.checkIfAlreadyExists(ing)){
+            pstmt.setString(1, ing.getNome());
+            pstmt.setString(2, ing.getAllergeni());
+            pstmt.setString(3, ing.getCategoria());
 
-                    ResultSet rs = pstmt.executeQuery();
-                    if (rs.next()) {
-                        int id = rs.getInt("idingrediente");
-                        ing.setIdingrediente(id);
-                    }
-                }
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("idingrediente");
+                ing.setIdingrediente(id);
+            }
+        }
     }
 
 
@@ -67,7 +67,7 @@ public class IngredienteDAO implements IngredienteDAOInterface {
         while (rs.next()) {
             ingredienti.add(createIngredienteByResultSet(rs));
         }
-        return  ingredienti;
+        return ingredienti;
     }
 
     private Ingrediente createIngredienteByResultSet(ResultSet rs) throws SQLException {

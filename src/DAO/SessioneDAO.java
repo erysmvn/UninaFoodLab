@@ -17,29 +17,32 @@ public class SessioneDAO implements SessioneDAOInterface {
     DBConnection dbc;
     Connection con;
 
-    public SessioneDAO(Controller controller){
+    public SessioneDAO(Controller controller) {
         this.controller = controller;
         dbc = controller.getDBConnection();
         con = dbc.getConnection();
     }
 
-    public void insertSessione(Sessione sessione)throws SQLException{
+    public void insertSessione(Sessione sessione) throws SQLException {
         String sql = "";
         String linkOrLuogo="";
 
-        if(sessione instanceof SessioneOnline sessioneOnline){
+        if (sessione instanceof SessioneOnline sessioneOnline) {
            sql = "INSERT INTO sessione (data, ora, modalita, link_incontro, idcorso, durata) VALUES (?, ?, 'Online', ?, ?, ?) RETURNING idsessione";
            linkOrLuogo = sessioneOnline.getLinkIncontro();
-        }else if(sessione instanceof SessionePresenza sessionePresenza){
+        } else if (sessione instanceof SessionePresenza sessionePresenza) {
             sql = "INSERT INTO sessione (data, ora, modalita, luogo, idcorso, durata) VALUES (?, ?, 'Presenza', ?, ?, ?)  RETURNING idsessione";
             linkOrLuogo = sessionePresenza.getLuogo();
         }
+
         PreparedStatement pstmt = con.prepareStatement(sql);
+
         pstmt.setObject(1,sessione.getData());
         pstmt.setObject(2,sessione.getOra());
         pstmt.setString(3,linkOrLuogo);
         pstmt.setInt(4,sessione.getCorso().getIdCorso());
         pstmt.setFloat(5,sessione.getDurata());
+
         ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -50,9 +53,8 @@ public class SessioneDAO implements SessioneDAOInterface {
 
     }
 
-
     @Override
-    public void removeRicetta(Ricetta ricetta, Sessione sessione)throws SQLException{
+    public void removeRicetta(Ricetta ricetta, Sessione sessione) throws SQLException {
         String sql = "DELETE FROM tratta WHERE idricetta = ? AND idsessione = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setInt(1,ricetta.getIdRicetta());
@@ -94,7 +96,7 @@ public class SessioneDAO implements SessioneDAOInterface {
                     corso
             );
             ((SessionePresenza)sessione).setFogliAdesione(controller.getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
-        }else {
+        } else {
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),
                     rs.getDate("data").toLocalDate(),
@@ -130,10 +132,10 @@ public class SessioneDAO implements SessioneDAOInterface {
        String sql="";
        String linkOrLuogo="";
         if (sessione instanceof SessionePresenza sp) {
-             sql = "UPDATE sessione " +
+            sql = "UPDATE sessione " +
                     "SET data = ?, ora = ?, durata = ?, luogo = ? "+
                     "WHERE idsessione = ?";
-             linkOrLuogo = sp.getLuogo();
+            linkOrLuogo = sp.getLuogo();
         } else if (sessione instanceof SessioneOnline so) {
             sql = "UPDATE sessione " +
                     "SET data = ?, ora = ?, durata = ?, link_incontro = ? " +
@@ -147,6 +149,7 @@ public class SessioneDAO implements SessioneDAOInterface {
         pstmt.setFloat(3,sessione.getDurata());
         pstmt.setString(4,linkOrLuogo);
         pstmt.setInt(5,sessione.getIdSessione());
+
         int rowsAffected = pstmt.executeUpdate();
         if (rowsAffected == 0)
             throw new SQLException("Nessuna sessione aggiornata. ID non trovato: " + sessione.getIdSessione());
@@ -158,6 +161,7 @@ public class SessioneDAO implements SessioneDAOInterface {
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setInt(1,sessione.getIdSessione());
         int rowsAffected = pstmt.executeUpdate();
+        
         if (rowsAffected < 1) {
             throw new SQLException("Nessuna sessione aggiornata.");
         }

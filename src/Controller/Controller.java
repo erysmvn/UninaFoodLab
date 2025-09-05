@@ -150,6 +150,50 @@ public class Controller {
         }
         return null;
     }
+    private RicettaPage isRicettaPageAlreadyOpened(Ricetta ricetta) {
+        for (RicettaPage rp : ricettaPages) {
+            if (rp.getRicetta().getIdRicetta() == ricetta.getIdRicetta())
+                return rp;
+        }
+        return null;
+    }
+    private SessionePage isSessionePageAlreadyOpened(Sessione sessione) {
+        for (SessionePage sp : sessionePages) {
+            if (sp.getSessione().getIdSessione() == sessione.getIdSessione())
+                return sp;
+        }
+        return null;
+    }
+    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
+        for(EditCorsoPage edcp : editCorsoPages){
+            if(edcp.getCorso().getIdCorso() == c.getIdCorso())
+                return edcp;
+        }
+        return null;
+    }
+    private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
+        for(EditSessionePage esp : editSessionePages){
+            if(esp.getSessione().getIdSessione() == s.getIdSessione())
+                return esp;
+        }
+        return null;
+    }
+    private AggiungiRicettaPage isAggiungiRicettaPageAlreadyOpened(Stage caller) {
+        for (AggiungiRicettaPage arp : aggiungiRicettaPages) {
+            if (arp.getCaller().equals(caller))
+                return arp;
+        }
+        return null;
+    }
+    private ConfermaPartecipazionePage isConfermaPartecipazionePageAlreadyOpened(SessionePresenza sessionePresenza) {
+        for (ConfermaPartecipazionePage cpp : confermaPartecipazionePages) {
+            if (cpp.getSessionePresenza().getIdSessione() == sessionePresenza.getIdSessione())
+                return cpp;
+        }
+        return null;
+    }
+
+
 
     public void openEditCorsoPage(Corso corso){
         EditCorsoPage existingPage = isEditCorsoPageAlreadyOpened(corso);
@@ -164,18 +208,12 @@ public class Controller {
             EditCorsoPage editCorsoPage = new EditCorsoPage( this);
             editCorsoPage.initPage(corso);
             editCorsoPages.add(editCorsoPage);
-            editCorsoPage.setOnCloseRequest(_ -> editCorsoPages.remove(editCorsoPage));
+<<<<<<< HEAD
+            editCorsoPage.setOnCloseRequest(e -> editCorsoPages.remove(editCorsoPage));
+>>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
 
             editCorsoPage.show();
         }
-    }
-
-    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
-        for(EditCorsoPage edcp : editCorsoPages){
-            if(edcp.getCorso().getIdCorso() == c.getIdCorso())
-                return edcp;
-        }
-        return null;
     }
 
     public void openEditSessionePage(Sessione s, SessionePage sp){
@@ -197,44 +235,64 @@ public class Controller {
         }
     }
 
-    private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
-        for(EditSessionePage esp : editSessionePages){
-            if(esp.getSessione().getIdSessione() == s.getIdSessione())
-                return esp;
-        }
-        return null;
-    }
-
     public void openConfermaPartecipazionePage(SessionePresenza sessionePresenza){
-        for(ConfermaPartecipazionePage confPage: confermaPartecipazionePages){
-            if(confPage.getSessionePresenza().equals(sessionePresenza)){
-                confPage.toFront();
-                return;
-            }
-        }
 
-        ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
-        confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
-        confermaPartecipazionePages.add(confermaPartecipazionePage);
-        confermaPartecipazionePage.setOnCloseRequest(_ ->confermaPartecipazionePages.remove(confermaPartecipazionePage));
-        confermaPartecipazionePage.show();
+<<<<<<< HEAD
+        ConfermaPartecipazionePage existingPage = isConfermaPartecipazionePageAlreadyOpened(sessionePresenza);
+
+        if (existingPage != null) {
+            if (existingPage.isShowing()) {
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
+            confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
+            confermaPartecipazionePages.add(confermaPartecipazionePage);
+            confermaPartecipazionePage.setOnCloseRequest(e -> confermaPartecipazionePages.remove(confermaPartecipazionePage));
+            confermaPartecipazionePage.show();
+        }
     }
 
     public void openSessionePage(Sessione sessione){
-        SessionePage sessionePage = new SessionePage(this);
-        sessionePage.initPage(sessione);
-        sessionePages.add(sessionePage);
-        sessionePage.setOnCloseRequest(_ -> sessionePages.remove(sessionePage));
-        sessionePage.show();
+        SessionePage existingPage = isSessionePageAlreadyOpened(sessione);
+
+        if (existingPage != null) {
+            if (existingPage.isShowing()) {
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            SessionePage sessionePage = new SessionePage(this);
+            sessionePage.initPage(sessione);
+            sessionePages.add(sessionePage);
+            sessionePage.setOnCloseRequest(e -> sessionePages.remove(sessionePage));
+            sessionePage.show();
+        }
+>>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
     }
 
     public void openRicettaPage(Ricetta ricetta){
-            RicettaPage ricettaPage = new RicettaPage( this);
+        RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
+
+        if (existingPage != null) {
+            if (existingPage.isShowing()) {
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            RicettaPage ricettaPage = new RicettaPage(this);
             ricettaPage.initPage(ricetta);
             ricettaPages.add(ricettaPage);
+<<<<<<< HEAD
 
-            ricettaPage.setOnCloseRequest(_ -> ricettaPages.remove(ricettaPage));
+            ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
+>>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
             ricettaPage.show();
+        }
     }
 
     public void openAccountPage(Utente utente) {
@@ -282,15 +340,32 @@ public class Controller {
 
         aggiungiSessionePage = new AggiungiSessionePage(this);
         aggiungiSessionePage.initPage(corso);
+
+        for(AggiungiRicettaPage aggiungiRicettaPage: aggiungiRicettaPages){
+            aggiungiRicettaPage.close();
+        }
+        aggiungiRicettaPages.clear();
+
         aggiungiSessionePage.show();
     }
 
     public void openAggiungiRicettaPage(Stage caller){
-        //todo o si apre una sola aggiungiRicettaPage alla volta oppure si deve controllare se già aperta
-        // (funzione chiamata da editSessionePage oppure aggiungiSessionePage
-        AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this,caller);
-        aggiungiRicettaPages.add(aggiungiRicettaPage);
-        aggiungiRicettaPage.show();
+<<<<<<< HEAD
+        AggiungiRicettaPage existingPage = isAggiungiRicettaPageAlreadyOpened(caller);
+
+        if (existingPage != null) {
+            if (existingPage.isShowing()) {
+                existingPage.toFront();
+            } else {
+                existingPage.show();
+            }
+        } else {
+            AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this, caller);
+            aggiungiRicettaPages.add(aggiungiRicettaPage);
+            aggiungiRicettaPage.setOnCloseRequest(e -> aggiungiRicettaPages.remove(aggiungiRicettaPage));
+            aggiungiRicettaPage.show();
+        }
+>>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
     }
 
     public void updateRicetteAggiunte(Ricetta ricetta,Stage caller) {
@@ -392,13 +467,18 @@ public class Controller {
 
     // User
     public void loginMethod(String email, String password) throws emailNotFoundException, passwordErrataException, SQLException{
+
         if (email.contains("@studenti.unina.it")) {
             utente = studenteDAO.login(email, password);
         } else {
             utente = chefDAO.login(email, password);
         }
         homePage.setUtente(utente);
+        for(CorsoPage corsoPage:corsoPages){
+            corsoPage.close();
+        }
         this.corsoPages.clear();
+
     }
 
     public void registerMethod(Utente utente) throws SQLException {

@@ -259,8 +259,7 @@ public class RegisterPage extends MyStage {
                     }
                     this.close();
                 } catch (SQLException exc) {
-                    inserimentoErratoLabel.setVisible(true);
-                    exc.printStackTrace();
+                    showDialog("Errore di sistema. Riprovare più tardi");
                 }
             } catch (nameEmptyException NEE) {
                 txtNome.setStyle("-fx-border-color: red;");

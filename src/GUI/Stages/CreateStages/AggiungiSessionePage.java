@@ -6,27 +6,16 @@ import Exception.SessioneExceptions.*;
 import GUI.Buttons.CircleButton;
 import GUI.Buttons.MyButton;
 import GUI.Stages.MyStage;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import javafx.util.converter.LocalTimeStringConverter;
-
-import static java.time.Duration.between;
 
 public class AggiungiSessionePage extends MyStage {
     private Controller controller;
@@ -41,17 +30,17 @@ public class AggiungiSessionePage extends MyStage {
     private DatePicker dateInizio;
     private TextField linkOrLuogoField;
 
-    private TextField oraInizioField;
-    private TextField minutiInizioField;
-    private TextField oraFineField;
-    private TextField minutiFineField;
+    private Spinner<Integer> hourSpinnerInizio;
+    private Spinner<Integer> minuteSpinnerInizio;
+    private Spinner<Integer> hourSpinnerFine;
+    private Spinner<Integer> minuteSpinnerFine;
 
-    private Label erroreOrarioInizio;
-    private Label erroreOrarioFine;
+    private Label erroreOrario;
     private Label erroreDataSessione;
     private Label errorLinkOrLuogoLabel;
     private Label errorInserimentoDatiLabel;
     private Label errorAlmenoUnaRicettaLabel;
+
 
 
     public AggiungiSessionePage(Controller controller) {
@@ -68,68 +57,49 @@ public class AggiungiSessionePage extends MyStage {
         this.setRootFunctionalities();
     }
 
+    private HBox createTimeSpinnerInizio() {
+        hourSpinnerInizio = new Spinner<>();
+        hourSpinnerInizio.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 18, 12));
+        hourSpinnerInizio.setEditable(true);
+
+        minuteSpinnerInizio = new Spinner<>();
+        minuteSpinnerInizio.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+        minuteSpinnerInizio.setEditable(true);
+
+        HBox hbox = new HBox(5, hourSpinnerInizio, new Label(":"), minuteSpinnerInizio);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        return hbox;
+    }
+
+    private HBox createTimeSpinnerFine() {
+        hourSpinnerFine = new Spinner<>();
+        hourSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 20, 12));
+        hourSpinnerFine.setEditable(true);
+
+        minuteSpinnerFine = new Spinner<>();
+        minuteSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+        minuteSpinnerFine.setEditable(true);
+
+        HBox hbox = new HBox(5, hourSpinnerFine, new Label(":"), minuteSpinnerFine);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        return hbox;
+    }
+
     private HBox createOrarioBox() {
         HBox orarioBox = new HBox(50);
         orarioBox.setAlignment(Pos.CENTER_LEFT);
 
-
-        VBox orarioInizioBox = new VBox(5);
         Label metaOrarioInizio = new Label("Orario Inizio *");
-        erroreOrarioInizio = new Label();
-        erroreOrarioInizio.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
 
-        HBox inizioFields = new HBox(5);
-        oraInizioField = new TextField();
-        oraInizioField.setText("12");
-
-        oraInizioField.setPrefWidth(40);
-        minutiInizioField = new TextField();
-        minutiInizioField.setText("00");
-
-        minutiInizioField.setPrefWidth(40);
-
-        setTwoDigitNumericField(oraInizioField, 23);
-        setTwoDigitNumericField(minutiInizioField, 59);
-
-        inizioFields.getChildren().addAll(oraInizioField, new Label(":"), minutiInizioField);
-        orarioInizioBox.getChildren().addAll(metaOrarioInizio, inizioFields, erroreOrarioInizio);
-
-        VBox orarioFineBox = new VBox(5);
         Label metaOrarioFine = new Label("Orario Fine *");
-        erroreOrarioFine = new Label();
-        erroreOrarioFine.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
+        erroreOrario = new Label();
+        erroreOrario.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
 
-        HBox fineFields = new HBox(5);
-        oraFineField = new TextField();
-        oraFineField.setText("12");
-        oraFineField.setPrefWidth(40);
-        minutiFineField = new TextField();
-        minutiFineField.setPrefWidth(40);
-        minutiFineField.setText("00");
-        setTwoDigitNumericField(oraFineField, 23);
-        setTwoDigitNumericField(minutiFineField, 59);
-
-        fineFields.getChildren().addAll(oraFineField, new Label(":"), minutiFineField);
-        orarioFineBox.getChildren().addAll(metaOrarioFine, fineFields, erroreOrarioFine);
-
-        orarioBox.getChildren().addAll(orarioInizioBox, orarioFineBox);
+        orarioBox.getChildren().addAll(new VBox(10, new HBox(10, new VBox(metaOrarioInizio, createTimeSpinnerInizio()),
+                new VBox(metaOrarioFine, createTimeSpinnerFine())), erroreOrario));
         return orarioBox;
     }
 
-    private void setTwoDigitNumericField(TextField field, int maxValue) {
-        field.textProperty().addListener((obs, oldText, newText) -> {
-            if (!newText.matches("\\d{0,2}")) {
-                field.setText(oldText);
-                return;
-            }
-            if (!newText.isEmpty()) {
-                int value = Integer.parseInt(newText);
-                if (value > maxValue) {
-                    field.setText(oldText);
-                }
-            }
-        });
-    }
 
     private HBox createDateBox() {
         HBox dateBox = new HBox(30);
@@ -138,6 +108,7 @@ public class AggiungiSessionePage extends MyStage {
         Label metaDataInizio = new Label("Data Inizio *");
         erroreDataSessione.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
         dateInizio = new DatePicker();
+        dateInizio.setValue(LocalDate.now());
         dataSessioneBox.getChildren().addAll(metaDataInizio, dateInizio, erroreDataSessione);
 
         dateBox.getChildren().add(dataSessioneBox);
@@ -156,21 +127,6 @@ public class AggiungiSessionePage extends MyStage {
                 createRicettaBox(),
                 createBottomBox()
         );
-    }
-
-    private void setRootAesthetics() {
-        root = new VBox(15);
-        root.setPadding(new Insets(35, 20, 10, 20));
-        root.setAlignment(Pos.TOP_LEFT);
-        root.setBackground(new Background(
-                new BackgroundFill(Color.WHITE, new CornerRadii(30), Insets.EMPTY)
-        ));
-        root.setBorder(new Border(new BorderStroke(
-                Color.valueOf("#3A6698"),
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(30),
-                new BorderWidths(2)
-        )));
     }
 
     private VBox createLinkOrLuogoBox() {
@@ -197,78 +153,61 @@ public class AggiungiSessionePage extends MyStage {
         return linkOrLuogoBox;
     }
 
-    private LocalTime getLocalTimeFromFields(TextField hourField, TextField minuteField) {
-        String hour = hourField.getText();
-        String minute = minuteField.getText();
-
-        if(hour.isEmpty() || minute.isEmpty()){
-            hour =  "12";
-            minute = "00";
-        }
-        String timeString = hour + ":" + minute;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTimeStringConverter converter = new LocalTimeStringConverter(formatter, null);
-        return converter.fromString(timeString);
+    private LocalDateTime getLocalDateTimeFromFields(Spinner<Integer> hourSpinner, Spinner<Integer> minuteSpinner) {
+        int hour = hourSpinner.getValue();
+        int minute = minuteSpinner.getValue();
+        LocalDate data = dateInizio.getValue();
+        return LocalDateTime.of(data, LocalTime.of(hour, minute));
     }
 
     private void validConferma() throws Exception {
 
-        erroreOrarioInizio.setText("");
-        erroreOrarioFine.setText("");
+        erroreOrario.setText("");
         erroreDataSessione.setText("");
         errorLinkOrLuogoLabel.setText("");
 
-
-        LocalTime inizio = getLocalTimeFromFields(oraInizioField,minutiInizioField);
-        LocalTime fine = getLocalTimeFromFields(oraFineField,minutiFineField);
+        LocalDateTime inizio = getLocalDateTimeFromFields(hourSpinnerInizio, minuteSpinnerInizio);
+        LocalDateTime fine = getLocalDateTimeFromFields(hourSpinnerFine, minuteSpinnerFine);
         LocalDate dataSessione = dateInizio.getValue();
 
-        if (inizio == null)
-            throw new OrarioInizioEmptyException();
+        if (linkOrLuogoField.getText().isEmpty())
+            throw new LinkOrLuogoEmptyException();
 
-        if (fine == null)
-            throw new OrarioFineEmptyException();
-
-        if (dataSessione == null)
-            throw new DataSessioneEmptyException();
-
-        if (dataSessione.isBefore(LocalDate.now()))
+        if (dataSessione.isBefore(LocalDate.now()) || dataSessione.isEqual(LocalDate.now()))
             throw new DataNelPassatoException();
 
         if (fine.isBefore(inizio))
             throw new OrarioNonValidoException();
 
-        Duration durata = between(inizio, fine);
-        if (durata.toHours() > 8)
+        long durataMinuti = Duration.between(inizio, fine).toMinutes();
+        Float durataOre = durataMinuti / 60f;
+
+        if (durataOre > 8)
             throw new OrarioMassimoOttoOreException();
 
-        if(durata.toHours() < 1)
+        if(durataOre < 1)
             throw new SessioneAlmenoUnOraException();
-
-        if (linkOrLuogoField.getText() == null || linkOrLuogoField.getText().trim().isEmpty())
-            throw new LinkOrLuogoEmptyException();
 
         if(ricette.isEmpty())
             throw new AlmenoUnaRicettaException();
-
     }
 
     private void createSessione() throws SQLException {
-        LocalTime inizio = getLocalTimeFromFields(oraInizioField, minutiInizioField);
-        LocalTime fine = getLocalTimeFromFields(oraFineField, minutiFineField);
+        LocalDateTime inizio = getLocalDateTimeFromFields(hourSpinnerInizio, minuteSpinnerInizio);
+        LocalDateTime fine = getLocalDateTimeFromFields(hourSpinnerFine, minuteSpinnerFine);
         LocalDate dataSessione = dateInizio.getValue();
         String linkOrLuogo = linkOrLuogoField.getText().trim();
 
-        LocalDateTime OraInizio = LocalDateTime.of(dataSessione, inizio);
+        long durataMinuti = Duration.between(inizio, fine).toMinutes();
+        Float durataOre = durataMinuti / 60f;
 
-        float durata = Duration.between(inizio, fine).toHours();
         String prompt = linkOrLuogoField.getPromptText().toLowerCase();
         if (prompt.contains("link")) {
             sessione = new SessioneOnline(
                     dataSessione,
                     linkOrLuogo,
-                    durata,
-                    OraInizio,
+                    durataOre,
+                    inizio,
                     corso
             );
 
@@ -276,8 +215,8 @@ public class AggiungiSessionePage extends MyStage {
             sessione = new SessionePresenza(
                     dataSessione,
                     linkOrLuogo,
-                    durata,
-                    OraInizio,
+                    durataOre,
+                    inizio,
                     corso
             );
         }
@@ -304,8 +243,7 @@ public class AggiungiSessionePage extends MyStage {
         MyButton confirmButton = new MyButton("Conferma", MyButton.ButtonType.PRIMARY);
 
         confirmButton.setOnAction(e -> {
-            erroreOrarioInizio.setText("");
-            erroreOrarioFine.setText("");
+            erroreOrario.setText("");
             erroreDataSessione.setText("");
             errorLinkOrLuogoLabel.setText("");
 
@@ -317,31 +255,28 @@ public class AggiungiSessionePage extends MyStage {
                 sessione.getCorso().addSessione(sessione);
                 controller.refreshAccountPage();
                 this.close();
-            } catch (OrarioInizioEmptyException ex) {
-                erroreOrarioInizio.setText("Inserire ora di inizio");
-            } catch (OrarioFineEmptyException ex) {
-                erroreOrarioFine.setText("Inserire ora di fine");
-            } catch (DataSessioneEmptyException ex) {
-                erroreDataSessione.setText("Inserire data sessione");
-            } catch (DataNelPassatoException ex) {
-                erroreDataSessione.setText("Data nel passato non ammessa");
-            } catch (OrarioNonValidoException ex) {
-                erroreOrarioFine.setText("Orario fine < inizio");
-            } catch (OrarioMassimoOttoOreException ex) {
-                erroreOrarioFine.setText("Durata > 8 ore");
             } catch (LinkOrLuogoEmptyException ex) {
                 errorLinkOrLuogoLabel.setText("Campo obbligatorio");
-            } catch (SessioneAlmenoUnOraException SAOE) {
-                erroreOrarioFine.setText("Durata minima 1 ora");
+            } catch (DataNelPassatoException ex) {
+                erroreDataSessione.setText("La sessione deve iniziare almeno domani");
+            } catch (OrarioNonValidoException ex) {
+                erroreOrario.setText("La sessione deve terminare dopo almeno 1 ora");
+            } catch (OrarioMassimoOttoOreException | SessioneAlmenoUnOraException ex) {
+                erroreOrario.setText("La sessione supera la durata max (8 ore)");
             } catch (AlmenoUnaRicettaException ARE) {
                 errorAlmenoUnaRicettaLabel.setText("La sessione deve trattare almeno una ricetta");
-            } catch (SQLException sql ){
-                if(isFrequenzaSettimanaleLimiteError(sql.getSQLState())){
+            } catch (SQLException sql){
+                if (isFrequenzaSettimanaleLimiteError(sql.getSQLState())) {
                     errorInserimentoDatiLabel.setText("Frequenza limite settimanale superata");
-                }else
+                } else
                      errorInserimentoDatiLabel.setText("Errore inserimento dati. Riprovare più tardi");
+<<<<<<< HEAD
             }catch (Exception ex) {
                 showDialog("Errore di sistema. Riprovare più tardi");
+=======
+            } catch (Exception ex) {
+                System.err.println("Errore inatteso: " + ex.getMessage());
+>>>>>>> 4f61d1e1dfd7809e08109f845ce877ba4bbd3f0f
             }
         });
 

@@ -12,14 +12,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class SessioneDAO implements SessioneDAOInterface {
-    Controller controller;
-
     DBConnection dbc;
     Connection con;
 
-    public SessioneDAO(Controller controller) {
-        this.controller = controller;
-        dbc = controller.getDBConnection();
+    public SessioneDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
     }
 
@@ -63,7 +60,6 @@ public class SessioneDAO implements SessioneDAOInterface {
 
         if(rowDeleted <=0)
             throw new SQLException();
-
     }
 
     @Override
@@ -74,7 +70,8 @@ public class SessioneDAO implements SessioneDAOInterface {
             ps.setInt(2,sessione.getIdSessione());
             ps.executeUpdate();
 
-            sessione.setRicette(controller.getRicetteByIdSessione(sessione.getIdSessione()));
+            RicettaDAO ricettaDAO = new RicettaDAO(dbc);
+            sessione.setRicette(ricettaDAO.getRicetteByIdSessione(sessione.getIdSessione()));
     }
 
     @Override
@@ -95,7 +92,8 @@ public class SessioneDAO implements SessioneDAOInterface {
                     orario,
                     corso
             );
-            ((SessionePresenza)sessione).setFogliAdesione(controller.getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
+            FoglioAdesioneDAO foglio = new FoglioAdesioneDAO(dbc);
+            ((SessionePresenza)sessione).setFogliAdesione(foglio.getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
         } else {
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),
@@ -107,7 +105,8 @@ public class SessioneDAO implements SessioneDAOInterface {
             );
         }
 
-        sessione.setRicette(controller.getRicetteByIdSessione(rs.getInt("idsessione")));
+        RicettaDAO ricettaDAO = new RicettaDAO(dbc);
+        sessione.setRicette(ricettaDAO.getRicetteByIdSessione(rs.getInt("idsessione")));
 
         return sessione;
     }
@@ -128,7 +127,7 @@ public class SessioneDAO implements SessioneDAOInterface {
         return sessioni;
     }
 
-    public void update(Sessione sessione)throws SQLException {
+    public void update(Sessione sessione) throws SQLException {
        String sql="";
        String linkOrLuogo="";
         if (sessione instanceof SessionePresenza sp) {

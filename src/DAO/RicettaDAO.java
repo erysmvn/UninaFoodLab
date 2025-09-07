@@ -15,15 +15,12 @@ import java.util.Set;
 
 public class RicettaDAO implements RicettaDAOInterface {
     DBConnection dbc;
-
     Connection con;
-    Controller controller;
 
     // Constructors
-    public RicettaDAO(Controller controller) {
-        this.dbc = controller.getDBConnection();
+    public RicettaDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
-        this.controller = controller;
     }
 
     public void insertRicetta(Ricetta ricetta) throws SQLException {

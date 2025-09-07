@@ -18,6 +18,7 @@ public interface CorsoDAOInterface {
     void update(Corso corso) throws SQLException;
     void prepareChefs(int idCorso, int idChef) throws SQLException;
 
+    
     // Get methods
     ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi) throws SQLException;
     Corso getCorsoByTitle(String Title) throws SQLException;

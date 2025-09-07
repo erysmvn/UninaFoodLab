@@ -271,6 +271,10 @@ public class SessionePage extends MyStage {
         return sessione;
     }
 
+    public void setSessione(Sessione sessione) {
+        this.sessione = sessione;
+    }
+
     public void changeUploadButton() {
         footerVbox.getChildren().set(0, createPartecipaButton());
         confermarePartecipazioneLabel.setVisible(false);

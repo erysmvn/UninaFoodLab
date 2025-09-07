@@ -6,6 +6,7 @@ import DB.DBConnection;
 import Entity.FoglioAdesione;
 import Entity.SessionePresenza;
 import Entity.Studente;
+import Entity.Utente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,13 +16,11 @@ import java.util.ArrayList;
 
 public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
 
-    Controller controller;
     DBConnection dbc;
     Connection con;
 
-    public FoglioAdesioneDAO(Controller controller) {
-        this.controller = controller;
-        this.dbc = controller.getDBConnection();
+    public FoglioAdesioneDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
     }
 
@@ -43,13 +42,13 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
     }
 
     @Override
-    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza) throws SQLException {
+    public FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza, Utente utente) throws SQLException {
         String sql = "select * from conferma_partecipazione where idsessione = ? and matricola = ? and documento = ?  ";
         
         PreparedStatement pstmt = con.prepareStatement(sql);
 
         pstmt.setInt(1,sessionePresenza.getIdSessione());
-        pstmt.setString(2,((Studente)(controller.getUtente())).getMatricola());
+        pstmt.setString(2,((Studente)(utente)).getMatricola());
         pstmt.setString(3,path);
         
         ResultSet rs = pstmt.executeQuery();
@@ -61,11 +60,11 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
     }
 
     @Override
-    public void insertFoglioDiAdesione(String pathFile, SessionePresenza sessionePresenza) throws SQLException {
+    public void insertFoglioDiAdesione(String pathFile, SessionePresenza sessionePresenza, Utente utente) throws SQLException {
         String sql = "INSERT INTO conferma_partecipazione (idsessione, matricola, documento) VALUES (?, ?, ?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setInt(1, sessionePresenza.getIdSessione());
-        pstmt.setString(2, ((Studente)(controller.getUtente())).getMatricola());
+        pstmt.setString(2, ((Studente)(utente)).getMatricola());
         pstmt.setString(3, pathFile);
 
         int rowsAffected = pstmt.executeUpdate();

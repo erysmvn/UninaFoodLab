@@ -14,15 +14,12 @@ import java.util.ArrayList;
 
 public class CorsoDAO implements CorsoDAOInterface {
     DBConnection dbc;
-
     Connection con;
-    Controller controller;
 
     // Constructors
-    public CorsoDAO(Controller controller) {
-        this.dbc = controller.getDBConnection();
+    public CorsoDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
-        this.controller = controller;
     }
 
     // Methods
@@ -329,7 +326,8 @@ public class CorsoDAO implements CorsoDAOInterface {
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
         System.out.println("sto mettendo sessioni");
-        corso.setSessioni(controller.getSessioniCorso(corso));
+        SessioneDAO sessioneDAO = new SessioneDAO(dbc);
+        corso.setSessioni(sessioneDAO.getSessioniByCorso(corso));
         setChefs(corso);
 
         return  corso;

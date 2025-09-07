@@ -66,19 +66,19 @@ public class Controller {
         dbc = new DBConnection();
         dbc.DBConnect();
         
-        chefDAO = new ChefDAO(this);
-        studenteDAO = new StudenteDAO(this);
-        corsoDAO = new CorsoDAO(this);
-        tipologiaCorsoDAO = new TipologiaCorsoDAO(this);
-        sessioneDAO = new SessioneDAO(this);
-        ricettaDAO = new RicettaDAO(this);
-        ingredienteDAO = new IngredienteDAO(this);
-        foglioAdesioneDAO = new FoglioAdesioneDAO(this);
+        chefDAO = new ChefDAO(dbc);
+        studenteDAO = new StudenteDAO(dbc);
+        corsoDAO = new CorsoDAO(dbc);
+        tipologiaCorsoDAO = new TipologiaCorsoDAO(dbc);
+        sessioneDAO = new SessioneDAO(dbc);
+        ricettaDAO = new RicettaDAO(dbc);
+        ingredienteDAO = new IngredienteDAO(dbc);
+        foglioAdesioneDAO = new FoglioAdesioneDAO(dbc);
     }
 
-    public DBConnection getDBConnection(){
-        return dbc;
-    }
+//    public DBConnection getDBConnection(){
+//        return dbc;
+//    }
 
     public Utente getUtente(){
         return utente;
@@ -381,7 +381,6 @@ public class Controller {
     }
 
     public void removeRicetteToSessione(ArrayList<Ricetta> ricette, Sessione sessione) throws SQLException {
-        SessioneDAO sessioneDAO = new SessioneDAO(this);
         for(Ricetta ricetta:  ricette)
             sessioneDAO.removeRicetta(ricetta,sessione);
     }
@@ -640,7 +639,7 @@ public class Controller {
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {
-        return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
+        return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza, utente);
     }
 
     public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException {
@@ -648,7 +647,7 @@ public class Controller {
     }
 
     public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
-        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza);
+        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza, utente);
     }
 
     public void updateSessione(Sessione sessione) throws SQLException {

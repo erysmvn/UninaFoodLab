@@ -11,6 +11,7 @@ public interface RicettaDAOInterface {
     // Methods
     Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException;
 
+    
     // Get methods
     void getIngredienti(Ricetta ricetta) throws SQLException;
     ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException;

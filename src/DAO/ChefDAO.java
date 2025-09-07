@@ -1,6 +1,5 @@
 package DAO;
 
-import Controller.Controller;
 import DAO.Interfaces.ChefDAOInterface;
 import DB.DBConnection;
 import Entity.*;
@@ -12,16 +11,13 @@ import Exception.UserExceptions.LoginException.passwordErrataException;
 import java.sql.*;
 
 public class ChefDAO implements ChefDAOInterface {
-    Controller controller;
-
     DBConnection dbc;
     Connection con;
 
     // Constructors
-    public ChefDAO(Controller controller) {
-        this.dbc = controller.getDBConnection();
+    public ChefDAO(DBConnection dbc) {
+        this.dbc = dbc;
         this.con = dbc.getConnection();
-        this.controller = controller;
     }
 
 
@@ -109,7 +105,6 @@ public class ChefDAO implements ChefDAOInterface {
     // Get methods
     @Override
     public void setCorsiToChef(Chef chef) throws SQLException {
-
         String sql = "SELECT DISTINCT c.idcorso " +
                 "FROM tiene NATURAL JOIN chef ch NATURAL JOIN corso c " +
                 "WHERE ch.idchef = ?";
@@ -119,7 +114,8 @@ public class ChefDAO implements ChefDAOInterface {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
+            CorsoDAO corsoDAO = new CorsoDAO(dbc);
+            Corso corso = corsoDAO.getCorsoByIdCorso(rs.getInt("idcorso"));
             chef.getCorsi().add(corso);
         }
     }

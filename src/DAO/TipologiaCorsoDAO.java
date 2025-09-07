@@ -10,15 +10,12 @@ import java.util.ArrayList;
 
 public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
     DBConnection dbc;
-
     Connection con;
-    Controller controller;
 
     // Constructors
-    public TipologiaCorsoDAO(Controller controller) {
-        this.dbc = controller.getDBConnection();
+    public TipologiaCorsoDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
-        this.controller = controller;
     }
 
     // Methods

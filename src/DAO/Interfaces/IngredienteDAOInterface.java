@@ -6,7 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface IngredienteDAOInterface {
-    ArrayList<Ingrediente> getAllIngredientes() throws SQLException;
-
+    // Methods
     void insertIngrediente(Ingrediente ing) throws SQLException;
+    
+
+    // Get methods
+    ArrayList<Ingrediente> getAllIngredientes() throws SQLException;
 }

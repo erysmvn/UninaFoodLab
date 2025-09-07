@@ -12,15 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class IngredienteDAO implements IngredienteDAOInterface {
-
-    Controller controller;
     DBConnection dbc;
     Connection con;
 
-    public IngredienteDAO(Controller controller){
-        this.controller = controller;
-        this.dbc = controller.getDBConnection();
-        this.con = dbc.getConnection();
+    public IngredienteDAO(DBConnection dbc) {
+        this.dbc = dbc;
+        con = dbc.getConnection();
     }
 
     private boolean checkIfAlreadyExists(Ingrediente ingrediente) throws SQLException {

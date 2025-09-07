@@ -2,6 +2,7 @@ package GUI.Stages.EditStages;
 
 import Controller.Controller;
 import Entity.*;
+import Exception.SessioneExceptions.*;
 import GUI.Buttons.MyButton;
 import GUI.Stages.ClassDataStages.SessionePage;
 import GUI.Stages.MyStage;
@@ -49,12 +50,15 @@ public class EditSessionePage extends MyStage {
 
     private Label errorAlmenoUnRicetta;
     private Label erroreInserimentoDati;
+    private Label erroreOrario;
+    private Label errorLinkOrLuogoLabel;
+    private Label erroreDataSessione;
 
     private SessionePage parent;
 
 
     public EditSessionePage(Controller controller, SessionePage parent) {
-        super(800, 600, RootType.BORDERPANE);
+        super(800, 750, RootType.BORDERPANE);
         this.controller = controller;
         this.parent = parent;
 
@@ -106,17 +110,25 @@ public class EditSessionePage extends MyStage {
             dataPicker.setValue(oggi);
         }
 
+        erroreDataSessione = new Label();
+        erroreDataSessione.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
+
         Label freqWarning = new Label("*Per rispettare la frequenza, è possibile spostare la sessione solo nella settimana di questa.");
         freqWarning.setFont(Font.font("System", FontPosture.ITALIC, 13));
         freqWarning.setTextFill(Color.RED);
 
-        formBox.getChildren().addAll(labeledNode("Data:", dataPicker), freqWarning);
+        formBox.getChildren().addAll(labeledNode("Data:", dataPicker), freqWarning, erroreDataSessione);
 
         HBox timeBoxInizio = createTimeSpinnerInizio();
         formBox.getChildren().add(labeledNode("Ora inizio:", timeBoxInizio));
 
         HBox timeBoxFine = createTimeSpinnerFine();
         formBox.getChildren().add(labeledNode("Ora fine:", timeBoxFine));
+
+        erroreOrario = new Label();
+        erroreOrario.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
+
+        formBox.getChildren().add(erroreOrario);
 
         if (sessione instanceof SessionePresenza sp) {
             luogoField = new TextField(sp.getLuogo());
@@ -125,6 +137,9 @@ public class EditSessionePage extends MyStage {
             linkField = new TextField(so.getLinkIncontro());
             formBox.getChildren().add(labeledNode("Link:", linkField));
         }
+        errorLinkOrLuogoLabel = new Label();
+        errorLinkOrLuogoLabel.setStyle("-fx-text-fill: red;-fx-background-color: transparent");
+        formBox.getChildren().add(errorLinkOrLuogoLabel);
 
         Label ricetteTrattate = new Label("Ricette trattate: ");
         ricetteTrattate.setStyle("-fx-font-weight: bold;-fx-font-size: 20px;-fx-text-fill: BLACK;-fx-alignment: CENTER_LEFT;");
@@ -218,14 +233,10 @@ public class EditSessionePage extends MyStage {
     private VBox createRicettaList() {
         ricetteList = new VBox(10);
 
-
         if (!sessione.getRicette().isEmpty()) {
+            ricetteList.getChildren().remove(ricetteList);
             for (Ricetta ricetta : sessione.getRicette())
                 ricetteList.getChildren().add(createRicettaBox(ricetta));
-        } else {
-            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
-            noRicetteTrattate.setStyle("-fx-font-size: 23;-fx-color: BLACK;-fx-alignment: CENTER_LEFT;");
-            ricetteList.getChildren().add(noRicetteTrattate);
         }
 
         return ricetteList;
@@ -269,6 +280,8 @@ public class EditSessionePage extends MyStage {
 
     private void salvaModifiche() {
         try {
+            System.out.println(sessione.getRicette());
+            validate();
             sessione.setData(dataPicker.getValue());
             LocalDate data = dataPicker.getValue();
 
@@ -293,29 +306,86 @@ public class EditSessionePage extends MyStage {
                 so.setLinkIncontro(linkField.getText());
             }
 
-            for(Ricetta ricettaToDelete: ricetteToDelete)
-                sessione.getRicette().remove(ricettaToDelete);
-
-            for (Ricetta ricettaToInsert : ricetteToInsert)
-                sessione.getRicette().add(ricettaToInsert);
+            sessione.getRicette().removeAll(ricetteToDelete);
+            sessione.getRicette().addAll(ricetteToInsert);
 
             controller.updateSessione(sessione);
             controller.removeRicetteToSessione(ricetteToDelete,sessione);
             controller.insertRicetteToSessione(ricetteToInsert, sessione);
             controller.refreshCalendario();
 
+            parent.setSessione(sessione);
+            System.out.println(sessione.getRicette());
+
             parent.close();
             this.close();
+        } catch (LinkOrLuogoEmptyException ex) {
+            errorLinkOrLuogoLabel.setText("Campo obbligatorio");
+        } catch (DataNelPassatoException ex) {
+            erroreDataSessione.setText("La sessione deve iniziare almeno domani");
+        } catch (SessioneAlmenoUnOraException ex) {
+            erroreOrario.setText("La sessione deve terminare dopo almeno 1 ora");
+        } catch (OrarioMassimoOttoOreException ex) {
+            erroreOrario.setText("La sessione supera la durata max (8 ore)");
+        } catch (AlmenoUnaRicettaException ARE) {
+            errorAlmenoUnRicetta.setText("La sessione deve trattare almeno una ricetta");
         } catch (SQLException sqlException) {
             if(sqlException.getSQLState() != null && sqlException.getSQLState().equals("23505"))
-                erroreInserimentoDati.setText("Il corso ha già una sessione in data: "+dataPicker.getValue());
-
+                erroreInserimentoDati.setText("Il corso ha già una sessione in data: " + dataPicker.getValue());
             sqlException.printStackTrace();
-
         }catch (Exception ex) {
             erroreInserimentoDati.setText("Errore inserimenti dati. Riprovare più tardi");
             ex.printStackTrace();
+        }
+    }
 
+    public void validate() {
+        LocalDate data = dataPicker.getValue();
+        int hInizio = hourSpinnerInizio.getValue();
+        int mInizio = minuteSpinnerInizio.getValue();
+        LocalDateTime dateTimeInizio = LocalDateTime.of(data, LocalTime.of(hInizio, mInizio));
+        sessione.setOra(dateTimeInizio);
+
+        int hFine = hourSpinnerFine.getValue();
+        int mFine = minuteSpinnerFine.getValue();
+        LocalDateTime dateTimeFine = LocalDateTime.of(data, LocalTime.of(hFine, mFine));
+
+        long durataMinuti = Duration.between(dateTimeInizio, dateTimeFine).toMinutes();
+
+        Float durataOre = durataMinuti / 60f;
+
+        if (sessione instanceof SessionePresenza) {
+            if (luogoField.getText().isEmpty()) {
+                throw new LinkOrLuogoEmptyException();
+            } else {
+                errorLinkOrLuogoLabel.setText("");
+            }
+        } else if (sessione instanceof SessioneOnline) {
+            if (linkField.getText().isEmpty()) {
+                throw new LinkOrLuogoEmptyException();
+            } else {
+                errorLinkOrLuogoLabel.setText("");
+            }
+        }
+
+        if (data.isBefore(LocalDate.now())) {
+            throw new DataNelPassatoException();
+        } else {
+            erroreDataSessione.setText("");
+        }
+
+        if (durataOre < 1) {
+            throw new SessioneAlmenoUnOraException();
+        } else if (durataOre > 8) {
+            throw new OrarioMassimoOttoOreException();
+        } else {
+            erroreOrario.setText("");
+        }
+
+        if (ricetteToInsert.isEmpty()) {
+            throw new AlmenoUnaRicettaException();
+        } else {
+            errorAlmenoUnRicetta.setText("");
         }
     }
 

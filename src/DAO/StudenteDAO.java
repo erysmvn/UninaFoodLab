@@ -15,15 +15,12 @@ import java.util.ArrayList;
 
 public class StudenteDAO implements StudenteDAOInterface {
     DBConnection dbc;
-
     Connection con;
-    Controller controller;
 
     // Constructors
-    public StudenteDAO(Controller controller) {
-        this.dbc = controller.getDBConnection();
+    public StudenteDAO(DBConnection dbc) {
+        this.dbc = dbc;
         con = dbc.getConnection();
-        this.controller = controller;
     }
 
     // Methods
@@ -165,7 +162,8 @@ public class StudenteDAO implements StudenteDAOInterface {
         pstmt.setString(1, studente.getMatricola());
         ResultSet rs = pstmt.executeQuery();
         while (rs.next()) {
-            Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
+            CorsoDAO corsoDAO = new CorsoDAO(dbc);
+            Corso corso = corsoDAO.getCorsoByIdCorso(rs.getInt("idcorso"));
             corsi.add(corso);
         }
 

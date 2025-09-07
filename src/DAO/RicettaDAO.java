@@ -23,6 +23,7 @@ public class RicettaDAO implements RicettaDAOInterface {
         con = dbc.getConnection();
     }
 
+    @Override
     public void insertRicetta(Ricetta ricetta) throws SQLException {
         String sql = "INSERT INTO RICETTA(nome_ricetta, descrizione_ricetta,tempo_di_preparazione,autore) VALUES (?,?,?,?) RETURNING idricetta";
         PreparedStatement ps = con.prepareStatement(sql);
@@ -39,6 +40,7 @@ public class RicettaDAO implements RicettaDAOInterface {
         }
     }
 
+    @Override
     public void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException {
         String sql = "INSERT INTO FORMA (idRicetta, idIngrediente, unità, quantità) " +
                        "VALUES (?, ?, ?::unità_ingrediente, ?)";

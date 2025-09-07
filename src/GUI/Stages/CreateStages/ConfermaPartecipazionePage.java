@@ -136,7 +136,7 @@ public class ConfermaPartecipazionePage extends MyStage {
             try{
                 if (file != null) {
                     checkNamingFile(file.getName());
-                    setUploadButtonToConfirmButton(file);
+                        setUploadButtonToConfirmButton(file);
                 }
             }catch (namingFileException NFE){
                 errorLabel.setText("Il nome file deve essere Nome_Cognome_DD-MM-YYYY");

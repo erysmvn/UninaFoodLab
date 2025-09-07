@@ -15,7 +15,6 @@ public abstract class Sessione {
     protected Corso corso;
     protected ArrayList<Ricetta> ricette;
 
-
     public Corso getCorso() {
         return corso;
     }

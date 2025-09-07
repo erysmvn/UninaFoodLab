@@ -137,7 +137,7 @@ public class LoginPage extends MyStage {
         return logoView;
     }
 
-    public void mostraInserireEmail() {
+    private void mostraInserireEmail() {
         root.requestFocus();
     }
 

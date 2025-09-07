@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface RicettaDAOInterface {
+    void insertRicetta(Ricetta ricetta) throws SQLException;
+
+    void inserisciIngredientiToRicetta(Ricetta ricetta) throws SQLException;
+
     // Methods
     Ricetta createRicettaByResulSet(ResultSet rs) throws SQLException;
 

@@ -232,6 +232,7 @@ public class SessionePage extends MyStage {
         return ((SessionePresenza) sessione).checkIfAlreadyAdded(matricola);
     }
 
+
     private MyButton createEditButton() {
         MyButton editButton = new MyButton("Modifica", MyButton.ButtonType.PRIMARY);
 

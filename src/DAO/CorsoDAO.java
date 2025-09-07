@@ -109,13 +109,14 @@ public class CorsoDAO implements CorsoDAOInterface {
         }
     }
 
-    public void prepareChefs(int idCorso, int idChef) throws SQLException {
+    @Override
+    public void deleteOtherChefs(int idCorso, int idChefNotToDelete) throws SQLException {
         String sql = "DELETE FROM tiene WHERE idcorso = ? AND idchef <> ?";
 
         PreparedStatement ps = con.prepareStatement(sql);
 
         ps.setInt(1, idCorso);
-        ps.setInt(2, idChef);
+        ps.setInt(2, idChefNotToDelete);
 
         int rows = ps.executeUpdate();
         if (rows == 0) {
@@ -126,7 +127,7 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     // Get methods
     @Override
-    public ArrayList<Corso> searchCorsiLikeString(String nomeCorso) throws SQLException, corsiNotFoundException {
+    public ArrayList<Corso> searchCorsiLikeNomeCorso(String nomeCorso) throws SQLException, corsiNotFoundException {
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "SELECT * FROM corso WHERE UPPER(nome_corso) LIKE ?";
 
@@ -144,7 +145,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public ArrayList<Corso> searchCorsiByTipologia(String tipologia) throws SQLException, corsiNotFoundException {
+    public ArrayList<Corso> searchCorsiLikeNomeTipologia(String tipologia) throws SQLException, corsiNotFoundException {
         tipologia = tipologia.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
@@ -163,7 +164,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public ArrayList<Corso> searchCorsiByChef(String nomeChef)throws SQLException, corsiNotFoundException {
+    public ArrayList<Corso> searchCorsiLikeNomeChef(String nomeChef)throws SQLException, corsiNotFoundException {
         nomeChef = nomeChef.toUpperCase();
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "select distinct  c.idcorso, c.nome_corso, c.desc_corso, c.datainizio," +
@@ -186,7 +187,7 @@ public class CorsoDAO implements CorsoDAOInterface {
 
 
     @Override
-    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsi) throws SQLException, corsiNotFoundException {
+    public ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsiLimite) throws SQLException, corsiNotFoundException {
         ArrayList<Corso> corsi = new ArrayList<>();
         String sql = "SELECT corso.nome_corso, count(segue.matricola) as NumStudenti " +
                 "FROM corso NATURAL JOIN segue NATURAL JOIN studente " +
@@ -194,7 +195,7 @@ public class CorsoDAO implements CorsoDAOInterface {
                 "ORDER BY NumStudenti DESC LIMIT ?";
 
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, numeroCorsi);
+        ps.setInt(1, numeroCorsiLimite);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             Corso corso = getCorsoByTitle(rs.getString("nome_corso"));
@@ -260,7 +261,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public Corso getCorsoByIdCorso(int idcorso) throws SQLException {
+    public Corso    getCorsoByIdCorso(int idcorso) throws SQLException {
         String sql = "SELECT * FROM corso WHERE idcorso = ?";
 
         PreparedStatement stmt = con.prepareStatement(sql);
@@ -328,10 +329,11 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         String nomeCorsoPulito = rs.getString("nome_corso").replaceAll("\\s+", "");
         corso.setImagePath("/Media/CoursesImages/" +nomeCorsoPulito+".png");
-        System.out.println("sto mettendo sessioni");
+
         corso.setSessioni(controller.getSessioniCorso(corso));
         setChefs(corso);
 
         return  corso;
     }
+
 }

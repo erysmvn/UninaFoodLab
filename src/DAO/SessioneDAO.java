@@ -23,6 +23,7 @@ public class SessioneDAO implements SessioneDAOInterface {
         con = dbc.getConnection();
     }
 
+    @Override
     public void insertSessione(Sessione sessione) throws SQLException {
         String sql = "";
         String linkOrLuogo="";

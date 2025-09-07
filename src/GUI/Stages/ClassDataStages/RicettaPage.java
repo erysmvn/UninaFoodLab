@@ -131,10 +131,8 @@ public class RicettaPage extends MyStage {
         try {
             controller.getIngredientiRicetta(ricetta);
             controller.getAllergeniRicetta(ricetta);
-<<<<<<< HEAD
         } catch (SQLException sqle) {
             showDialog("Errore di sistema. Riprovare più tardi");
->>>>>>> 63a61b8a4d71fb42dee0642f71e0c885ae57ac90
         }
 
         Text allergeniLabel = new Text("Allergeni: ");

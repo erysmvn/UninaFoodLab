@@ -119,6 +119,7 @@ public class ChefDAO implements ChefDAOInterface {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
+
             Corso corso = controller.getCorsoByIdCorso(rs.getInt("idcorso"));
             chef.getCorsi().add(corso);
         }

@@ -22,6 +22,8 @@
         MyButton corsiButton;
         MyButton calendarButton;
         MyButton clickedButton;
+        MyButton reportButton;
+        ReportPanel reportPanel;
 
         VBox impostazioniPanel;
         VBox accountPanel;
@@ -50,10 +52,16 @@
             calendarioPanel.initCalendario(utente);
 
             content.getChildren().addAll(accountCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
+            if(utente instanceof Chef){
+                reportPanel = new ReportPanel(controller);
+                reportPanel.initPanel(utente);
+                content.getChildren().add(reportPanel);
+            }
 
             HBox topBar = createTopBar();
             root.setTop(topBar);
             root.setCenter(content);
+
 
             showOnlyPanel(accountCorsiPanel);
             setButtonAsActive(corsiButton);
@@ -88,6 +96,9 @@
             if(clickedButton != calendarButton) calendarButton.setOutlineNotClickedStyle();
             else calendarButton.setOutlineClickedStyle();
 
+            if(clickedButton != reportButton) reportButton.setOutlineNotClickedStyle();
+            else reportButton.setOutlineClickedStyle();
+
         }
 
         private VBox createAccountPanel(Utente utente){
@@ -121,6 +132,7 @@
             corsiButton = createCorsiButton();
             calendarButton = createCalendarButton();
             impostazioniButton = createImpostazioniButton();
+            reportButton = createReportButton();
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
             CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -128,7 +140,7 @@
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
+            topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, reportButton, spacer, minimizeBtn, closeBtn);
 
             return  topBar;
         }
@@ -158,8 +170,14 @@
             return calendarButton;
         }
 
+        private MyButton createReportButton(){
+            reportButton = new MyButton("Report");
+            initButton(reportButton, reportPanel);
+            return reportButton;
+        }
+
         private void showOnlyPanel(Pane panelToShow){
-            Pane[] allPanels = {accountPanel, accountCorsiPanel, impostazioniPanel, calendarioPanel};
+            Pane[] allPanels = {accountPanel, accountCorsiPanel, impostazioniPanel, calendarioPanel, reportPanel};
 
             for (Pane panel : allPanels) {
 
@@ -173,6 +191,7 @@
             }
 
         }
+
 
         public CalendarioPanel getCalendarioPanel(){
             return calendarioPanel;

@@ -24,7 +24,7 @@ public class EditPasswordPage extends MyStage {
         private Controller controller;
         private VBox root;
 
-        private TextField txtVecchiaPassword;
+        private PasswordField txtVecchiaPassword;
         private PasswordField txtNuovaPassword;
         private PasswordField txtRipetiPassword;
         private Label lblVecchiaPasswordError;
@@ -103,7 +103,7 @@ public class EditPasswordPage extends MyStage {
             return lblErroreInserimentoDB;
         }
 
-        private GridPane createGridDati() {
+    private GridPane createGridDati() {
             GridPane grid = new GridPane();
             grid.setHgap(10);
             grid.setVgap(10);
@@ -117,7 +117,7 @@ public class EditPasswordPage extends MyStage {
             return grid;
         }
 
-        private HBox createBottomBox() {
+    private HBox createBottomBox() {
             HBox bottomBox = new HBox(50);
             Button confermaButton = createConfermaButton();
 

@@ -91,48 +91,12 @@ public class MyStage extends Stage {
         });
     }
 
-    protected void setupFullScreen() {
-        Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
-        this.setX(screenBounds.getMinX());
-        this.setY(screenBounds.getMinY());
-        this.setWidth(screenBounds.getWidth());
-        this.setHeight(screenBounds.getHeight());
-    }
-
-    protected HBox createTopBarWithControls() {
-        HBox topBar = new HBox(5);
-        topBar.setAlignment(javafx.geometry.Pos.TOP_RIGHT);
-        topBar.setPadding(new Insets(3, 0, 0, 0));
-
-        GUI.Buttons.CircleButton minimizeBtn = new GUI.Buttons.CircleButton().setToMinimizeButtonWithAction(this);
-        GUI.Buttons.CircleButton closeBtn = new GUI.Buttons.CircleButton().setToCloseButtonWithAction(this);
-
-        topBar.getChildren().addAll(minimizeBtn, closeBtn);
-        return topBar;
-    }
-
-    protected VBox createCenteredVBox(int spacing) {
-        VBox vbox = new VBox(spacing);
-        vbox.setAlignment(javafx.geometry.Pos.CENTER);
-        return vbox;
-    }
-
-    protected HBox createCenteredHBox(int spacing) {
-        HBox hbox = new HBox(spacing);
-        hbox.setAlignment(javafx.geometry.Pos.CENTER);
-        return hbox;
-    }
-
     protected BorderPane getRootBorderPane() {
         return (BorderPane) root;
     }
 
     protected VBox getRootVBox() {
         return (VBox) root;
-    }
-
-    protected HBox getRootHBox() {
-        return (HBox) root;
     }
 
     protected void showConfirmPanel(String message, Runnable onConfirm) {

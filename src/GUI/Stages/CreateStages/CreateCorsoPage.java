@@ -39,16 +39,15 @@ public class CreateCorsoPage extends MyStage {
     private File selectedPhotoFile;
 
     VBox root;
-    HBox functionalityButtons;
-    HBox titleBox;
-    HBox container;
     VBox fieldsBox;
     VBox uploadPhotoBox;
     VBox confermaButtonBox;
+    HBox functionalityButtons;
+    HBox titleBox;
+    HBox container;
 
     TextField corsoName;
     TextField corsoPrice;
-
     TextField nameChef;
     TextField surnameChef;
     TextField emailChef;
@@ -65,7 +64,6 @@ public class CreateCorsoPage extends MyStage {
     Label typeError;
     Label difficultyError;
     Label frequencyError;
-
     Label nameChefError;
     Label surnameChefError;
     Label emailChefError;

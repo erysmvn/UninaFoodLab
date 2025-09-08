@@ -339,7 +339,7 @@ public class EditSessionePage extends MyStage {
         }
     }
 
-    public void validate() {
+    private void validate() {
         LocalDate data = dataPicker.getValue();
         int hInizio = hourSpinnerInizio.getValue();
         int mInizio = minuteSpinnerInizio.getValue();

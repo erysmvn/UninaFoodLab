@@ -340,7 +340,7 @@ public class CorsoPage extends MyStage {
         ricetteTrattate.setStyle("-fx-font-weight: bold;");
         ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
         descBox.getChildren().add(ricetteTrattate);
-        VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
+       VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
         VBox ricetteList = new VBox(5);
         ricetteList.setAlignment(Pos.TOP_LEFT);

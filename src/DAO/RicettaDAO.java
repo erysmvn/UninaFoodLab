@@ -99,18 +99,6 @@ public class RicettaDAO implements RicettaDAOInterface {
         }
     }
 
-
-    private UnitaIngrediente getUnitaFromDb(String unitaDbValue) {
-        for (UnitaIngrediente u : UnitaIngrediente.values()) {
-            if (u.getDbValue().equals(unitaDbValue)) {
-                return u;
-            }
-        }
-
-        return UnitaIngrediente.Quantita;
-    }
-
-
     @Override
     public ArrayList<Ricetta> getRicetteByIdSessione(int idsessione) throws SQLException{
         ArrayList<Ricetta> ricette = new ArrayList<>();

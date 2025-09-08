@@ -60,7 +60,7 @@ public class LoginPage extends MyStage {
         errorLoginLabel.setTextFill(Color.RED);
 
         MyButton loginButton = createButtonLogin();
-        MyButton registerButton = createButtonRegister();
+        MyButton registerButton = createRegisterButton();
 
         Region spacer = new Region();
         spacer.setPrefHeight(8);
@@ -84,7 +84,6 @@ public class LoginPage extends MyStage {
         return centerBox;
     }
 
-
     private HBox createButtonsTopBox() {
         HBox buttonsTopBox = new HBox(5);
         buttonsTopBox.setAlignment(Pos.TOP_RIGHT);
@@ -95,7 +94,6 @@ public class LoginPage extends MyStage {
         );
         return buttonsTopBox;
     }
-
 
     private VBox createPasswordBox() {
         passwordField = new PasswordField();
@@ -126,8 +124,6 @@ public class LoginPage extends MyStage {
         emailBox.setAlignment(Pos.CENTER);
         return emailBox;
     }
-
-
 
     private ImageView createLogo() {
         Image logoImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Media/Logos/LogoLoginPage.png")));
@@ -226,8 +222,7 @@ public class LoginPage extends MyStage {
         }
     }
 
-
-    public MyButton createButtonRegister() {
+    public MyButton createRegisterButton() {
         MyButton registerButton = new MyButton("Register", MyButton.ButtonType.PRIMARY);
 
         registerButton.setOnAction(event -> {

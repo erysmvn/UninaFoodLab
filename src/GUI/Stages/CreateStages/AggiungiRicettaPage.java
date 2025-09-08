@@ -74,7 +74,6 @@ public class AggiungiRicettaPage extends MyStage {
         this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
     }
 
-
     private VBox createRicettaBox() {
         VBox box = new VBox(10);
         box.setStyle("-fx-background-color: transparent");
@@ -117,15 +116,6 @@ public class AggiungiRicettaPage extends MyStage {
                 tempoDiPreparazioneBox,
                 descrizioneBox
         );
-        return box;
-    }
-
-    private VBox createCampoConLabel(String labelText, String prompt) {
-        VBox box = new VBox(3);
-        Label label = new Label(labelText);
-        TextField field = new TextField();
-        field.setPromptText(prompt);
-        box.getChildren().addAll(label, field);
         return box;
     }
 

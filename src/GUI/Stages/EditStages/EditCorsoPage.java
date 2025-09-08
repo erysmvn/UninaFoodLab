@@ -33,32 +33,30 @@ import java.util.ArrayList;
 public class EditCorsoPage extends MyStage {
 
     private VBox root;
+    private VBox listaChef;
     private HBox topHbox;
     private HBox bottomHbox;
     private VBox footerVbox;
-    private Rectangle clip;
     private Controller controller;
     private Corso corso;
 
-    private TextField nomeField;
     private ComboBox<String> difficoltaBox;
     private Spinner<Integer> freqSettimanaleSpinner;
     private TextField costoField;
+    private TextField nomeField;
+    private TextField nameChef;
+    private TextField surnameChef;
+    private TextField emailChef;
 
     private Label nameError;
     private Label priceError;
+    private Label nameChefError;
+    private Label surnameChefError;
+    private Label emailChefError;
 
-    ArrayList<Chef> chefDelCorso;
+    private ArrayList<Chef> chefDelCorso;
 
-    TextField nameChef;
-    TextField surnameChef;
-    TextField emailChef;
 
-    Label nameChefError;
-    Label surnameChefError;
-    Label emailChefError;
-
-    VBox listaChef;
 
 
     public EditCorsoPage(Controller controller){
@@ -416,7 +414,6 @@ public class EditCorsoPage extends MyStage {
         surnameBox.setMaxWidth(330);
         return surnameBox;
     }
-
     private VBox addChefEmailBox() {
         Label emailChefLabel = new Label("Email chef: *");
         emailChef = new TextField();
@@ -543,4 +540,5 @@ public class EditCorsoPage extends MyStage {
         closeButton.setOnAction(e -> this.close());
         return closeButton;
     }
+
 }

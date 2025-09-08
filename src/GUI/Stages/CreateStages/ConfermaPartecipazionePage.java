@@ -8,7 +8,6 @@ import Entity.Utente;
 import Exception.SessioneExceptions.ConfermaPartecipazioneException.namingFileException;
 import GUI.Buttons.MyButton;
 import GUI.Stages.MyStage;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -81,7 +80,7 @@ public class ConfermaPartecipazionePage extends MyStage {
 
     }
 
-    private void addFolgioAdesione(String filePath) throws SQLException {
+    private void addFoglioAdesione(String filePath) throws SQLException {
         controller.insertFoglioAdesione(filePath, sessionePresenza);
         FoglioAdesione foglio = controller.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza);
         sessionePresenza.getFogliAdesione().add(foglio);
@@ -154,7 +153,7 @@ public class ConfermaPartecipazionePage extends MyStage {
                            Corso corso = controller.getCorsoByIdCorso(sessionePresenza.getCorso().getIdCorso());
                            nomeCorsoNoSpace = corso.getNome().replaceAll(" ","_");
 
-                           addFolgioAdesione(destDir+file.getName()+nomeCorsoNoSpace);
+                           addFoglioAdesione(destDir+file.getName()+nomeCorsoNoSpace);
                            addFileToServer(file);
 
                            errorLabel.setText("");

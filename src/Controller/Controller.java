@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Controller {
     private HomePage homePage;
@@ -527,6 +529,9 @@ public class Controller {
         }
     }
 
+    public Map<String,Object> getReportMensile(YearMonth mese)throws SQLException{
+        return  chefDAO.getReportMensile((Chef)utente, mese);
+    }
 
     // Corso
     public ArrayList<Corso> searchCorsiByTipologia(String tipologia)throws corsiNotFoundException,SQLException{
@@ -606,9 +611,6 @@ public class Controller {
         corsoDAO.addToCaratterizzato(idcorso, idtipologia);
     }
 
-    public ArrayList<Sessione> getSessioniCorso(Corso corso) throws SQLException {
-        return sessioneDAO.getSessioniByCorso(corso);
-    }
 
 
     // Sessione
@@ -647,10 +649,6 @@ public class Controller {
     // Ricetta
     public ArrayList<Ingrediente> getAllIngredienti() throws SQLException {
         return ingredienteDAO.getAllIngredientes();
-    }
-
-    public ArrayList<Ricetta> getRicetteByIdSessione(int idSessione) throws SQLException {
-        return ricettaDAO.getRicetteByIdSessione(idSessione);
     }
 
     public void getIngredientiRicetta(Ricetta Ricetta) throws SQLException {

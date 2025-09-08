@@ -128,6 +128,7 @@ public class SessioneDAO implements SessioneDAOInterface {
         return sessioni;
     }
 
+    @Override
     public void update(Sessione sessione) throws SQLException {
        String sql="";
        String linkOrLuogo="";
@@ -156,6 +157,7 @@ public class SessioneDAO implements SessioneDAOInterface {
 
     }
 
+    @Override
     public void delete(Sessione sessione) throws SQLException {
         String sql = "DELETE FROM sessione WHERE idsessione = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);

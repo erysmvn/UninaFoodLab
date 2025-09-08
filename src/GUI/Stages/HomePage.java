@@ -504,16 +504,6 @@ public class HomePage extends Stage {
         return choiceBox;
     }
 
-    private void sortCorsiByCostoIfNeeded(boolean crescente) {
-        if (corsi == null) return;
-
-        if (crescente) {
-            corsi.sort(Comparator.comparing(Corso::getCosto));
-        } else {
-            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
-        }
-    }
-
     private void addHoverEffectToButtons() {
         for (Node node : choiceBox.getChildren()) {
             if (node instanceof ButtonBase) {
@@ -557,14 +547,6 @@ public class HomePage extends Stage {
         }
 
         return false;
-    }
-
-    private void SetLabelSearchArea(Label modalitaLabel) {
-        modalitaLabel.setFont(Font.font("System", 14));
-        modalitaLabel.setTextFill(Color.web("#3a6698"));
-        modalitaLabel.setPadding(new Insets(6, 10, 5, 10));
-        modalitaLabel.setStyle("-fx-background-color: WHITE; -fx-background-radius: 7;-fx-border-color: #3A6698;-fx-border-width: 1; -fx-border-radius: 7");
-        modalitaLabel.setEffect(new DropShadow(10,1,3, Color.LIGHTGREY));
     }
 
     private void setNotFoundTextField() {

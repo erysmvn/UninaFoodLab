@@ -22,9 +22,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
-import org.postgresql.replication.fluent.physical.StartPhysicalReplicationCallback;
 
-import java.net.CookieHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,18 +51,26 @@ public class HomePage extends Stage {
     private Button searchButton;
     private Button tuttiCorsi;
     private Button homeButton;
-    private Button costoFilter;
+    private Button costoFilterUp;
+    private Button costoFilterDown;
 
     ToggleGroup choiceGroup;
     ToggleButton corsoChoice;
     ToggleButton chefChoice;
     ToggleButton tipologiaChoice;
 
-    ToggleGroup modalitaGroup;
-    ToggleButton onlineChoice;
-    ToggleButton presenzaChoice;
+    // Enum per gestire la modalità
+    private enum Modalita {
+        ONLINE, PRESENZA
+    }
 
+    private Modalita modalitaSelezionata = null;
 
+    private enum PriceFilter {
+        CRESCENTE, DECRESCENTE
+    }
+
+    private PriceFilter priceFilter = null;
 
     public HomePage(Controller controller) {
         this.controller = controller;
@@ -276,24 +282,106 @@ public class HomePage extends Stage {
     }
 
     private HBox createChoiceBox() {
-        choiceBox = new HBox(2);
+        choiceBox = new HBox(4);
         choiceBox.setAlignment(Pos.CENTER);
+        choiceBox.setPadding(new Insets(4));
 
-        Label cercaPerLabel = new Label("Cerca per:");
-        SetLabelSearchArea(cercaPerLabel);
+        choiceBox.setStyle("-fx-background-color: transparent; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
 
-        Label modalitaLabel = new Label("Modalità:");
-        SetLabelSearchArea(modalitaLabel);
+//        Label cercaPerLabel = new Label("Cerca per:");
+//        cercaPerLabel.setStyle("-fx-text-fill: #334155; -fx-font-size: 14px; -fx-padding: 8 8 8 0;");
+
         choiceGroup = new ToggleGroup();
-
         corsoChoice = new ToggleButton("Corso");
         corsoChoice.setToggleGroup(choiceGroup);
-
         chefChoice = new ToggleButton("Chef");
         chefChoice.setToggleGroup(choiceGroup);
-
         tipologiaChoice = new ToggleButton("Tipologia");
         tipologiaChoice.setToggleGroup(choiceGroup);
+
+        HBox cercaPer = new HBox(4);
+        cercaPer.setAlignment(Pos.CENTER);
+        cercaPer.setPadding(new Insets(4));
+
+        cercaPer.setStyle("-fx-background-color: #EEE; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
+
+//        cercaPer.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice);
+        cercaPer.getChildren().addAll(corsoChoice, chefChoice, tipologiaChoice);
+
+        // Separatore 1
+        Separator separator1 = new Separator();
+        separator1.setOrientation(Orientation.VERTICAL);
+        separator1.setStyle("-fx-padding: 0 10 0 10; -fx-opacity: 0;");
+
+//        Label modalitaLabel = new Label("Modalità:");
+//        modalitaLabel.setStyle("-fx-text-fill: #334155; -fx-font-size: 14px; -fx-padding: 8 8 8 0;");
+
+        Button onlineChoice = new Button("Online");
+        Button presenzaChoice = new Button("Presenza");
+
+        HBox modCorso = new HBox(4);
+        modCorso.setAlignment(Pos.CENTER);
+        modCorso.setPadding(new Insets(4));
+
+        modCorso.setStyle("-fx-background-color: #EEE; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
+
+//        modCorso.getChildren().addAll(modalitaLabel, onlineChoice, presenzaChoice);
+        modCorso.getChildren().addAll(onlineChoice, presenzaChoice);
+
+
+        Separator separator2 = new Separator();
+        separator2.setOrientation(Orientation.VERTICAL);
+        separator2.setStyle("-fx-padding: 0 10 0 10; -fx-opacity: 0;");
+
+        costoFilterUp = new Button("€↑");
+        costoFilterDown = new Button("€↓");
+
+        HBox costoBox = new HBox(4);
+        costoBox.setAlignment(Pos.CENTER);
+        costoBox.setPadding(new Insets(4));
+
+        costoBox.setStyle("-fx-background-color: #EEE; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
+
+        costoBox.getChildren().addAll(costoFilterUp, costoFilterDown);
+
+        Separator separator3 = new Separator();
+        separator3.setOrientation(Orientation.VERTICAL);
+        separator3.setStyle("-fx-padding: 0 10 0 10; -fx-opacity: 0;");
+
+        tuttiCorsi = new Button("Mostra tutti");
+
+        HBox showAllBox = new HBox(4);
+        showAllBox.setAlignment(Pos.CENTER);
+        showAllBox.setPadding(new Insets(4));
+
+        showAllBox.setStyle("-fx-background-color: #EEE; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
+
+        showAllBox.getChildren().add(tuttiCorsi);
 
         choiceGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             for (Toggle tb : choiceGroup.getToggles()) {
@@ -321,65 +409,65 @@ public class HomePage extends Stage {
             }
         });
 
-        tuttiCorsi = new Button("Mostra tutti");
-        tuttiCorsi.setOnAction(event -> {
-            if (!mostraTuttiCorsiClicked) {
-                setClickedButtonAesthetic(tuttiCorsi);
-                mostraTuttiCorsiClicked = true;
-                setCorsiByChoice();
-            }else{
-                setNotClickedButtonAesthetic(tuttiCorsi);
-                mostraTuttiCorsiClicked = false;
-                setCorsiByChoice();
+        onlineChoice.setOnAction(event -> {
+            if (modalitaSelezionata == Modalita.ONLINE) {
+                setNotClickedButtonAesthetic(onlineChoice);
+                modalitaSelezionata = null;
+            } else {
+                setClickedButtonAesthetic(onlineChoice);
+                setNotClickedButtonAesthetic(presenzaChoice);
+                modalitaSelezionata = Modalita.ONLINE;
             }
+            setCorsiByChoice();
         });
 
-        costoFilter = new Button("€");
-        this.setNotClickedButtonAesthetic(costoFilter);
-        costoFilter.setOnAction(event -> {
-            if (costoFilter.getText().equals("€")) {
-                this.setClickedButtonAesthetic(costoFilter);
-                costoFilter.setText("€↓");
-                sortCorsiByCostoIfNeeded();
-            } else if (costoFilter.getText().equals("€↓")) {
-                costoFilter.setText("€↑");
-                sortCorsiByCostoIfNeeded();
+        presenzaChoice.setOnAction(event -> {
+            if (modalitaSelezionata == Modalita.PRESENZA) {
+                setNotClickedButtonAesthetic(presenzaChoice);
+                modalitaSelezionata = null;
             } else {
-                this.setNotClickedButtonAesthetic(costoFilter);
-                costoFilter.setText("€");
+                setClickedButtonAesthetic(presenzaChoice);
+                setNotClickedButtonAesthetic(onlineChoice);
+                modalitaSelezionata = Modalita.PRESENZA;
             }
+            setCorsiByChoice();
+        });
+
+        costoFilterUp.setOnAction(event -> {
+            if (priceFilter == priceFilter.CRESCENTE) {
+                setNotClickedButtonAesthetic(costoFilterUp);
+                priceFilter = null;
+            } else {
+                setClickedButtonAesthetic(costoFilterUp);
+                setNotClickedButtonAesthetic(costoFilterDown);
+                priceFilter = priceFilter.CRESCENTE;
+            }
+            sortCorsiByCostoIfNeeded();
             setCorsiBox();
         });
 
-        modalitaGroup = new ToggleGroup();
-
-        onlineChoice = new ToggleButton("Online");
-        onlineChoice.setToggleGroup(modalitaGroup);
-        onlineChoice.setUserData("Online");
-
-        presenzaChoice = new ToggleButton("Presenza");
-        presenzaChoice.setToggleGroup(modalitaGroup);
-        presenzaChoice.setUserData("Presenza");
-
-        modalitaGroup.selectedToggleProperty().addListener((obs, oldT, choosed) -> {
-            if (choosed != null && choosed.equals(oldT)) {
-                modalitaGroup.selectToggle(null);
-                return;
+        costoFilterDown.setOnAction(event -> {
+            if (priceFilter == priceFilter.DECRESCENTE) {
+                setNotClickedButtonAesthetic(costoFilterDown);
+                priceFilter = null;
+            } else {
+                setClickedButtonAesthetic(costoFilterDown);
+                setNotClickedButtonAesthetic(costoFilterUp);
+                priceFilter = priceFilter.DECRESCENTE;
             }
+            sortCorsiByCostoIfNeeded();
+            setCorsiBox();
+        });
 
-            for (Toggle tb : modalitaGroup.getToggles()) {
-                ToggleButton temptb = (ToggleButton) tb;
-                if (temptb == choosed)
-                    setClickedButtonAesthetic(temptb);
-                else
-                    setNotClickedButtonAesthetic(temptb);
+        tuttiCorsi.setOnAction(event -> {
+            if (mostraTuttiCorsiClicked) {
+                setNotClickedButtonAesthetic(tuttiCorsi);
+                mostraTuttiCorsiClicked = false;
+            } else {
+                setClickedButtonAesthetic(tuttiCorsi);
+                mostraTuttiCorsiClicked = true;
             }
-
-            if(oldT == null) {
-                filterCorsiByModalitaIfNeeded();
-                setCorsiBox();
-            }else
-                setCorsiByChoice();
+            setCorsiByChoice();
         });
 
         setClickedButtonAesthetic(corsoChoice);
@@ -388,14 +476,87 @@ public class HomePage extends Stage {
         setNotClickedButtonAesthetic(tuttiCorsi);
         setNotClickedButtonAesthetic(chefChoice);
         setNotClickedButtonAesthetic(tipologiaChoice);
+        setNotClickedButtonAesthetic(costoFilterUp);
+        setNotClickedButtonAesthetic(costoFilterDown);
 
-        Region spacer = new Region();
-        spacer.setMinWidth(15);
-        Region spacer2 = new Region();
-        spacer2.setMinWidth(15);
+//        choiceBox.getChildren().addAll(
+//                cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice,
+//                separator1,
+//                modalitaLabel, onlineChoice, presenzaChoice,
+//                separator2,
+//                costoFilter,
+//                separator3,
+//                tuttiCorsi
+//        );
 
-        choiceBox.getChildren().addAll(cercaPerLabel, corsoChoice,chefChoice, tipologiaChoice, spacer,modalitaLabel, onlineChoice, presenzaChoice,spacer2, tuttiCorsi, costoFilter);
+        choiceBox.getChildren().addAll(
+                cercaPer,
+                separator1,
+                modCorso,
+                separator2,
+                costoBox,
+                separator3,
+                showAllBox
+        );
+
+        addHoverEffectToButtons();
+
         return choiceBox;
+    }
+
+    private void sortCorsiByCostoIfNeeded(boolean crescente) {
+        if (corsi == null) return;
+
+        if (crescente) {
+            corsi.sort(Comparator.comparing(Corso::getCosto));
+        } else {
+            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
+        }
+    }
+
+    private void addHoverEffectToButtons() {
+        for (Node node : choiceBox.getChildren()) {
+            if (node instanceof ButtonBase) {
+                ButtonBase button = (ButtonBase) node;
+                final String originalStyle = button.getStyle();
+
+                button.setOnMouseEntered(e -> {
+                    if (!isButtonSelected(button)) {
+                        button.setStyle(originalStyle + "-fx-background-color: #f5f5f5;");
+                    }
+                });
+
+                button.setOnMouseExited(e -> {
+                    if (!isButtonSelected(button)) {
+                        button.setStyle(originalStyle);
+                    }
+                });
+            }
+        }
+    }
+
+    private boolean isButtonSelected(ButtonBase button) {
+        if (button instanceof ToggleButton) {
+            return ((ToggleButton) button).isSelected();
+        }
+
+        if (button.getText().equals("Online")) {
+            return modalitaSelezionata == Modalita.ONLINE;
+        }
+        if (button.getText().equals("Presenza")) {
+            return modalitaSelezionata == Modalita.PRESENZA;
+        }
+        if (button == costoFilterUp) {
+            return priceFilter == priceFilter.CRESCENTE;
+        }
+        if (button == costoFilterDown) {
+            return priceFilter == priceFilter.DECRESCENTE;
+        }
+        if (button == tuttiCorsi) {
+            return mostraTuttiCorsiClicked;
+        }
+
+        return false;
     }
 
     private void SetLabelSearchArea(Label modalitaLabel) {
@@ -421,26 +582,64 @@ public class HomePage extends Stage {
     }
 
     private void setNotClickedButtonAesthetic(ToggleButton button) {
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        String base = "-fx-background-color: transparent; " +
+                "-fx-text-fill: #334155; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-cursor: hand; " +
+                "-fx-padding: 8 16; " +
+                "-fx-font-size: 14px; " +
+                "-fx-effect: none; " +
+                "-fx-transition: all 0.15s ease-in-out;";
         button.setStyle(base);
     }
 
     private void setClickedButtonAesthetic(ToggleButton button) {
-        String selected = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        String selected = "-fx-background-color: white; " +
+                "-fx-text-fill: #334155; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-cursor: hand; " +
+                "-fx-padding: 8 16; " +
+                "-fx-font-size: 14px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1); " +
+                "-fx-transition: all 0.15s ease-in-out;";
         button.setStyle(selected);
     }
 
     private void setNotClickedButtonAesthetic(Button button) {
-        String base = "-fx-background-color:white;-fx-text-fill:#3a6698;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        String base = "-fx-background-color: transparent; " +
+                "-fx-text-fill: #334155; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-cursor: hand; " +
+                "-fx-padding: 8 16; " +
+                "-fx-font-size: 14px; " +
+                "-fx-effect: none; " +
+                "-fx-transition: all 0.15s ease-in-out;";
         button.setStyle(base);
     }
 
     private void setClickedButtonAesthetic(Button button) {
-        String selected = "-fx-background-color:#3a6698;-fx-text-fill:white;-fx-border-color:#3a6698;" +
-                "-fx-border-width:1.5px;-fx-border-radius:7;-fx-background-radius:7;-fx-cursor:hand;";
+        String selected = "-fx-background-color: white; " +
+                "-fx-text-fill: #334155; " +
+                "-fx-border-color: transparent; " +
+                "-fx-border-width: 0; " +
+                "-fx-border-radius: 4; " +
+                "-fx-background-radius: 4; " +
+                "-fx-cursor: hand; " +
+                "-fx-padding: 8 16; " +
+                "-fx-font-size: 14px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1); " +
+                "-fx-transition: all 0.15s ease-in-out;";
         button.setStyle(selected);
     }
 
@@ -474,8 +673,11 @@ public class HomePage extends Stage {
             try {
                 String toSearch = searchField.getText().trim();
 
-                if (!toSearch.isEmpty()) {
-
+                if (mostraTuttiCorsiClicked) {
+                    searchField.setText("");
+                    corsi = controller.getAllCourses();
+                }
+                else if (!toSearch.isEmpty()) {
                     if (searchField.getPromptText().equals("Cerca per nome corso")) {
                         corsi = controller.searchCorsiLikeString(toSearch);
                     } else if (searchField.getPromptText().equals("Cerca per chef")) {
@@ -483,9 +685,8 @@ public class HomePage extends Stage {
                     } else {
                         corsi = controller.searchCorsiByTipologia(toSearch);
                     }
-                } else if (mostraTuttiCorsiClicked) {
-                    corsi = controller.getAllCourses();
-                } else {
+                }
+                else {
                     corsi = controller.getMostFollowedCourses(4);
                 }
 
@@ -511,6 +712,29 @@ public class HomePage extends Stage {
         }).start();
     }
 
+    private void filterCorsiByModalitaIfNeeded() {
+        if (corsi == null || modalitaSelezionata == null) return;
+
+        ArrayList<Corso> filteredCorsi = new ArrayList<>();
+        for (Corso corso : corsi) {
+            if (modalitaSelezionata == Modalita.ONLINE && corso.getModalita_corso().getLabel().equals("Online")) {
+                filteredCorsi.add(corso);
+            } else if (modalitaSelezionata == Modalita.PRESENZA && corso.getModalita_corso().getLabel().equals("Presenza")) {
+                filteredCorsi.add(corso);
+            }
+        }
+        corsi = filteredCorsi;
+    }
+
+    private void sortCorsiByCostoIfNeeded() {
+        if (corsi == null || priceFilter == null) return;
+
+        if (priceFilter == priceFilter.CRESCENTE) {
+            corsi.sort(Comparator.comparing(Corso::getCosto));
+        } else if (priceFilter == priceFilter.DECRESCENTE) {
+            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
+        }
+    }
 
     private ScrollPane createCorsiContainer() {
         corsiBox = new HBox(20);
@@ -574,7 +798,6 @@ public class HomePage extends Stage {
         return center;
     }
 
-
     private void addHoverAnimation(Region node) {
         ScaleTransition stEnlarge = new ScaleTransition(Duration.millis(200), node);
         stEnlarge.setToX(1.05);
@@ -605,25 +828,7 @@ public class HomePage extends Stage {
         }
     }
 
-    private void filterCorsiByModalitaIfNeeded() {
-        ToggleButton selected = (ToggleButton) modalitaGroup.getSelectedToggle();
-        if (corsi == null || selected == null) return;
-
-        corsi.removeIf(corso -> !corso.getModalita_corso().getLabel().equals(selected.getText()));
-    }
-
-    private void sortCorsiByCostoIfNeeded() {
-        if (corsi == null) return;
-
-        if (costoFilter.getText().equals("€↑"))
-            corsi.sort(Comparator.comparing(Corso::getCosto));
-        else if (costoFilter.getText().equals("€↓"))
-            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
-    }
-
-
     private void setLoadingPane(){
-
         StackPane loadingPane = new StackPane();
         loadingPane.setPadding(new Insets(20));
         Rectangle background = new Rectangle(600, 150);
@@ -636,7 +841,6 @@ public class HomePage extends Stage {
         this.setTextAesthetics(caricamentoText);
         startAnimation(caricamentoText);
         loadingPane.getChildren().addAll(background, caricamentoText);
-
     }
 
     public void setUtente(Utente utente){
@@ -673,7 +877,6 @@ public class HomePage extends Stage {
         homeButtons.getChildren().add(createLoginButton());
     }
 
-
     private void startAnimation(Text caricamentoText){
         Timeline AnimazionePuntini = new Timeline(
                 new KeyFrame(Duration.seconds(0), e -> caricamentoText.setText("Ricerca in corso")),
@@ -684,8 +887,6 @@ public class HomePage extends Stage {
         );
         AnimazionePuntini.setCycleCount(Animation.INDEFINITE);
         AnimazionePuntini.play();
-
-//        return AnimazionePuntini;
     }
 
     private void setTextAesthetics(Text text){
@@ -694,6 +895,4 @@ public class HomePage extends Stage {
                 Font.loadFont(getClass().getResourceAsStream("/Media/Fonts/times.ttf"), 70)
         );
     }
-
 }
-

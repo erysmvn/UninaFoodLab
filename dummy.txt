@@ -1,0 +1,7 @@
+You have an ongoing Git merge. You can either commit the merge to finalize it or abort it to discard the merge. 
+
+To commit the merge, you would typically use `git commit`.
+
+To abort the merge, you would use `git merge --abort`.
+
+Would you like me to commit or abort the merge?

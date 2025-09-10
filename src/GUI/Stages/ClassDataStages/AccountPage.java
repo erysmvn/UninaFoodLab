@@ -52,9 +52,10 @@
             calendarioPanel.initCalendario(utente);
 
             content.getChildren().addAll(accountCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
+            reportPanel = new ReportPanel(controller);
             if(utente instanceof Chef){
-                reportPanel = new ReportPanel(controller);
                 reportPanel.initPanel(utente);
+                reportPanel.initialize();
                 content.getChildren().add(reportPanel);
             }
 
@@ -96,8 +97,10 @@
             if(clickedButton != calendarButton) calendarButton.setOutlineNotClickedStyle();
             else calendarButton.setOutlineClickedStyle();
 
-            if(clickedButton != reportButton) reportButton.setOutlineNotClickedStyle();
-            else reportButton.setOutlineClickedStyle();
+            if(reportButton!=null){
+                if(clickedButton != reportButton) reportButton.setOutlineNotClickedStyle();
+                else reportButton.setOutlineClickedStyle();
+            }
 
         }
 
@@ -132,7 +135,7 @@
             corsiButton = createCorsiButton();
             calendarButton = createCalendarButton();
             impostazioniButton = createImpostazioniButton();
-            reportButton = createReportButton();
+
 
             CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
             CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
@@ -140,7 +143,12 @@
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, reportButton, spacer, minimizeBtn, closeBtn);
+            if(utente instanceof Chef){
+                reportButton = createReportButton();
+                topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, reportButton, spacer, minimizeBtn, closeBtn);
+            }else{
+                topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
+            }
 
             return  topBar;
         }

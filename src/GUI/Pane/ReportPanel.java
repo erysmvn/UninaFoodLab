@@ -3,9 +3,11 @@ package GUI.Pane;
 import Controller.Controller;
 import Entity.Chef;
 import Entity.Utente;
+import Exception.CorsoExceptions.noCorsiTenutiException;
 import GUI.Buttons.MyButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,13 +35,13 @@ public class ReportPanel extends VBox {
     private Label titoloLabel;
     private VBox statisticheBox;
     private BorderPane graficiPane;
+    PieChart sessioniChart;
 
     public ReportPanel(Controller controller) {
         this.controller = controller;
-        initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         this.setSpacing(20);
         this.setPadding(new Insets(20));
         this.setStyle("-fx-background-color: WHITE;");
@@ -88,27 +90,25 @@ public class ReportPanel extends VBox {
             }
         });
 
-        // Imposta il mese corrente come predefinito
         meseComboBox.setValue(YearMonth.now());
 
-        MyButton generaReportButton = new MyButton("Genera Report");
+        MyButton generaReportButton = new MyButton("Genera Report", MyButton.ButtonType.PRIMARY);
+        generaReportButton.setSize(150,30);
         generaReportButton.setOnAction(e -> generaReport());
 
         selezioneMeseBox.getChildren().addAll(meseLabel, meseComboBox, generaReportButton);
 
-        // Area statistiche
+
         statisticheBox = new VBox(10);
         statisticheBox.setPadding(new Insets(10));
         statisticheBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
-        // Area grafici
         graficiPane = new BorderPane();
         graficiPane.setPadding(new Insets(10));
         graficiPane.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         this.getChildren().addAll(titoloLabel, selezioneMeseBox, statisticheBox, graficiPane);
 
-        // Genera il report iniziale per il mese corrente
         generaReport();
     }
 
@@ -121,13 +121,14 @@ public class ReportPanel extends VBox {
         Map<String, Object> reportData = null;
         try {
             reportData = controller.getReportMensile(meseSelezionato);
-            System.out.println("Report data: " + reportData); // DEBUG
-        } catch (SQLException e) {
-            e.printStackTrace(); // STAMPA L'ERRORE COMPLETO
+        } catch (noCorsiTenutiException NCTE) {
+            graficiPane.getChildren().clear();
+            statisticheBox.getChildren().clear();
+        }catch (SQLException e) {
+            graficiPane.getChildren().clear();
+            statisticheBox.getChildren().clear();
             showDialog("Errore di Sistema. Riprovare più tardi: " + e.getMessage());
-            this.setVisible(false);
-            this.setDisable(true);
-            return; // AGGIUNGI RETURN PER EVITARE NULL POINTER
+            return;
         }
 
         // Verifica che reportData non sia null prima di procedere
@@ -139,6 +140,8 @@ public class ReportPanel extends VBox {
         aggiornaStatistiche(reportData);
         aggiornaGrafici(reportData);
     }
+
+
     private void aggiornaStatistiche(Map<String, Object> reportData) {
         statisticheBox.getChildren().clear();
 
@@ -149,7 +152,6 @@ public class ReportPanel extends VBox {
         int maxRicette = (int) reportData.getOrDefault("maxRicette", 0);
         int minRicette = (int) reportData.getOrDefault("minRicette", 0);
 
-        // Titolo statistiche
         Label statsTitolo = new Label("Statistiche Mensili");
         statsTitolo.setFont(Font.font("System", FontWeight.BOLD, 16));
         statsTitolo.setTextFill(Color.valueOf("#3A6698"));
@@ -160,7 +162,6 @@ public class ReportPanel extends VBox {
         statsGrid.setVgap(10);
         statsGrid.setPadding(new Insets(10, 0, 10, 0));
 
-        // Aggiungi le statistiche alla griglia
         addStatistica(statsGrid, 0, "Corsi totali:", String.valueOf(corsiTotali));
         addStatistica(statsGrid, 1, "Sessioni online:", String.valueOf(sessioniOnline));
         addStatistica(statsGrid, 2, "Sessioni pratiche:", String.valueOf(sessioniPratiche));
@@ -188,15 +189,14 @@ public class ReportPanel extends VBox {
         int sessioniOnline = (int) reportData.getOrDefault("sessioniOnline", 0);
         int sessioniPratiche = (int) reportData.getOrDefault("sessioniPratiche", 0);
 
-        // Grafico a torta per le tipologie di sessioni
-        PieChart sessioniChart = new PieChart();
+        sessioniChart = new PieChart();
         sessioniChart.setTitle("Distribuzione Sessioni");
-        sessioniChart.getData().addAll(
-                new PieChart.Data("Sessioni Online", sessioniOnline),
-                new PieChart.Data("Sessioni Pratiche", sessioniPratiche)
-        );
 
-        // Grafico a barre per il numero di ricette per sessione pratica
+        PieChart.Data onlineData = new PieChart.Data("Sessioni Online", sessioniOnline);
+        PieChart.Data praticheData = new PieChart.Data("Sessioni Pratiche", sessioniPratiche);
+
+        sessioniChart.getData().addAll(onlineData, praticheData);
+
         Map<String, Integer> ricettePerSessione = (Map<String, Integer>) reportData.get("ricettePerSessione");
         if (ricettePerSessione != null && !ricettePerSessione.isEmpty()) {
             CategoryAxis xAxis = new CategoryAxis();

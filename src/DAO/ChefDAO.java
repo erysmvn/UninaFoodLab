@@ -3,6 +3,7 @@ package DAO;
 import DAO.Interfaces.ChefDAOInterface;
 import DB.DBConnection;
 import Entity.*;
+import Exception.CorsoExceptions.noCorsiTenutiException;
 import Exception.UserExceptions.ChangePasswordException.changePasswordException;
 import Exception.UserExceptions.ChangePasswordException.oldPasswordErrorException;
 import Exception.UserExceptions.LoginException.emailNotFoundException;
@@ -155,24 +156,34 @@ public class ChefDAO implements ChefDAOInterface {
         return rs.next();
     }
 
-    public Map<String, Object> getReportMensile(Chef chef, YearMonth mese) throws SQLException {
-        Map<String, Object> reportData = new HashMap<>();
+    private int getNumCorsiTenutiInData(Chef chef,Date inizioMese, Date fineMese ) throws SQLException, noCorsiTenutiException {
 
 
-        LocalDate inizioMese = mese.atDay(1);
-        LocalDate fineMese = mese.atEndOfMonth();
-
-        // Converti LocalDate in java.sql.Date
-        Date sqlInizioMese = Date.valueOf(inizioMese);
-        Date sqlFineMese = Date.valueOf(fineMese);
-
-        // 1. Numero di corsi totali tenuti nel mese
         String sqlCorsiTotali = "SELECT COUNT(DISTINCT c.idcorso) as corsi_totali " +
                 "FROM corso c " +
                 "JOIN tiene t ON c.idcorso = t.idcorso " +
                 "WHERE t.idchef = ? AND c.datainizio BETWEEN ? AND ?";
 
-        // 2. Numero di sessioni online e pratiche
+        PreparedStatement psCorsi = con.prepareStatement(sqlCorsiTotali);
+
+        psCorsi.setInt(1, chef.getIdchef());
+        psCorsi.setDate(2, inizioMese);
+        psCorsi.setDate(3, fineMese);
+
+        ResultSet rsCorsi = psCorsi.executeQuery();
+
+        int numCorsiTenuti = 0;
+
+        if (rsCorsi.next())
+            numCorsiTenuti = rsCorsi.getInt("corsi_totali");
+
+        if(numCorsiTenuti == 0)
+            throw new noCorsiTenutiException();
+
+        return numCorsiTenuti;
+    }
+    private ResultSet getSessioniInData(Chef chef, Date inizioMese, Date fineMese) throws SQLException {
+
         String sqlSessioni = "SELECT " +
                 "COUNT(CASE WHEN s.modalita = 'Online' THEN 1 END) as sessioni_online, " +
                 "COUNT(CASE WHEN s.modalita = 'Presenza' THEN 1 END) as sessioni_pratiche " +
@@ -181,7 +192,16 @@ public class ChefDAO implements ChefDAOInterface {
                 "JOIN tiene t ON c.idcorso = t.idcorso " +
                 "WHERE t.idchef = ? AND s.data BETWEEN ? AND ?";
 
-        // 3. Statistiche sulle ricette delle sessioni pratiche
+        PreparedStatement psSessioni = con.prepareStatement(sqlSessioni);
+        psSessioni.setInt(1, chef.getIdchef());
+        psSessioni.setDate(2, inizioMese);
+        psSessioni.setDate(3, fineMese);
+
+        return psSessioni.executeQuery();
+
+    }
+    private ResultSet getStatisticheRicette(Chef chef, Date inizioMese, Date fineMese) throws SQLException {
+
         String sqlStatisticheRicette = "SELECT " +
                 "COALESCE(AVG(rc.conteggio), 0) as media_ricette, " +
                 "COALESCE(MAX(rc.conteggio), 0) as max_ricette, " +
@@ -197,7 +217,16 @@ public class ChefDAO implements ChefDAOInterface {
                 "    GROUP BY s.idsessione " +
                 ") rc";
 
-        // 4. Dettaglio ricette per sessione pratica (per grafico a barre)
+        PreparedStatement psStats = con.prepareStatement(sqlStatisticheRicette);
+        psStats.setInt(1, chef.getIdchef());
+        psStats.setDate(2, inizioMese);
+        psStats.setDate(3, fineMese);
+
+        return psStats.executeQuery();
+
+    }
+    private ResultSet getRicettePerSessioniPratiche(Chef chef, Date inizioMese, Date fineMese) throws SQLException {
+
         String sqlRicettePerSessione = "SELECT s.idsessione, c.nome_corso, s.data, COUNT(r.idricetta) as num_ricette " +
                 "FROM sessione s " +
                 "JOIN tratta r ON s.idsessione = r.idsessione " +
@@ -208,85 +237,59 @@ public class ChefDAO implements ChefDAOInterface {
                 "GROUP BY s.idsessione, c.nome_corso, s.data " +
                 "ORDER BY s.data";
 
-        try (PreparedStatement psCorsi = con.prepareStatement(sqlCorsiTotali);
-             PreparedStatement psSessioni = con.prepareStatement(sqlSessioni);
-             PreparedStatement psStats = con.prepareStatement(sqlStatisticheRicette);
-             PreparedStatement psDettaglio = con.prepareStatement(sqlRicettePerSessione)) {
+        PreparedStatement psDettaglio = con.prepareStatement(sqlRicettePerSessione);
+        psDettaglio.setInt(1, chef.getIdchef());
+        psDettaglio.setDate(2, inizioMese);
+        psDettaglio.setDate(3, fineMese);
 
-            // Imposta i parametri per tutte le query - CORRETTO
-            psCorsi.setInt(1, chef.getIdchef());
-            psCorsi.setDate(2, sqlInizioMese);
-            psCorsi.setDate(3, sqlFineMese);
+        return psDettaglio.executeQuery();
+    }
 
-            psSessioni.setInt(1, chef.getIdchef());
-            psSessioni.setDate(2, sqlInizioMese);
-            psSessioni.setDate(3, sqlFineMese);
+    @Override
+    public Map<String, Object> getReportMensile(Chef chef, YearMonth mese) throws SQLException, noCorsiTenutiException {
+        Map<String, Object> reportData = new HashMap<>();
 
-            psStats.setInt(1, chef.getIdchef());
-            psStats.setDate(2, sqlInizioMese);
-            psStats.setDate(3, sqlFineMese);
+       LocalDate inizioMese = mese.atDay(1);
+       LocalDate fineMese = mese.atEndOfMonth();
 
-            psDettaglio.setInt(1, chef.getIdchef());
-            psDettaglio.setDate(2, sqlInizioMese);
-            psDettaglio.setDate(3, sqlFineMese);
+       Date sqlInizioMese = Date.valueOf(inizioMese);
+       Date sqlFineMese = Date.valueOf(fineMese);
 
-            // Esegui query 1: corsi totali
-            try (ResultSet rsCorsi = psCorsi.executeQuery()) {
-                if (rsCorsi.next()) {
-                    reportData.put("corsiTotali", rsCorsi.getInt("corsi_totali"));
-                } else {
-                    reportData.put("corsiTotali", 0);
-                }
-            }
 
-            // Esegui query 2: sessioni online e pratiche
-            try (ResultSet rsSessioni = psSessioni.executeQuery()) {
-                if (rsSessioni.next()) {
-                    reportData.put("sessioniOnline", rsSessioni.getInt("sessioni_online"));
-                    reportData.put("sessioniPratiche", rsSessioni.getInt("sessioni_pratiche"));
-                } else {
-                    reportData.put("sessioniOnline", 0);
-                    reportData.put("sessioniPratiche", 0);
-                }
-            }
+       reportData.put("corsiTotali", getNumCorsiTenutiInData(chef, sqlInizioMese, sqlFineMese));
 
-            // Esegui query 3: statistiche ricette
-            try (ResultSet rsStats = psStats.executeQuery()) {
-                if (rsStats.next()) {
-                    reportData.put("mediaRicette", rsStats.getDouble("media_ricette"));
-                    reportData.put("maxRicette", rsStats.getInt("max_ricette"));
-                    reportData.put("minRicette", rsStats.getInt("min_ricette"));
-                } else {
-                    reportData.put("mediaRicette", 0.0);
-                    reportData.put("maxRicette", 0);
-                    reportData.put("minRicette", 0);
-                }
-            }
-
-            // Esegui query 4: dettaglio ricette per sessione (per grafico)
-            Map<String, Integer> ricettePerSessione = new LinkedHashMap<>();
-            try (ResultSet rsDettaglio = psDettaglio.executeQuery()) {
-                while (rsDettaglio.next()) {
-                    String nomeSessione = rsDettaglio.getString("nome_corso") + " - " +
-                            rsDettaglio.getDate("data").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM"));
-                    int numRicette = rsDettaglio.getInt("num_ricette");
-                    ricettePerSessione.put(nomeSessione, numRicette);
-                }
-            }
-            reportData.put("ricettePerSessione", ricettePerSessione);
+       ResultSet rsSessioni = getSessioniInData(chef,sqlInizioMese, sqlFineMese);
+       if (rsSessioni.next()){
+            reportData.put("sessioniOnline", rsSessioni.getInt("sessioni_online"));
+            reportData.put("sessioniPratiche", rsSessioni.getInt("sessioni_pratiche"));
+        } else {
+            reportData.put("sessioniOnline", 0);
+            reportData.put("sessioniPratiche", 0);
         }
 
-        // Aggiungi all'inizio del metodo
-        System.out.println("Chef ID: " + chef.getIdchef());
-        System.out.println("Mese: " + mese);
-        System.out.println("Inizio mese: " + sqlInizioMese);
-        System.out.println("Fine mese: " + sqlFineMese);
+       ResultSet rsStats = getStatisticheRicette(chef, sqlInizioMese, sqlFineMese);
+       if (rsStats.next()) {
+            reportData.put("mediaRicette", rsStats.getDouble("media_ricette"));
+            reportData.put("maxRicette", rsStats.getInt("max_ricette"));
+            reportData.put("minRicette", rsStats.getInt("min_ricette"));
+       } else {
+            reportData.put("mediaRicette", 0.0);
+            reportData.put("maxRicette", 0);
+            reportData.put("minRicette", 0);
+       }
 
-// E dopo ogni executeQuery, aggiungi:
-        System.out.println("Query corsi eseguita");
-// ... e così via per le altre query
+       Map<String, Integer> ricettePerSessione = new LinkedHashMap<>();
+       ResultSet rsDettaglio = getRicettePerSessioniPratiche(chef, sqlInizioMese, sqlFineMese);
+       while (rsDettaglio.next()) {
+           String nomeSessione = rsDettaglio.getString("nome_corso") + " - " +
+           rsDettaglio.getDate("data").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM"));
+           int numRicette = rsDettaglio.getInt("num_ricette");
+           ricettePerSessione.put(nomeSessione, numRicette);
+       }
 
-        return reportData;
+       reportData.put("ricettePerSessione", ricettePerSessione);
+
+       return reportData;
     }
 
     private Chef createChefByRs(ResultSet rs) throws SQLException {

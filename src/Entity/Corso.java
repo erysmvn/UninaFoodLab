@@ -23,6 +23,7 @@ public class Corso {
     private ArrayList<Chef> chefs;
     private ArrayList<Ricetta> ricetteTrattate;
     private ArrayList<Sessione> sessioni;
+    private ArrayList<TipologiaCorso> tipologie;
 
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,

@@ -14,7 +14,6 @@ import javafx.scene.text.FontWeight;
 import java.util.Objects;
 
 public class MyButton extends Button {
-
     public static final Color UNI_COLOR = Color.valueOf("#3A6698");
     public static final Color RED_COLOR = Color.valueOf("#da3d26");
 
@@ -23,7 +22,6 @@ public class MyButton extends Button {
 
     private String outlineNotClickedStyle = "-fx-background-color: #3a6698; -fx-text-fill: white; -fx-border-color: #3a6698; " +
             "-fx-border-width: 1.5px; -fx-border-radius: 7; -fx-background-radius: 7; -fx-cursor: hand;";
-
 
     public enum ButtonType {
         PRIMARY, SECONDARY, TRANSPARENT, OUTLINE
@@ -149,9 +147,6 @@ public class MyButton extends Button {
         this.setStyle(outlineNotClickedStyle);
     }
 
-
-
-
     public MyButton setWithIcon(String iconPath, double width, double height) throws imageNotFoundException {
         try {
             ImageView icon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath))));
@@ -172,20 +167,10 @@ public class MyButton extends Button {
         return this;
     }
 
-    public MyButton setCustomFont(String fontPath, double size) {
-        try {
-            Font customFont = Font.loadFont(getClass().getResourceAsStream(fontPath), size);
-            this.setFont(customFont);
-        } catch (Exception e) {
-            System.err.println("Errore nel caricamento del font: " + fontPath);
-            this.setFont(Font.font("System", FontWeight.BOLD, size));
-        }
-        return this;
-    }
-
     public MyButton setDisabledStyle() {
         this.setDisable(true);
         this.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
         return this;
     }
+
 }

@@ -8,7 +8,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class CircleButton  extends Button {
+public class CircleButton extends Button {
 
     public CircleButton() {
         this.setShape(new Circle(25));
@@ -17,8 +17,7 @@ public class CircleButton  extends Button {
         this.setFocusTraversable(false);
     }
 
-
-    public CircleButton setToMinimizeButton(){
+    public void setToMinimizeButton() {
         this.setText("-");
         this.setStyle("-fx-background-color: WHITE");
         this.setTextFill(Color.GREY);
@@ -28,17 +27,16 @@ public class CircleButton  extends Button {
                 CornerRadii.EMPTY,
                 new BorderWidths(1)
         )));
-        return this;
-
     }
-    public CircleButton setToMinimizeButtonWithAction(Stage stage){
+
+    public void setToMinimizeButtonWithAction(Stage stage) {
         this.setToMinimizeButton();
         this.setOnAction(event -> {
             stage.setIconified(true);
         });
-        return this;
     }
-    public CircleButton setToCloseButton() {
+
+    public void setToCloseButton() {
         this.setText("x");
         this.setFont(Font.font("", 10));
         this.setStyle("-fx-background-color: WHITE");
@@ -49,17 +47,16 @@ public class CircleButton  extends Button {
                 CornerRadii.EMPTY,
                 new BorderWidths(1)
         )));
-        return this;
-    }
-    public CircleButton setToCloseButtonWithAction(Stage stage) {
-        this.setToCloseButton();
-        this.setOnAction(e -> stage.close());
-        return this;
     }
 
-    public CircleButton setToCloseButtonWithAction(EventHandler<ActionEvent> action) {
+    public void setToCloseButtonWithAction(Stage stage) {
+        this.setToCloseButton();
+        this.setOnAction(e -> stage.close());
+    }
+
+    public void setToCloseButtonWithAction(EventHandler<ActionEvent> action) {
         this.setToCloseButton();
         this.setOnAction(action);
-        return this;
     }
+
 }

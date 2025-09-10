@@ -31,7 +31,7 @@ public class CalendarioPanel extends Pane {
         this.getChildren().add(calendarView);
     }
 
-    private void createCalendarView(){
+    private void createCalendarView() {
         calendarView = new CalendarView();
         calendarView.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Media/StyleSheets/calendarStyle.css")).toExternalForm());
 
@@ -53,8 +53,7 @@ public class CalendarioPanel extends Pane {
 
     }
 
-
-    private void disableCalendarFunction(){
+    private void disableCalendarFunction() {
 
         calendarView.setEntryEditPolicy(param -> null);
         calendarView.setEntryContextMenuCallback(param -> null);
@@ -87,6 +86,7 @@ public class CalendarioPanel extends Pane {
 
 
     }
+
     private void blockEmptyGridDoubleClick(CalendarView calendarView) {
 
         EventHandler<MouseEvent> filter = e -> {
@@ -124,7 +124,6 @@ public class CalendarioPanel extends Pane {
         calendarView.getMonthPage().addEventFilter(MouseEvent.MOUSE_CLICKED, filter);
 
     }
-
 
     public void initCalendario(Utente utente) {
         corsi = utente.getCorsi();
@@ -168,8 +167,6 @@ public class CalendarioPanel extends Pane {
         }
     }
 
-
-
     private void setFirstSessionDay() {
         LocalDateTime firstDate = null;
         for (ArrayList<Sessione> lista : sessioniDeiCorsi) {
@@ -185,7 +182,5 @@ public class CalendarioPanel extends Pane {
             }
         }
     }
-
-
 
 }

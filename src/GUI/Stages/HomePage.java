@@ -123,11 +123,15 @@ public class HomePage extends Stage {
         HBox controlButtons = new HBox(5);
         controlButtons.setAlignment(Pos.TOP_RIGHT);
 
+        CircleButton minimizeBtn = new CircleButton();
+        CircleButton closeBtn = new CircleButton();
+
+        minimizeBtn.setToMinimizeButtonWithAction(this);
+        closeBtn.setToCloseButtonWithAction(e -> controller.closeApp());
+
+
         controlButtons.getChildren().addAll(
-                new CircleButton().setToMinimizeButtonWithAction(this),
-                new CircleButton().setToCloseButtonWithAction(e -> {
-                    controller.closeApp();
-                })
+                minimizeBtn, closeBtn
         );
         closeAndMinimizePane.setRight(controlButtons);
         return closeAndMinimizePane;

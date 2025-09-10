@@ -8,6 +8,7 @@ public class Ricetta {
     private String descrizione;
     private int tempoPreparazione;
     private String autore;
+
     private ArrayList<Ingrediente> ingredienti;
 
     private ArrayList<IngredienteFormaRicetta> ingredienteFormaRicetta;

@@ -6,11 +6,8 @@
     import GUI.Buttons.*;
     import GUI.Stages.MyStage;
     import javafx.geometry.Insets;
-    import javafx.scene.*;
-    import javafx.scene.input.KeyCode;
     import javafx.scene.layout.*;
     import javafx.scene.paint.Color;
-    import javafx.stage.*;
 
     public class AccountPage extends MyStage {
         Controller controller;
@@ -39,6 +36,8 @@
             root = getRootBorderPane();
             content = new StackPane();
 
+            this.addStylesheet("/Media/StyleSheets/fieldsAndBoxesStyle.css");
+
             content.setStyle("-fx-background-color: WHITE;");
         }
 
@@ -54,7 +53,6 @@
             content.getChildren().addAll(accountCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
             reportPanel = new ReportPanel(controller);
             if(utente instanceof Chef){
-                reportPanel.initPanel(utente);
                 reportPanel.initialize();
                 content.getChildren().add(reportPanel);
             }
@@ -137,8 +135,11 @@
             impostazioniButton = createImpostazioniButton();
 
 
-            CircleButton minimizeBtn = new CircleButton().setToMinimizeButtonWithAction(this);
-            CircleButton closeBtn = new CircleButton().setToCloseButtonWithAction(this);
+            CircleButton minimizeBtn = new CircleButton();
+            CircleButton closeBtn = new CircleButton();
+
+            minimizeBtn.setToMinimizeButtonWithAction(this);
+            closeBtn.setToCloseButtonWithAction(this);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);

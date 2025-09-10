@@ -46,7 +46,7 @@ public class ElencoCorsiPanel extends BorderPane {
         this.setManaged(false);
     }
 
-    public void initPanel(Utente utente){
+    public void initPanel(Utente utente) {
         this.utente = utente;
         showCorsi();
         bottomBar = createBottomBar(utente);
@@ -54,7 +54,7 @@ public class ElencoCorsiPanel extends BorderPane {
         BorderPane.setMargin(bottomBar, new Insets(10));
     }
 
-    public void showCorsi(){
+    public void showCorsi() {
         corsiBox.getChildren().clear();
         ArrayList<Corso> corsiUtente = utente.getCorsi();
         if (corsiUtente != null && !corsiUtente.isEmpty()) {

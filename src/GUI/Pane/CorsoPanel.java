@@ -32,7 +32,7 @@ public class CorsoPanel extends VBox {
         this.setFocusTraversable(false);
     }
 
-    private void setCorsoPanelAesthetics(){
+    private void setCorsoPanelAesthetics() {
         setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         setStyle("-fx-cursor: hand;");
@@ -40,7 +40,7 @@ public class CorsoPanel extends VBox {
         this.setCorsoPanelSize();
     }
 
-    private void setCorsoPanelSize(){
+    private void setCorsoPanelSize() {
         setSpacing(10);
         setAlignment(Pos.TOP_CENTER);
         setPrefSize(330, 355);

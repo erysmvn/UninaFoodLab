@@ -76,6 +76,7 @@ public class ImpostazioniPanel extends VBox {
                 spacer2
         );
     }
+
     private void setSupportoError(){
         supportoError = new Label();
         supportoError.setTextFill(Color.RED);

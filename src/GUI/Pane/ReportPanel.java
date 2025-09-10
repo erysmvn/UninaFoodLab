@@ -29,7 +29,6 @@ import java.util.Map;
 
 public class ReportPanel extends VBox {
     private Controller controller;
-    private Utente utente;
 
     private ComboBox<YearMonth> meseComboBox;
     private Label titoloLabel;
@@ -46,13 +45,11 @@ public class ReportPanel extends VBox {
         this.setPadding(new Insets(20));
         this.setStyle("-fx-background-color: WHITE;");
 
-        // Titolo
         titoloLabel = new Label("Report Mensile Corsi");
         titoloLabel.setFont(Font.font("System", FontWeight.BOLD, 24));
         titoloLabel.setTextFill(Color.valueOf("#3A6698"));
         titoloLabel.setPadding(new Insets(0, 0, 20, 0));
 
-        // Selezione mese
         HBox selezioneMeseBox = new HBox(10);
         selezioneMeseBox.setAlignment(Pos.CENTER_LEFT);
         Label meseLabel = new Label("Seleziona mese:");
@@ -213,7 +210,6 @@ public class ReportPanel extends VBox {
 
             ricetteChart.getData().add(series);
 
-            // Layout per i due grafici affiancati
             HBox chartsBox = new HBox(20);
             chartsBox.getChildren().addAll(sessioniChart, ricetteChart);
             graficiPane.setCenter(chartsBox);
@@ -250,7 +246,4 @@ public class ReportPanel extends VBox {
         return dialog;
     }
 
-    public void initPanel(Utente utente) {
-        this.utente = utente;
-    }
 }

@@ -88,9 +88,15 @@ public class LoginPage extends MyStage {
         HBox buttonsTopBox = new HBox(5);
         buttonsTopBox.setAlignment(Pos.TOP_RIGHT);
         buttonsTopBox.setPadding(new Insets(3, 0, 0, 0));
+
+        CircleButton minimizeBtn = new CircleButton();
+        CircleButton closeBtn = new CircleButton();
+
+        minimizeBtn.setToMinimizeButtonWithAction(this);
+        closeBtn.setToCloseButtonWithAction(this);
+
         buttonsTopBox.getChildren().addAll(
-                new CircleButton().setToMinimizeButtonWithAction(this),
-                new CircleButton().setToCloseButtonWithAction(this)
+                minimizeBtn, closeBtn
         );
         return buttonsTopBox;
     }

@@ -87,6 +87,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         pstmt.executeUpdate();
     }
 
+    @Override
     public void update(Corso corso) throws SQLException {
         String sql = "UPDATE corso " +
                 "SET nome_corso = ?, costo = ?, difficolta = ?::difficolta, frequenza_settimanale = ? " +
@@ -258,7 +259,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public Corso    getCorsoByIdCorso(int idcorso) throws SQLException {
+    public Corso getCorsoByIdCorso(int idcorso) throws SQLException {
         String sql = "SELECT * FROM corso WHERE idcorso = ?";
 
         PreparedStatement stmt = con.prepareStatement(sql);
@@ -270,6 +271,7 @@ public class CorsoDAO implements CorsoDAOInterface {
         return null;
     }
 
+    @Override
     public Corso getCorsoByNome(String nome) throws SQLException {
         String sql = "SELECT * FROM corso WHERE nome_corso = ?";
 

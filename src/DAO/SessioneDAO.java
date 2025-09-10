@@ -166,4 +166,18 @@ public class SessioneDAO implements SessioneDAOInterface {
             throw new SQLException("Nessuna sessione aggiornata.");
         }
     }
+
+    public Sessione getSessioneById(int id) throws SQLException {
+        String sql = "SELECT * FROM sessione WHERE idsessione = ?";
+
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setInt(1,id);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            CorsoDAO corsoDAO = new CorsoDAO(dbc);
+            return createSessioneByResultSet(rs,corsoDAO.getCorsoByIdCorso(rs.getInt("idcorso")));
+        }
+        return null;
+    }
+
 }

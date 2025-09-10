@@ -244,6 +244,8 @@ public class HomePage extends Stage {
 
     private void setSearchButtonOnAction(Button searchButton) {
         searchButton.setOnAction(Click -> {
+            mostraTuttiCorsiClicked = false;
+            setNotClickedButtonAesthetic(tuttiCorsi);
             setCorsiByChoice();
         });
     }
@@ -404,11 +406,10 @@ public class HomePage extends Stage {
                 setClickedButtonAesthetic(corsoChoice);
             }
 
-            if (newToggle != null && !searchField.getText().isEmpty()) {
-                setCorsiByChoice();
-            }
         });
 
+        // TODO on click deve solo cercare nell'array dei corsi e non nel db
+        // Oppure vede tutti i corsi online/presenza like quello che ce nel searchFiel
         onlineChoice.setOnAction(event -> {
             if (modalitaSelezionata == Modalita.ONLINE) {
                 setNotClickedButtonAesthetic(onlineChoice);
@@ -504,16 +505,6 @@ public class HomePage extends Stage {
         return choiceBox;
     }
 
-    private void sortCorsiByCostoIfNeeded(boolean crescente) {
-        if (corsi == null) return;
-
-        if (crescente) {
-            corsi.sort(Comparator.comparing(Corso::getCosto));
-        } else {
-            corsi.sort(Comparator.comparing(Corso::getCosto).reversed());
-        }
-    }
-
     private void addHoverEffectToButtons() {
         for (Node node : choiceBox.getChildren()) {
             if (node instanceof ButtonBase) {
@@ -557,14 +548,6 @@ public class HomePage extends Stage {
         }
 
         return false;
-    }
-
-    private void SetLabelSearchArea(Label modalitaLabel) {
-        modalitaLabel.setFont(Font.font("System", 14));
-        modalitaLabel.setTextFill(Color.web("#3a6698"));
-        modalitaLabel.setPadding(new Insets(6, 10, 5, 10));
-        modalitaLabel.setStyle("-fx-background-color: WHITE; -fx-background-radius: 7;-fx-border-color: #3A6698;-fx-border-width: 1; -fx-border-radius: 7");
-        modalitaLabel.setEffect(new DropShadow(10,1,3, Color.LIGHTGREY));
     }
 
     private void setNotFoundTextField() {
@@ -650,7 +633,7 @@ public class HomePage extends Stage {
                 setCorsiByChoice();
         });
         searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal && searchField.getText().isEmpty()) {
+            if (!newVal && !searchField.getText().isEmpty()) {
                 setCorsiByChoice();
             }
         });
@@ -676,8 +659,7 @@ public class HomePage extends Stage {
                 if (mostraTuttiCorsiClicked) {
                     searchField.setText("");
                     corsi = controller.getAllCourses();
-                }
-                else if (!toSearch.isEmpty()) {
+                } else if (!toSearch.isEmpty()) {
                     if (searchField.getPromptText().equals("Cerca per nome corso")) {
                         corsi = controller.searchCorsiLikeString(toSearch);
                     } else if (searchField.getPromptText().equals("Cerca per chef")) {
@@ -715,15 +697,7 @@ public class HomePage extends Stage {
     private void filterCorsiByModalitaIfNeeded() {
         if (corsi == null || modalitaSelezionata == null) return;
 
-        ArrayList<Corso> filteredCorsi = new ArrayList<>();
-        for (Corso corso : corsi) {
-            if (modalitaSelezionata == Modalita.ONLINE && corso.getModalita_corso().getLabel().equals("Online")) {
-                filteredCorsi.add(corso);
-            } else if (modalitaSelezionata == Modalita.PRESENZA && corso.getModalita_corso().getLabel().equals("Presenza")) {
-                filteredCorsi.add(corso);
-            }
-        }
-        corsi = filteredCorsi;
+        corsi.removeIf(corso -> !corso.getModalita_corso().getLabel().equalsIgnoreCase(modalitaSelezionata.name()));
     }
 
     private void sortCorsiByCostoIfNeeded() {

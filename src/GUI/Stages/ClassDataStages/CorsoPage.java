@@ -335,30 +335,28 @@ public class CorsoPage extends MyStage {
 
     private void buildDescBox(VBox descBox) {
         Label ricetteTrattate = new Label("Ricette trattate: ");
-        ricetteTrattate.setFont(Font.font(30));
-        ricetteTrattate.setTextFill(Color.WHITE);
+        ricetteTrattate.setFont(Font.font(32));
+        ricetteTrattate.setTextFill(Color.BLACK);
         ricetteTrattate.setStyle("-fx-font-weight: bold;");
         ricetteTrattate.setAlignment(Pos.CENTER_LEFT);
+
         descBox.getChildren().add(ricetteTrattate);
         VBox.setMargin(ricetteTrattate, new Insets(0, 500, 10, 0));
 
         VBox ricetteList = new VBox(5);
         ricetteList.setAlignment(Pos.TOP_LEFT);
 
-                if (!corso.getRicetteTrattate().isEmpty()) {
-                    for (Ricetta r : corso.getRicetteTrattate()) {
-                        createRicettaLabel(ricetteList, r);
-                    }
-                } else {
-                    Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
-                    noRicetteTrattate.setFont(Font.font(28));
-                    noRicetteTrattate.setTextFill(Color.WHITE);
-                    noRicetteTrattate.setAlignment(Pos.CENTER);
-                    ricetteList.getChildren().add(noRicetteTrattate);
-                }
-
-
-
+        if (!corso.getRicetteTrattate().isEmpty()) {
+            for (Ricetta r : corso.getRicetteTrattate()) {
+                createRicettaLabel(ricetteList, r);
+            }
+        } else {
+            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
+            noRicetteTrattate.setFont(Font.font(28));
+            noRicetteTrattate.setTextFill(Color.WHITE);
+            noRicetteTrattate.setAlignment(Pos.CENTER);
+            ricetteList.getChildren().add(noRicetteTrattate);
+        }
 
         ScrollPane scrollPane = new ScrollPane(ricetteList);
         scrollPane.setFitToWidth(true);

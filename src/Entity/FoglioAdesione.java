@@ -2,25 +2,29 @@ package Entity;
 
 public class FoglioAdesione {
     private String documento;
-    private String matricola;
-    private int idsessione;
-    public FoglioAdesione(int idsessione, String matricola, String documento) {
-        this.idsessione = idsessione;
-        this.matricola = matricola;
+    private Studente studente;
+    private SessionePresenza sessionePresenza;
+
+    public FoglioAdesione(SessionePresenza sessionePresenza, Studente studente, String documento) {
+        this.sessionePresenza = sessionePresenza;
+        this.studente = studente;
         this.documento = documento;
     }
 
     public String getDocumento() {
         return documento;
     }
+
     public void setDocumento(String documento) {
         this.documento = documento;
     }
+
     public String getMatricola() {
-        return matricola;
+        return studente.getMatricola();
     }
+
     public int getIdsessione() {
-        return idsessione;
+        return sessionePresenza.idsessione;
     }
 
 }

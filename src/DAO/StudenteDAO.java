@@ -179,4 +179,28 @@ public class StudenteDAO implements StudenteDAOInterface {
         ResultSet rs = pstmt.executeQuery();
         return rs.next();
     }
+
+    public Studente getStudenteByMatricola(String matricola) throws SQLException {
+        String sql = "SELECT * FROM studente WHERE matricola = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, matricola);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return getStudenteByRs(rs);
+        }
+        return null;
+    }
+
+    public Studente getStudenteByRs(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            return new Studente(
+                    rs.getString("matricola"),
+                    rs.getString("nome_stud"),
+                    rs.getString("cognome"),
+                    rs.getString("email"),
+                    rs.getString("passw")
+            );
+        }
+        return null;
+    }
 }

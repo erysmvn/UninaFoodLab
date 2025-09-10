@@ -146,7 +146,7 @@
 
             if(utente instanceof Chef){
                 reportButton = createReportButton();
-                topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, reportButton, spacer, minimizeBtn, closeBtn);
+                topBar.getChildren().addAll(corsiButton, calendarButton, reportButton, accountButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
             }else{
                 topBar.getChildren().addAll(corsiButton, calendarButton, accountButton, impostazioniButton, spacer, minimizeBtn, closeBtn);
             }

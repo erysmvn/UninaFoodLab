@@ -77,9 +77,6 @@ public class Controller {
         foglioAdesioneDAO = new FoglioAdesioneDAO(dbc);
     }
 
-//    public DBConnection getDBConnection(){
-//        return dbc;
-//    }
 
     public Utente getUtente(){
         return utente;
@@ -113,8 +110,6 @@ public class Controller {
 
 
     // Pages
-
-
     public void openLoginPage(){
         if (loginPage == null || !loginPage.isShowing()){
             if( registerPage != null ){

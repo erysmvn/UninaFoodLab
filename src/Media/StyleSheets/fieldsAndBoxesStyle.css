@@ -255,3 +255,38 @@
 .scroll-pane .viewport {
     -fx-background-color: white;
 }
+
+.default-color0.chart-pie {
+    -fx-pie-color: #007aff;   /* blu */
+}
+.default-color1.chart-pie {
+    -fx-pie-color: #34c759;   /* verde */
+}
+.default-color2.chart-pie {
+    -fx-pie-color: #ff3b30;   /* rosso */
+}
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #007aff; /* blu */
+}
+.default-color1.chart-bar {
+    -fx-bar-fill: #34c759; /* verde */
+}
+
+.default-color0.chart-legend-item-symbol {
+    -fx-background-color: #007aff;
+}
+.default-color1.chart-legend-item-symbol {
+    -fx-background-color: #34c759;
+}
+
+.chart-title {
+    -fx-text-fill: #3A6698;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.axis-label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 13px;
+}

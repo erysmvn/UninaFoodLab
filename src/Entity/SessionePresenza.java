@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class SessionePresenza extends Sessione {
     private String luogo;
     private ArrayList<FoglioAdesione> fogliAdesione;
+
     public SessionePresenza(int idsessione, LocalDate data, String luogo, float durata, LocalDateTime ora, Corso corso) {
         this.idsessione = idsessione;
         this.data = data;

@@ -170,5 +170,4 @@ public class MyStage extends Stage {
         return dialog;
     }
 
-
 }

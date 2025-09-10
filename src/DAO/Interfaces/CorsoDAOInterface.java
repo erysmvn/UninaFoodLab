@@ -19,16 +19,13 @@ public interface CorsoDAOInterface {
 
     
     // Get methods
-
     ArrayList<Corso> getCorsiConPiuStudenti(int numeroCorsiLimite) throws SQLException;
     ArrayList<Corso> searchCorsiLikeNomeTipologia(String tipologia) throws SQLException, corsiNotFoundException;
     ArrayList<Corso> searchCorsiLikeNomeCorso(String nomeCorso) throws SQLException, corsiNotFoundException;
     ArrayList<Corso> searchCorsiLikeNomeChef(String nomeChef) throws SQLException, corsiNotFoundException;
     ArrayList<Corso> getAllCourses() throws SQLException;
-
     Corso getCorsoByTitle(String Title) throws SQLException;
     Corso getCorsoByIdCorso(int idcorso) throws SQLException;
     Corso getCorsoByNome(String nome) throws SQLException, corsiNotFoundException;
-
     void getRicetteTrattate(Corso corso) throws SQLException;
 }

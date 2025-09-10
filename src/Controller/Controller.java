@@ -147,13 +147,14 @@ public class Controller {
     }
 
 
-    private CorsoPage isCorsoPageAlreadyOpened(Corso c){
+    private CorsoPage isCorsoPageAlreadyOpened(Corso c) {
         for(CorsoPage cp : corsoPages){
             if(cp.getCorso().getIdCorso() == c.getIdCorso())
                 return cp;
         }
         return null;
     }
+
     private RicettaPage isRicettaPageAlreadyOpened(Ricetta ricetta) {
         for (RicettaPage rp : ricettaPages) {
             if (rp.getRicetta().getIdRicetta() == ricetta.getIdRicetta())
@@ -161,13 +162,15 @@ public class Controller {
         }
         return null;
     }
-    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c){
+
+    private EditCorsoPage isEditCorsoPageAlreadyOpened(Corso c) {
         for(EditCorsoPage edcp : editCorsoPages){
             if(edcp.getCorso().getIdCorso() == c.getIdCorso())
                 return edcp;
         }
         return null;
     }
+
     private EditSessionePage isEditSessionePageAlreadyOpened(Sessione s) {
         for(EditSessionePage esp : editSessionePages){
             if(esp.getSessione().getIdSessione() == s.getIdSessione())
@@ -175,6 +178,7 @@ public class Controller {
         }
         return null;
     }
+
     private AggiungiRicettaPage isAggiungiRicettaPageAlreadyOpened(Stage caller) {
         for (AggiungiRicettaPage arp : aggiungiRicettaPages) {
             if (arp.getCaller().equals(caller))
@@ -182,6 +186,7 @@ public class Controller {
         }
         return null;
     }
+
     private ConfermaPartecipazionePage isConfermaPartecipazionePageAlreadyOpened(SessionePresenza sessionePresenza) {
         for (ConfermaPartecipazionePage cpp : confermaPartecipazionePages) {
             if (cpp.getSessionePresenza().getIdSessione() == sessionePresenza.getIdSessione())
@@ -255,8 +260,6 @@ public class Controller {
         sessionePages.add(sessionePage);
         sessionePage.show();
     }
-
-
 
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
@@ -612,7 +615,6 @@ public class Controller {
     }
 
 
-
     // Sessione
     public void insertSessione(Sessione sessione) throws SQLException {
         sessioneDAO.insertSessione(sessione);
@@ -626,15 +628,11 @@ public class Controller {
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {
-        return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza, utente);
-    }
-
-    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException {
-        return foglioAdesioneDAO.getFogliAdesioneByIdSessione(idsessione);
+        return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza, (Studente) utente);
     }
 
     public void insertFoglioAdesione(String filePath, SessionePresenza sessionePresenza) throws SQLException{
-        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza, utente);
+        foglioAdesioneDAO.insertFoglioDiAdesione(filePath, sessionePresenza, (Studente) utente);
     }
 
     public void updateSessione(Sessione sessione) throws SQLException {

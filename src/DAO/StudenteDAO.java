@@ -184,13 +184,10 @@ public class StudenteDAO implements StudenteDAOInterface {
         String sql = "SELECT * FROM studente WHERE matricola = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setString(1, matricola.trim());
-        System.out.println("matricola: " + matricola);
-        System.out.println("Query: " + pstmt.toString());
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
             return getStudenteByRs(rs);
         }
-        System.out.println("STO PER RITORNARE NULL");
         return null;
     }
 

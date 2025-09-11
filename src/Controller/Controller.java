@@ -126,17 +126,17 @@ public class Controller {
         CorsoPage existingPage = isCorsoPageAlreadyOpened(corso);
 
         if(existingPage != null){
-            if(existingPage.isShowing()){
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
+            existingPage.close();
+            CorsoPage corsoPage = new CorsoPage(this);
+            corsoPage.initPage(corso);
+            corsoPages.add(corsoPage);
+            corsoPage.setOnCloseRequest(_ -> corsoPages.remove(corsoPage));
+            corsoPage.show();
         } else {
             CorsoPage corsoPage = new CorsoPage( this);
             corsoPage.initPage(corso);
             corsoPages.add(corsoPage);
             corsoPage.setOnCloseRequest(_ -> corsoPages.remove(corsoPage));
-
             corsoPage.show();
         }
     }
@@ -194,11 +194,12 @@ public class Controller {
         EditCorsoPage existingPage = isEditCorsoPageAlreadyOpened(corso);
 
         if(existingPage != null){
-            if(existingPage.isShowing()){
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
+           existingPage.close();
+           EditCorsoPage editCorsoPage = new EditCorsoPage(this);
+           editCorsoPage.initPage(corso);
+           editCorsoPages.add(editCorsoPage);
+           editCorsoPage.setOnCloseRequest(e -> editCorsoPages.remove(editCorsoPage));
+           editCorsoPage.show();
         } else {
             EditCorsoPage editCorsoPage = new EditCorsoPage( this);
             editCorsoPage.initPage(corso);
@@ -213,16 +214,23 @@ public class Controller {
         EditSessionePage existingPage = isEditSessionePageAlreadyOpened(s);
 
         if(existingPage != null){
-            if(existingPage.isShowing()){
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
+            existingPage.close();
+            EditSessionePage editSessionePage = new EditSessionePage(this, sp);
+            editSessionePage.initPage(s);
+            editSessionePages.add(editSessionePage);
+            editSessionePage.setOnCloseRequest(_ -> {
+                editSessionePages.remove(editSessionePage);
+                refreshCorsi(elencoCorsiPanel);
+            });
+            editSessionePage.show();
         } else {
             EditSessionePage editSessionePage = new EditSessionePage( this, sp);
             editSessionePage.initPage(s);
             editSessionePages.add(editSessionePage);
-            editSessionePage.setOnCloseRequest(_ -> editSessionePages.remove(editSessionePage));
+            editSessionePage.setOnCloseRequest(_ -> {
+                editSessionePages.remove(editSessionePage);
+                refreshCorsi(elencoCorsiPanel);
+            });
 
             editSessionePage.show();
         }
@@ -233,11 +241,12 @@ public class Controller {
         ConfermaPartecipazionePage existingPage = isConfermaPartecipazionePageAlreadyOpened(sessionePresenza);
 
         if (existingPage != null) {
-            if (existingPage.isShowing()) {
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
+           existingPage.close();
+           ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
+           confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
+           confermaPartecipazionePages.add(confermaPartecipazionePage);
+           confermaPartecipazionePage.setOnCloseRequest(e -> confermaPartecipazionePages.remove(confermaPartecipazionePage));
+           confermaPartecipazionePage.show();
         } else {
             ConfermaPartecipazionePage confermaPartecipazionePage = new ConfermaPartecipazionePage(this);
             confermaPartecipazionePage.setSessionePresenza(sessionePresenza);
@@ -259,11 +268,14 @@ public class Controller {
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);
 
         if (existingPage != null) {
-            if (existingPage.isShowing()) {
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }
+            existingPage.close();
+            RicettaPage ricettaPage = new RicettaPage(this);
+            ricettaPage.initPage(ricetta);
+            ricettaPages.add(ricettaPage);
+
+            ricettaPage.setOnCloseRequest(e -> ricettaPages.remove(ricettaPage));
+
+            ricettaPage.show();
         } else {
             RicettaPage ricettaPage = new RicettaPage(this);
             ricettaPage.initPage(ricetta);
@@ -320,6 +332,7 @@ public class Controller {
 
         aggiungiSessionePage = new AggiungiSessionePage(this);
         aggiungiSessionePage.initPage(corso);
+        aggiungiSessionePage.setOnCloseRequest(_-> refreshCorsi());
 
         for(AggiungiRicettaPage aggiungiRicettaPage: aggiungiRicettaPages){
             aggiungiRicettaPage.close();
@@ -334,13 +347,10 @@ public class Controller {
         AggiungiRicettaPage existingPage = isAggiungiRicettaPageAlreadyOpened(caller);
 
         if (existingPage != null) {
-          /*  if (existingPage.isShowing()) {
-                existingPage.toFront();
-            } else {
-                existingPage.show();
-            }*/
+            existingPage.close();
             existingPage = new AggiungiRicettaPage(this,caller);
             existingPage.show();
+            aggiungiRicettaPages.add(existingPage);
         } else {
             AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this, caller);
             aggiungiRicettaPages.add(aggiungiRicettaPage);
@@ -621,6 +631,7 @@ public class Controller {
             inserisciIngredientiToRicetta(ricetta);
             sessioneDAO.insertRicettaToSessione(ricetta,sessione);
         }
+        refreshCorsi();
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {

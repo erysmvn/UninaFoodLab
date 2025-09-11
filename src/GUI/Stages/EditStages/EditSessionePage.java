@@ -8,6 +8,7 @@ import GUI.Stages.ClassDataStages.SessionePage;
 import GUI.Stages.MyStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -180,7 +181,7 @@ public class EditSessionePage extends MyStage {
 
     }
 
-    private HBox labeledNode(String label, javafx.scene.Node node) {
+    private HBox labeledNode(String label, Node node) {
         Label l = new Label(label);
         l.setFont(Font.font("System", FontWeight.BOLD, 16));
         HBox box = new HBox(10, l, node);
@@ -252,8 +253,11 @@ public class EditSessionePage extends MyStage {
         Label removeLabel = new Label("✖");
         removeLabel.setStyle("-fx-cursor: hand;-fx-text-fill: RED;-fx-font: System;-fx-font-size: 18");
         removeLabel.setOnMouseClicked(event -> {
-                ricetteToDelete.add(ricetta);
+            if (ricetteToInsert.contains(ricetta)) {
                 ricetteToInsert.remove(ricetta);
+            } else {
+                ricetteToDelete.add(ricetta);
+            }
             aggiornaListaRicette();
         });
 
@@ -311,12 +315,11 @@ public class EditSessionePage extends MyStage {
 
             sessione.getRicette().removeAll(ricetteToDelete);
             sessione.getRicette().addAll(ricetteToInsert);
-            ricetteToDelete.clear();
-            ricetteToInsert.clear();
 
             controller.updateSessione(sessione);
             controller.removeRicetteToSessione(ricetteToDelete,sessione);
             controller.insertRicetteToSessione(ricetteToInsert, sessione);
+
             controller.refreshCalendario();
 
             parent.setSessione(sessione);

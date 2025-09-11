@@ -44,7 +44,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public void addChefToCorso(int idCorso, Chef chef) throws SQLException {
+    public void  addChefToCorso(int idCorso, Chef chef) throws SQLException {
         String checksql = "SELECT COUNT(*) FROM tiene WHERE idcorso = ? AND idchef = ?";
         String sql = "INSERT INTO tiene (idcorso, idchef) VALUES (?, ?)";
 
@@ -61,7 +61,9 @@ public class CorsoDAO implements CorsoDAOInterface {
             if (rowsInserted == 0) {
                 throw new SQLException();
             }
-        }
+            System.out.println("HO INSERITO");
+        }else
+          System.out.println("NON HO INSERITO");
     }
 
     @Override
@@ -115,11 +117,8 @@ public class CorsoDAO implements CorsoDAOInterface {
 
         ps.setInt(1, idCorso);
         ps.setInt(2, idChefNotToDelete);
+        ps.executeUpdate();
 
-        int rows = ps.executeUpdate();
-        if (rows == 0) {
-            throw new SQLException("Nessuna riga eliminata!");
-        }
     }
 
 

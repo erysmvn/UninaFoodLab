@@ -94,8 +94,8 @@ public class EditCorsoPage extends MyStage {
         try {
             chefDelCorso = controller.getChefsByIdCorso(corso.getIdCorso());
         } catch (SQLException throwables) {
-            // TODO DIALOG
-            chefDelCorso = null;
+            showDialog("Errore di sistema. Riprovare più tardi");
+            throwables.printStackTrace();
         }
 
         VBox infoBox = new VBox(10);
@@ -478,7 +478,8 @@ public class EditCorsoPage extends MyStage {
                 nameError.setText("");
             }
         } catch (SQLException sqle) {
-            // TODO DIALOG
+            showDialog("Errore di sistema. Riprova più tardi");
+            sqle.printStackTrace();
         }
 
         if (costoField.getText().isEmpty()) {
@@ -500,6 +501,7 @@ public class EditCorsoPage extends MyStage {
     private MyButton createSaveButton() {
         MyButton saveButton = new MyButton("Salva", MyButton.ButtonType.PRIMARY);
         saveButton.setOnAction(event -> {
+
             try {
                 validate();
 
@@ -514,7 +516,8 @@ public class EditCorsoPage extends MyStage {
                 try {
                     controller.updateCorso(corso);
                 } catch (SQLException sqle) {
-                    // TODO dialog
+                    showDialog("Errore di sistema. Riprovare più tardi.");
+                    sqle.printStackTrace();
                 }
 
                 controller.refreshCorsi();

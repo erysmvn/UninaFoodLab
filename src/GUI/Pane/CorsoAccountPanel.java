@@ -230,7 +230,7 @@ public class CorsoAccountPanel extends Pane {
         label.setTextAlignment(TextAlignment.CENTER);
         label.setMaxWidth(300);
 
-        MyButton yesButton = new MyButton("Yes", MyButton.ButtonType.PRIMARY);
+        MyButton yesButton = new MyButton("Si", MyButton.ButtonType.PRIMARY);
         MyButton noButton = new MyButton("No", MyButton.ButtonType.SECONDARY);
 
         HBox buttons = new HBox(15, yesButton, noButton);
@@ -248,7 +248,7 @@ public class CorsoAccountPanel extends Pane {
             ArrayList<Corso> corsi = controller.getUtente().getCorsi();
             corsi.remove(corso);
             controller.refreshCorsi(parent);
-
+            controller.refreshCalendario();
             confirmStage.close();
         });
 

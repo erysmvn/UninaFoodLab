@@ -465,8 +465,8 @@ public class CreateCorsoPage extends MyStage {
                                destDir.resolve(nameForPath + ".png"),
                                StandardCopyOption.REPLACE_EXISTING);
                    }
-               } catch (IOException ioe) {
-                   ioe.printStackTrace();
+               } catch (IOException ignore) {
+                   ignore.printStackTrace();
                }
 
                double price = 0.0;
@@ -486,7 +486,7 @@ public class CreateCorsoPage extends MyStage {
                    Corso newCorso = controller.createNewCorso(nomeCorso, price, freq, difficolta, tp, chefAggiunti);
                    controller.getUtente().getCorsi().add(newCorso);
                } catch (createCorsoErrorException | SQLException CCEE) {
-                   // TODO dialog
+                   showDialog("Errore di sistema. Riprovare più tardi");
                }
 
                controller.refreshCorsi();

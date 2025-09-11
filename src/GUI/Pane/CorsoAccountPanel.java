@@ -92,7 +92,7 @@ public class CorsoAccountPanel extends Pane {
         return imageView;
     }
 
-    public void setCorso(Corso corso){
+    public void setCorso(Corso corso) {
         this.corso = corso;
 
         ImageView imageView = createImage(corso.getImagePath());
@@ -148,7 +148,7 @@ public class CorsoAccountPanel extends Pane {
                 12
         );
         chefsLabel.setFont(robotoFont);
-        chefsLabel.setTextFill(Color.WHITE);
+        chefsLabel.setTextFill(Color.BLACK);
         return chefsLabel;
     }
 

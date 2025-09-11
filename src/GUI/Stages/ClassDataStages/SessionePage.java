@@ -169,9 +169,11 @@ public class SessionePage extends MyStage {
         }
 
 
-        if (controller.isStudent())
-            footerVbox.getChildren().add(createPartecipaButton());
-        else {
+        if (controller.isStudent()) {
+            if (sessione instanceof SessionePresenza sp) {
+                footerVbox.getChildren().add(createPartecipaButton());
+            }
+        } else {
             HBox options = new HBox(10);
             options.setAlignment(Pos.CENTER);
             options.getChildren().addAll(createEditButton(), createDeleteButton());

@@ -14,6 +14,6 @@ public interface foglioAdesioneDAOInterface {
     
     
     // Get methods
-    ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException;
+    ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(SessionePresenza sp) throws SQLException;
     FoglioAdesione getFoglioAdesioneBySessioneNPath(String path, SessionePresenza sessionePresenza, Studente studente) throws SQLException;
 }

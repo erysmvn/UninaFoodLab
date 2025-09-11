@@ -26,17 +26,17 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
     }
 
     @Override
-    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(int idsessione) throws SQLException {
+    public ArrayList<FoglioAdesione> getFogliAdesioneByIdSessione(SessionePresenza sp) throws SQLException {
 
         ArrayList<FoglioAdesione> fogli = new ArrayList<>();
         String sql = "select * from conferma_partecipazione where idsessione = ?";
 
         PreparedStatement pstmt = con.prepareStatement(sql);
-        pstmt.setInt(1, idsessione);
+        pstmt.setInt(1, sp.getIdSessione());
         ResultSet rs = pstmt.executeQuery();
 
         while(rs.next()){
-            fogli.add(createFoglioAdesioneByResultSet(rs));
+            fogli.add(createFoglioAdesioneByResultSet(rs, sp));
         }
 
         return fogli;
@@ -77,8 +77,17 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
     private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs) throws SQLException {
         StudenteDAO studenteDAO = new StudenteDAO(dbc);
         SessioneDAO sessioneDAO = new SessioneDAO(dbc);
-        return new FoglioAdesione(
+        return new FoglioAdesione (
                 (SessionePresenza) sessioneDAO.getSessioneById(rs.getInt("idsessione")),
+                studenteDAO.getStudenteByMatricola(rs.getString("matricola")),
+                rs.getString("documento")
+        );
+    }
+
+    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs, SessionePresenza sp) throws SQLException {
+        StudenteDAO studenteDAO = new StudenteDAO(dbc);
+        return new FoglioAdesione (
+                sp,
                 studenteDAO.getStudenteByMatricola(rs.getString("matricola")),
                 rs.getString("documento")
         );

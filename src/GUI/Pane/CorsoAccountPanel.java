@@ -249,6 +249,7 @@ public class CorsoAccountPanel extends Pane {
             corsi.remove(corso);
             controller.refreshCorsi(parent);
             controller.refreshCalendario();
+
             confirmStage.close();
         });
 

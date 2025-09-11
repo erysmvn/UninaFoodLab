@@ -55,10 +55,8 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
         ResultSet rs = pstmt.executeQuery();
 
         if(rs.next()){
-            return new FoglioAdesione(sessionePresenza, studente, path);
+            return createFoglioAdesioneByResultSet(rs, sessionePresenza, studente);
         }
-            //return createFoglioAdesioneByResultSet(rs);
-
         return  null;
     }
 
@@ -78,19 +76,28 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
 
     private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs) throws SQLException {
         StudenteDAO studenteDAO = new StudenteDAO(dbc);
+        Studente studente = studenteDAO.getStudenteByMatricola(rs.getString("Matricola"));
+        if (studente == null) {
+            throw new SQLException("Studente not found for matricola: " + rs.getString("matricola"));
+        }
         SessioneDAO sessioneDAO = new SessioneDAO(dbc);
-        return new FoglioAdesione (
-                (SessionePresenza) sessioneDAO.getSessioneById(rs.getInt("idsessione")),
-                studenteDAO.getStudenteByMatricola(rs.getString("matricola")),
-                rs.getString("documento")
-        );
+        SessionePresenza sessione = (SessionePresenza) sessioneDAO.getSessioneById(rs.getInt("idsessione"));
+        return new FoglioAdesione(sessione, studente, rs.getString("documento"));
     }
 
     private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs, SessionePresenza sp) throws SQLException {
         StudenteDAO studenteDAO = new StudenteDAO(dbc);
         return new FoglioAdesione (
                 sp,
-                studenteDAO.getStudenteByMatricola(rs.getString("matricola")),
+                studenteDAO.getStudenteByMatricola(rs.getString("Matricola")),
+                rs.getString("documento")
+        );
+    }
+
+    private FoglioAdesione createFoglioAdesioneByResultSet(ResultSet rs, SessionePresenza sp, Studente stud) throws SQLException {
+        return new FoglioAdesione (
+                sp,
+                stud,
                 rs.getString("documento")
         );
     }

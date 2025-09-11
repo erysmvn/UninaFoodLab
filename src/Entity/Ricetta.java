@@ -10,9 +10,7 @@ public class Ricetta {
     private String autore;
 
     private ArrayList<Ingrediente> ingredienti;
-
     private ArrayList<IngredienteFormaRicetta> ingredienteFormaRicetta;
-
     private ArrayList<String> allergeniRicetta;
 
 

@@ -18,7 +18,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
@@ -127,17 +129,38 @@ public class SessionePage extends MyStage {
 
             linkVal.setOnAction(e -> {
                 try {
-                    String rawUrl = so.getLinkIncontro();
+                    String rawUrl = so.getLinkIncontro().trim();
+
+                    // Aggiungi il protocollo se manca
                     if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
                         rawUrl = "https://" + rawUrl;
                     }
+
                     URI uri = new URI(rawUrl);
-                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        Desktop.getDesktop().browse(uri);
-                    } else {
+
+
+                    // Fallback per diversi OS
+                    String os = System.getProperty("os.name").toLowerCase();
+
+                    if (os.contains("win")) {
+                        // Windows
+                        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + uri.toString());
+                    } else if (os.contains("mac")) {
+                        // macOS
                         Runtime.getRuntime().exec(new String[]{"open", uri.toString()});
+                    } else if (os.contains("nix") || os.contains("nux")) {
+                        // Linux/Unix
+                        Runtime.getRuntime().exec(new String[]{"xdg-open", uri.toString()});
+                    } else {
+                        showDialog("Impossibile aprire il link: sistema operativo non supportato");
                     }
+
+                } catch (URISyntaxException ex) {
+                    showDialog("Link non valido: " + ex.getMessage());
+                } catch (IOException ex) {
+                    showDialog("Errore nell'apertura del browser: " + ex.getMessage());
                 } catch (Exception ex) {
+                    showDialog("Errore di sistema. Riprovare più tardi");
                     ex.printStackTrace();
                 }
             });

@@ -334,11 +334,13 @@ public class Controller {
         AggiungiRicettaPage existingPage = isAggiungiRicettaPageAlreadyOpened(caller);
 
         if (existingPage != null) {
-            if (existingPage.isShowing()) {
+          /*  if (existingPage.isShowing()) {
                 existingPage.toFront();
             } else {
                 existingPage.show();
-            }
+            }*/
+            existingPage = new AggiungiRicettaPage(this,caller);
+            existingPage.show();
         } else {
             AggiungiRicettaPage aggiungiRicettaPage = new AggiungiRicettaPage(this, caller);
             aggiungiRicettaPages.add(aggiungiRicettaPage);

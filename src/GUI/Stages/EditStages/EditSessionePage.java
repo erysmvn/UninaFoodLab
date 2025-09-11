@@ -337,7 +337,6 @@ public class EditSessionePage extends MyStage {
         } catch (SQLException sqlException) {
             if(sqlException.getSQLState() != null && sqlException.getSQLState().equals("23505"))
                 erroreInserimentoDati.setText("Il corso ha già una sessione in data: " + dataPicker.getValue());
-                sqlException.printStackTrace();
         }catch (Exception ex) {
             showDialog("Errore di sistema. Riprovare più tardi");
         }

@@ -94,7 +94,7 @@ public class SessioneDAO implements SessioneDAOInterface {
                     corso
             );
             FoglioAdesioneDAO foglio = new FoglioAdesioneDAO(dbc);
-            ((SessionePresenza)sessione).setFogliAdesione(foglio.getFogliAdesioneByIdSessione(rs.getInt("idsessione")));
+            ((SessionePresenza)sessione).setFogliAdesione(foglio.getFogliAdesioneByIdSessione((SessionePresenza)sessione));
         } else {
             sessione = new SessioneOnline(
                     rs.getInt("idsessione"),

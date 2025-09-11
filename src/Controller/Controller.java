@@ -190,7 +190,6 @@ public class Controller {
         return null;
     }
 
-
     public void openEditCorsoPage(Corso corso){
         EditCorsoPage existingPage = isEditCorsoPageAlreadyOpened(corso);
 
@@ -255,8 +254,6 @@ public class Controller {
         sessionePages.add(sessionePage);
         sessionePage.show();
     }
-
-
 
     public void openRicettaPage(Ricetta ricetta){
         RicettaPage existingPage = isRicettaPageAlreadyOpened(ricetta);

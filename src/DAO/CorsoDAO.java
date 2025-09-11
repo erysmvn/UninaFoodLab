@@ -258,7 +258,7 @@ public class CorsoDAO implements CorsoDAOInterface {
     }
 
     @Override
-    public Corso    getCorsoByIdCorso(int idcorso) throws SQLException {
+    public Corso getCorsoByIdCorso(int idcorso) throws SQLException {
         String sql = "SELECT * FROM corso WHERE idcorso = ?";
 
         PreparedStatement stmt = con.prepareStatement(sql);

@@ -282,11 +282,14 @@ public class EditSessionePage extends MyStage {
         try {
             System.out.println(sessione.getRicette());
             validate();
+
             sessione.setData(dataPicker.getValue());
+
             LocalDate data = dataPicker.getValue();
 
             int hInizio = hourSpinnerInizio.getValue();
             int mInizio = minuteSpinnerInizio.getValue();
+
             LocalDateTime dateTimeInizio = LocalDateTime.of(data, LocalTime.of(hInizio, mInizio));
             sessione.setOra(dateTimeInizio);
 
@@ -308,6 +311,8 @@ public class EditSessionePage extends MyStage {
 
             sessione.getRicette().removeAll(ricetteToDelete);
             sessione.getRicette().addAll(ricetteToInsert);
+            ricetteToDelete.clear();
+            ricetteToInsert.clear();
 
             controller.updateSessione(sessione);
             controller.removeRicetteToSessione(ricetteToDelete,sessione);
@@ -332,10 +337,9 @@ public class EditSessionePage extends MyStage {
         } catch (SQLException sqlException) {
             if(sqlException.getSQLState() != null && sqlException.getSQLState().equals("23505"))
                 erroreInserimentoDati.setText("Il corso ha già una sessione in data: " + dataPicker.getValue());
-            sqlException.printStackTrace();
+                sqlException.printStackTrace();
         }catch (Exception ex) {
-            erroreInserimentoDati.setText("Errore inserimenti dati. Riprovare più tardi");
-            ex.printStackTrace();
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
     }
 
@@ -382,7 +386,7 @@ public class EditSessionePage extends MyStage {
             erroreOrario.setText("");
         }
 
-        if (ricetteToInsert.isEmpty()) {
+        if ( sessione.getRicette().size() - ricetteToDelete.size() + ricetteToInsert.size() < 1 ) {
             throw new AlmenoUnaRicettaException();
         } else {
             errorAlmenoUnRicetta.setText("");

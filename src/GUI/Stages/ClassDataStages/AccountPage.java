@@ -6,11 +6,8 @@
     import GUI.Buttons.*;
     import GUI.Stages.MyStage;
     import javafx.geometry.Insets;
-    import javafx.scene.*;
-    import javafx.scene.input.KeyCode;
     import javafx.scene.layout.*;
     import javafx.scene.paint.Color;
-    import javafx.stage.*;
 
     public class AccountPage extends MyStage {
         Controller controller;
@@ -27,7 +24,7 @@
 
         VBox impostazioniPanel;
         VBox accountPanel;
-        BorderPane accountCorsiPanel;
+        ElencoCorsiPanel elencoCorsiPanel;
         CalendarioPanel calendarioPanel;
 
         Utente utente;
@@ -46,12 +43,12 @@
             this.utente = utente;
 
             accountPanel = createAccountPanel(utente);
-            accountCorsiPanel = createAccountCorsiPanel();
+            elencoCorsiPanel = createAccountCorsiPanel();
             impostazioniPanel = new ImpostazioniPanel(controller);
             calendarioPanel = new CalendarioPanel(controller);
             calendarioPanel.initCalendario(utente);
 
-            content.getChildren().addAll(accountCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
+            content.getChildren().addAll(elencoCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
             reportPanel = new ReportPanel(controller);
             if(utente instanceof Chef){
                 reportPanel.initPanel(utente);
@@ -64,7 +61,7 @@
             root.setCenter(content);
 
 
-            showOnlyPanel(accountCorsiPanel);
+            showOnlyPanel(elencoCorsiPanel);
             setButtonAsActive(corsiButton);
         }
 
@@ -162,7 +159,7 @@
         private MyButton createCorsiButton(){
             corsiButton = new MyButton("Corsi");
             clickedButton = corsiButton;
-            initButton(corsiButton,accountCorsiPanel);
+            initButton(corsiButton, elencoCorsiPanel);
             return corsiButton;
         }
 
@@ -185,7 +182,7 @@
         }
 
         private void showOnlyPanel(Pane panelToShow){
-            Pane[] allPanels = {accountPanel, accountCorsiPanel, impostazioniPanel, calendarioPanel, reportPanel};
+            Pane[] allPanels = {accountPanel, elencoCorsiPanel, impostazioniPanel, calendarioPanel, reportPanel};
 
             for (Pane panel : allPanels) {
 

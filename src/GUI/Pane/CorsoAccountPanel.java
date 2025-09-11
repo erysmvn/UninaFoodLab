@@ -31,7 +31,6 @@ import java.util.Objects;
 public class CorsoAccountPanel extends Pane {
         Controller controller;
         Corso corso;
-
         HBox content;
         ElencoCorsiPanel parent;
 

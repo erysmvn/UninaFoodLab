@@ -823,6 +823,7 @@ public class HomePage extends Stage {
 
     public void setUtente(Utente utente){
         this.utente = utente;
+        System.out.println(utente.getNome());
         createHomeButton();
         setLoggedIn();
         if (utente instanceof Chef){

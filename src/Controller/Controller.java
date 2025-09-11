@@ -478,6 +478,8 @@ public class Controller {
             }
         }
 
+        System.out.println(utente);
+
         homePage.setUtente(utente);
         this.corsoPages.clear();
 

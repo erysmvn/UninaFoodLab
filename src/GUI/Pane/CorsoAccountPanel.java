@@ -248,6 +248,7 @@ public class CorsoAccountPanel extends Pane {
             ArrayList<Corso> corsi = controller.getUtente().getCorsi();
             corsi.remove(corso);
             controller.refreshCorsi(parent);
+            controller.refreshCalendario();
 
             confirmStage.close();
         });

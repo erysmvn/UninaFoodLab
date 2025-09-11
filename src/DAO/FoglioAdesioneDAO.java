@@ -54,8 +54,10 @@ public class FoglioAdesioneDAO implements foglioAdesioneDAOInterface {
         
         ResultSet rs = pstmt.executeQuery();
 
-        if(rs.next())
-            return createFoglioAdesioneByResultSet(rs);
+        if(rs.next()){
+            return new FoglioAdesione(sessionePresenza, studente, path);
+        }
+            //return createFoglioAdesioneByResultSet(rs);
 
         return  null;
     }

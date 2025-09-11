@@ -183,16 +183,19 @@ public class StudenteDAO implements StudenteDAOInterface {
     public Studente getStudenteByMatricola(String matricola) throws SQLException {
         String sql = "SELECT * FROM studente WHERE matricola = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);
-        pstmt.setString(1, matricola);
+        pstmt.setString(1, matricola.trim());
+        System.out.println("matricola: " + matricola);
+        System.out.println("Query: " + pstmt.toString());
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
             return getStudenteByRs(rs);
         }
+        System.out.println("STO PER RITORNARE NULL");
         return null;
     }
 
     public Studente getStudenteByRs(ResultSet rs) throws SQLException {
-        if (rs.next()) {
+
             return new Studente(
                     rs.getString("matricola"),
                     rs.getString("nome_stud"),
@@ -200,7 +203,6 @@ public class StudenteDAO implements StudenteDAOInterface {
                     rs.getString("email"),
                     rs.getString("passw")
             );
-        }
-        return null;
+
     }
 }

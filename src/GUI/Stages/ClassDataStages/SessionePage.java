@@ -183,7 +183,7 @@ public class SessionePage extends MyStage {
         try {
             controller.setChefs(corso);
         } catch (SQLException ex) {
-            // TODO Dialog
+            showDialog("Errore di sistema. Riprovare più tardi.");
         }
 
         Text chefLabel = new Text("Chef: ");

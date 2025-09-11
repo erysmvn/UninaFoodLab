@@ -624,6 +624,8 @@ public class Controller {
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {
+        if(utente == null)
+            System.out.println("UTENTE IS NULL");
         return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza, (Studente) utente);
     }
 

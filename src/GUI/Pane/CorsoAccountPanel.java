@@ -79,13 +79,11 @@ public class CorsoAccountPanel extends Pane {
         double y = (newHeight - targetHeight) / 2 / scale;
 
         imageView.setViewport(new javafx.geometry.Rectangle2D(x, y, targetWidth / scale, targetHeight / scale));
-
-        // Fit al pannello
         imageView.setFitWidth(targetWidth);
         imageView.setFitHeight(targetHeight);
         imageView.setPreserveRatio(false);
 
-        // Clip con bordi arrotondati
+
         Rectangle clip = new Rectangle(targetWidth, targetHeight);
         clip.setArcHeight(20);
         clip.setArcWidth(20);
@@ -102,7 +100,7 @@ public class CorsoAccountPanel extends Pane {
         try {
             controller.setChefs(corso);
         } catch (SQLException e) {
-            // TODO DIALOG
+            //todo dialog
         }
 
         Label chefsLabel = createChefs(corso.getStringOfChefs());

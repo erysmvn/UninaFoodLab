@@ -526,7 +526,7 @@ public class EditCorsoPage extends MyStage {
                 }
 
                 controller.refreshCorsi();
-
+                showDialog("Immagine in fase di elaborazione");
                 this.close();
 
             } catch (nameCorsoNotFoundException NCNFE) {

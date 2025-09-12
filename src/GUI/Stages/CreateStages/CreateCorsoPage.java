@@ -192,6 +192,7 @@ public class CreateCorsoPage extends MyStage {
             tipologie = controller.getAllTipologie();
         } catch (SQLException e) {
             showDialog("Errore di sistema. Riprovare più tardi");
+            e.printStackTrace();
         }
         for (TipologiaCorso t : tipologie) {
             corsoType.getItems().add(t.getNome());
@@ -489,10 +490,11 @@ public class CreateCorsoPage extends MyStage {
                    controller.getUtente().getCorsi().add(newCorso);
                } catch (createCorsoErrorException | SQLException CCEE) {
                    showDialog("Errore di sistema. Riprovare più tardi");
+                   CCEE.printStackTrace();
                }
 
                controller.refreshCorsi();
-
+               showDialog("Immagine in fase di elaborazione");
                this.close();
 
            } catch (nameCorsoNotFoundException NCNFE) {
@@ -529,7 +531,7 @@ public class CreateCorsoPage extends MyStage {
                corsoDifficulty.setStyle("-fx-border-color: red;");
                difficultyError.setText("Inserire la difficoltà del corso");
            } catch (SQLException SQLE) {
-               // TODO Dialog
+               showDialog("Errore di sistema. Riprovare più tardi");
                SQLE.printStackTrace();
            }
         });

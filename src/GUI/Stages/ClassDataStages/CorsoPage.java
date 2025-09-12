@@ -354,7 +354,7 @@ public class CorsoPage extends MyStage {
             ScrollPane scrollPane = new ScrollPane(ricetteList);
             scrollPane.setFitToWidth(true);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
             scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
             ricetteList.setStyle("-fx-background-color: white;");

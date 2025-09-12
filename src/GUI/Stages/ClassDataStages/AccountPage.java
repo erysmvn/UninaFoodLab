@@ -110,7 +110,7 @@
         }
 
         private ElencoCorsiPanel createAccountCorsiPanel(){
-            ElencoCorsiPanel elencoCorsiPanel = new ElencoCorsiPanel(this.controller);
+            elencoCorsiPanel = new ElencoCorsiPanel(this.controller);
             elencoCorsiPanel.initPanel(utente);
             elencoCorsiPanel.setVisible(true);
             elencoCorsiPanel.setManaged(true);

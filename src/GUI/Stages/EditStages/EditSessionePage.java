@@ -150,7 +150,7 @@ public class EditSessionePage extends MyStage {
         ricetteScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         ricetteScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         ricetteScroll.setPrefWidth(250);
-        ricetteScroll.setMaxWidth(250);
+        //ricetteScroll.setMaxWidth(250);
         ricetteScroll.setPrefHeight(120);
         ricetteScroll.setMinHeight(120);
         ricetteScroll.setMaxHeight(120);
@@ -226,7 +226,7 @@ public class EditSessionePage extends MyStage {
 
     private MyButton createAggiungiRicettaButton() {
         MyButton aggiungiRicettaButton = new MyButton("Aggiungi ricetta", MyButton.ButtonType.PRIMARY);
-        aggiungiRicettaButton.setSize(120, 30);
+        aggiungiRicettaButton.setSize(160, 30);
 
         aggiungiRicettaButton.setOnAction(e -> controller.openAggiungiRicettaPage(this));
 

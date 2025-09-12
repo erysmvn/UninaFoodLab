@@ -253,6 +253,7 @@ public class AggiungiSessionePage extends MyStage {
                 controller.insertRicetteToSessione(ricette,sessione);
                 sessione.getCorso().addSessione(sessione);
                 controller.refreshAccountPage();
+                controller.refreshCorsi();
                 this.close();
             } catch (LinkOrLuogoEmptyException ex) {
                 errorLinkOrLuogoLabel.setText("Campo obbligatorio");
@@ -379,7 +380,7 @@ public class AggiungiSessionePage extends MyStage {
 
 
         MyButton aggiungiRicettaBtn = new MyButton("Aggiungi ricetta", MyButton.ButtonType.PRIMARY);
-        aggiungiRicettaBtn.setSize(120, 30);
+        aggiungiRicettaBtn.setSize(160, 30);
 
         ricettaBox.getChildren().addAll(numeroRicette, aggiungiRicettaBtn,errorAlmenoUnaRicettaLabel);
 

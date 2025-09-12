@@ -213,7 +213,7 @@ public class SessionePage extends MyStage {
 
         ScrollPane listaRicette = new ScrollPane(listaRicetteBox);
         listaRicette.setPrefWidth(250);
-        listaRicette.setMaxWidth(250);
+        //listaRicette.setMaxWidth(250);
         listaRicette.setPrefHeight(120);
         listaRicette.setMinHeight(120);
         listaRicette.setMaxHeight(120);

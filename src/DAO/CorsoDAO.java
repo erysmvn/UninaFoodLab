@@ -124,7 +124,6 @@ public class CorsoDAO implements CorsoDAOInterface {
 
     }
 
-
     // Get methods
     @Override
     public ArrayList<Corso> searchCorsiLikeNomeCorso(String nomeCorso) throws SQLException, corsiNotFoundException {

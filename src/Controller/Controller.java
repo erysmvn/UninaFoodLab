@@ -382,13 +382,35 @@ public class Controller {
     }
 
     public void refreshCorsi(ElencoCorsiPanel elencoCorsiPanel) {
+
         elencoCorsiPanel.showCorsi();
+        try {
+            if(utente instanceof Chef chef){
+                chef.getCorsi().clear();
+                chefDAO.setCorsiToChef(chef);
+            }
+        } catch (SQLException ignore) {}
+
         this.elencoCorsiPanel = elencoCorsiPanel;
     }
 
     public void refreshCorsi() {
+        System.out.println("Prima di SHOW CORSI");
+        System.out.println(utente.getCorsi());
         if (elencoCorsiPanel != null) {
+
+            try {
+                if(utente instanceof Chef chef){
+                    chef.getCorsi().clear();
+                    chefDAO.setCorsiToChef(chef);
+                }
+            } catch (SQLException ignore) {}
+
+            System.out.println(utente.getCorsi());
             elencoCorsiPanel.showCorsi();
+
+        }else{
+            System.out.println("SONO QUI");
         }
     }
 

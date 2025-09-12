@@ -16,6 +16,7 @@ import GUI.Buttons.MyButton;
 import GUI.Stages.MyStage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -261,25 +262,25 @@ public class AggiungiRicettaPage extends MyStage {
             originalItems.add(ing.getNome());
         }
 
+        FilteredList<String> filteredItems = new FilteredList<>(originalItems, s -> true);
+        combo.setItems(filteredItems);
+
         combo.setEditable(true);
-        combo.setItems(originalItems);
 
-        combo.getEditor().textProperty().addListener((obs, oldText, newText) -> {
-            if (newText == null) return;
+        combo.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null) return;
 
-            ObservableList<String> filtered = FXCollections.observableArrayList();
-            for (String nome : originalItems) {
-                if (nome.toLowerCase().contains(newText.toLowerCase())) {
-                    filtered.add(nome);
-                }
-            }
-            combo.setItems(filtered);
+            filteredItems.setPredicate(item -> {
+                if (item == null) return false;
+                return item.toLowerCase().contains(newValue.toLowerCase());
+            });
+
+
             combo.show();
         });
 
-        combo.setOnMousePressed(e -> {
-            combo.setItems(originalItems);
-            combo.show();
+        combo.setOnMouseClicked(e -> {
+            filteredItems.setPredicate(s -> true);
         });
     }
 

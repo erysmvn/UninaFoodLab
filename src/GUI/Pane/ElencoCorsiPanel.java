@@ -81,6 +81,8 @@ public class ElencoCorsiPanel extends BorderPane {
                         null
                 );
             }
+            System.out.println("IN SHOW CORSI");
+            System.out.println(corsiUtente);
             corsiBox.getChildren().add(emptyMessageBox);
         }
     }

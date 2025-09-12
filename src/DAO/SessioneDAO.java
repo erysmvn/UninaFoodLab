@@ -182,4 +182,17 @@ public class SessioneDAO implements SessioneDAOInterface {
         return null;
     }
 
+    public int getMaxSessioniSettimanali(int idCorso) throws SQLException {
+        String sql = "SELECT max_sessioni_settimanali(?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idCorso);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
 }

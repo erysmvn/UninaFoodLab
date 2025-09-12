@@ -19,7 +19,9 @@ public class Chef extends Utente {
     public int getIdchef() {
         return idchef;
     }
-    public void setIdchef(int idchef) {}
+    public void setIdchef(int idchef) {
+        this.idchef = idchef;
+    }
     public void addCorso(Corso corso) {
         corsi.add(corso);
     }

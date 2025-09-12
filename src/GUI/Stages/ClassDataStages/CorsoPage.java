@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class CorsoPage extends MyStage {
     private Controller controller;
@@ -350,26 +351,26 @@ public class CorsoPage extends MyStage {
             for (Ricetta r : corso.getRicetteTrattate()) {
                 createRicettaLabel(ricetteList, r);
             }
+            ScrollPane scrollPane = new ScrollPane(ricetteList);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+            scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
+            ricetteList.setStyle("-fx-background-color: white;");
+
+            scrollPane.setPrefHeight(250);
+            scrollPane.setMaxHeight(250);
+
+            descBox.getChildren().add(scrollPane);
         } else {
-            Label noRicetteTrattate = new Label("Ancora nessuna ricetta");
-            noRicetteTrattate.setFont(Font.font(28));
-            noRicetteTrattate.setTextFill(Color.WHITE);
-            noRicetteTrattate.setAlignment(Pos.CENTER);
-            ricetteList.getChildren().add(noRicetteTrattate);
+            VBox emptyMessageBox;
+            emptyMessageBox = createEmptyStageMessage(
+                    "Ancora nessuna ricetta per questo corso",
+                    "/Media/Icons/notFoundIcon.png"
+            );
+            descBox.getChildren().add(emptyMessageBox);
         }
-
-        ScrollPane scrollPane = new ScrollPane(ricetteList);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-        scrollPane.setStyle("-fx-background: white; -fx-background-color: white;");
-        ricetteList.setStyle("-fx-background-color: white;");
-
-        scrollPane.setPrefHeight(250);
-        scrollPane.setMaxHeight(250);
-
-        descBox.getChildren().add(scrollPane);
     }
 
     private void createRicettaLabel(VBox ricetteList, Ricetta ricetta) {

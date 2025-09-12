@@ -254,6 +254,9 @@ public class RegisterPage extends MyStage {
             } catch (matricolaEmptyException MEE) {
                 txtMatricola.setStyle("-fx-border-color: red;");
                 lblMatricolaError.setText("Inserire matricola");
+            } catch (matricolaNotValidException MNVE) {
+                txtMatricola.setStyle("-fx-border-color: red;");
+                lblMatricolaError.setText("Matricola non valida");
             } catch (surnameEmptyException SEE) {
                 txtCognome.setStyle("-fx-border-color: red;");
                 lblCognomeError.setText("Inserire cognome");
@@ -330,6 +333,18 @@ public class RegisterPage extends MyStage {
         } else {
             txtMatricola.setStyle(null);
             lblMatricolaError.setText("");
+        }
+
+        String pattern = "^[A-Za-z][0-9]{8}$";
+        if (txtEmail.getText().endsWith("@studenti.unina.it") && txtMatricola.isVisible()) {
+            String matricola = txtMatricola.getText();
+
+            if (!matricola.matches(pattern)) {
+                throw new matricolaNotValidException();
+            } else {
+                txtMatricola.setStyle(null);
+                lblMatricolaError.setText("");
+            }
         }
 
         if (txtPassword.getText().trim().isEmpty()) {

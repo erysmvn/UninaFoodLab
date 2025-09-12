@@ -4,6 +4,7 @@ import Controller.Controller;
 import Entity.Chef;
 import Entity.Corso;
 import Entity.TipologiaCorso;
+import Entity.Utente;
 import Exception.CorsoExceptions.CreateCorsoException.*;
 import Exception.CorsoExceptions.CreateCorsoException.AddChefToNewCorsoException.*;
 import GUI.Buttons.CircleButton;
@@ -72,8 +73,9 @@ public class CreateCorsoPage extends MyStage {
     public CreateCorsoPage(Controller controller, Chef chef) {
         super(850, 650, RootType.VBOX);
         this.chef = chef;
+        System.out.println(chef.getIdchef());
         chefAggiunti = new ArrayList<>();
-        chefAggiunti.add(this.chef); //TODO CON IL CONTROLLER (CONTROLLER HA L'UTENTE LOGGATO
+        chefAggiunti.add(this.chef);
 
         this.controller = controller;
         root = getRootVBox();

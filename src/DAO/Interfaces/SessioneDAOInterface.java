@@ -16,6 +16,7 @@ public interface SessioneDAOInterface {
     Sessione createSessioneByResultSet(ResultSet rs, Corso corso) throws SQLException;
     void update(Sessione sessione) throws SQLException;
     void delete(Sessione sessione) throws SQLException;
+    int getMaxSessioniSettimanali(int idCorso) throws SQLException;
 
     // Get methods
     ArrayList<Sessione> getSessioniByCorso(Corso corso) throws SQLException;

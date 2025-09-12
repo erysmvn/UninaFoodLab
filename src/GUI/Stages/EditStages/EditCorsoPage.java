@@ -188,8 +188,13 @@ public class EditCorsoPage extends MyStage {
         difficoltaBox.setValue(corso.getDifficolta().toString());
         infoBox.getChildren().add(labeledField("Difficoltà:", difficoltaBox));
 
-        // TODO invece di get frequenza, calcolare la freq massima delle sessioni (algoritmo in doc bdd)
-        freqSettimanaleSpinner = new Spinner<>(corso.getFrequenzaSettimanale(), 7, corso.getFrequenzaSettimanale(), 1);
+        int maxSettimanale = 0;
+        try {
+            maxSettimanale = controller.getMaxSessioniSettimanali(corso.getIdCorso());
+        } catch (SQLException sqle) {
+            showDialog("Errore di sistema");
+        }
+        freqSettimanaleSpinner = new Spinner<>(maxSettimanale, 7, corso.getFrequenzaSettimanale(), 1);
         Label freqLabelValue = new Label();
         freqLabelValue.setFont(Font.font(14));
         freqLabelValue.setText(corso.getFrequenzaSettimanale() == 1 ?

@@ -204,12 +204,19 @@ public class EditSessionePage extends MyStage {
     }
 
     private HBox createTimeSpinnerFine() {
+        LocalDateTime inizio = sessione.getOra();
+        Float durataOre = sessione.getDurata(); // es. 1.5
+
+        LocalDateTime fine = inizio.plusMinutes((long)(durataOre * 60));
+        int hFine = fine.getHour();
+        int mFine = fine.getMinute();
+
         hourSpinnerFine = new Spinner<>();
-        hourSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 20, sessione.getOra().getHour()));
+        hourSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 20, hFine));
         hourSpinnerFine.setEditable(true);
 
         minuteSpinnerFine = new Spinner<>();
-        minuteSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, sessione.getOra().getMinute()));
+        minuteSpinnerFine.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, mFine));
         minuteSpinnerFine.setEditable(true);
 
         HBox hbox = new HBox(5, hourSpinnerFine, new Label(":"), minuteSpinnerFine);

@@ -53,31 +53,26 @@ public class ChefDAO implements ChefDAOInterface {
 
     @Override
     public Chef register(Chef chef) throws SQLException {
-        String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?))";
+        String sql = "INSERT INTO chef (nome_chef, cognome, email, passw) VALUES (?, ?, ?, md5(?)) RETURNING idchef";
 
-        PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement pstmt = con.prepareStatement(sql);
 
         pstmt.setString(1, chef.getNome());
         pstmt.setString(2, chef.getCognome());
         pstmt.setString(3, chef.getEmail());
         pstmt.setString(4, chef.getPassw());
 
-        int rowsInserted = pstmt.executeUpdate();
+        ResultSet rs = pstmt.executeQuery();
 
-        if (rowsInserted == 0)
-            throw new SQLException();
-
-
-        ResultSet generatedKeys = pstmt.getGeneratedKeys();
-
-        if (generatedKeys.next()){
-            int id = generatedKeys.getInt("idchef");
+        if (rs.next()) {
+            int id = rs.getInt("idchef");
+            System.out.println(id);
             chef.setIdchef(id);
+            return chef;
         } else {
+            System.out.println("Non ho inserito");
             throw new SQLException();
         }
-
-        return chef;
     }
 
     @Override

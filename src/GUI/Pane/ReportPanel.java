@@ -14,6 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -26,6 +28,7 @@ import java.sql.SQLException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Objects;
 
 public class ReportPanel extends VBox {
     private Controller controller;
@@ -64,7 +67,6 @@ public class ReportPanel extends VBox {
         }
         meseComboBox.setItems(mesi);
 
-        // Formattatore per visualizzare correttamente i mesi
         meseComboBox.setConverter(new StringConverter<YearMonth>() {
             private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
@@ -98,11 +100,11 @@ public class ReportPanel extends VBox {
 
         statisticheBox = new VBox(10);
         statisticheBox.setPadding(new Insets(10));
-        statisticheBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #dddddd; -fx-border-radius: 5;");
+//        statisticheBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         graficiPane = new BorderPane();
         graficiPane.setPadding(new Insets(10));
-        graficiPane.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #dddddd; -fx-border-radius: 5;");
+//        graficiPane.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         this.getChildren().addAll(titoloLabel, selezioneMeseBox, statisticheBox, graficiPane);
 
@@ -128,9 +130,18 @@ public class ReportPanel extends VBox {
             return;
         }
 
-        // Verifica che reportData non sia null prima di procedere
         if (reportData == null) {
             showDialog("Nessun dato disponibile per il mese selezionato");
+            statisticheBox.getChildren().clear();
+            statisticheBox.setStyle("-fx-background-color: transparent;");
+            graficiPane.getChildren().clear();
+            graficiPane.setStyle("-fx-background-color: transparent;");
+            VBox emptyMessageBox;
+            emptyMessageBox = createEmptyMessage(
+                    "Non hai tenuto corsi in questo mese",
+                    "/Media/Icons/notFoundIcon.png"
+            );
+            statisticheBox.getChildren().add(emptyMessageBox);
             return;
         }
 
@@ -138,9 +149,9 @@ public class ReportPanel extends VBox {
         aggiornaGrafici(reportData);
     }
 
-
     private void aggiornaStatistiche(Map<String, Object> reportData) {
         statisticheBox.getChildren().clear();
+        statisticheBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         int corsiTotali = (int) reportData.getOrDefault("corsiTotali", 0);
         int sessioniOnline = (int) reportData.getOrDefault("sessioniOnline", 0);
@@ -182,6 +193,7 @@ public class ReportPanel extends VBox {
 
     private void aggiornaGrafici(Map<String, Object> reportData) {
         graficiPane.getChildren().clear();
+        graficiPane.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         int sessioniOnline = (int) reportData.getOrDefault("sessioniOnline", 0);
         int sessioniPratiche = (int) reportData.getOrDefault("sessioniPratiche", 0);
@@ -246,4 +258,31 @@ public class ReportPanel extends VBox {
         return dialog;
     }
 
+    private VBox createEmptyMessage(String message, String iconPath) {
+        VBox box = new VBox(10);
+        box.setAlignment(Pos.CENTER);
+
+        Label label = new Label(message);
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setAlignment(Pos.CENTER);
+        label.setPadding(new Insets(50, 10, 10, 10));
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 30");
+
+        ImageView iconView = new ImageView(iconPath);
+        if (iconPath != null) {
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath)));
+            iconView = new ImageView(icon);
+            iconView.setFitWidth(60);
+            iconView.setFitHeight(60);
+            iconView.setPreserveRatio(true);
+        }
+
+        if (iconView != null) {
+            box.getChildren().addAll(label, iconView);
+        } else {
+            box.getChildren().add(label);
+        }
+
+        return box;
+    }
 }

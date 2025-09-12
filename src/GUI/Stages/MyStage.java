@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -15,6 +17,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.Objects;
 
 public class MyStage extends Stage {
 
@@ -168,6 +172,34 @@ public class MyStage extends Stage {
 
         dialog.setScene(scene);
         return dialog;
+    }
+
+    protected VBox createEmptyStageMessage(String message, String iconPath) {
+        VBox box = new VBox(10);
+        box.setAlignment(Pos.CENTER);
+
+        Label label = new Label(message);
+        label.setTextFill(Color.valueOf("#2F3A42"));
+        label.setAlignment(Pos.CENTER);
+        label.setPadding(new Insets(50, 10, 10, 10));
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 30");
+
+        ImageView iconView = new ImageView(iconPath);
+        if (iconPath != null) {
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath)));
+            iconView = new ImageView(icon);
+            iconView.setFitWidth(60);
+            iconView.setFitHeight(60);
+            iconView.setPreserveRatio(true);
+        }
+
+        if (iconView != null) {
+            box.getChildren().addAll(label, iconView);
+        } else {
+            box.getChildren().add(label);
+        }
+
+        return box;
     }
 
 }

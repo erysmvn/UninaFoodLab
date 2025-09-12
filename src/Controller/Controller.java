@@ -317,7 +317,7 @@ public class Controller {
 
     public void openCreateCorsoPage() {
         if(createCorsoPage == null || !createCorsoPage.isShowing()) {
-            if (getUtente() instanceof Chef chef) {
+            if (utente instanceof Chef chef) {
                 createCorsoPage = new CreateCorsoPage(this, chef);
                 createCorsoPage.show();
             }
@@ -473,26 +473,25 @@ public class Controller {
     }
 
     public void registerMethod(Utente utente) throws SQLException {
-
         if (utente instanceof Chef chef) {
             Chef ch = chefDAO.register(chef);
-
             if(ch != null){
                 this.utente = ch;
             }
         } else if (utente instanceof Studente studente) {
             Studente st = studenteDAO.register(studente);
-
             if(st != null){
                 this.utente = st;
             }
         }
 
-        System.out.println(utente);
+        System.out.println(this.utente);
+        if (this.utente instanceof Chef chef) {
+            System.out.println(chef.getIdchef());
+        }
 
-        homePage.setUtente(utente);
+        homePage.setUtente(this.utente);
         this.corsoPages.clear();
-
     }
 
     public void logOut(){
@@ -576,6 +575,7 @@ public class Controller {
     public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) throws SQLException {
         Corso newCorso = corsoDAO.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
+            System.out.println(newCorso.getIdCorso());
             addChefsToCorso(newCorso.getIdCorso(), chefs);
             addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
         } else {
@@ -652,6 +652,10 @@ public class Controller {
 
     public void deleteSessione(Sessione sessione) throws SQLException {
         sessioneDAO.delete(sessione);
+    }
+
+    public int getMaxSessioniSettimanali(int idCorso) throws SQLException {
+        return sessioneDAO.getMaxSessioniSettimanali(idCorso);
     }
 
 

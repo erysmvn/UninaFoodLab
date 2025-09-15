@@ -28,7 +28,7 @@ public class Corso {
 
     public Corso(int idcorso, String nome, int numeroSessioni, float oreTotali,
                  int frequenzaSettimanale, Date dataInizio, Date dataFine, float costo,
-                 ModalitaCorso modalitaCorso,Difficolta difficolta, String desc_corso) {
+                 ModalitaCorso modalitaCorso, Difficolta difficolta, String desc_corso) {
         this.idcorso = idcorso;
         this.nome = nome;
         this.numeroSessioni = numeroSessioni;

@@ -671,8 +671,7 @@ public class HomePage extends Stage {
                     } else {
                         corsi = controller.searchCorsiByTipologia(toSearch);
                     }
-                }
-                else {
+                } else {
                     corsi = controller.getMostFollowedCourses(4);
                 }
 
@@ -701,7 +700,8 @@ public class HomePage extends Stage {
     private void filterCorsiByModalitaIfNeeded() {
         if (corsi == null || modalitaSelezionata == null) return;
 
-        corsi.removeIf(corso -> !corso.getModalita_corso().getLabel().equalsIgnoreCase(modalitaSelezionata.name()));
+        corsi.removeIf(corso -> corso.getModalita_corso() == null ||
+                !corso.getModalita_corso().getLabel().equalsIgnoreCase(modalitaSelezionata.name()));
     }
 
     private void sortCorsiByCostoIfNeeded() {

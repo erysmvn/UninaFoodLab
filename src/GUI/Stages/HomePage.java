@@ -614,7 +614,7 @@ public class HomePage extends Stage {
         searchField.setFocusTraversable(true);
         searchField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER)
-                setCorsiByChoice();
+                searchButton.fire();
         });
         searchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal && !searchField.getText().isEmpty()) {

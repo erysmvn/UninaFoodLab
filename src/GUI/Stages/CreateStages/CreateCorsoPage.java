@@ -73,7 +73,6 @@ public class CreateCorsoPage extends MyStage {
     public CreateCorsoPage(Controller controller, Chef chef) {
         super(850, 650, RootType.VBOX);
         this.chef = chef;
-        System.out.println(chef.getIdchef());
         chefAggiunti = new ArrayList<>();
         chefAggiunti.add(this.chef);
 

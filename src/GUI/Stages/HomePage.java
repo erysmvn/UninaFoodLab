@@ -59,7 +59,6 @@ public class HomePage extends Stage {
     ToggleButton chefChoice;
     ToggleButton tipologiaChoice;
 
-    // Enum per gestire la modalità
     private enum Modalita {
         ONLINE, PRESENZA
     }
@@ -299,8 +298,6 @@ public class HomePage extends Stage {
                 "-fx-background-radius: 4; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
 
-//        Label cercaPerLabel = new Label("Cerca per:");
-//        cercaPerLabel.setStyle("-fx-text-fill: #334155; -fx-font-size: 14px; -fx-padding: 8 8 8 0;");
 
         choiceGroup = new ToggleGroup();
         corsoChoice = new ToggleButton("Corso");
@@ -321,16 +318,11 @@ public class HomePage extends Stage {
                 "-fx-background-radius: 4; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
 
-//        cercaPer.getChildren().addAll(cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice);
         cercaPer.getChildren().addAll(corsoChoice, chefChoice, tipologiaChoice);
 
-        // Separatore 1
         Separator separator1 = new Separator();
         separator1.setOrientation(Orientation.VERTICAL);
         separator1.setStyle("-fx-padding: 0 10 0 10; -fx-opacity: 0;");
-
-//        Label modalitaLabel = new Label("Modalità:");
-//        modalitaLabel.setStyle("-fx-text-fill: #334155; -fx-font-size: 14px; -fx-padding: 8 8 8 0;");
 
         Button onlineChoice = new Button("Online");
         Button presenzaChoice = new Button("Presenza");
@@ -346,7 +338,6 @@ public class HomePage extends Stage {
                 "-fx-background-radius: 4; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 0, 0, 0, 1);");
 
-//        modCorso.getChildren().addAll(modalitaLabel, onlineChoice, presenzaChoice);
         modCorso.getChildren().addAll(onlineChoice, presenzaChoice);
 
 
@@ -412,8 +403,6 @@ public class HomePage extends Stage {
 
         });
 
-        // TODO on click deve solo cercare nell'array dei corsi e non nel db
-        // Oppure vede tutti i corsi online/presenza like quello che ce nel searchFiel
         onlineChoice.setOnAction(event -> {
             if (modalitaSelezionata == Modalita.ONLINE) {
                 setNotClickedButtonAesthetic(onlineChoice);
@@ -484,15 +473,6 @@ public class HomePage extends Stage {
         setNotClickedButtonAesthetic(costoFilterUp);
         setNotClickedButtonAesthetic(costoFilterDown);
 
-//        choiceBox.getChildren().addAll(
-//                cercaPerLabel, corsoChoice, chefChoice, tipologiaChoice,
-//                separator1,
-//                modalitaLabel, onlineChoice, presenzaChoice,
-//                separator2,
-//                costoFilter,
-//                separator3,
-//                tuttiCorsi
-//        );
 
         choiceBox.getChildren().addAll(
                 cercaPer,
@@ -823,7 +803,6 @@ public class HomePage extends Stage {
 
     public void setUtente(Utente utente){
         this.utente = utente;
-        System.out.println(utente.getNome());
         createHomeButton();
         setLoggedIn();
         if (utente instanceof Chef){

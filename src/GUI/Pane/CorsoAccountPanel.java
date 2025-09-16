@@ -99,9 +99,7 @@ public class CorsoAccountPanel extends Pane {
         Label titoloLabel = createTitolo(corso.getNome());
         try {
             controller.setChefs(corso);
-        } catch (SQLException e) {
-            //todo dialog
-        }
+        } catch (SQLException ignore) {}
 
         Label chefsLabel = createChefs(corso.getStringOfChefs());
         Button unsubscribeButton = createUnsubscribeButton();
@@ -178,17 +176,13 @@ public class CorsoAccountPanel extends Pane {
                 showConfirmPanel("Sei sicuro di voler annullare l'iscrizione al corso?", () -> {
                     try {
                         controller.unsubscribeToCourse(corso);
-                    } catch (SQLException e) {
-                        // TODO DIALOG
-                    }
+                    } catch (SQLException ignore) {}
                 });
             } else if (controller.getUtente() instanceof Chef chef) {
                 showConfirmPanel("Sei sicuro di voler eliminare il corso?", () -> {
                     try {
                         controller.deleteCorso(corso);
-                    } catch (SQLException e) {
-                        // TODO Dialog
-                    }
+                    } catch (SQLException ignore) {}
                 });
             }
         });

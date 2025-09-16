@@ -66,11 +66,9 @@ public class ChefDAO implements ChefDAOInterface {
 
         if (rs.next()) {
             int id = rs.getInt("idchef");
-            System.out.println(id);
             chef.setIdchef(id);
             return chef;
         } else {
-            System.out.println("Non ho inserito");
             throw new SQLException();
         }
     }

@@ -100,11 +100,9 @@ public class ReportPanel extends VBox {
 
         statisticheBox = new VBox(10);
         statisticheBox.setPadding(new Insets(10));
-//        statisticheBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         graficiPane = new BorderPane();
         graficiPane.setPadding(new Insets(10));
-//        graficiPane.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #dddddd; -fx-border-radius: 5;");
 
         this.getChildren().addAll(titoloLabel, selezioneMeseBox, statisticheBox, graficiPane);
 
@@ -164,7 +162,6 @@ public class ReportPanel extends VBox {
         statsTitolo.setFont(Font.font("System", FontWeight.BOLD, 16));
         statsTitolo.setTextFill(Color.valueOf("#3A6698"));
 
-        // Griglia per le statistiche
         GridPane statsGrid = new GridPane();
         statsGrid.setHgap(20);
         statsGrid.setVgap(10);

@@ -20,7 +20,6 @@ public class TipologiaCorsoDAO implements TipologiaCorsoDAOInterface {
 
     // Methods
     @Override
-    // TODO posso chiamare questa funzione invece di fare get tipo by nome?
     public TipologiaCorso addNewTipologiaCorso(String nomeTipo) throws SQLException {
         String checkSql = "SELECT COUNT(*) FROM tipologiacorso WHERE nome_tipo = ?";
         String insertSql = "INSERT INTO tipologiacorso (nome_tipo) VALUES (?)";

@@ -150,11 +150,9 @@ public class CorsoPage extends MyStage {
        double latoCorto = 0;
 
        if (imgWidth >= imgHeight) {
-           // width = imgHeight;
            latoCorto = imgHeight;
            puntoInizioRitaglioX = (imgWidth - imgHeight) / 2;
        } else if (imgHeight > imgWidth) {
-           // height = imgWidth;
            latoCorto = imgWidth;
            puntoInizioRitaglioY = (imgHeight - imgWidth) / 2;
        }
@@ -258,7 +256,7 @@ public class CorsoPage extends MyStage {
         try {
             controller.setChefs(corso);
         } catch (SQLException sqle) {
-            // TODO Dialog
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
 
         Text chefLabel = new Text("Chef: ");
@@ -270,7 +268,7 @@ public class CorsoPage extends MyStage {
         Text modalitaLabel = new Text("Modalità: ");
         modalitaLabel.setStyle("-fx-font-weight: bold;");
         Text modalitaValue = new Text();
-        if (corso.getModalita_corso() != null) { // perche da online di default ??
+        if (corso.getModalita_corso() != null) {
             modalitaValue.setText(corso.getModalita_corso().getLabel());
         } else {
             modalitaValue.setText("Da definire");
@@ -295,7 +293,6 @@ public class CorsoPage extends MyStage {
         }
         setAndAddFont(infoBox, periodoLabel, periodoValue);
 
-        // Ore totali
         DecimalFormat df = new DecimalFormat("#.##");
         Text oreLabel = new Text("Ore totali: ");
         oreLabel.setStyle("-fx-font-weight: bold;");
@@ -316,7 +313,6 @@ public class CorsoPage extends MyStage {
         );
         setAndAddFont(infoBox, freqLabel, freqValue);
 
-        // Costo
         Text costoLabel = new Text("Costo: ");
         costoLabel.setStyle("-fx-font-weight: bold;");
         Text costoValue = new Text(df.format(corso.getCosto()) + " €");

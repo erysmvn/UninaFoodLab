@@ -43,10 +43,8 @@ public class SessionePage extends MyStage {
         super(800, 600, RootType.BORDERPANE);
         this.controller = controller;
 
-        // Root BorderPane
         root = getRootBorderPane();
 
-        // Top
         topHbox = new HBox();
         topHbox = new HBox(15);
         topHbox.setAlignment(Pos.TOP_CENTER);
@@ -54,13 +52,11 @@ public class SessionePage extends MyStage {
         topHbox.setPadding(new Insets(50, 0, 10, 0));
         root.setTop(topHbox);
 
-        // Center (info box)
         infoBox = new VBox(10);
         infoBox.setAlignment(Pos.TOP_LEFT);
         infoBox.setPadding(new Insets(0, 0, 0, 30));
         root.setCenter(infoBox);
 
-        // Footer (bottom)
         footerVbox = new VBox(10);
         footerVbox.setAlignment(Pos.BOTTOM_CENTER);
         footerVbox.setSpacing(20);
@@ -131,7 +127,6 @@ public class SessionePage extends MyStage {
                 try {
                     String rawUrl = so.getLinkIncontro().trim();
 
-                    // Aggiungi il protocollo se manca
                     if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
                         rawUrl = "https://" + rawUrl;
                     }
@@ -139,17 +134,13 @@ public class SessionePage extends MyStage {
                     URI uri = new URI(rawUrl);
 
 
-                    // Fallback per diversi OS
                     String os = System.getProperty("os.name").toLowerCase();
 
                     if (os.contains("win")) {
-                        // Windows
                         Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + uri.toString());
                     } else if (os.contains("mac")) {
-                        // macOS
                         Runtime.getRuntime().exec(new String[]{"open", uri.toString()});
                     } else if (os.contains("nix") || os.contains("nux")) {
-                        // Linux/Unix
                         Runtime.getRuntime().exec(new String[]{"xdg-open", uri.toString()});
                     } else {
                         showDialog("Impossibile aprire il link: sistema operativo non supportato");
@@ -161,7 +152,6 @@ public class SessionePage extends MyStage {
                     showDialog("Errore nell'apertura del browser: " + ex.getMessage());
                 } catch (Exception ex) {
                     showDialog("Errore di sistema. Riprovare più tardi");
-                    ex.printStackTrace();
                 }
             });
 
@@ -213,7 +203,6 @@ public class SessionePage extends MyStage {
 
         ScrollPane listaRicette = new ScrollPane(listaRicetteBox);
         listaRicette.setPrefWidth(250);
-        //listaRicette.setMaxWidth(250);
         listaRicette.setPrefHeight(120);
         listaRicette.setMinHeight(120);
         listaRicette.setMaxHeight(120);

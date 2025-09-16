@@ -60,11 +60,8 @@ public class CorsoDAO implements CorsoDAOInterface {
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted == 0) {
-                System.out.println("NON HO INSERITO");
-                System.out.println(idCorso + " " + chef.getIdchef());
                 throw new SQLException();
             }
-            System.out.println("HO INSERITO");
         }
 
     }

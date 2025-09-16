@@ -395,10 +395,7 @@ public class Controller {
     }
 
     public void refreshCorsi() {
-        System.out.println("Prima di SHOW CORSI");
-        System.out.println(utente.getCorsi());
         if (elencoCorsiPanel != null) {
-
             try {
                 if(utente instanceof Chef chef){
                     chef.getCorsi().clear();
@@ -406,11 +403,7 @@ public class Controller {
                 }
             } catch (SQLException ignore) {}
 
-            System.out.println(utente.getCorsi());
             elencoCorsiPanel.showCorsi();
-
-        }else{
-            System.out.println("SONO QUI");
         }
     }
 
@@ -507,11 +500,6 @@ public class Controller {
             }
         }
 
-        System.out.println(this.utente);
-        if (this.utente instanceof Chef chef) {
-            System.out.println(chef.getIdchef());
-        }
-
         homePage.setUtente(this.utente);
         this.corsoPages.clear();
     }
@@ -597,7 +585,6 @@ public class Controller {
     public Corso createNewCorso(String nomeCorso, double prezzo, int frequenza, String difficolta, TipologiaCorso tipologia, ArrayList<Chef> chefs) throws SQLException {
         Corso newCorso = corsoDAO.createNewCorso(nomeCorso, prezzo, frequenza, difficolta);
         if (newCorso != null) {
-            System.out.println(newCorso.getIdCorso());
             addChefsToCorso(newCorso.getIdCorso(), chefs);
             addToCaratterizzato(newCorso.getIdCorso(), tipologia.getId());
         } else {
@@ -659,8 +646,6 @@ public class Controller {
     }
 
     public FoglioAdesione getFoglioAdesioneBySessioneNPath(String filePath, SessionePresenza sessionePresenza) throws SQLException {
-        if(utente == null)
-            System.out.println("UTENTE IS NULL");
         return foglioAdesioneDAO.getFoglioAdesioneBySessioneNPath(filePath,sessionePresenza, (Studente) utente);
     }
 

@@ -241,7 +241,6 @@ public class RegisterPage extends MyStage {
                         controller.registerMethod(newChef);
                     } else {
                         Studente newStudente = new Studente(matricola, nome, cognome, email, password);
-                        System.out.println("TEST "+newStudente.getNome());
                         controller.registerMethod(newStudente);
                     }
                     this.close();

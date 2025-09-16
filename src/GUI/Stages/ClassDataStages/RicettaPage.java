@@ -185,8 +185,7 @@ public class RicettaPage extends MyStage {
                 descBox.getChildren().add(ricettaFlow);
             }
         } catch (SQLException sqle) {
-            // TODO dialog
-            sqle.printStackTrace();
+            showDialog("Errore di sistema. Riprovare più tardi");
         }
     }
 }

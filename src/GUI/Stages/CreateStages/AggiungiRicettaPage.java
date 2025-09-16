@@ -25,6 +25,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -243,16 +245,33 @@ public class AggiungiRicettaPage extends MyStage {
         ricetta.setTempoPreparazione(Integer.parseInt(tempoDiPreparazione));
 
         Ingrediente ingrediente;
+        ArrayList<Ingrediente>  listToCheck = new ArrayList<>();
+
         for (VBox ingBox : ingredientiBoxList){
             ingrediente = getIngredienteFromBox(ingBox);
-            controller.insertIngredienti(ingrediente);
-            ricetta.addIngredienteFormaRicetta(getIngredienteFormaRicettaBox(ingrediente, ingBox));
+            if(!listHasIngrediente(ingrediente,listToCheck)){
+                listToCheck.add(ingrediente);
+                controller.insertIngredienti(ingrediente);
+                ricetta.addIngredienteFormaRicetta(getIngredienteFormaRicettaBox(ingrediente, ingBox));
+            }
         }
+            for(Ingrediente ingrediente2 : listToCheck){
+                System.out.println(ingrediente2.getNome());
+            }
+
 
         if(ingredientiBoxList.isEmpty())
             throw new AlmenoUnIngredienteException();
 
         return ricetta;
+    }
+
+    private boolean listHasIngrediente(Ingrediente ing, ArrayList<Ingrediente> listToCheck){
+        boolean hasIngrediente = false;
+        for (Ingrediente ingrediente : listToCheck){
+            hasIngrediente = ingrediente.getNome().equals(ing.getNome());
+        }
+        return hasIngrediente;
     }
 
     private void enableIngredienteSearch(ComboBox<String> combo, ArrayList<Ingrediente> ingredienti) {
@@ -347,6 +366,7 @@ public class AggiungiRicettaPage extends MyStage {
                 erroreInserimentoIngredientiLabel.setText("Inserire categoria ingrediente");
             }catch (Exception e) {
                 showDialog("Errore di sistema. Riprovare più tardi");
+
             }
         });
 

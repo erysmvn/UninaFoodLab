@@ -129,7 +129,9 @@ public class ReportPanel extends VBox {
         }
 
         if (reportData == null) {
-            showDialog("Nessun dato disponibile per il mese selezionato");
+            if (this.isVisible()) {
+                showDialog("Nessun dato disponibile per il mese selezionato");
+            }
             statisticheBox.getChildren().clear();
             statisticheBox.setStyle("-fx-background-color: transparent;");
             graficiPane.getChildren().clear();

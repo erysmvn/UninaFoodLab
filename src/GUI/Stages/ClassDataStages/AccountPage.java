@@ -52,6 +52,7 @@
 
             content.getChildren().addAll(elencoCorsiPanel,calendarioPanel,accountPanel,impostazioniPanel);
             reportPanel = new ReportPanel(controller);
+            reportPanel.setVisible(false);
             if(utente instanceof Chef){
                 reportPanel.initialize();
                 content.getChildren().add(reportPanel);

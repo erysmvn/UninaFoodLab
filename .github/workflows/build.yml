@@ -2,44 +2,48 @@ name: Build and Analyze
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main", "master" ]
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarqube:
-    name: SonarQube Analysis
-    runs-on: ubuntu-latest  # Meglio Ubuntu di MacOS (più veloce ed economico)
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Shallow clones disabilitati
 
-      # 1. Installa Java (necessario per compilare)
+      # 1. Installa Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'temurin'
 
-      # 2. Compila i file Java "sciolti"
+      # 2. Compila i file Java nella cartella 'bin'
       - name: Compile Java Files
         run: |
-          mkdir bin
+          mkdir -p bin
           find . -name "*.java" > sources.txt
-          javac -d bin @sources.txt
-          # Se questo comando fallisce, significa che il tuo codice ha errori di sintassi
+          if [ -s sources.txt ]; then
+            javac -d bin @sources.txt
+          else
+            echo "Nessun file Java trovato!"
+            exit 1
+          fi
 
-      # 3. Lancia SonarQube specificando dove sono i binari
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4 # Usa la versione v4 che è più stabile per SonarCloud
+      # 3. Esegue la scansione usando l'azione specifica per SonarCloud
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Necessario
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Il secret che hai creato
         with:
           args: >
-            -Dsonar.projectKey=LA_TUA_PROJECT_KEY
-            -Dsonar.organization=LA_TUA_ORG_KEY
+            -Dsonar.organization=INSERISCI_QUI_ORG_KEY
+            -Dsonar.projectKey=INSERISCI_QUI_PROJECT_KEY
             -Dsonar.sources=.
             -Dsonar.java.binaries=bin
+            -Dsonar.host.url=https://sonarcloud.io
